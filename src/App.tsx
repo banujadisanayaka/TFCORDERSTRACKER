@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 
 // ⚠️ Automatically imports your newly uploaded JSON database!
-import recipeData from "./TFC_Recipes_Database.json";
+const recipeData = require("./TFC_Recipes_Database.json");
 const RECIPE_DB = recipeData || [];
 
 /* ═══════════════════════════════════════════════════════════════
