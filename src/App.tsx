@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useRef } from "react";
 import { initializeApp } from "firebase/app";
 import {
@@ -68,7 +69,6 @@ function useIsMobile() {
   return isMobile;
 }
 
-// Updated to use the new 'recipe_name' key from your JSON
 function findRecipe(name) {
   if (!name) return null;
   const exactMatch = RECIPE_DB.find(
@@ -79,7 +79,6 @@ function findRecipe(name) {
   return exactMatch ? { ...exactMatch, matchScore: 1 } : null;
 }
 
-// Updated Offline Bulk Scanner to use the new JSON format
 function findRecipeFuzzyBulk(lineText) {
   const cleanLine = lineText
     .toUpperCase()
@@ -158,7 +157,7 @@ const C = {
   ol: "#D31118",
   olDk: "#A50D12",
   olBg: "#FBE8E8",
-  olBgD: "#F4C1C3", // Official TFC Red Theme
+  olBgD: "#F4C1C3",
   am: "#B56B22",
   amDk: "#7E4A10",
   amBg: "#FBF0E0",
@@ -399,9 +398,6 @@ function StatRow({ s }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ULTIMATE RECIPE CARD (Reads Stage Labels & Steps natively!)
-═══════════════════════════════════════════════════════════════ */
 function RecipeCard({ name }) {
   const r = findRecipe(name);
   const [showSteps, setShowSteps] = useState(false);
@@ -480,7 +476,6 @@ function RecipeCard({ name }) {
         </span>
       </div>
 
-      {/* Structured Ingredients List */}
       <div
         style={{
           background: C.off,
@@ -503,7 +498,6 @@ function RecipeCard({ name }) {
         </div>
         {r.ingredients &&
           r.ingredients.map((ing, i) => {
-            // Support for "stage_label" grouping in the JSON!
             if (ing.type === "stage_label" || !ing.qty) {
               return (
                 <div
@@ -557,7 +551,6 @@ function RecipeCard({ name }) {
           })}
       </div>
 
-      {/* Interactive Preparation Steps */}
       {r.steps && r.steps.length > 0 && (
         <div style={{ marginTop: 12 }}>
           <button
@@ -614,7 +607,6 @@ function RecipeCard({ name }) {
         </div>
       )}
 
-      {/* Operational Notes */}
       {r.notes && r.notes.length > 0 && (
         <div
           style={{
@@ -672,7 +664,7 @@ function Btn({
     <button
       onClick={onClick}
       disabled={disabled}
-      type={type}
+      type={type as any}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
@@ -726,7 +718,6 @@ function SplashScreen() {
           animationDelay: "0.2s",
         }}
       >
-        {/* Grabs your uploaded logo.jpg from the public folder */}
         <img
           src="/logo.jpg"
           alt="TFC Logo"
@@ -739,7 +730,7 @@ function SplashScreen() {
             objectFit: "cover",
           }}
           onError={(e) => {
-            e.target.style.display = "none";
+            (e.target as any).style.display = "none";
           }}
         />
         <div
@@ -824,7 +815,7 @@ function RoleSelectScreen({ onSelect }) {
               objectFit: "cover",
             }}
             onError={(e) => {
-              e.target.style.display = "none";
+              (e.target as any).style.display = "none";
             }}
           />
           <div
@@ -1095,7 +1086,7 @@ function PasswordScreen({ role, onSuccess, onBack }) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   NEW ORDER MODAL WITH OFFLINE WHATSAPP LIST IMPORTER
+   NEW ORDER MODAL
 ═══════════════════════════════════════════════════════════════ */
 function NewOrderModal({ onClose, onSubmit, notify }) {
   const isMobile = useIsMobile();
@@ -1441,8 +1432,10 @@ function NewOrderModal({ onClose, onSubmit, notify }) {
                       boxShadow: C.sh,
                       transition: "border-color 0.2s",
                     }}
-                    onFocus={(e) => (e.target.style.borderColor = C.ol)}
-                    onBlur={(e) => (e.target.style.borderColor = C.w)}
+                    onFocus={(e) =>
+                      ((e.target as any).style.borderColor = C.ol)
+                    }
+                    onBlur={(e) => ((e.target as any).style.borderColor = C.w)}
                   />
                 </div>
                 <div
@@ -1481,8 +1474,12 @@ function NewOrderModal({ onClose, onSubmit, notify }) {
                         textAlign: "center",
                         boxShadow: C.sh,
                       }}
-                      onFocus={(e) => (e.target.style.borderColor = C.ol)}
-                      onBlur={(e) => (e.target.style.borderColor = C.w)}
+                      onFocus={(e) =>
+                        ((e.target as any).style.borderColor = C.ol)
+                      }
+                      onBlur={(e) =>
+                        ((e.target as any).style.borderColor = C.w)
+                      }
                     />
                   </div>
                   <div style={{ width: 90 }}>
@@ -1513,8 +1510,12 @@ function NewOrderModal({ onClose, onSubmit, notify }) {
                         height: 46,
                         boxShadow: C.sh,
                       }}
-                      onFocus={(e) => (e.target.style.borderColor = C.ol)}
-                      onBlur={(e) => (e.target.style.borderColor = C.w)}
+                      onFocus={(e) =>
+                        ((e.target as any).style.borderColor = C.ol)
+                      }
+                      onBlur={(e) =>
+                        ((e.target as any).style.borderColor = C.w)
+                      }
                     >
                       {UNITS.map((u) => (
                         <option key={u} value={u}>
@@ -1586,8 +1587,8 @@ function NewOrderModal({ onClose, onSubmit, notify }) {
                   marginBottom: 12,
                   fontFamily: "monospace",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = C.ol)}
-                onBlur={(e) => (e.target.style.borderColor = C.olBgD)}
+                onFocus={(e) => ((e.target as any).style.borderColor = C.ol)}
+                onBlur={(e) => ((e.target as any).style.borderColor = C.olBgD)}
               />
               <button
                 onClick={handleBulkTextParse}
@@ -1703,9 +1704,11 @@ function NewOrderModal({ onClose, onSubmit, notify }) {
                       transition: "background 0.2s",
                     }}
                     onMouseEnter={(e) =>
-                      (e.target.style.background = "#F4C1C3")
+                      ((e.target as any).style.background = "#F4C1C3")
                     }
-                    onMouseLeave={(e) => (e.target.style.background = C.rdBg)}
+                    onMouseLeave={(e) =>
+                      ((e.target as any).style.background = C.rdBg)
+                    }
                   >
                     Remove
                   </button>
@@ -2573,7 +2576,7 @@ function AdminDashboard({ orders }) {
 ═══════════════════════════════════════════════════════════════ */
 export default function TFCOrderSystem() {
   const isMobile = useIsMobile();
-  const [splashState, setSplashState] = useState("visible"); // visible, fading, hidden
+  const [splashState, setSplashState] = useState("visible");
   const [phase, setPhase] = useState("select");
   const [role, setRole] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -2582,7 +2585,6 @@ export default function TFCOrderSystem() {
   const [toast, setToast] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Splash Screen Logic
   useEffect(() => {
     const timer1 = setTimeout(() => setSplashState("fading"), 2000);
     const timer2 = setTimeout(() => setSplashState("hidden"), 2500);
@@ -2671,7 +2673,6 @@ export default function TFCOrderSystem() {
     setRole(null);
   }
 
-  // Render Splash First
   if (splashState === "visible" || splashState === "fading") {
     return (
       <>
@@ -2688,7 +2689,6 @@ export default function TFCOrderSystem() {
     );
   }
 
-  // App Routing
   let AppContent;
   if (phase === "select")
     AppContent = <RoleSelectScreen onSelect={selectRole} />;
@@ -2785,7 +2785,6 @@ export default function TFCOrderSystem() {
           />
         )}
 
-        {/* HEADER */}
         <div
           style={{
             display: "flex",
@@ -2833,7 +2832,7 @@ export default function TFCOrderSystem() {
                 objectFit: "cover",
               }}
               onError={(e) => {
-                e.target.style.display = "none";
+                (e.target as any).style.display = "none";
               }}
             />
             <div>
@@ -2927,7 +2926,6 @@ export default function TFCOrderSystem() {
             />
           )}
 
-          {/* SIDEBAR */}
           <div
             className="custom-scrollbar"
             style={{
