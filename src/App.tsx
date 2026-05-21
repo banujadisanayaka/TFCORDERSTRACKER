@@ -142,6 +142,38 @@ const GLOBAL_STYLES = `
   .dp-item-done { opacity: 0.45; }
   .dp-item-done-admin { opacity: 0.8; }
   .dp-item-done .dp-item-name { text-decoration: line-through; color: #4A5A7A !important; }
+
+  /* ── Cursor spotlight (portal) ── */
+  .cursor-spotlight {
+    background-image: radial-gradient(700px circle at var(--cx,-9999px) var(--cy,-9999px), rgba(211,17,24,0.065), transparent 80%);
+  }
+
+  /* ── Dot grid overlay ── */
+  .dot-grid-fixed {
+    position: fixed; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Status glow on badges ── */
+  .badge-glow-cooking  { box-shadow: 0 0 8px rgba(251,176,64,0.55)  !important; }
+  .badge-glow-prod_done{ box-shadow: 0 0 8px rgba(74,222,128,0.55)  !important; }
+  .badge-glow-packed   { box-shadow: 0 0 8px rgba(211,17,24,0.55)   !important; }
+  .badge-glow-short    { box-shadow: 0 0 8px rgba(251,176,64,0.45)  !important; }
+  .badge-glow-oos      { box-shadow: 0 0 8px rgba(252,165,165,0.45) !important; }
+
+  /* ── Portal top bar gradient underline ── */
+  .portal-bar-shine {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(211,17,24,0.35) 40%, rgba(211,17,24,0.35) 60%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* ── Stat card counter animation ── */
+  @keyframes countPop { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+  .count-pop { animation: countPop 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
 `;
 
 /* ═══════════════════════════════════════════════════════════════
@@ -174,6 +206,24 @@ function useIsMobile() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   return isMobile;
+}
+
+/* Counts up from 0 to target over ~900ms — used in StatCard */
+function useCountUp(target) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!target) { setVal(0); return; }
+    let start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / 900, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setVal(Math.round(target * eased));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }, [target]);
+  return val;
 }
 
 /* Animated ambient orb background — used by all auth screens */
@@ -312,7 +362,8 @@ const SC = {
 ═══════════════════════════════════════════════════════════════ */
 function Badge({status}){
   const s=SC[status]||SC.pending;
-  return <span style={{fontSize:10,fontWeight:800,padding:"4px 10px",borderRadius:20,color:s.c,background:s.bg,border:"1px solid "+s.bdr,whiteSpace:"nowrap",flexShrink:0,letterSpacing:"0.04em"}}>{s.label}</span>;
+  const glowClass = status && status !== "pending" && status !== "delivered" ? `badge-glow-${status}` : "";
+  return <span className={glowClass} style={{fontSize:10,fontWeight:800,padding:"4px 10px",borderRadius:20,color:s.c,background:s.bg,border:"1px solid "+s.bdr,whiteSpace:"nowrap",flexShrink:0,letterSpacing:"0.04em",transition:"box-shadow 0.3s ease"}}>{s.label}</span>;
 }
 
 function Pill({count,label,color}){
@@ -382,10 +433,13 @@ function AdminDonutChart({ packed, pending, issues }) {
 }
 
 function StatCard({label,val,color}){
+  const isNum = typeof val === "number";
+  const displayed = useCountUp(isNum ? val : 0);
   return(
-    <div className="hover-lift animate-fade-up" style={{background:C.w,borderRadius:12,padding:"16px 6px",textAlign:"center",border:"1px solid "+C.bdrL,boxShadow:C.sh}}>
-      <div style={{fontSize:28,fontWeight:900,color,lineHeight:1,letterSpacing:"-0.03em"}}>{val}</div>
-      <div style={{fontSize:9,color:C.chL,marginTop:6,textTransform:"uppercase",letterSpacing:"0.12em",fontWeight:700}}>{label}</div>
+    <div className="hover-lift animate-fade-up glass-card" style={{borderRadius:14,padding:"18px 8px",textAlign:"center",position:"relative",overflow:"hidden",border:"1px solid rgba(255,255,255,0.07)",boxShadow:`0 2px 8px rgba(0,0,0,0.4), 0 0 20px ${color}15`}}>
+      <div style={{position:"absolute",top:0,left:"20%",right:"20%",height:1,background:`linear-gradient(90deg,transparent,${color}40,transparent)`,pointerEvents:"none"}}/>
+      <div className="count-pop" style={{fontSize:30,fontWeight:900,color,lineHeight:1,letterSpacing:"-0.04em"}}>{isNum ? displayed : val}</div>
+      <div style={{fontSize:9,color:C.chL,marginTop:7,textTransform:"uppercase",letterSpacing:"0.12em",fontWeight:700}}>{label}</div>
     </div>
   );
 }
@@ -2388,50 +2442,65 @@ function TFCOrderSystem(){
     };
 
     AppContent = (
-      <div className="animate-fade-in" style={{height:"100vh",display:"flex",flexDirection:"column",background:C.beige,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif",overflow:"hidden"}}>
+      <div
+        className="animate-fade-in cursor-spotlight"
+        style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:"#07090F",fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",overflow:"hidden",position:"relative"}}
+        onMouseMove={e=>{const el=e.currentTarget;const r=el.getBoundingClientRect();el.style.setProperty("--cx",(e.clientX-r.left)+"px");el.style.setProperty("--cy",(e.clientY-r.top)+"px");}}
+        onMouseLeave={e=>{e.currentTarget.style.setProperty("--cx","-9999px");e.currentTarget.style.setProperty("--cy","-9999px");}}
+      >
+        {/* Dot grid — fixed behind all content */}
+        <div className="dot-grid-fixed"/>
+
         {toast&&<Toast msg={toast.msg} type={toast.type}/>}
         {showModal&&<NewOrderModal onClose={()=>setShowModal(false)} onSubmit={handleNewOrder} notify={notify}/>}
         {editingOrder&&<EditOrderModal order={editingOrder} onClose={()=>setEditingOrder(null)} onSave={saveOrderEdit} notify={notify}/>}
 
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 24px",background:"rgba(9, 11, 16, 0.95)",borderBottom:"1px solid #1E2A44",boxShadow:"0 1px 0 #1A2235",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",flexShrink:0,zIndex:60}}>
-          <div style={{display:"flex",alignItems:"center",gap:isMobile ? 12 : 16}}>
-            {isMobile && ( <button onClick={() => setSidebarOpen(true)} style={{background:"none", border:"none", fontSize:24, cursor:"pointer", padding:0, color: C.ch, marginRight: 4}}>☰</button> )} 
-            <div style={{width: 40, height: 40, borderRadius: "50%", background: "#1A1A1A", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, boxShadow: "0 4px 16px rgba(26,26,26,0.15)"}}>🍽️</div> 
+        {/* ── Premium Portal Top Bar ── */}
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",height:58,background:"rgba(6,8,16,0.92)",borderBottom:"1px solid rgba(255,255,255,0.07)",backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:"0 4px 24px rgba(0,0,0,0.5)"}}>
+          <div className="portal-bar-shine"/>
+          {/* Left */}
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            {isMobile&&<button onClick={()=>setSidebarOpen(true)} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,width:34,height:34,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.ch,fontSize:15,flexShrink:0}}>☰</button>}
+            <div style={{position:"relative",width:34,height:34,flexShrink:0}}>
+              <div style={{width:34,height:34,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,boxShadow:"0 0 0 1px rgba(211,17,24,0.3),0 2px 10px rgba(211,17,24,0.2)"}}>🍽️</div>
+              <div style={{position:"absolute",inset:-4,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
+            </div>
             <div>
-              <div style={{fontSize:isMobile ? 14 : 15,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.01em",lineHeight:1}}>Order Tracking</div>
-              <div style={{display:"flex", alignItems:"center", gap:6, marginTop:4}}>
-                <span style={{display:"inline-block", width: isMobile ? 8 : 6, height: isMobile ? 8 : 6, background: C.ol, borderRadius:"50%", animation:"pulseSoft 2s infinite"}}/>
-                {!isMobile && <span style={{fontSize:10, color:C.ol, letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:800}}>Live</span>}
+              <div style={{fontSize:14,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.02em",lineHeight:1}}>Order Tracker</div>
+              <div style={{display:"flex",alignItems:"center",gap:5,marginTop:3}}>
+                <span style={{width:5,height:5,background:C.ol,borderRadius:"50%",animation:"pulseSoft 2s infinite",display:"inline-block",flexShrink:0}}/>
+                <span style={{fontSize:9,color:C.ol,letterSpacing:"0.1em",textTransform:"uppercase",fontWeight:800}}>Live</span>
+                {!isMobile&&<span style={{fontSize:9,color:"#2A3A54",fontWeight:600,marginLeft:4}}>{viewOrders.length} order{viewOrders.length!==1?"s":""}</span>}
               </div>
             </div>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:12}}>
+          {/* Right */}
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
             <div style={{position:"relative"}}>
-              <span style={{fontSize:isMobile ? 11 : 12,fontWeight:800,color:roleConfig.color,background:roleConfig.bg,border:"1px solid "+roleConfig.color+"40",borderRadius:20,padding:isMobile ? "6px 10px" : "6px 14px",letterSpacing:"0.02em", whiteSpace: "nowrap", boxShadow:C.sh}}>{roleConfig.icon} {!isMobile && roleConfig.label}</span>
-              {totalIssues > 0 && (
-                <span style={{position:"absolute", top:-6, right:-6, background:"#D31118", color:"#FFFFFF", borderRadius:"50%", width:18, height:18, fontSize:10, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", border:"2px solid #0E1018", animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>
-              )}
+              <span style={{fontSize:11,fontWeight:800,color:roleConfig.color,background:roleConfig.color+"14",border:"1px solid "+roleConfig.color+"35",borderRadius:20,padding:isMobile?"6px 10px":"6px 14px",letterSpacing:"0.02em",whiteSpace:"nowrap",boxShadow:"0 0 14px "+roleConfig.color+"25",display:"flex",alignItems:"center",gap:6}}>
+                <span style={{fontSize:10}}>{roleConfig.icon}</span>{!isMobile&&roleConfig.label}
+              </span>
+              {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#D31118",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #060810",animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
             </div>
-            <Btn size="sm" variant="dark" onClick={()=>{setPhase("select");setRole(null);setActiveId(null);}}>Roles</Btn>
+            {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:"2px solid rgba(255,255,255,0.10)",flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
+            <button onClick={()=>{setPhase("select");setRole(null);setActiveId(null);}} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",color:C.chL,padding:"6px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
           </div>
         </div>
 
-        <div style={{display:"flex",flex:1,overflow:"hidden", position: "relative"}}>
-          {isMobile && sidebarOpen && ( <div className="animate-fade-in" onClick={() => setSidebarOpen(false)} style={{position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter:"blur(2px)", zIndex: 40}} /> )}
-          
-          <div className="custom-scrollbar" style={{ width: 280, borderRight:"1px solid #131D30", background:"#0A0C14", padding:16, overflowY:"auto", flexShrink:0, display:"flex", flexDirection:"column", gap:6, position: isMobile ? "absolute" : "relative", zIndex: 50, height: "100%", left: 0, top: 0, transform: isMobile ? (sidebarOpen ? "translateX(0)" : "translateX(-100%)") : "none", transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)", boxShadow: isMobile && sidebarOpen ? C.shM : "none" }}>
-            {role==="admin"&&( <div style={{marginBottom:10}}><button className="hover-lift" onClick={()=>{setShowModal(true); if(isMobile) setSidebarOpen(false);}} style={{width:"100%",padding:"14px 0",border:"none",borderRadius:12,background:"linear-gradient(135deg, #D31118, #8A0B10)",color:"#FFFFFF",fontSize:14,cursor:"pointer",fontWeight:800,letterSpacing:"0.02em",boxShadow:"0 4px 16px rgba(211,17,24,0.4)",display:"flex",alignItems:"center",justifyContent:"center",gap:8, animation:"pulseSoft 3s infinite"}}><span style={{fontSize:18}}>+</span> Create Order</button></div> )}
-            {role==="production"&&( <div style={{padding:"14px 16px",background:C.amBg,borderRadius:12,border:"1px solid "+C.amBgD,marginBottom:10}}><div style={{fontSize:11,fontWeight:900,color:C.amDk,textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:4}}>Production Mode</div><div style={{fontSize:12,color:C.chM,lineHeight:1.4, fontWeight:500}}>Showing all items flagged for production.</div></div> )}
-            <div style={{fontSize:10,fontWeight:900,color:C.chL,textTransform:"uppercase",letterSpacing:"0.14em",padding:"10px 4px 6px"}}>Orders {viewOrders.length>0?`(${viewOrders.length})`:""}</div>
-            
-            {loadingInitial ? (
-              <div style={{padding:"10px 0"}}><div className="skeleton-box" style={{height:80, marginBottom:10}}></div><div className="skeleton-box" style={{height:80}}></div></div>
-            ) : viewOrders.length===0 ? <div style={{fontSize:13,color:C.chXL,textAlign:"center",padding:"32px 0", fontWeight:600}}>No orders found</div> : viewOrders.map((o, i)=>( <OrderCard key={o.id} index={i} order={o} active={activeId===o.id} onClick={()=>{setActiveId(o.id); if(isMobile) setSidebarOpen(false);}} onDelete={role==="admin"?deleteOrder:null} /> ))}
-            
-            <div style={{marginTop: "auto", paddingTop: 20, textAlign: "center", fontSize: 10, color: "#2A3450", fontWeight: 500}}>© 2026 Made by Banuja Disanayaka</div>
+        <div style={{display:"flex",flex:1,overflow:"hidden",position:"relative",zIndex:2}}>
+          {isMobile&&sidebarOpen&&<div className="animate-fade-in" onClick={()=>setSidebarOpen(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.65)",backdropFilter:"blur(3px)",zIndex:40}}/>}
+
+          {/* Sidebar */}
+          <div className="custom-scrollbar" style={{width:280,borderRight:"1px solid rgba(255,255,255,0.06)",background:"rgba(6,8,16,0.96)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",padding:16,overflowY:"auto",flexShrink:0,display:"flex",flexDirection:"column",gap:6,position:isMobile?"absolute":"relative",zIndex:50,height:"100%",left:0,top:0,transform:isMobile?(sidebarOpen?"translateX(0)":"translateX(-100%)"):"none",transition:"transform 0.3s cubic-bezier(0.16,1,0.3,1)",boxShadow:isMobile&&sidebarOpen?"0 0 60px rgba(0,0,0,0.8)":"none"}}>
+            {role==="admin"&&(<div style={{marginBottom:10}}><button className="btn-3d" onClick={()=>{setShowModal(true);if(isMobile)setSidebarOpen(false);}} style={{width:"100%",padding:"13px 0",border:"none",borderRadius:12,background:"linear-gradient(135deg,#D31118,#8A0B10)",color:"#FFFFFF",fontSize:14,cursor:"pointer",fontWeight:800,letterSpacing:"0.02em",boxShadow:"0 4px 18px rgba(211,17,24,0.45),inset 0 1px 0 rgba(255,255,255,0.10)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>+</span> Create Order</button></div>)}
+            {role==="production"&&(<div style={{padding:"12px 14px",background:"rgba(232,146,10,0.08)",borderRadius:10,border:"1px solid rgba(232,146,10,0.2)",marginBottom:10}}><div style={{fontSize:11,fontWeight:900,color:C.amDk,textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:3}}>Production Mode</div><div style={{fontSize:11,color:C.chL,lineHeight:1.4,fontWeight:500}}>All items flagged for production.</div></div>)}
+            <div style={{fontSize:9,fontWeight:900,color:"#1E2A40",textTransform:"uppercase",letterSpacing:"0.16em",padding:"10px 4px 6px"}}>Orders {viewOrders.length>0?`(${viewOrders.length})`:""}</div>
+            {loadingInitial?(<div style={{padding:"10px 0"}}><div className="skeleton-box" style={{height:80,marginBottom:10}}></div><div className="skeleton-box" style={{height:80}}></div></div>):viewOrders.length===0?<div style={{fontSize:13,color:C.chXL,textAlign:"center",padding:"32px 0",fontWeight:600}}>No orders found</div>:viewOrders.map((o,i)=>(<OrderCard key={o.id} index={i} order={o} active={activeId===o.id} onClick={()=>{setActiveId(o.id);if(isMobile)setSidebarOpen(false);}} onDelete={role==="admin"?deleteOrder:null}/>))}
+            <div style={{marginTop:"auto",paddingTop:20,textAlign:"center",fontSize:9,color:"#1A2030",fontWeight:500}}>© 2026 Made by Banuja Disanayaka</div>
           </div>
-          
-          <div className="custom-scrollbar" style={{flex:1,overflowY:"auto",padding:isMobile ? "20px" : "32px 40px",background:C.off, width: "100%", position:"relative"}}>{renderMain()}</div>
+
+          {/* Main content */}
+          <div className="custom-scrollbar" style={{flex:1,overflowY:"auto",padding:isMobile?"20px":"32px 40px",backgroundColor:"#07090F",width:"100%",position:"relative"}}>{renderMain()}</div>
         </div>
       </div>
     );
