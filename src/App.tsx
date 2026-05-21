@@ -1932,14 +1932,18 @@ function TFCOrderSystem(){
     if (authUser.email === OWNER_EMAIL) return;
 
     setUserRecordLoading(true);
-    const unsubRecord = onSnapshot(doc(db, "authorized_users", authUser.email), (snap) => {
-      setUserRecord(snap.exists() ? snap.data() : null);
-      setUserRecordLoading(false);
-    });
+    const unsubRecord = onSnapshot(
+      doc(db, "authorized_users", authUser.email),
+      (snap) => { setUserRecord(snap.exists() ? snap.data() : null); setUserRecordLoading(false); },
+      () => { setUserRecord(null); setUserRecordLoading(false); }
+    );
 
-    const q = query(collection(db, "access_requests"), where("email", "==", authUser.email), where("status", "==", "pending"));
+    // Listen to ALL requests for this user (any status) to avoid race condition
+    const q = query(collection(db, "access_requests"), where("email", "==", authUser.email));
     const unsubReq = onSnapshot(q, (snap) => {
-      setAccessRequest(snap.empty ? null : snap.docs[0].data());
+      if (snap.empty) { setAccessRequest(null); return; }
+      const all = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
+      setAccessRequest(all[0]); // most recent request (any status)
     });
 
     return () => { unsubRecord(); unsubReq(); };
@@ -2142,7 +2146,7 @@ function TFCOrderSystem(){
     />;
   } else if(phase==="select") {
     if (!isOwner && !userRecord) {
-      if (accessRequest) {
+      if (accessRequest && accessRequest.status === "pending") {
         AppContent = <PendingScreen request={accessRequest} authUser={authUser} onSignOut={handleSignOut} />;
       } else {
         AppContent = <RequestAccessScreen authUser={authUser} onSubmit={submitAccessRequest} onSignOut={handleSignOut} />;
