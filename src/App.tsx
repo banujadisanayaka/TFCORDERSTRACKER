@@ -15,7 +15,7 @@ const itemsData = require("./TFC_Items_Database.json");
 const ITEMS_DB = itemsData || [];
 
 /* ═══════════════════════════════════════════════════════════════
-   PREMIUM CSS ANIMATIONS & DARK MODE (V7 FINAL)
+   PREMIUM CSS ANIMATIONS & DARK MODE (V8 3D)
 ═══════════════════════════════════════════════════════════════ */
 const GLOBAL_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=JetBrains+Mono:wght@500;600&display=swap');
@@ -24,6 +24,49 @@ const GLOBAL_STYLES = `
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes pulseSoft { 0% { box-shadow: 0 0 0 0 rgba(211, 17, 24, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(211, 17, 24, 0); } 100% { box-shadow: 0 0 0 0 rgba(211, 17, 24, 0); } }
   @keyframes shimmerPulse { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+  /* ── 3D Premium: orb float animations ── */
+  @keyframes orbFloat1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(60px,-40px) scale(1.08)} 66%{transform:translate(-30px,55px) scale(0.96)} }
+  @keyframes orbFloat2 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-80px,55px) scale(1.06)} 66%{transform:translate(80px,-30px) scale(1.10)} }
+  @keyframes orbFloat3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(35px,45px) scale(1.14)} }
+  @keyframes logoGlow { 0%,100%{box-shadow:0 0 0 1px rgba(211,17,24,0.25),0 6px 28px rgba(211,17,24,0.22),0 0 70px rgba(211,17,24,0.07)} 50%{box-shadow:0 0 0 1px rgba(211,17,24,0.50),0 8px 40px rgba(211,17,24,0.42),0 0 100px rgba(211,17,24,0.15)} }
+  @keyframes spinSlow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  @keyframes loadBar { 0%{transform:translateX(-100%)} 100%{transform:translateX(250%)} }
+  @keyframes statusPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0.5} }
+
+  /* ── Glass card system ── */
+  .glass-card {
+    background: rgba(12,18,34,0.65);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.6), 0 32px 80px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  /* ── Grain texture overlay ── */
+  .grain::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* ── Role/tile card 3D hover (desktop) ── */
+  .role-card { transition: transform 0.22s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.22s ease, border-color 0.18s ease !important; }
+  @media (hover: hover) {
+    .role-card:hover { transform: translateY(-7px) scale(1.025) !important; }
+  }
+  .role-card:active { transform: translateY(-2px) scale(0.98) !important; }
+
+  /* ── 3D tilt wrapper ── */
+  .tilt-wrap { transform-style: preserve-3d; will-change: transform; }
+
+  /* ── Premium button 3D press ── */
+  .btn-3d { transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease !important; }
+  .btn-3d:not(:disabled):active { transform: translateY(2px) scale(0.975) !important; box-shadow: 0 1px 4px rgba(211,17,24,0.3) !important; }
   @keyframes shimmerLoad { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
   @keyframes dotBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
   @keyframes celebrateGlow { 0% { box-shadow: 0 0 5px rgba(9, 115, 83, 0.2); } 50% { box-shadow: 0 0 20px rgba(9, 115, 83, 0.6); } 100% { box-shadow: 0 0 5px rgba(9, 115, 83, 0.2); } }
@@ -131,6 +174,60 @@ function useIsMobile() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   return isMobile;
+}
+
+/* Animated ambient orb background — used by all auth screens */
+function PremiumBg() {
+  return (
+    <>
+      <div style={{position:"fixed",inset:0,background:"#060810",zIndex:0,pointerEvents:"none"}}/>
+      <div style={{position:"fixed",width:"min(640px,90vw)",height:"min(640px,90vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(211,17,24,0.14) 0%,transparent 70%)",top:"-22%",left:"-12%",animation:"orbFloat1 22s infinite ease-in-out",pointerEvents:"none",zIndex:0}}/>
+      <div style={{position:"fixed",width:"min(860px,110vw)",height:"min(860px,110vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(20,50,160,0.10) 0%,transparent 70%)",bottom:"-32%",right:"-22%",animation:"orbFloat2 28s infinite ease-in-out",pointerEvents:"none",zIndex:0}}/>
+      <div style={{position:"fixed",width:"min(420px,65vw)",height:"min(420px,65vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(211,17,24,0.07) 0%,transparent 70%)",top:"42%",right:"8%",animation:"orbFloat3 19s infinite ease-in-out",pointerEvents:"none",zIndex:0}}/>
+    </>
+  );
+}
+
+/* Mouse-tracking 3D tilt — skipped on touch devices */
+function useTilt(ref, maxDeg = 11) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    function onMove(e) {
+      const r = el.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width - 0.5) * 2;
+      const y = ((e.clientY - r.top) / r.height - 0.5) * 2;
+      el.style.transform = `perspective(900px) rotateX(${-y * maxDeg}deg) rotateY(${x * maxDeg}deg) translateZ(10px)`;
+      el.style.boxShadow = `${x * -14}px ${y * -14}px 50px rgba(0,0,0,0.55), 0 24px 70px rgba(0,0,0,0.45)`;
+    }
+    function onLeave() {
+      el.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
+      el.style.boxShadow = "";
+    }
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => { el.removeEventListener("mousemove", onMove); el.removeEventListener("mouseleave", onLeave); };
+  }, []);
+}
+
+/* Device-orientation tilt for mobile — gives the card a parallax feel when you tilt your phone */
+function useDeviceTilt(ref, intensity = 7) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (!window.matchMedia("(pointer: coarse)").matches) return;
+    if (typeof DeviceOrientationEvent === "undefined") return;
+    let baseB = null, baseG = null;
+    function handler(e) {
+      if (baseB === null) { baseB = e.beta || 0; baseG = e.gamma || 0; }
+      const dx = Math.max(-intensity, Math.min(intensity, ((e.gamma || 0) - baseG) * 0.6));
+      const dy = Math.max(-intensity, Math.min(intensity, ((e.beta || 0) - baseB) * 0.4));
+      el.style.transform = `perspective(900px) rotateX(${-dy}deg) rotateY(${dx}deg)`;
+    }
+    window.addEventListener("deviceorientation", handler);
+    return () => window.removeEventListener("deviceorientation", handler);
+  }, []);
 }
 
 function findRecipe(name){
@@ -775,13 +872,18 @@ function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel 
 
 function SplashScreen() {
   return (
-    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:C.w,zIndex:99999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",transition:"opacity 0.5s ease"}}>
-      <div className="animate-fade-up" style={{display:"flex",flexDirection:"column",alignItems:"center",animationDelay:"0.2s"}}>
-        <div style={{width: 160, height: 160, borderRadius: "50%", background: "#1A1A1A", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 64, margin: "0 auto 24px", boxShadow: "0 4px 16px rgba(26,26,26,0.15)"}}>🍽️</div>
-        <div style={{fontSize:24,fontWeight:900,color:C.ch,letterSpacing:"-0.03em"}}>The Food Company</div>
-        <div style={{fontSize:12,color:C.chL,letterSpacing:"0.2em",textTransform:"uppercase",fontWeight:700,marginTop:6}}>Operations Hub</div>
-        <div style={{marginTop:40, width:40, height:4, background:C.bdrL, borderRadius:4, overflow:"hidden"}}>
-          <div style={{width:"100%",height:"100%",background:C.ol,animation:"fadeIn 1.5s infinite alternate"}}/>
+    <div className="animate-fade-in grain" style={{position:"fixed",inset:0,zIndex:99999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",transition:"opacity 0.5s ease",overflow:"hidden"}}>
+      <PremiumBg/>
+      <div className="animate-fade-up" style={{display:"flex",flexDirection:"column",alignItems:"center",animationDelay:"0.1s",position:"relative",zIndex:2}}>
+        <div style={{position:"relative",width:96,height:96,margin:"0 auto 28px"}}>
+          <div style={{width:96,height:96,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:40,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
+          <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",inset:-18,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.08)",animation:"spinSlow 35s linear infinite reverse",pointerEvents:"none"}}/>
+        </div>
+        <div style={{fontSize:26,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.04em",marginBottom:6}}>The Food Company</div>
+        <div style={{fontSize:11,color:"#3A5070",letterSpacing:"0.22em",textTransform:"uppercase",fontWeight:700,marginBottom:48}}>Operations Hub</div>
+        <div style={{width:180,height:3,background:"rgba(255,255,255,0.05)",borderRadius:4,overflow:"hidden",position:"relative"}}>
+          <div style={{position:"absolute",top:0,left:0,width:"45%",height:"100%",background:"linear-gradient(90deg,transparent,#D31118,transparent)",animation:"loadBar 1.6s ease-in-out infinite"}}/>
         </div>
       </div>
     </div>
@@ -791,47 +893,47 @@ function SplashScreen() {
 function LoginScreen({ onSignIn }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const cardRef = useRef(null);
+  useTilt(cardRef);
+  useDeviceTilt(cardRef);
 
   async function handleClick() {
-    setLoading(true);
-    setError("");
-    try {
-      await onSignIn();
-    } catch (e) {
-      setError("Sign-in failed. Please try again.");
-    }
+    setLoading(true); setError("");
+    try { await onSignIn(); } catch (e) { setError("Sign-in failed. Please try again."); }
     setLoading(false);
   }
 
   return (
-    <div className="animate-fade-in" style={{ minHeight:"100vh", background:"linear-gradient(160deg, #060810 0%, #090D18 60%, #0B1020 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:28, fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif" }}>
-      <div className="animate-fade-up" style={{ width:"100%", maxWidth:400 }}>
-        <div style={{ textAlign:"center", marginBottom:48 }}>
-          <div style={{ width:80, height:80, borderRadius:"50%", background:"#1A1A1A", display:"flex", alignItems:"center", justifyContent:"center", fontSize:36, margin:"0 auto 24px", boxShadow:"0 4px 24px rgba(211,17,24,0.2)" }}>🍽️</div>
-          <div style={{ fontSize:26, fontWeight:900, color:C.ch, letterSpacing:"-0.03em", marginBottom:8 }}>The Food Company</div>
-          <div style={{ fontSize:13, color:C.chL, fontWeight:500 }}>Operations Hub — Sign in to continue</div>
+    <div className="animate-fade-in grain" style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",position:"relative",overflow:"hidden"}}>
+      <PremiumBg/>
+      <div style={{width:"100%",maxWidth:400,position:"relative",zIndex:2}}>
+        {/* Logo */}
+        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:44}}>
+          <div style={{position:"relative",width:90,height:90,margin:"0 auto 28px"}}>
+            <div style={{width:90,height:90,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:38,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
+            <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.2)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
+          </div>
+          <div style={{fontSize:30,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.05em",lineHeight:1,marginBottom:10}}>The Food Company</div>
+          <div style={{fontSize:11,color:"#2A4060",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.18em"}}>Operations Hub</div>
         </div>
 
-        <div style={{ background:C.w, borderRadius:20, padding:"32px 28px", border:"1px solid "+C.bdrL, boxShadow:C.shM }}>
-          <div style={{ fontSize:14, fontWeight:700, color:C.chM, marginBottom:20, textAlign:"center" }}>Sign in with your Google account</div>
-
-          <button
-            onClick={handleClick}
-            disabled={loading}
-            style={{ width:"100%", padding:"14px 20px", background:"linear-gradient(135deg, #D31118, #8A0B10)", border:"none", borderRadius:12, cursor:loading?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:12, boxShadow:"0 4px 16px rgba(211,17,24,0.35)", opacity:loading?0.7:1, transition:"all 0.2s" }}
-          >
-            <div style={{ width:24, height:24, borderRadius:"50%", background:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:14, fontWeight:900, color:"#D31118", flexShrink:0 }}>G</div>
-            <span style={{ fontSize:15, fontWeight:800, color:"#FFFFFF", letterSpacing:"0.01em" }}>{loading ? "Signing in..." : "Continue with Google"}</span>
+        {/* Glass card with 3D tilt */}
+        <div ref={cardRef} className="animate-fade-up glass-card tilt-wrap" style={{borderRadius:24,padding:"36px 32px",position:"relative",overflow:"hidden",animationDelay:"0.15s"}}>
+          {/* Top shine line */}
+          <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.13),transparent)",pointerEvents:"none"}}/>
+          <div style={{fontSize:11,fontWeight:700,color:"#2A4060",marginBottom:28,textAlign:"center",textTransform:"uppercase",letterSpacing:"0.18em"}}>Sign in to continue</div>
+          <button onClick={handleClick} disabled={loading} className="btn-3d" style={{width:"100%",padding:"15px 20px",background:loading?"rgba(30,40,60,0.8)":"linear-gradient(135deg,#D31118 0%,#8A0B10 100%)",border:"none",borderRadius:14,cursor:loading?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:12,boxShadow:loading?"none":"0 4px 22px rgba(211,17,24,0.48),inset 0 1px 0 rgba(255,255,255,0.10)",transition:"all 0.2s ease"}}>
+            <div style={{width:26,height:26,borderRadius:"50%",background:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:"#D31118",flexShrink:0,boxShadow:"0 1px 4px rgba(0,0,0,0.25)"}}>G</div>
+            <span style={{fontSize:15,fontWeight:800,color:"#FFFFFF",letterSpacing:"0.02em"}}>{loading?"Signing in…":"Continue with Google"}</span>
+            {!loading && <span style={{marginLeft:"auto",fontSize:16,opacity:0.5,color:"#fff"}}>→</span>}
           </button>
-
-          {error && (
-            <div className="animate-fade-in" style={{ marginTop:16, fontSize:12, color:C.rd, fontWeight:700, textAlign:"center", background:C.rdBg, padding:"10px 14px", borderRadius:8 }}>{error}</div>
-          )}
+          {error && <div className="animate-fade-in" style={{marginTop:14,fontSize:12,color:C.rd,fontWeight:700,textAlign:"center",background:C.rdBg,padding:"10px 14px",borderRadius:10,border:"1px solid rgba(220,38,38,0.22)"}}>{error}</div>}
+          <div style={{marginTop:28,paddingTop:20,borderTop:"1px solid rgba(255,255,255,0.05)",textAlign:"center",fontSize:11,color:"#1A2840",fontWeight:600}}>Secured via Google OAuth 2.0</div>
         </div>
 
-        <div style={{ textAlign:"center", marginTop:32, fontSize:11, color:"#2A3450", fontWeight:600 }}>
+        <div style={{textAlign:"center",marginTop:32,fontSize:11,color:"#1E2840",fontWeight:600}}>
           Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur
-          <div style={{ fontSize:10, marginTop:6, fontWeight:500, opacity:0.7 }}>© 2026 Made by Banuja Disanayaka</div>
+          <div style={{fontSize:10,marginTop:6,fontWeight:500,opacity:0.6}}>© 2026 Made by Banuja Disanayaka</div>
         </div>
       </div>
     </div>
@@ -842,8 +944,9 @@ function RequestAccessScreen({ authUser, onSubmit, onSignOut }) {
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [hov, setHov] = useState(null);
   const isMobile = useIsMobile();
+  const successRef = useRef(null);
+  useTilt(successRef, 7);
 
   function toggleRole(k) {
     setSelectedRoles(prev => prev.includes(k) ? prev.filter(r => r !== k) : [...prev, k]);
@@ -858,103 +961,115 @@ function RequestAccessScreen({ authUser, onSubmit, onSignOut }) {
   }
 
   return (
-    <div className="animate-fade-in custom-scrollbar" style={{ minHeight:"100vh", background:"linear-gradient(160deg, #060810 0%, #090D18 60%, #0B1020 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:28, fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif" }}>
-      <div style={{ width:"100%", maxWidth:540 }}>
-        <div className="animate-fade-up" style={{ background:C.w, borderRadius:16, padding:"20px 24px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:28, display:"flex", alignItems:"center", gap:16 }}>
-          {authUser.photoURL ? (
-            <img src={authUser.photoURL} alt="" style={{ width:48, height:48, borderRadius:"50%", border:"2px solid "+C.ol, flexShrink:0 }} />
-          ) : (
-            <div style={{ width:48, height:48, borderRadius:"50%", background:C.ol, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, fontWeight:900, color:"#fff", flexShrink:0 }}>
-              {authUser.displayName?.[0] || "?"}
-            </div>
-          )}
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ fontSize:15, fontWeight:800, color:C.ch, marginBottom:2, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{authUser.displayName || "Unknown"}</div>
-            <div style={{ fontSize:12, color:C.chL, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{authUser.email}</div>
+    <div className="animate-fade-in grain custom-scrollbar" style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",position:"relative",overflow:"hidden"}}>
+      <PremiumBg/>
+      <div style={{width:"100%",maxWidth:560,position:"relative",zIndex:2}}>
+        {/* User chip */}
+        <div className="animate-fade-up glass-card" style={{borderRadius:16,padding:"14px 18px",marginBottom:22,display:"flex",alignItems:"center",gap:14,position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)",pointerEvents:"none"}}/>
+          {authUser.photoURL ? <img src={authUser.photoURL} alt="" style={{width:44,height:44,borderRadius:"50%",border:"2px solid rgba(211,17,24,0.4)",flexShrink:0}}/> : <div style={{width:44,height:44,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>}
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:14,fontWeight:800,color:C.ch,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.displayName||"Unknown"}</div>
+            <div style={{fontSize:11,color:C.chL,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.email}</div>
           </div>
-          <button onClick={onSignOut} style={{ background:"none", border:"1px solid "+C.bdrL, color:C.chL, padding:"6px 12px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Sign Out</button>
+          <button onClick={onSignOut} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",color:C.chL,padding:"6px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,fontFamily:"inherit"}}>Sign Out</button>
         </div>
 
-        <div className="animate-fade-up" style={{ textAlign:"center", marginBottom:32 }}>
-          <div style={{ fontSize:20, fontWeight:900, color:C.ch, letterSpacing:"-0.02em", marginBottom:8 }}>Request Access</div>
-          <div style={{ fontSize:13, color:C.chL, fontWeight:500 }}>Select one or more roles you need access to. Your request will be reviewed by the owner.</div>
+        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:28,animationDelay:"0.05s"}}>
+          <div style={{fontSize:20,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.02em",marginBottom:8}}>Request Access</div>
+          <div style={{fontSize:13,color:"#4A6080",fontWeight:500,lineHeight:1.5}}>Select one or more roles you need. Your request will be reviewed by the owner.</div>
         </div>
 
         {submitted ? (
-          <div className="animate-fade-up" style={{ background:"rgba(9,115,83,0.15)", border:"1px solid rgba(9,115,83,0.4)", borderRadius:16, padding:"32px 24px", textAlign:"center" }}>
-            <div style={{ fontSize:36, marginBottom:16 }}>✓</div>
-            <div style={{ fontSize:18, fontWeight:900, color:"#4ADE80", marginBottom:8 }}>Request Sent!</div>
-            <div style={{ fontSize:13, color:C.chM, fontWeight:500 }}>Your request for <strong style={{ color:C.ch }}>{selectedRoles.map(r => ROLES[r]?.label).join(", ")}</strong> access has been submitted. You'll be notified when it's approved.</div>
+          <div ref={successRef} className="animate-fade-up glass-card tilt-wrap" style={{borderRadius:22,padding:"44px 32px",textAlign:"center",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(74,222,128,0.3),transparent)",pointerEvents:"none"}}/>
+            <div style={{position:"absolute",top:-60,left:"50%",transform:"translateX(-50%)",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(9,115,83,0.18) 0%,transparent 70%)",pointerEvents:"none"}}/>
+            <div style={{position:"relative",fontSize:48,marginBottom:18,filter:"drop-shadow(0 0 14px rgba(74,222,128,0.5))"}}>✓</div>
+            <div style={{fontSize:20,fontWeight:900,color:"#4ADE80",marginBottom:10}}>Request Sent!</div>
+            <div style={{fontSize:13,color:C.chM,fontWeight:500,lineHeight:1.6}}>Your request for <strong style={{color:"#EEF2FF"}}>{selectedRoles.map(r=>ROLES[r]?.label).join(", ")}</strong> access has been submitted. You'll be notified when approved.</div>
           </div>
         ) : (
           <>
-            <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap:12, marginBottom:24 }}>
+            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:11,marginBottom:20}}>
               {Object.entries(ROLES).map(([k, r], i) => {
                 const isSelected = selectedRoles.includes(k);
-                const isHov = hov === k;
                 return (
-                  <div key={k} onClick={() => toggleRole(k)} onMouseEnter={() => setHov(k)} onMouseLeave={() => setHov(null)}
-                    className="animate-fade-up hover-lift"
-                    style={{ animationDelay:`${i*0.05}s`, gridColumn:(!isMobile && i===4)?"1 / -1":"auto", background:isSelected?r.bg:C.w, border:"2px solid "+(isSelected?r.color:isHov?r.color:C.bdrL), borderTop:"3px solid "+r.color, borderRadius:16, padding:"20px 22px", cursor:"pointer", boxShadow:isSelected||isHov?C.shM:C.sh, display:"flex", flexDirection:"column", gap:10, alignItems:"flex-start", transition:"all 0.2s" }}>
-                    <div style={{ width:40, height:40, background:r.bg, borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:900, color:r.color, transition:"transform 0.2s", transform:isHov||isSelected?"scale(1.1)":"scale(1)" }}>{r.icon}</div>
+                  <div key={k} onClick={() => toggleRole(k)}
+                    className="animate-fade-up glass-card role-card"
+                    style={{
+                      animationDelay:`${i*0.06}s`,
+                      gridColumn:(!isMobile && i===4)?"1 / -1":"auto",
+                      borderRadius:16, padding:"18px 20px",
+                      cursor:"pointer", display:"flex", flexDirection:"column", gap:10, alignItems:"flex-start",
+                      borderTop:"2px solid "+(isSelected?r.color:r.color+"40"),
+                      border:isSelected?"2px solid "+r.color:"",
+                      outline:isSelected?"none":"",
+                      boxShadow:isSelected?`0 0 0 2px ${r.color}40, 0 12px 32px rgba(0,0,0,0.5)`:"",
+                      position:"relative", overflow:"hidden",
+                      transition:"all 0.2s ease",
+                    }}>
+                    <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${r.color}${isSelected?"40":"20"},transparent)`,pointerEvents:"none"}}/>
+                    {isSelected && <div style={{position:"absolute",top:-30,right:-10,width:80,height:80,borderRadius:"50%",background:`radial-gradient(circle,${r.color}20 0%,transparent 70%)`,pointerEvents:"none"}}/>}
+                    <div style={{width:40,height:40,background:`linear-gradient(135deg,${r.color}22,${r.color}0A)`,borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:r.color,border:"1px solid "+r.color+(isSelected?"50":"25"),transition:"transform 0.2s",transform:isSelected?"scale(1.12)":"scale(1)"}}>{r.icon}</div>
                     <div>
-                      <div style={{ fontSize:15, fontWeight:800, color:C.ch, marginBottom:3 }}>{r.label}</div>
-                      <div style={{ fontSize:12, color:C.chL, lineHeight:1.5, fontWeight:500 }}>{r.desc}</div>
+                      <div style={{fontSize:14,fontWeight:800,color:"#EEF2FF",marginBottom:3}}>{r.label}</div>
+                      <div style={{fontSize:12,color:"#4A6080",lineHeight:1.5,fontWeight:500}}>{r.desc}</div>
                     </div>
-                    {isSelected && <div style={{ fontSize:11, color:r.color, fontWeight:800, marginTop:"auto", paddingTop:6 }}>✓ Selected</div>}
+                    {isSelected && <div style={{fontSize:11,color:r.color,fontWeight:800,display:"flex",alignItems:"center",gap:5,background:r.color+"14",border:"1px solid "+r.color+"30",padding:"4px 9px",borderRadius:6}}>✓ Selected</div>}
                   </div>
                 );
               })}
             </div>
 
-            <button
-              onClick={handleRequest}
-              disabled={selectedRoles.length === 0 || submitting}
-              style={{ width:"100%", padding:"15px", background:selectedRoles.length>0?"linear-gradient(135deg, #D31118, #8A0B10)":"#1E2A44", border:"none", borderRadius:12, color:selectedRoles.length>0?"#fff":C.chL, fontSize:15, fontWeight:800, cursor:selectedRoles.length>0&&!submitting?"pointer":"not-allowed", boxShadow:selectedRoles.length>0?"0 4px 16px rgba(211,17,24,0.35)":"none", transition:"all 0.2s", opacity:submitting?0.7:1 }}
-            >
-              {submitting ? "Sending Request..." : selectedRoles.length > 0 ? `Request Access (${selectedRoles.length} role${selectedRoles.length>1?"s":""})` : "Select Roles Above"}
+            <button onClick={handleRequest} disabled={selectedRoles.length===0||submitting} className="btn-3d"
+              style={{width:"100%",padding:"15px",background:selectedRoles.length>0?"linear-gradient(135deg,#D31118,#8A0B10)":"rgba(20,28,46,0.8)",border:selectedRoles.length>0?"none":"1px solid rgba(255,255,255,0.06)",borderRadius:14,color:selectedRoles.length>0?"#fff":C.chL,fontSize:15,fontWeight:800,cursor:selectedRoles.length>0&&!submitting?"pointer":"not-allowed",boxShadow:selectedRoles.length>0?"0 4px 22px rgba(211,17,24,0.45),inset 0 1px 0 rgba(255,255,255,0.10)":"none",transition:"all 0.2s",opacity:submitting?0.7:1}}>
+              {submitting?"Sending Request…":selectedRoles.length>0?`Request Access (${selectedRoles.length} role${selectedRoles.length>1?"s":""})`:"Select Roles Above"}
             </button>
           </>
         )}
 
-        <div style={{ textAlign:"center", marginTop:28, fontSize:11, color:"#2A3450", fontWeight:600 }}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
+        <div style={{textAlign:"center",marginTop:28,fontSize:11,color:"#1A2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
       </div>
     </div>
   );
 }
 
 function PendingScreen({ request, authUser, onSignOut }) {
+  const cardRef = useRef(null);
+  useTilt(cardRef, 7);
+  useDeviceTilt(cardRef, 5);
   return (
-    <div className="animate-fade-in" style={{ minHeight:"100vh", background:"linear-gradient(160deg, #060810 0%, #090D18 60%, #0B1020 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:28, fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif" }}>
-      <div className="animate-fade-up" style={{ width:"100%", maxWidth:420 }}>
-        <div style={{ background:C.w, borderRadius:16, padding:"20px 24px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:24, display:"flex", alignItems:"center", gap:16 }}>
-          {authUser.photoURL ? (
-            <img src={authUser.photoURL} alt="" style={{ width:44, height:44, borderRadius:"50%", border:"2px solid "+C.bdrL, flexShrink:0 }} />
-          ) : (
-            <div style={{ width:44, height:44, borderRadius:"50%", background:C.bdrL, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, color:C.chM, flexShrink:0 }}>
-              {authUser.displayName?.[0] || "?"}
-            </div>
-          )}
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ fontSize:14, fontWeight:800, color:C.ch, marginBottom:2 }}>{authUser.displayName}</div>
-            <div style={{ fontSize:11, color:C.chL }}>{authUser.email}</div>
+    <div className="animate-fade-in grain" style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",position:"relative",overflow:"hidden"}}>
+      <PremiumBg/>
+      <div style={{width:"100%",maxWidth:420,position:"relative",zIndex:2}}>
+        {/* User chip */}
+        <div className="animate-fade-up glass-card" style={{borderRadius:16,padding:"14px 18px",marginBottom:20,display:"flex",alignItems:"center",gap:14,position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)",pointerEvents:"none"}}/>
+          {authUser.photoURL ? <img src={authUser.photoURL} alt="" style={{width:42,height:42,borderRadius:"50%",border:"2px solid rgba(211,17,24,0.4)",flexShrink:0}}/> : <div style={{width:42,height:42,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>}
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:13,fontWeight:800,color:C.ch,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.displayName}</div>
+            <div style={{fontSize:11,color:C.chL,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.email}</div>
           </div>
-          <button onClick={onSignOut} style={{ background:"none", border:"1px solid "+C.bdrL, color:C.chL, padding:"6px 12px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Sign Out</button>
+          <button onClick={onSignOut} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",color:C.chL,padding:"6px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,fontFamily:"inherit"}}>Sign Out</button>
         </div>
 
-        <div style={{ background:C.amBg, border:"1px solid "+C.amBgD, borderRadius:20, padding:"40px 32px", textAlign:"center" }}>
-          <div style={{ fontSize:48, marginBottom:20 }}>⏳</div>
-          <div style={{ fontSize:22, fontWeight:900, color:C.ch, letterSpacing:"-0.02em", marginBottom:12 }}>Awaiting Approval</div>
-          <div style={{ fontSize:13, color:C.chM, fontWeight:500, lineHeight:1.6, marginBottom:20 }}>
-            Your request for <strong style={{ color:C.am }}>{(request.requestedRoles || [request.requestedRole]).map(r => ROLES[r]?.label || r).join(", ")}</strong> access has been submitted. The owner will review and approve your request.
+        {/* Pending card */}
+        <div ref={cardRef} className="animate-fade-up glass-card tilt-wrap" style={{borderRadius:22,padding:"44px 32px",textAlign:"center",position:"relative",overflow:"hidden",animationDelay:"0.1s"}}>
+          <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.25),transparent)",pointerEvents:"none"}}/>
+          {/* Amber glow orb behind icon */}
+          <div style={{position:"absolute",top:-60,left:"50%",transform:"translateX(-50%)",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(232,146,10,0.12) 0%,transparent 70%)",pointerEvents:"none"}}/>
+          <div style={{position:"relative",fontSize:52,marginBottom:22,filter:"drop-shadow(0 0 16px rgba(232,146,10,0.4))"}}>⏳</div>
+          <div style={{fontSize:22,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.02em",marginBottom:12}}>Awaiting Approval</div>
+          <div style={{fontSize:13,color:C.chM,fontWeight:500,lineHeight:1.65,marginBottom:28}}>
+            Your request for <strong style={{color:C.am}}>{(request.requestedRoles||[request.requestedRole]).map(r=>ROLES[r]?.label||r).join(", ")}</strong> access has been submitted. The owner will review and approve your request.
           </div>
-          <div style={{ background:C.w, borderRadius:12, padding:"12px 16px", border:"1px solid "+C.bdrL, display:"inline-flex", alignItems:"center", gap:8 }}>
-            <span style={{ width:8, height:8, borderRadius:"50%", background:C.am, display:"inline-block", animation:"pulseSoft 2s infinite" }} />
-            <span style={{ fontSize:12, color:C.chM, fontWeight:700 }}>Pending review</span>
+          <div style={{display:"inline-flex",alignItems:"center",gap:10,background:"rgba(232,146,10,0.10)",border:"1px solid rgba(232,146,10,0.25)",borderRadius:40,padding:"10px 18px"}}>
+            <span style={{width:8,height:8,borderRadius:"50%",background:C.am,display:"inline-block",animation:"statusPulse 2s infinite ease-in-out",flexShrink:0}}/>
+            <span style={{fontSize:12,color:C.am,fontWeight:800,letterSpacing:"0.03em"}}>Pending review</span>
           </div>
         </div>
 
-        <div style={{ textAlign:"center", marginTop:24, fontSize:11, color:"#2A3450", fontWeight:600 }}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
+        <div style={{textAlign:"center",marginTop:28,fontSize:11,color:"#1E2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
       </div>
     </div>
   );
@@ -966,8 +1081,9 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
   const pendingRequests = requests.filter(r => r.status === "pending");
 
   return (
-    <div className="animate-fade-in" style={{ minHeight:"100vh", background:"linear-gradient(160deg, #060810 0%, #090D18 60%, #0B1020 100%)", display:"flex", flexDirection:"column", fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif" }}>
-      <div style={{ background:"rgba(9,11,16,0.95)", borderBottom:"1px solid "+C.bdrL, padding:"16px 24px", backdropFilter:"blur(12px)", display:"flex", alignItems:"center", gap:16, flexShrink:0 }}>
+    <div className="animate-fade-in grain" style={{ minHeight:"100vh", display:"flex", flexDirection:"column", fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif", position:"relative", overflow:"hidden" }}>
+      <PremiumBg/>
+      <div style={{ position:"relative", zIndex:2, background:"rgba(6,8,16,0.85)", borderBottom:"1px solid rgba(255,255,255,0.07)", padding:"14px 24px", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", display:"flex", alignItems:"center", gap:16, flexShrink:0 }}>
         <button onClick={onBack} style={{ background:C.off, border:"1px solid "+C.bdrL, color:C.chM, padding:"8px 14px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>← Back</button>
         <div style={{ flex:1 }}>
           <div style={{ fontSize:16, fontWeight:900, color:C.ch }}>Control Panel</div>
@@ -976,13 +1092,13 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
         <button onClick={onSignOut} style={{ background:"none", border:"1px solid "+C.bdrL, color:C.chL, padding:"6px 12px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Sign Out</button>
       </div>
 
-      <div style={{ display:"flex", background:"#0A0C14", borderBottom:"1px solid "+C.bdrL, flexShrink:0 }}>
+      <div style={{ position:"relative", zIndex:2, display:"flex", background:"rgba(6,8,16,0.7)", borderBottom:"1px solid rgba(255,255,255,0.06)", flexShrink:0, backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)" }}>
         {[{ key:"requests", label:`Pending Requests ${pendingRequests.length > 0 ? "("+pendingRequests.length+")" : ""}` }, { key:"users", label:`Manage Users (${authorizedUsers.length})` }].map(t => (
           <button key={t.key} onClick={() => setTab(t.key)} style={{ flex:1, padding:"14px 16px", background:"none", border:"none", borderBottom:"3px solid "+(tab===t.key?C.ol:"transparent"), color:tab===t.key?C.ol:C.chL, fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit", transition:"all 0.2s" }}>{t.label}</button>
         ))}
       </div>
 
-      <div className="custom-scrollbar" style={{ flex:1, overflowY:"auto", padding: isMobile ? 20 : 32 }}>
+      <div className="custom-scrollbar" style={{ position:"relative", zIndex:2, flex:1, overflowY:"auto", padding: isMobile ? 20 : 32 }}>
         {tab === "requests" && (
           <div>
             {pendingRequests.length === 0 ? (
@@ -1063,50 +1179,109 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
 }
 
 function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, authUser, onSignOut, pendingCount }) {
-  const [hov,setHov]=useState(null); const isMobile = useIsMobile();
+  const isMobile = useIsMobile();
   const keys = availableRoles || Object.keys(ROLES);
-  return(
-    <div className="animate-fade-in custom-scrollbar" style={{minHeight:"100vh",background:"linear-gradient(160deg, #060810 0%, #090D18 60%, #0B1020 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:28,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
-      <div style={{width:"100%",maxWidth:540}}>
+
+  /* Per-card tilt: store refs in an array */
+  const cardRefs = useRef([]);
+  useEffect(() => {
+    cardRefs.current.forEach(el => {
+      if (!el) return;
+      if (window.matchMedia("(pointer: coarse)").matches) return;
+      function onMove(e) {
+        const r = el.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width - 0.5) * 2;
+        const y = ((e.clientY - r.top) / r.height - 0.5) * 2;
+        el.style.transform = `perspective(800px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg) translateY(-6px) scale(1.02)`;
+        el.style.boxShadow = `${x * -10}px ${y * -10}px 30px rgba(0,0,0,0.5), 0 20px 60px rgba(0,0,0,0.4)`;
+      }
+      function onLeave() {
+        el.style.transform = "";
+        el.style.boxShadow = "";
+      }
+      el.addEventListener("mousemove", onMove);
+      el.addEventListener("mouseleave", onLeave);
+      el._tiltCleanup = () => { el.removeEventListener("mousemove", onMove); el.removeEventListener("mouseleave", onLeave); };
+    });
+    return () => cardRefs.current.forEach(el => el?._tiltCleanup?.());
+  }, [keys.join(",")]);
+
+  return (
+    <div className="animate-fade-in grain custom-scrollbar" style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",position:"relative",overflow:"hidden"}}>
+      <PremiumBg/>
+      <div style={{width:"100%",maxWidth:560,position:"relative",zIndex:2}}>
+        {/* User chip */}
         {authUser && (
-          <div className="animate-fade-up" style={{ background:C.w, borderRadius:14, padding:"14px 18px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:28, display:"flex", alignItems:"center", gap:12 }}>
-            {authUser.photoURL ? (
-              <img src={authUser.photoURL} alt="" style={{ width:40, height:40, borderRadius:"50%", border:"2px solid "+(isOwner?C.ol:C.bdrL), flexShrink:0 }} />
-            ) : (
-              <div style={{ width:40, height:40, borderRadius:"50%", background:isOwner?C.ol:C.bdrL, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:900, color:"#fff", flexShrink:0 }}>
-                {authUser.displayName?.[0] || "?"}
-              </div>
-            )}
-            <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ fontSize:13, fontWeight:800, color:C.ch, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{authUser.displayName || "User"}</div>
-              <div style={{ fontSize:11, color:isOwner?C.ol:C.chL, fontWeight:isOwner?800:500 }}>{isOwner?"Owner":"Authorized User"}</div>
+          <div className="animate-fade-up glass-card" style={{borderRadius:16,padding:"13px 18px",marginBottom:24,display:"flex",alignItems:"center",gap:12,position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)",pointerEvents:"none"}}/>
+            {authUser.photoURL ? <img src={authUser.photoURL} alt="" style={{width:38,height:38,borderRadius:"50%",border:"2px solid "+(isOwner?"rgba(211,17,24,0.6)":"rgba(255,255,255,0.12)"),flexShrink:0}}/> : <div style={{width:38,height:38,borderRadius:"50%",background:isOwner?"linear-gradient(135deg,#D31118,#8A0B10)":"rgba(255,255,255,0.08)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>}
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:13,fontWeight:800,color:C.ch,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.displayName||"User"}</div>
+              <div style={{fontSize:10,color:isOwner?C.ol:C.chL,fontWeight:isOwner?800:500,textTransform:"uppercase",letterSpacing:"0.06em"}}>{isOwner?"Owner · Full Access":"Authorized User"}</div>
             </div>
             {isOwner && (
-              <button onClick={onControlPanel} style={{ background:C.olBg, border:"1px solid "+C.olBgD, color:C.olDk, padding:"8px 14px", borderRadius:8, fontSize:11, fontWeight:800, cursor:"pointer", flexShrink:0, fontFamily:"inherit", position:"relative" }}>
+              <button onClick={onControlPanel} style={{background:"rgba(211,17,24,0.12)",border:"1px solid rgba(211,17,24,0.3)",color:C.ol,padding:"7px 13px",borderRadius:9,fontSize:11,fontWeight:800,cursor:"pointer",flexShrink:0,fontFamily:"inherit",position:"relative",transition:"all 0.2s"}}>
                 Control Panel
-                {pendingCount > 0 && <span style={{ position:"absolute", top:-6, right:-6, background:C.rd, color:"#fff", borderRadius:"50%", width:16, height:16, fontSize:9, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", border:"2px solid #090D18" }}>{pendingCount}</span>}
+                {pendingCount > 0 && <span style={{position:"absolute",top:-7,right:-7,background:C.rd,color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #060810"}}>{pendingCount}</span>}
               </button>
             )}
-            <button onClick={onSignOut} style={{ background:"none", border:"1px solid "+C.bdrL, color:C.chL, padding:"6px 10px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Sign Out</button>
+            <button onClick={onSignOut} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",color:C.chL,padding:"6px 10px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,fontFamily:"inherit"}}>Sign Out</button>
           </div>
         )}
-        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:32}}>
-          <div style={{width: 64, height: 64, borderRadius: "50%", background: "#1A1A1A", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, margin: "0 auto 20px", boxShadow: "0 4px 16px rgba(26,26,26,0.15)"}}>🍽️</div>
-          <div style={{fontSize:22,fontWeight:900,color:C.ch,letterSpacing:"-0.02em",lineHeight:1}}>Welcome back.</div><div style={{fontSize:14,color:"#8896B3",fontWeight:500,marginTop:8}}>Select your operational role to continue</div>
+
+        {/* Heading */}
+        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:28,animationDelay:"0.05s"}}>
+          <div style={{position:"relative",width:62,height:62,margin:"0 auto 18px"}}>
+            <div style={{width:62,height:62,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
+            <div style={{position:"absolute",inset:-8,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.16)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
+          </div>
+          <div style={{fontSize:22,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.03em",lineHeight:1}}>Welcome back.</div>
+          <div style={{fontSize:13,color:"#4A6080",fontWeight:500,marginTop:8}}>Select your operational role to continue</div>
         </div>
-        <div style={{display:"grid",gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",gap:14}}>
-          {keys.map((k,i)=>{
-            const r=ROLES[k]; if(!r) return null; const isHov=hov===k;
-            return(
-              <div key={k} onClick={()=>onSelect(k)} onMouseEnter={()=>setHov(k)} onMouseLeave={()=>setHov(null)} className="animate-fade-up hover-lift" style={{animationDelay: `${i * 0.05}s`, gridColumn:(!isMobile && i===4) ? "1 / -1" : "auto", background:C.w,border:"2px solid "+(isHov?r.color:C.bdrL),borderTop:"3px solid "+r.color,borderRadius:16,padding:"22px 24px",cursor:"pointer",boxShadow:isHov?C.shM:C.sh,display:"flex",flexDirection:"column",gap:12,alignItems:"flex-start"}}>
-                <div style={{width:44,height:44,background:r.bg,borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:900,color:r.color, transition:"transform 0.2s", transform:isHov?"scale(1.1)":"scale(1)"}}>{r.icon}</div>
-                <div><div style={{fontSize:16,fontWeight:800,color:C.ch,marginBottom:4,letterSpacing:"-0.01em"}}>{r.label}</div><div style={{fontSize:12,color:C.chL,lineHeight:1.5, fontWeight:500}}>{r.desc}</div></div>
-                <div style={{fontSize:11, color:"#097353", display:"flex", alignItems:"center", gap:6, fontWeight:700, marginTop:"auto", paddingTop:8, background:"rgba(9,115,83,0.15)", padding:"6px 10px", borderRadius:6, width:"fit-content"}}>✓ Tap to enter</div>
+
+        {/* Role tiles */}
+        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
+          {keys.map((k, i) => {
+            const r = ROLES[k]; if (!r) return null;
+            return (
+              <div
+                key={k}
+                ref={el => { cardRefs.current[i] = el; }}
+                onClick={() => onSelect(k)}
+                className="animate-fade-up glass-card role-card"
+                style={{
+                  animationDelay:`${i * 0.07}s`,
+                  gridColumn:(!isMobile && i === keys.length - 1 && keys.length % 2 !== 0) ? "1 / -1" : "auto",
+                  borderRadius:18, padding:"22px 22px 18px",
+                  cursor:"pointer", display:"flex", flexDirection:"column", gap:14, alignItems:"flex-start",
+                  borderTop:"2px solid "+r.color+"60",
+                  position:"relative", overflow:"hidden",
+                }}
+              >
+                {/* Top shine */}
+                <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${r.color}30,transparent)`,pointerEvents:"none"}}/>
+                {/* Subtle glow orb */}
+                <div style={{position:"absolute",top:-40,right:-20,width:100,height:100,borderRadius:"50%",background:`radial-gradient(circle,${r.color}15 0%,transparent 70%)`,pointerEvents:"none"}}/>
+                {/* Icon */}
+                <div style={{width:46,height:46,background:`linear-gradient(135deg,${r.color}22,${r.color}0A)`,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,fontWeight:900,color:r.color,border:"1px solid "+r.color+"30",flexShrink:0}}>
+                  {r.icon}
+                </div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:15,fontWeight:900,color:"#EEF2FF",marginBottom:5,letterSpacing:"-0.02em"}}>{r.label}</div>
+                  <div style={{fontSize:12,color:"#4A6080",lineHeight:1.55,fontWeight:500}}>{r.desc}</div>
+                </div>
+                <div style={{fontSize:11,color:r.color,display:"flex",alignItems:"center",gap:6,fontWeight:700,background:r.color+"14",border:"1px solid "+r.color+"28",padding:"5px 10px",borderRadius:6}}>
+                  <span style={{fontSize:9}}>▶</span> Enter portal
+                </div>
               </div>
             );
           })}
         </div>
-        <div className="animate-fade-up" style={{textAlign:"center",marginTop:40,fontSize:12,color:"#2A3450", fontWeight:600, animationDelay:"0.4s"}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur<div style={{fontSize: 10, marginTop: 8, fontWeight: 500, opacity: 0.7}}>© 2026 Made by Banuja Disanayaka</div></div>
+
+        <div className="animate-fade-up" style={{textAlign:"center",marginTop:36,fontSize:11,color:"#1A2840",fontWeight:600,animationDelay:"0.4s"}}>
+          Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur
+          <div style={{fontSize:10,marginTop:6,fontWeight:500,opacity:0.6}}>© 2026 Made by Banuja Disanayaka</div>
+        </div>
       </div>
     </div>
   );
