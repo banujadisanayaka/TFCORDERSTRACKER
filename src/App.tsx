@@ -174,6 +174,73 @@ const GLOBAL_STYLES = `
   /* ── Stat card counter animation ── */
   @keyframes countPop { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
   .count-pop { animation: countPop 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+  /* ═══ Packing Card V8 — depth glow system ═══ */
+  .pk-card { border-radius:16px; overflow:hidden; margin-bottom:10px; position:relative; transition:transform 0.2s ease, box-shadow 0.2s ease; }
+  @media(hover:hover){ .pk-card:hover { transform:translateY(-2px); } }
+  .pk-card:active { transform:translateY(0) !important; }
+
+  .pk-pending   { background:linear-gradient(160deg,#0C1220,#080E1A); border:1px solid rgba(136,150,179,0.12); box-shadow:-3px 0 0 0 rgba(136,150,179,0.35), 0 4px 20px rgba(0,0,0,0.5); }
+  .pk-production{ background:linear-gradient(160deg,#0F130A,#0A0E07); border:1px solid rgba(251,176,64,0.12); box-shadow:-3px 0 0 0 #FBB040, 0 4px 24px rgba(0,0,0,0.5), 0 0 30px rgba(251,176,64,0.07); }
+  .pk-prod_done { background:linear-gradient(160deg,#091410,#060E0A); border:1px solid rgba(74,222,128,0.14); box-shadow:-3px 0 0 0 #4ADE80, 0 4px 24px rgba(0,0,0,0.5), 0 0 30px rgba(74,222,128,0.08); }
+  .pk-packed    { background:linear-gradient(160deg,#130808,#0E0606); border:1px solid rgba(211,17,24,0.14); box-shadow:-3px 0 0 0 rgba(211,17,24,0.8), 0 4px 24px rgba(0,0,0,0.5), 0 0 28px rgba(211,17,24,0.07); }
+  .pk-delivered { background:linear-gradient(160deg,#090B14,#07090F); border:1px solid rgba(255,255,255,0.04); box-shadow:none; opacity:0.45; }
+  .pk-short     { background:linear-gradient(160deg,#100D06,#0A0906); border:1px solid rgba(232,146,10,0.14); box-shadow:-3px 0 0 0 #E8920A, 0 4px 20px rgba(0,0,0,0.5), 0 0 24px rgba(232,146,10,0.08); }
+  .pk-oos       { background:linear-gradient(160deg,#130A0A,#0E0808); border:1px solid rgba(252,165,165,0.12); box-shadow:-3px 0 0 0 rgba(252,165,165,0.55), 0 4px 20px rgba(0,0,0,0.5); }
+
+  /* Primary pack/dispatch action buttons */
+  .pk-pack-btn { width:100%; padding:14px; background:linear-gradient(135deg,#D31118,#8A0B10); color:#fff; border:none; border-radius:12px; font-weight:900; font-size:14px; cursor:pointer; letter-spacing:0.02em; box-shadow:0 4px 18px rgba(211,17,24,0.42), inset 0 1px 0 rgba(255,255,255,0.10); transition:all 0.15s ease; font-family:inherit; }
+  .pk-pack-btn:hover { box-shadow:0 6px 26px rgba(211,17,24,0.58); transform:translateY(-1px); }
+  .pk-pack-btn:active { transform:translateY(1px); box-shadow:0 2px 8px rgba(211,17,24,0.3); }
+  .pk-ready-btn { background:linear-gradient(135deg,#16803C,#0F5C2C) !important; box-shadow:0 4px 18px rgba(22,128,60,0.42), inset 0 1px 0 rgba(255,255,255,0.10) !important; }
+  .pk-ready-btn:hover { box-shadow:0 6px 26px rgba(22,128,60,0.58) !important; }
+
+  .pk-dispatch-btn { width:100%; padding:13px; background:linear-gradient(135deg,#097353,#065A40); color:#fff; border:none; border-radius:12px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:0 4px 16px rgba(9,115,83,0.38), inset 0 1px 0 rgba(255,255,255,0.08); transition:all 0.15s ease; font-family:inherit; }
+  .pk-dispatch-btn:hover { box-shadow:0 6px 22px rgba(9,115,83,0.52); transform:translateY(-1px); }
+  .pk-dispatch-btn:active { transform:translateY(1px); }
+
+  /* Secondary action chips */
+  .pk-chip { flex:1; padding:9px 6px; border-radius:9px; font-size:11px; font-weight:800; cursor:pointer; font-family:inherit; transition:all 0.15s ease; border:1px solid; text-align:center; white-space:nowrap; }
+  .pk-chip:active { transform:scale(0.96); }
+  .pk-chip-prod   { color:#B86F06; background:rgba(184,111,6,0.09); border-color:rgba(184,111,6,0.28); }
+  .pk-chip-short  { color:#E8920A; background:rgba(232,146,10,0.08); border-color:rgba(232,146,10,0.28); }
+  .pk-chip-oos    { color:#DC2626; background:rgba(220,38,38,0.08); border-color:rgba(220,38,38,0.28); }
+  .pk-chip-edit   { color:#5A6A8A; background:rgba(90,106,138,0.08); border-color:rgba(90,106,138,0.2); }
+  .pk-chip-reset  { color:#5A6A8A; background:rgba(90,106,138,0.08); border-color:rgba(90,106,138,0.2); }
+
+  /* Cooking shimmer for production state */
+  .pk-cooking-state { display:flex; align-items:center; gap:10; padding:11px 14px; border-radius:10px; background:linear-gradient(90deg,#121A08 0%,#1A2410 50%,#121A08 100%); background-size:200% 100%; animation:shimmerPulse 2.5s infinite; border:1px solid rgba(251,176,64,0.15); }
+
+  /* ── Toast: bottom-centre slide-up ── */
+  @keyframes toastSlideUp { from{opacity:0;transform:translateX(-50%) translateY(24px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+  .toast-slide { animation: toastSlideUp 0.38s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+  /* ── Packing view progress bar ── */
+  .pk-progress-track { height:5px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,0.07); margin-top:4px; }
+  .pk-progress-fill  { height:5px; border-radius:99px; transition:width 1s cubic-bezier(0.16,1,0.3,1); }
+
+  /* ── Modal glass ── */
+  .modal-sheet { background:rgba(7,9,20,0.97); backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px); border:1px solid rgba(255,255,255,0.07); box-shadow:0 24px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.06); }
+
+  /* ── Production batch card V2 ── */
+  .batch-v2 { background:linear-gradient(160deg,#0D1420,#080E1A); border:1px solid rgba(232,146,10,0.18); border-left:4px solid #E8920A; border-radius:18px; margin-bottom:16px; overflow:hidden; box-shadow:0 6px 30px rgba(0,0,0,0.55), 0 0 40px rgba(232,146,10,0.06); }
+  .batch-complete-btn { width:100%; padding:15px; background:linear-gradient(135deg,#097353,#065A40); color:#fff; border:none; border-radius:12px; font-weight:900; font-size:14px; cursor:pointer; letter-spacing:0.02em; box-shadow:0 4px 18px rgba(9,115,83,0.42), inset 0 1px 0 rgba(255,255,255,0.10); transition:all 0.15s ease; font-family:inherit; }
+  .batch-complete-btn:hover { box-shadow:0 6px 26px rgba(9,115,83,0.6); transform:translateY(-1px); }
+  .batch-complete-btn:active { transform:translateY(1px); }
+
+  /* ── Admin day-tile ── */
+  .day-tile { background:linear-gradient(160deg,#0A0C18,#070912); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:16px; margin-bottom:10px; transition:border-color 0.2s; }
+  .day-tile-active { border-color:rgba(211,17,24,0.25) !important; }
+  .day-tile-empty  { background:transparent; border:2px dashed rgba(255,255,255,0.06) !important; border-radius:12px; padding:14px; text-align:center; margin-bottom:10px; }
+
+  /* ── RecipeCard terminal ── */
+  .recipe-terminal { background:#060912; border:1px solid rgba(211,17,24,0.2); border-radius:12px; overflow:hidden; }
+  .recipe-terminal-bar { background:rgba(211,17,24,0.08); border-bottom:1px solid rgba(211,17,24,0.15); padding:10px 14px; display:flex; align-items:center; gap:8px; }
+  .recipe-terminal-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+  /* ── Empty state ── */
+  .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 24px; text-align:center; }
+  .empty-icon { font-size:52px; margin-bottom:18px; filter:grayscale(0.3) opacity(0.7); }
 `;
 
 /* ═══════════════════════════════════════════════════════════════
@@ -280,6 +347,23 @@ function useDeviceTilt(ref, intensity = 7) {
   }, []);
 }
 
+function deliveryUrgency(dateStr) {
+  if (!dateStr) return null;
+  try {
+    const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+    const p = dateStr.split(" ");
+    if (p.length < 3) return null;
+    const d = new Date(parseInt(p[2]), months[p[1]], parseInt(p[0]));
+    const today = new Date(); today.setHours(0,0,0,0);
+    const diff = Math.ceil((d.getTime() - today.getTime()) / 86400000);
+    if (diff < 0)  return { label:`${Math.abs(diff)}d overdue`, c:"#DC2626", bg:"rgba(220,38,38,0.12)", bdr:"rgba(220,38,38,0.3)" };
+    if (diff === 0) return { label:"Due Today!",    c:"#E8920A", bg:"rgba(232,146,10,0.12)", bdr:"rgba(232,146,10,0.3)" };
+    if (diff === 1) return { label:"Due Tomorrow",  c:"#FBB040", bg:"rgba(251,176,64,0.10)", bdr:"rgba(251,176,64,0.28)" };
+    if (diff <= 3)  return { label:`Due in ${diff}d`,c:"#FBB040",bg:"rgba(251,176,64,0.08)", bdr:"rgba(251,176,64,0.22)" };
+    return { label:`Due in ${diff}d`, c:"#4A6080", bg:"rgba(74,96,128,0.07)", bdr:"rgba(74,96,128,0.2)" };
+  } catch { return null; }
+}
+
 function findRecipe(name){
   if(!name) return null;
   const exactMatch = RECIPE_DB.find(r => r.recipe_name && r.recipe_name.toUpperCase().trim() === name.toUpperCase().trim());
@@ -372,9 +456,25 @@ function Pill({count,label,color}){
 }
 
 function Toast({msg,type}){
+  const isErr=type==="error";
   return(
-    <div className="animate-fade-up" style={{position:"fixed",top:20,right:20,zIndex:9999,maxWidth:320,background:type==="error"?C.rdBg:C.w,border:"1px solid "+(type==="error"?C.rd:C.ol)+"70",borderRadius:12,padding:"14px 20px",color:type==="error"?C.rd:C.ch,fontSize:13,boxShadow:C.shM,fontWeight:600,display:"flex",alignItems:"center",gap:12}}>
-      <div style={{width:24,height:24,borderRadius:"50%",background:type==="error"?C.rd:C.ol,color:C.w,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900}}>{type==="error"?"✕":"✓"}</div>{msg}
+    <div className="toast-slide" style={{
+      position:"fixed",bottom:28,left:"50%",transform:"translateX(-50%)",
+      zIndex:9999,maxWidth:380,width:"calc(100vw - 48px)",
+      background:isErr?"rgba(28,6,6,0.97)":"rgba(4,14,10,0.97)",
+      border:"1px solid "+(isErr?"rgba(220,38,38,0.35)":"rgba(22,163,74,0.35)"),
+      borderRadius:14,padding:"13px 16px",
+      boxShadow:"0 8px 40px rgba(0,0,0,0.9), 0 0 0 1px "+(isErr?"rgba(220,38,38,0.08)":"rgba(22,163,74,0.08)"),
+      display:"flex",alignItems:"center",gap:12,fontFamily:"'Plus Jakarta Sans',sans-serif"
+    }}>
+      <div style={{
+        width:30,height:30,borderRadius:"50%",flexShrink:0,
+        background:isErr?"rgba(220,38,38,0.18)":"rgba(22,163,74,0.18)",
+        border:"1px solid "+(isErr?"rgba(220,38,38,0.4)":"rgba(22,163,74,0.4)"),
+        display:"flex",alignItems:"center",justifyContent:"center",
+        fontSize:14,fontWeight:900,color:isErr?"#F87171":"#4ADE80"
+      }}>{isErr?"✕":"✓"}</div>
+      <span style={{flex:1,fontSize:13,fontWeight:700,color:"#EEF2FF",lineHeight:1.4}}>{msg}</span>
     </div>
   );
 }
@@ -397,36 +497,35 @@ function AdminDonutChart({ packed, pending, issues }) {
   const total = packed + pending + issues || 1;
   const radius = 40; const circumference = 2 * Math.PI * radius;
   const pPacked = (packed/total)*circumference; const pIssues = (issues/total)*circumference;
-  
+  const pct = Math.round((packed/total)*100);
+
   return (
-    <div className="animate-fade-up" style={{background:C.w, borderRadius:16, padding:"20px", border:"1px solid "+C.bdrL, boxShadow:C.sh, display:"flex", alignItems:"center", gap:20}}>
-      <div style={{position:"relative", width:100, height:100}}>
+    <div className="animate-fade-up glass-card" style={{borderRadius:18, padding:"22px 24px", display:"flex", alignItems:"center", gap:22, position:"relative", overflow:"hidden"}}>
+      <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(211,17,24,0.25),transparent)",pointerEvents:"none"}}/>
+      <div style={{position:"relative", width:100, height:100, flexShrink:0}}>
         <svg height="100" width="100" style={{transform: "rotate(-90deg)"}}>
-          <circle stroke={C.beige} fill="transparent" strokeWidth="14" r={radius} cx="50" cy="50" />
-          <circle stroke={C.rd} fill="transparent" strokeWidth="14" strokeDasharray={`${pIssues} ${circumference}`} style={{transition:"all 1s"}} strokeLinecap="round" r={radius} cx="50" cy="50" />
-          <circle stroke={C.ol} fill="transparent" strokeWidth="14" strokeDasharray={`${pPacked} ${circumference}`} strokeDashoffset={-pIssues} style={{transition:"all 1s"}} strokeLinecap="round" r={radius} cx="50" cy="50" />
+          <circle stroke="rgba(255,255,255,0.06)" fill="transparent" strokeWidth="13" r={radius} cx="50" cy="50" />
+          <circle stroke={C.rd} fill="transparent" strokeWidth="13" strokeDasharray={`${pIssues} ${circumference}`} style={{transition:"all 1.2s cubic-bezier(0.16,1,0.3,1)"}} strokeLinecap="round" r={radius} cx="50" cy="50" />
+          <circle stroke={C.ol} fill="transparent" strokeWidth="13" strokeDasharray={`${pPacked} ${circumference}`} strokeDashoffset={-pIssues} style={{transition:"all 1.2s cubic-bezier(0.16,1,0.3,1)"}} strokeLinecap="round" r={radius} cx="50" cy="50" />
         </svg>
         <div style={{position:"absolute", inset:0, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
-          <span style={{fontSize:22, fontWeight:900, color:C.ch, lineHeight:1}}>{Math.round((packed/total)*100)}%</span>
+          <span style={{fontSize:22, fontWeight:900, color:pct>80?"#4ADE80":pct>50?C.ch:C.rd, lineHeight:1}}>{pct}%</span>
+          <span style={{fontSize:8, color:C.chL, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginTop:3}}>filled</span>
         </div>
       </div>
-      <div>
-        <div style={{fontSize:14, fontWeight:900, color:C.ch, marginBottom:8}}>Fulfillment Health</div>
-        <div style={{display:"flex", gap:10, alignItems:"center", fontSize:13, color:C.chM, fontWeight:600, marginBottom:6}}>
-          <span style={{width:10, height:10, borderRadius:"50%", background:C.ol, display:"inline-block", flexShrink:0}}/>
-          <span>Ready/Delivered</span>
-          <span style={{marginLeft:"auto", fontWeight:900, color:C.ch}}>{packed}</span>
-        </div>
-        <div style={{display:"flex", gap:10, alignItems:"center", fontSize:13, color:C.chM, fontWeight:600, marginBottom:6}}>
-          <span style={{width:10, height:10, borderRadius:"50%", background:C.chL, display:"inline-block", flexShrink:0}}/>
-          <span>Processing</span>
-          <span style={{marginLeft:"auto", fontWeight:900, color:C.ch}}>{pending}</span>
-        </div>
-        <div style={{display:"flex", gap:10, alignItems:"center", fontSize:13, color:C.chM, fontWeight:600, marginBottom:6}}>
-          <span style={{width:10, height:10, borderRadius:"50%", background:C.rd, display:"inline-block", flexShrink:0}}/>
-          <span>Issues (OOS/Short)</span>
-          <span style={{marginLeft:"auto", fontWeight:900, color:C.ch}}>{issues}</span>
-        </div>
+      <div style={{flex:1}}>
+        <div style={{fontSize:13, fontWeight:900, color:C.ch, marginBottom:12, letterSpacing:"-0.01em"}}>Fulfillment Health</div>
+        {[
+          {dot:C.ol, label:"Ready / Delivered", val:packed},
+          {dot:C.chL, label:"Processing", val:pending},
+          {dot:C.rd, label:"Issues (OOS / Short)", val:issues},
+        ].map(({dot,label,val})=>(
+          <div key={label} style={{display:"flex",gap:10,alignItems:"center",fontSize:12,color:C.chM,fontWeight:600,marginBottom:8}}>
+            <span style={{width:8,height:8,borderRadius:"50%",background:dot,flexShrink:0,boxShadow:`0 0 6px ${dot}80`}}/>
+            <span style={{flex:1}}>{label}</span>
+            <span style={{fontWeight:900,color:C.ch,fontVariantNumeric:"tabular-nums"}}>{val}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -477,29 +576,44 @@ function RecipeCard({name}){
   if(!r) return null;
 
   return(
-    <div className="animate-fade-in" style={{padding:"16px",background:C.w,borderRadius:12,border:"1px solid "+C.bdrL, boxShadow:C.sh}}>
-      <SectionLabel text="Recipe Match"/>
-      <div style={{color:C.ch,fontSize:14,fontWeight:800,marginBottom:4}}>{r.recipe_name}</div>
-      <div style={{fontSize:11,color:C.chL,marginBottom:16, display:"flex", alignItems:"center", gap:6}}>{r.section && <span style={{background:C.beige, padding:"4px 8px", borderRadius:6, fontWeight:700}}>{r.section}</span>}<span style={{color:C.ol,marginLeft:"auto",fontWeight:900}}>100% Match ✓</span></div>
-
-      <div style={{background:C.off, borderRadius:8, padding:"12px 14px", border:"1px solid "+C.bdr}}>
-        <div style={{fontSize:10, fontWeight:800, color:C.chL, marginBottom:8, textTransform:"uppercase", letterSpacing:"0.1em"}}>{r.qty_column_label || "INGREDIENTS"}</div>
-        {r.ingredients && r.ingredients.map((ing,i)=>{
-          if(ing.type === "stage_label" || !ing.qty) return <div key={i} style={{ marginTop: 12, marginBottom: 6, paddingBottom: 4, borderBottom: "2px solid " + C.bdrL, color: C.olDk, fontSize: 11, fontWeight: 900 }}>{ing.item}</div>;
-          return <div key={i} style={{display:"flex",justifyContent:"space-between",gap:10,fontSize:12,borderBottom: i === r.ingredients.length-1 ? "none" : "1px solid "+C.bdrL,paddingBottom: i === r.ingredients.length-1 ? 0 : 8,marginBottom: i === r.ingredients.length-1 ? 0 : 8}}><span style={{color:C.chM, fontWeight:600}}>{ing.item}</span><span style={{color:C.olDk,fontFamily:"monospace",fontWeight:800}}>{ing.qty}</span></div>
-        })}
+    <div className="animate-fade-in recipe-terminal">
+      {/* Terminal bar */}
+      <div className="recipe-terminal-bar">
+        <span className="recipe-terminal-dot" style={{background:"#DC2626"}}/>
+        <span className="recipe-terminal-dot" style={{background:"#E8920A"}}/>
+        <span className="recipe-terminal-dot" style={{background:"#22C55E"}}/>
+        <span style={{flex:1,fontSize:10,color:C.ol,fontWeight:800,textTransform:"uppercase",letterSpacing:"0.12em",textAlign:"center"}}>📖 {r.recipe_name}</span>
+        <span style={{fontSize:9,color:"#4ADE80",fontWeight:800,background:"rgba(74,222,128,0.1)",border:"1px solid rgba(74,222,128,0.3)",borderRadius:4,padding:"2px 7px"}}>100% MATCH</span>
       </div>
 
-      {r.steps && r.steps.length > 0 && (
-        <div style={{ marginTop: 12 }}>
-          <button onClick={() => setShowSteps(!showSteps)} className="hover-lift" style={{ background: showSteps ? C.ch : C.olBg, border: "none", padding: "8px 12px", borderRadius: 8, fontSize: 12, fontWeight: 800, color: showSteps ? C.w : C.olDk, cursor: "pointer", width: "100%", transition: "all 0.2s" }}>
-            {showSteps ? "Hide Preparation Steps" : "View Preparation Steps"}
-          </button>
-          <div className={`accordion-content ${showSteps ? 'open' : ''}`} style={{ marginTop: showSteps ? 12 : 0, display: "flex", flexDirection: "column", gap: 8 }}>
-            {r.steps.map(step => <div key={step.step_no} style={{ fontSize: 12, color: C.chM, lineHeight: 1.5, background: C.off, padding: "12px 14px", borderRadius: 8, border: "1px solid " + C.bdrL }}><strong style={{ color: C.olDk, display:"block", marginBottom: 4 }}>Step {step.step_no}</strong>{step.instruction}</div>)}
+      <div style={{padding:"14px 16px"}}>
+        {r.section&&<div style={{fontSize:10,color:C.chL,fontWeight:700,marginBottom:10,background:"rgba(255,255,255,0.04)",borderRadius:6,padding:"4px 8px",display:"inline-block"}}>{r.section}</div>}
+        <div style={{fontSize:10,fontWeight:800,color:C.chL,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:8}}>{r.qty_column_label||"INGREDIENTS"}</div>
+        {r.ingredients && r.ingredients.map((ing,i)=>{
+          if(ing.type==="stage_label"||!ing.qty) return <div key={i} style={{marginTop:10,marginBottom:6,paddingBottom:4,borderBottom:"1px solid rgba(211,17,24,0.2)",color:C.ol,fontSize:11,fontWeight:900,letterSpacing:"0.04em"}}>{ing.item}</div>;
+          return(
+            <div key={i} style={{display:"flex",justifyContent:"space-between",gap:10,fontSize:12,paddingBottom:7,marginBottom:7,borderBottom:i===r.ingredients.length-1?"none":"1px solid rgba(255,255,255,0.04)"}}>
+              <span style={{color:C.chM,fontWeight:600}}>{ing.item}</span>
+              <span style={{color:C.ol,fontFamily:"'JetBrains Mono',monospace",fontWeight:800,flexShrink:0}}>{ing.qty}</span>
+            </div>
+          );
+        })}
+
+        {r.steps&&r.steps.length>0&&(
+          <div style={{marginTop:12}}>
+            <button onClick={()=>setShowSteps(!showSteps)} style={{background:showSteps?"rgba(211,17,24,0.15)":"rgba(255,255,255,0.04)",border:"1px solid "+(showSteps?"rgba(211,17,24,0.3)":"rgba(255,255,255,0.07)"),padding:"8px 14px",borderRadius:8,fontSize:11,fontWeight:800,color:showSteps?C.ol:C.chL,cursor:"pointer",width:"100%",fontFamily:"inherit",transition:"all 0.2s"}}>
+              {showSteps?"▲ Hide Steps":"▼ View Preparation Steps"}
+            </button>
+            <div className={`accordion-content ${showSteps?"open":""}`} style={{marginTop:showSteps?10:0,display:"flex",flexDirection:"column",gap:8}}>
+              {r.steps.map(step=>(
+                <div key={step.step_no} style={{fontSize:12,color:C.chM,lineHeight:1.55,background:"rgba(255,255,255,0.03)",padding:"12px 14px",borderRadius:8,border:"1px solid rgba(255,255,255,0.06)"}}>
+                  <strong style={{color:C.ol,display:"block",marginBottom:4,fontSize:11,letterSpacing:"0.04em"}}>STEP {step.step_no}</strong>{step.instruction}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -902,23 +1016,43 @@ function DailyProductionItemRow({ item, dpId, onShowRecipe, onUpdateItem, role }
 function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel }) {
   const isMobile = useIsMobile();
   return (
-    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0, 0, 0, 0.85)",backdropFilter:"blur(4px)",zIndex:9999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20}}>
-      <div className="animate-fade-up" style={{background:"#0F1422",borderRadius:isMobile?"28px 28px 0 0":24,width:"100%",maxWidth:500,boxShadow:C.shM, padding: "24px 30px", display:"flex", flexDirection:"column", maxHeight: isMobile?"90vh":"auto"}}>
-        <div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em", marginBottom:8}}>Send to Production</div>
-        <div style={{fontSize:13,color:C.chL, fontWeight:500, marginBottom: 20}}>Choose how you want to send this item to the kitchen.</div>
-        <div style={{background:"#0C1020", padding: 14, borderRadius:12, border:"1px solid "+C.bdrL, marginBottom: 16}}><div style={{fontSize:11, fontWeight:800, color:C.chM, marginBottom:4}}>YOUR ITEM:</div><div style={{fontWeight:800, color:C.ch, fontSize:15}}>{pendingItem.product} <span style={{color:C.olDk}}>({pendingItem.qty} {pendingItem.unit})</span></div></div>
-        <Btn variant="primary" full onClick={onNewBatch}>+ Send as NEW Independent Batch</Btn>
-        <div style={{textAlign:"center", margin:"16px 0", fontSize:12, fontWeight:700, color:C.chL, textTransform:"uppercase", letterSpacing:"0.1em"}}>— OR MERGE WITH ACTIVE BATCH —</div>
-        <div className="custom-scrollbar" style={{display:"flex", flexDirection:"column", gap:8, marginBottom:24, overflowY:"auto", flex:1, maxHeight: 250}}>
-          {activeBatches.length === 0 ? <div style={{textAlign:"center", padding:"20px", color:C.chL, fontSize:13, fontWeight:600, border:"2px dashed "+C.bdr, borderRadius:12}}>No other items are currently cooking.</div> : (
-            activeBatches.map(b => (
-              <button key={b.batchId} onClick={() => onMerge(b.batchId)} className="hover-lift" style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 16px", border:"2px solid "+C.amBgD, background:C.amBg, borderRadius:12, cursor:"pointer", textAlign:"left"}}>
-                <div><div style={{fontSize:14, fontWeight:800, color:C.amDk, marginBottom:4}}>{b.product}</div><div style={{fontSize:12, color:C.amDk, opacity:0.8, fontWeight:600}}>{b.items.length} order(s) currently in this batch</div></div><div style={{fontSize:18}}>🔗</div>
-              </button>
-            ))
-          )}
+    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:9999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20}}>
+      <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:480,padding:"26px 28px",display:"flex",flexDirection:"column",maxHeight:isMobile?"90vh":"auto",position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(211,17,24,0.3),transparent)",pointerEvents:"none"}}/>
+        <div style={{fontSize:19,fontWeight:900,color:C.ch,letterSpacing:"-0.02em",marginBottom:6}}>Send to Production</div>
+        <div style={{fontSize:13,color:C.chL,fontWeight:500,marginBottom:20}}>Choose how to send this item to the kitchen.</div>
+
+        {/* Item preview */}
+        <div style={{background:"rgba(255,255,255,0.03)",padding:"14px 16px",borderRadius:12,border:"1px solid rgba(255,255,255,0.07)",marginBottom:18}}>
+          <div style={{fontSize:10,fontWeight:800,color:C.chL,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:4}}>YOUR ITEM</div>
+          <div style={{fontWeight:900,color:C.ch,fontSize:15,display:"flex",alignItems:"center",gap:8}}>
+            {pendingItem.product}
+            <span style={{fontSize:12,color:C.ol,fontFamily:"'JetBrains Mono',monospace",fontWeight:800}}>{pendingItem.qty} {pendingItem.unit}</span>
+          </div>
         </div>
-        <div style={{display:"flex", gap:10, paddingTop: 16, borderTop: "1px solid #1A2640"}}><Btn full onClick={onCancel}>Cancel</Btn></div>
+
+        <Btn variant="primary" full onClick={onNewBatch}>+ Send as New Batch</Btn>
+
+        {activeBatches.length > 0 && (
+          <>
+            <div style={{textAlign:"center",margin:"14px 0",fontSize:11,fontWeight:700,color:"#1E2A44",textTransform:"uppercase",letterSpacing:"0.1em"}}>— merge with active batch —</div>
+            <div className="custom-scrollbar" style={{display:"flex",flexDirection:"column",gap:8,overflowY:"auto",maxHeight:220,marginBottom:16}}>
+              {activeBatches.map(b=>(
+                <button key={b.batchId} onClick={()=>onMerge(b.batchId)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"13px 16px",border:"1px solid rgba(232,146,10,0.28)",background:"rgba(232,146,10,0.07)",borderRadius:12,cursor:"pointer",textAlign:"left",transition:"all 0.15s",fontFamily:"inherit"}}>
+                  <div>
+                    <div style={{fontSize:14,fontWeight:800,color:C.amDk,marginBottom:3}}>{b.product}</div>
+                    <div style={{fontSize:11,color:C.chL,fontWeight:600}}>{b.items.length} order{b.items.length!==1?"s":""} in this batch</div>
+                  </div>
+                  <span style={{fontSize:16,opacity:0.6}}>🔗</span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        <div style={{paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)"}}>
+          <Btn full onClick={onCancel}>Cancel</Btn>
+        </div>
       </div>
     </div>
   );
@@ -1375,13 +1509,22 @@ function NewOrderModal({onClose,onSubmit,notify}){
   const inputStyle = {padding:"10px 14px",border:"1px solid #1E2A44",borderRadius:10,fontSize:13,color:"#EEF2FF",outline:"none",background:"#111828",width:"100%",boxSizing:"border-box",transition: "border-color 0.2s, box-shadow 0.2s"};
 
   return(
-    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0, 0, 0, 0.85)",backdropFilter:"blur(4px)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
+    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
       <datalist id="recipe-database">
         {RECIPE_DB.map(r => <option key={r.recipe_id} value={r.recipe_name} label={r.item_code ? `${r.recipe_name} · ${r.item_code}` : r.recipe_name} />)}
         {ITEMS_DB.filter(i => {const u=i.name.trim().toUpperCase(); return !RECIPE_DB.some(r=>r.recipe_name&&r.recipe_name.toUpperCase().trim()===u);}).map(i => <option key={i.item_code+"_"+i.name} value={i.name} label={`${i.name} · ${i.item_code}`} />)}
       </datalist>
-      <div className="animate-fade-up" style={{background:"#0F1422",borderRadius:isMobile?"28px 28px 0 0":24,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column",boxShadow:C.shM}}>
-        <div style={{padding:"20px 30px",borderBottom:"1px solid #1A2640",flexShrink:0}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div><div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Draft Purchase Order</div><div style={{fontSize:13,color:C.chL,marginTop:4, fontWeight:500}}>Configure details and build your item list below.</div></div><button onClick={onClose} className="hover-lift" style={{background:C.off,border:"none",borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:16,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button></div></div>
+      <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column"}}>
+        <div style={{padding:"22px 30px",borderBottom:"1px solid rgba(255,255,255,0.06)",flexShrink:0,position:"relative"}}>
+          <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(211,17,24,0.28),transparent)",pointerEvents:"none"}}/>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+            <div>
+              <div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Draft Purchase Order</div>
+              <div style={{fontSize:13,color:C.chL,marginTop:4,fontWeight:500}}>Configure details and build your item list below.</div>
+            </div>
+            <button onClick={onClose} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:15,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
+          </div>
+        </div>
         <div className="custom-scrollbar" style={{overflowY:"auto",flex:1,padding:"24px 30px"}}>
           
           <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:16}}><div style={{width:28, height:28, borderRadius:"50%", background:C.ch, color:C.w, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, flexShrink:0}}>1</div><div style={{fontSize:13, fontWeight:800, color:C.ch}}>Order Details</div></div>
@@ -1426,14 +1569,14 @@ function NewOrderModal({onClose,onSubmit,notify}){
             </div>
           )}
         </div>
-        <div style={{padding:"20px 30px",borderTop:"1px solid #1A2640",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0, background:"#0A0E1A", borderRadius:isMobile?"0":"0 0 24px 24px"}}>
-          <div style={{display:"flex", alignItems:"center", gap:8}}>
-            <div style={{background: stagedItems.length > 0 ? C.ch : C.bdrL, color: C.w, borderRadius:20, padding:"4px 12px", fontSize:12, fontWeight:800, transition:"background 0.3s"}}>
-              {stagedItems.length} item{stagedItems.length !== 1 ? "s" : ""}
+        <div style={{padding:"18px 30px",borderTop:"1px solid rgba(255,255,255,0.06)",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0,background:"rgba(4,6,14,0.8)",borderRadius:isMobile?"0":"0 0 20px 20px"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <div style={{background:stagedItems.length>0?"rgba(211,17,24,0.15)":"rgba(255,255,255,0.06)",border:"1px solid "+(stagedItems.length>0?"rgba(211,17,24,0.35)":"rgba(255,255,255,0.1)"),color:stagedItems.length>0?C.ol:C.chL,borderRadius:20,padding:"4px 12px",fontSize:12,fontWeight:800,transition:"all 0.3s"}}>
+              {stagedItems.length} item{stagedItems.length!==1?"s":""}
             </div>
-            {stagedItems.length === 0 && <span style={{fontSize:11, color:C.chL, fontWeight:600}}>Add items above</span>}
+            {stagedItems.length===0&&<span style={{fontSize:11,color:C.chL,fontWeight:600}}>Add items above</span>}
           </div>
-          <div style={{display:"flex",gap:12}}><Btn onClick={onClose}>Cancel</Btn><Btn onClick={submitFinalOrder} variant="primary">Submit Order</Btn></div>
+          <div style={{display:"flex",gap:10}}><Btn onClick={onClose}>Cancel</Btn><Btn onClick={submitFinalOrder} variant="primary">Submit Order</Btn></div>
         </div>
       </div>
     </div>
@@ -1447,13 +1590,22 @@ function EditOrderModal({order, onClose, onSave, notify}){
   const inputStyle = {padding:"10px 14px",border:"1px solid #1E2A44",borderRadius:10,fontSize:13,color:"#EEF2FF",outline:"none",background:"#111828",width:"100%",boxSizing:"border-box",transition: "border-color 0.2s, box-shadow 0.2s"};
 
   return(
-    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0, 0, 0, 0.85)",backdropFilter:"blur(4px)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
+    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
       <datalist id="recipe-database">
         {RECIPE_DB.map(r => <option key={r.recipe_id} value={r.recipe_name} label={r.item_code ? `${r.recipe_name} · ${r.item_code}` : r.recipe_name} />)}
         {ITEMS_DB.filter(i => {const u=i.name.trim().toUpperCase(); return !RECIPE_DB.some(r=>r.recipe_name&&r.recipe_name.toUpperCase().trim()===u);}).map(i => <option key={i.item_code+"_"+i.name} value={i.name} label={`${i.name} · ${i.item_code}`} />)}
       </datalist>
-      <div className="animate-fade-up" style={{background:"#0F1422",borderRadius:isMobile?"28px 28px 0 0":24,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column",boxShadow:C.shM}}>
-        <div style={{padding:"24px 30px 20px",borderBottom:"1px solid #1A2640",flexShrink:0}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div><div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Edit Live Order</div><div style={{fontSize:13,color:C.chL,marginTop:4, fontWeight:500}}>Modify quantities, dates, or remove items.</div></div><button onClick={onClose} className="hover-lift" style={{background:C.off,border:"none",borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:16,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button></div></div>
+      <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column"}}>
+        <div style={{padding:"22px 30px 20px",borderBottom:"1px solid rgba(255,255,255,0.06)",flexShrink:0,position:"relative"}}>
+          <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.28),transparent)",pointerEvents:"none"}}/>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+            <div>
+              <div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Edit Live Order</div>
+              <div style={{fontSize:13,color:C.chL,marginTop:4,fontWeight:500}}>Modify quantities, dates, or remove items.</div>
+            </div>
+            <button onClick={onClose} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:15,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
+          </div>
+        </div>
         <div className="custom-scrollbar" style={{overflowY:"auto",flex:1,padding:"24px 30px"}}>
           <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:16}}><div style={{width:28, height:28, borderRadius:"50%", background:C.ch, color:C.w, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, flexShrink:0}}>1</div><div style={{fontSize:13, fontWeight:800, color:C.ch}}>Update Details</div></div>
           <div style={{display:"flex", gap:10, marginBottom:20, flexDirection: isMobile ? "column" : "row"}}><div style={{flex:1}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6}}>PO REFERENCE NAME</div><input value={epName} onChange={e=>setEpName(e.target.value)} style={inputStyle}/></div><div style={{display:"flex", gap:10, flex:1}}><div style={{flex:1}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6}}>RECEIVED DATE</div><input value={epDate} onChange={e=>setEpDate(e.target.value)} style={inputStyle}/></div><div style={{flex:1}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6}}>DELIVERY BEFORE</div><input value={edDate} onChange={e=>setEdDate(e.target.value)} style={inputStyle}/></div></div></div>
@@ -1474,7 +1626,7 @@ function EditOrderModal({order, onClose, onSave, notify}){
             ))}
           </div>
         </div>
-        <div style={{padding:"20px 30px",borderTop:"1px solid #1A2640",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0, background:"#0A0E1A", borderRadius:isMobile?"0":"0 0 24px 24px"}}><Btn onClick={onClose}>Cancel</Btn><Btn onClick={submit} variant="primary">✓ Update Live Order</Btn></div>
+        <div style={{padding:"18px 30px",borderTop:"1px solid rgba(255,255,255,0.06)",display:"flex",justifyContent:"flex-end",alignItems:"center",gap:10,flexShrink:0,background:"rgba(4,6,14,0.8)",borderRadius:isMobile?"0":"0 0 20px 20px"}}><Btn onClick={onClose}>Cancel</Btn><Btn onClick={submit} variant="primary">✓ Update Live Order</Btn></div>
       </div>
     </div>
   );
@@ -1551,9 +1703,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
 }
 
 function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
-  const isMobile = useIsMobile();
   const [showEdit, setShowEdit] = useState(false);
-  const [showMobileActions, setShowMobileActions] = useState(false);
   const [qty, setQty] = useState(item.packedQty || "");
   const [notes, setNotes] = useState(item.notes || "");
   const [showMergeModal, setShowMergeModal] = useState(false);
@@ -1561,111 +1711,106 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
   function commit(status, extra={}){
     let dQty=qty;
     if(status==='packed'&&!qty&&item.qty){dQty=item.qty;setQty(item.qty);}
-    onUpdate(orderId, item.id, {status, packedQty:dQty, notes, updatedAt:Date.now(), ...extra});
-    setShowEdit(false); 
-    setShowMobileActions(false);
+    onUpdate(orderId,item.id,{status,packedQty:dQty,notes,updatedAt:Date.now(),...extra});
+    setShowEdit(false);
   }
-  function handleSendToProduction(){ setShowMergeModal(true); setShowMobileActions(false); }
+  function handleSendToProduction(){ setShowMergeModal(true); }
   function handleShort(){
-    if(!qty&&item.qty){ setShowEdit(true); notify("Enter the SENT quantity first, then mark as Short.","error"); setShowMobileActions(false); return; }
+    if(!qty&&item.qty){setShowEdit(true);notify("Enter the SENT quantity first, then mark as Short.","error");return;}
     commit('short');
   }
   const getActiveBatches=()=>{
     const b={};
-    orders.forEach(o=>o.items.forEach(it=>{ if(it.status==="production"){ const bId=it.batchId||it.id; if(!b[bId]) b[bId]={batchId:bId,product:it.product,items:[]}; b[bId].items.push(it); } }));
+    orders.forEach(o=>o.items.forEach(it=>{if(it.status==="production"){const bId=it.batchId||it.id;if(!b[bId])b[bId]={batchId:bId,product:it.product,items:[]};b[bId].items.push(it);}}));
     return Object.values(b);
   };
 
-  const borderClass = {
-    production:"border-cooking", prod_done:"border-prod-done", packed:"border-packed",
-    delivered:"border-delivered", short:"border-short", oos:"border-oos"
-  }[item.status] || "border-pending";
-
-  const bgClass = {
-    production:"packing-card-cooking", prod_done:"packing-card-prod-done",
-    packed:"packing-card-packed", delivered:"packing-card-delivered"
-  }[item.status] || "packing-card";
-
-  const SC = {
-    pending:{label:"Pending",c:"#8896B3"}, production:{label:"Cooking",c:"#FBB040"},
-    prod_done:{label:"Ready to Pack",c:"#4ADE80"}, packed:{label:"Packed ✓",c:"#F87171"},
-    delivered:{label:"Delivered 🚀",c:"#EEF2FF"}, short:{label:"Short ⚠",c:"#FBB040"},
-    oos:{label:"Out of Stock",c:"#FCA5A5"}
+  const SC2={
+    pending:   {label:"Pending",       c:"#8896B3", cls:"pk-pending"},
+    production:{label:"Cooking",       c:"#FBB040", cls:"pk-production"},
+    prod_done: {label:"Ready to Pack", c:"#4ADE80", cls:"pk-prod_done"},
+    packed:    {label:"Packed ✓",      c:"#F87171", cls:"pk-packed"},
+    delivered: {label:"Delivered",     c:"#6A7A9A", cls:"pk-delivered"},
+    short:     {label:"Short ⚠",       c:"#E8920A", cls:"pk-short"},
+    oos:       {label:"Out of Stock",  c:"#FCA5A5", cls:"pk-oos"},
   };
-  const cur = SC[item.status] || SC.pending;
+  const cur=SC2[item.status]||SC2.pending;
+  const itemCode=findItemCode(item.product);
 
   return(
     <>
       {showMergeModal&&<MergeModal pendingItem={item} activeBatches={getActiveBatches()} onMerge={bId=>{commit('production',{batchId:bId});setShowMergeModal(false);}} onNewBatch={()=>{commit('production',{batchId:"b_"+Date.now()+Math.random()});setShowMergeModal(false);}} onCancel={()=>setShowMergeModal(false)}/>}
 
-      <div className="animate-fade-up" style={{position:"relative",overflow:"hidden",borderRadius:12,marginBottom:10,border:"1px solid #0E1828",boxShadow:"0 3px 14px rgba(0,0,0,0.45)"}}>
-        
-        <div className={`${bgClass} ${borderClass}`} style={{position:"relative",zIndex:2,borderRadius:12,width:"100%"}}>
-          <div style={{padding:"14px 16px"}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10,marginBottom:item.status!=='delivered'?10:8}}>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{color:"#EEF2FF",fontSize:14,fontWeight:800,lineHeight:1.25,marginBottom:4,letterSpacing:"-0.01em"}}>{item.product}</div>
-                <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
-                  <div style={{fontSize:11,color:item.status==='short'?"#B86F06":"#5A6A8A",fontFamily:"'JetBrains Mono',monospace",fontWeight:600}}>
-                    {item.status==='short'?`Sent ${item.packedQty||0} / Req ${item.qty} ${item.unit}`:`${item.qty} ${item.unit}`}
-                  </div>
-                  {(()=>{const code=findItemCode(item.product); return code?<span style={{fontSize:10,fontWeight:900,color:"#D31118",background:"rgba(211,17,24,0.12)",border:"1px solid rgba(211,17,24,0.3)",borderRadius:5,padding:"2px 7px",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.04em"}}># {code}</span>:null;})()}
-                </div>
+      <div className={`animate-fade-up pk-card ${cur.cls}`}>
+        <div style={{padding:"16px 18px"}}>
+
+          {/* ── Header: name + status ── */}
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10,marginBottom:12}}>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{color:"#EEF2FF",fontSize:15,fontWeight:900,lineHeight:1.25,marginBottom:5,letterSpacing:"-0.02em"}}>{item.product}</div>
+              <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                <span style={{fontSize:12,color:item.status==='short'?"#E8920A":"#3A5070",fontFamily:"'JetBrains Mono',monospace",fontWeight:700}}>
+                  {item.status==='short'?`Sent ${item.packedQty||0} / Req ${item.qty} ${item.unit}`:`${item.qty} ${item.unit}`}
+                </span>
+                {itemCode&&<span style={{fontSize:10,fontWeight:900,color:"#D31118",background:"rgba(211,17,24,0.12)",border:"1px solid rgba(211,17,24,0.28)",borderRadius:5,padding:"2px 7px",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.04em",boxShadow:"0 0 6px rgba(211,17,24,0.18)"}}># {itemCode}</span>}
               </div>
-              <span style={{fontSize:10,fontWeight:800,padding:"5px 11px",borderRadius:20,color:cur.c,background:cur.c+"18",border:"1px solid "+cur.c+"35",whiteSpace:"nowrap",flexShrink:0,letterSpacing:"0.04em"}}>{cur.label}</span>
             </div>
-
-            {showEdit&&item.status!=='delivered'&&(
-              <div className="animate-fade-in" style={{display:"flex",gap:8,marginBottom:12,flexDirection:isMobile?"column":"row",background:"#080C18",padding:12,borderRadius:10,border:"1px solid #0E1828"}}>
-                <input value={qty} onChange={e=>setQty(e.target.value)} placeholder="Qty sent" style={{width:isMobile?"100%":"90px",padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontFamily:"'JetBrains Mono',monospace",fontWeight:700}}/>
-                <input value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Note (optional)" style={{flex:1,padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontWeight:500}}/>
-                <button onClick={()=>setShowEdit(false)} style={{padding:"8px 14px",background:"#1A2A44",border:"none",borderRadius:7,fontSize:11,fontWeight:800,color:"#B8C4E0",cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit"}}>Done</button>
-              </div>
-            )}
-
-            {item.status==='delivered'?(
-              <div style={{display:"flex",gap:10,alignItems:"center",background:"#0A0E18",padding:"9px 12px",borderRadius:9}}>
-                <span style={{color:"#EEF2FF",fontWeight:800,fontSize:12,flex:1}}>🚀 Dispatched</span>
-                <button onClick={()=>commit('packed')} style={{padding:"6px 13px",background:"#1A2A44",border:"none",borderRadius:7,fontSize:11,fontWeight:800,color:"#8896B3",cursor:"pointer",fontFamily:"inherit"}}>Undo</button>
-              </div>
-            ):item.status==='packed'?(
-              <div style={{display:"flex",gap:8}}>
-                <button className="dispatch-btn" onClick={()=>commit('delivered')}>🚀 Confirm Dispatch</button>
-                <button onClick={()=>commit('pending')} style={{padding:"11px 14px",background:"#1A2A44",border:"none",borderRadius:10,fontSize:11,fontWeight:800,color:"#8896B3",cursor:"pointer",flexShrink:0,fontFamily:"inherit"}}>Reset</button>
-              </div>
-            ):item.status==='short'||item.status==='oos'?(
-              <button onClick={()=>commit('pending')} style={{width:"100%",padding:"10px",background:"#1A2A44",border:"none",borderRadius:10,fontSize:12,fontWeight:800,color:"#8896B3",cursor:"pointer",fontFamily:"inherit"}}>↻ Reset to Pending</button>
-            ):(
-              <div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center"}}>
-                <button className="pack-btn" onClick={()=>commit('packed')} style={{flex:isMobile?1:"auto",minWidth:isMobile?0:90}}>✓ Pack</button>
-                {!isMobile ? (
-                  <div style={{display:"flex",gap:6,flex:1}}>
-                    {item.status!=='production'&&item.status!=='prod_done'&&(
-                      <button onClick={handleSendToProduction} style={{border:"1px solid rgba(184,111,6,0.3)",background:"rgba(184,111,6,0.08)",color:"#B86F06",padding:"8px",borderRadius:8,fontSize:11,fontWeight:800,flex:1,cursor:"pointer",fontFamily:"inherit"}}>◐ Prod</button>
-                    )}
-                    <button onClick={handleShort} style={{border:"1px solid rgba(232,146,10,0.3)",background:"rgba(232,146,10,0.07)",color:"#E8920A",padding:"8px",borderRadius:8,fontSize:11,fontWeight:800,flex:1,cursor:"pointer",fontFamily:"inherit"}}>⚠ Short</button>
-                    <button onClick={()=>commit('oos')} style={{border:"1px solid rgba(220,38,38,0.3)",background:"rgba(220,38,38,0.07)",color:"#DC2626",padding:"8px",borderRadius:8,fontSize:11,fontWeight:800,flex:1,cursor:"pointer",fontFamily:"inherit"}}>✕ OOS</button>
-                  </div>
-                ) : (
-                  <button onClick={()=>setShowMobileActions(!showMobileActions)} style={{background:"#1A2A44", border:"none", color:"#B8C4E0", padding:"13px 14px", borderRadius:10, fontSize:11, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", gap:4}}>
-                    {showMobileActions ? "✕" : "⋯ More"}
-                  </button>
-                )}
-                <button onClick={()=>setShowEdit(!showEdit)} style={{border:"none",background:"#0E1828",color:"#5A6A8A",padding:"8px 10px",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer",flexShrink:0,fontFamily:"inherit"}}>✎</button>
-              </div>
-            )}
-
-            {isMobile && showMobileActions && item.status !== 'delivered' && item.status !== 'packed' && item.status !== 'short' && item.status !== 'oos' && (
-              <div className="animate-fade-in" style={{display:"flex",gap:6,marginTop:12,paddingTop:12,borderTop:"1px solid #1E2A44"}}>
-                {item.status!=='production'&&item.status!=='prod_done'&&(
-                  <button onClick={handleSendToProduction} style={{border:"1px solid rgba(184,111,6,0.3)",background:"rgba(184,111,6,0.08)",color:"#B86F06",padding:"10px",borderRadius:8,fontSize:11,fontWeight:800,flex:1,cursor:"pointer",fontFamily:"inherit"}}>◐ Prod</button>
-                )}
-                <button onClick={handleShort} style={{border:"1px solid rgba(232,146,10,0.3)",background:"rgba(232,146,10,0.07)",color:"#E8920A",padding:"10px",borderRadius:8,fontSize:11,fontWeight:800,flex:1,cursor:"pointer",fontFamily:"inherit"}}>⚠ Short</button>
-                <button onClick={()=>commit('oos')} style={{border:"1px solid rgba(220,38,38,0.3)",background:"rgba(220,38,38,0.07)",color:"#DC2626",padding:"10px",borderRadius:8,fontSize:11,fontWeight:800,flex:1,cursor:"pointer",fontFamily:"inherit"}}>✕ OOS</button>
-              </div>
-            )}
-
+            <span className={`badge-glow-${item.status}`} style={{fontSize:10,fontWeight:800,padding:"5px 11px",borderRadius:20,color:cur.c,background:cur.c+"18",border:"1px solid "+cur.c+"35",whiteSpace:"nowrap",flexShrink:0,letterSpacing:"0.04em"}}>{cur.label}</span>
           </div>
+
+          {/* ── Inline edit form ── */}
+          {showEdit&&item.status!=='delivered'&&(
+            <div className="animate-fade-in" style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",background:"rgba(6,9,18,0.7)",padding:"12px",borderRadius:10,border:"1px solid rgba(255,255,255,0.06)"}}>
+              <input value={qty} onChange={e=>setQty(e.target.value)} placeholder="Qty sent" style={{width:90,padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontFamily:"'JetBrains Mono',monospace",fontWeight:700,flexShrink:0}}/>
+              <input value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Note (optional)" style={{flex:1,minWidth:100,padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontWeight:500}}/>
+              <button onClick={()=>setShowEdit(false)} style={{padding:"8px 14px",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:7,fontSize:11,fontWeight:800,color:"#B8C4E0",cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit"}}>Done</button>
+            </div>
+          )}
+
+          {/* ── Action area ── */}
+          {item.status==='delivered'?(
+            <div style={{display:"flex",gap:8,alignItems:"center",background:"rgba(6,9,18,0.5)",padding:"10px 14px",borderRadius:10,border:"1px solid rgba(255,255,255,0.05)"}}>
+              <span style={{color:"#6A7A9A",fontWeight:800,fontSize:12,flex:1,letterSpacing:"0.02em"}}>🚀 Dispatched</span>
+              <button onClick={()=>commit('packed')} className="pk-chip pk-chip-reset" style={{flex:"0 0 auto",padding:"6px 14px"}}>↩ Undo</button>
+            </div>
+          ):item.status==='packed'?(
+            <div style={{display:"flex",gap:8}}>
+              <button className="pk-dispatch-btn" onClick={()=>commit('delivered')}>🚀 Confirm Dispatch</button>
+              <button onClick={()=>commit('pending')} className="pk-chip pk-chip-reset" style={{flexShrink:0,padding:"13px 14px"}}>↩</button>
+            </div>
+          ):item.status==='short'||item.status==='oos'?(
+            <button onClick={()=>commit('pending')} style={{width:"100%",padding:"12px",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:10,fontSize:12,fontWeight:800,color:"#8896B3",cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>↻ Reset to Pending</button>
+          ):item.status==='production'?(
+            <div>
+              <div className="pk-cooking-state">
+                <span style={{width:7,height:7,borderRadius:"50%",background:"#FBB040",display:"inline-block",animation:"pulseSoft 1.8s infinite",flexShrink:0}}/>
+                <span style={{fontSize:12,fontWeight:800,color:"#FBB040",flex:1}}>Currently Cooking</span>
+                <span><span className="dot" style={{color:"#FBB040"}}/><span className="dot" style={{color:"#FBB040"}}/><span className="dot" style={{color:"#FBB040"}}/></span>
+              </div>
+              <div style={{display:"flex",gap:6,marginTop:8}}>
+                <button onClick={handleShort}  className="pk-chip pk-chip-short">⚠ Short</button>
+                <button onClick={()=>commit('oos')} className="pk-chip pk-chip-oos">✕ OOS</button>
+                <button onClick={()=>setShowEdit(!showEdit)} className="pk-chip pk-chip-edit">✎ Edit</button>
+              </div>
+            </div>
+          ):(
+            /* pending or prod_done — primary pack button + secondary chips */
+            <div>
+              <button
+                className={`pk-pack-btn${item.status==='prod_done'?" pk-ready-btn":""}`}
+                onClick={()=>commit('packed')}
+              >
+                {item.status==='prod_done'?"✓ Pack Now — Ready!":"✓ Mark as Packed"}
+              </button>
+              <div style={{display:"flex",gap:6,marginTop:8}}>
+                {item.status!=='prod_done'&&<button onClick={handleSendToProduction} className="pk-chip pk-chip-prod">→ Prod</button>}
+                <button onClick={handleShort}       className="pk-chip pk-chip-short">⚠ Short</button>
+                <button onClick={()=>commit('oos')} className="pk-chip pk-chip-oos">✕ OOS</button>
+                <button onClick={()=>setShowEdit(!showEdit)} className="pk-chip pk-chip-edit">✎</button>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
     </>
@@ -1694,18 +1839,61 @@ function generateWhatsAppMessage(order) {
 
 function PackingView({order, onUpdate, orders, notify}){
   const s=oStats(order); const rc=order.restaurant==="Vins"?C.ol:C.am;
+  const totalDone=s.packed+s.delivered; const pct=s.total?Math.round((totalDone/s.total)*100):0;
+  const urg=deliveryUrgency(order.deliveryDate);
+  const allDone = pct===100;
+
   return(
     <div className="animate-fade-in custom-scrollbar">
       <div className="glass-header">
-        <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start"}}>
-          <div>
-            <div style={{fontSize:26,fontWeight:900,color:C.ch,letterSpacing:"-0.03em",marginBottom:6}}>{order.poName || "Packing View"} — <span style={{color:rc}}>{order.restaurant}</span></div>
-            <div style={{fontSize:13,color:C.chL, fontWeight:500}}>PO Date: {order.orderDate} {order.deliveryDate ? `· Deliver By: ${order.deliveryDate}` : ""} · {order.items.length} items</div>
+        {/* Name + WhatsApp */}
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12,marginBottom:10}}>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:28,fontWeight:900,color:C.ch,letterSpacing:"-0.04em",lineHeight:1.1,marginBottom:8}}>{order.poName||"Packing View"}</div>
+            <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+              <span style={{fontSize:11,fontWeight:900,color:rc,background:rc+"18",borderRadius:6,padding:"4px 10px"}}>{order.restaurant}</span>
+              {order.orderDate&&<span style={{fontSize:11,color:C.chL,fontWeight:600}}>{order.orderDate}</span>}
+              {urg&&<span style={{fontSize:11,fontWeight:800,color:urg.c,background:urg.bg,border:"1px solid "+urg.bdr,borderRadius:20,padding:"3px 10px"}}>{urg.label}</span>}
+            </div>
           </div>
-          <Btn variant="success" onClick={() => window.open(`https://wa.me/?text=${generateWhatsAppMessage(order)}`, "_blank")}>📲 WhatsApp</Btn>
+          <button onClick={()=>window.open(`https://wa.me/?text=${generateWhatsAppMessage(order)}`,"_blank")}
+            style={{padding:"10px 18px",background:"linear-gradient(135deg,#097353,#065A40)",color:"#fff",border:"none",borderRadius:12,fontWeight:800,fontSize:13,cursor:"pointer",boxShadow:"0 4px 16px rgba(9,115,83,0.38)",flexShrink:0,fontFamily:"inherit",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:7,letterSpacing:"0.01em",transition:"all 0.15s"}}
+            onMouseEnter={e=>{e.currentTarget.style.boxShadow="0 6px 22px rgba(9,115,83,0.56)";e.currentTarget.style.transform="translateY(-1px)";}}
+            onMouseLeave={e=>{e.currentTarget.style.boxShadow="0 4px 16px rgba(9,115,83,0.38)";e.currentTarget.style.transform="";}}>
+            📲 WhatsApp
+          </button>
         </div>
+
+        {/* Progress bar */}
+        <div style={{marginTop:14}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:7}}>
+            <span style={{fontSize:10,color:C.chL,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em"}}>{totalDone} of {s.total} packed</span>
+            <span style={{fontSize:16,fontWeight:900,color:allDone?"#4ADE80":C.ch,letterSpacing:"-0.02em"}}>{pct}%</span>
+          </div>
+          <div className="pk-progress-track">
+            <div className="pk-progress-fill" style={{width:pct+"%",background:allDone?"linear-gradient(90deg,#16A34A,#4ADE80)":"linear-gradient(90deg,"+rc+","+rc+"BB)",boxShadow:allDone?"0 0 12px rgba(74,222,128,0.5)":"0 0 8px "+rc+"50"}}/>
+          </div>
+        </div>
+
+        {/* Issue / status pills */}
+        {(s.short>0||s.oos>0||s.prod>0||s.prod_done>0)&&(
+          <div style={{display:"flex",gap:7,marginTop:10,flexWrap:"wrap"}}>
+            {s.prod>0&&<span style={{fontSize:10,color:C.amDk,background:C.amBg,border:"1px solid rgba(232,146,10,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800}}>{s.prod} cooking</span>}
+            {s.prod_done>0&&<span style={{fontSize:10,color:"#4ADE80",background:"rgba(74,222,128,0.08)",border:"1px solid rgba(74,222,128,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800}}>{s.prod_done} ready</span>}
+            {s.short>0&&<span style={{fontSize:10,color:"#E8920A",background:"rgba(232,146,10,0.08)",border:"1px solid rgba(232,146,10,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800}}>{s.short} short</span>}
+            {s.oos>0&&<span style={{fontSize:10,color:"#DC2626",background:"rgba(220,38,38,0.08)",border:"1px solid rgba(220,38,38,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800}}>{s.oos} OOS</span>}
+          </div>
+        )}
+
+        {/* All-done celebration */}
+        {allDone&&(
+          <div className="animate-fade-up" style={{marginTop:12,padding:"12px 16px",background:"linear-gradient(135deg,rgba(9,115,83,0.25),rgba(22,163,74,0.15))",borderRadius:10,border:"1px solid rgba(74,222,128,0.3)",display:"flex",alignItems:"center",gap:10}}>
+            <span style={{fontSize:20}}>🎉</span>
+            <span style={{fontSize:13,fontWeight:800,color:"#4ADE80"}}>All items packed — ready to dispatch!</span>
+          </div>
+        )}
       </div>
-      <StatRow s={s}/>
+
       {order.items.map((item, index)=><PackingRow key={item.id} item={item} orderId={order.id} orders={orders} onUpdate={onUpdate} notify={notify} isFirst={index===0}/>)}
     </div>
   );
@@ -1714,29 +1902,56 @@ function PackingView({order, onUpdate, orders, notify}){
 function OrderBatchCard({ batch, idx, onBatchUpdate }) {
   const totalQty = batch.items.reduce((sum, it) => sum + (parseFloat(it.qty) || 0), 0);
   const batchUnit = batch.items[0]?.unit || "kg";
+  const isMerged = batch.items.length > 1;
+
   return(
-    <div className="animate-fade-up queue-card" style={{animationDelay:`${idx*0.05}s`}}>
-      <div style={{padding:"20px 24px"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
-          <div>
-            {batch.items.length > 1 && <div style={{fontSize:10,fontWeight:900,color:C.am,textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:4}}>⚡ Master Batch</div>}
-            <div style={{color:C.ch,fontSize:17,fontWeight:900}}>{batch.displayProduct}</div>
+    <div className="animate-fade-up batch-v2" style={{animationDelay:`${idx*0.06}s`}}>
+      <div style={{padding:"22px 24px"}}>
+        {/* Header: product name + large qty */}
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16}}>
+          <div style={{flex:1,minWidth:0}}>
+            {isMerged&&(
+              <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(232,146,10,0.12)",border:"1px solid rgba(232,146,10,0.3)",borderRadius:20,padding:"3px 10px",marginBottom:8}}>
+                <span style={{width:6,height:6,borderRadius:"50%",background:C.am,display:"inline-block",animation:"pulseSoft 1.8s infinite"}}/>
+                <span style={{fontSize:10,fontWeight:900,color:C.amDk,textTransform:"uppercase",letterSpacing:"0.12em"}}>Master Batch · {isMerged?batch.items.length+" orders":""}</span>
+              </div>
+            )}
+            <div style={{color:C.ch,fontSize:18,fontWeight:900,letterSpacing:"-0.02em",lineHeight:1.2}}>{batch.displayProduct}</div>
           </div>
           {totalQty > 0 && (
-            <div style={{textAlign:"right"}}>
-              <div style={{fontSize:32, fontWeight:900, color:C.amDk, lineHeight:1}}>{totalQty}</div>
-              <div style={{fontSize:10, color:C.am, fontWeight:800, textTransform:"uppercase"}}>{batchUnit} total</div>
+            <div style={{textAlign:"right",flexShrink:0,marginLeft:16}}>
+              <div style={{fontSize:38,fontWeight:900,color:C.am,lineHeight:1,letterSpacing:"-0.04em"}}>{totalQty}</div>
+              <div style={{fontSize:10,color:C.amDk,fontWeight:800,textTransform:"uppercase",letterSpacing:"0.08em",marginTop:2}}>{batchUnit}</div>
             </div>
           )}
         </div>
-        <div style={{display:"flex", flexDirection:"column", gap:6, marginBottom:16}}>
-          {batch.items.map((sub, i) => (<div key={i} style={{display:"flex",gap:8,flexWrap:"wrap", alignItems:"center"}}><span style={{fontSize:11,color:sub.restaurant==="Vins"?C.ol:C.am,background:sub.restaurant==="Vins"?C.ol+"1A":C.am+"1A",borderRadius:6,padding:"4px 10px",fontWeight:800}}>{sub.restaurant}</span><span style={{fontSize:11,color:C.chM,background:C.beige,borderRadius:6,padding:"4px 10px",fontWeight:800}}>{sub.poName || "Standard PO"}</span>{sub.qty&&<span style={{fontSize:11,color:C.am,fontFamily:"monospace",fontWeight:800}}>Qty: {sub.qty} {sub.unit}</span>}{sub.notes&&<span style={{fontSize:11,color:C.chM,fontStyle:"italic"}}>({sub.notes})</span>}</div>))}
-        </div>
-        <div style={{marginBottom:16}}><RecipeCard name={batch.displayProduct}/></div>
-        
-        <div style={{display:"flex", flexDirection:"column", gap:8, marginTop:16, paddingTop:16, borderTop:"1px solid "+C.bdrL}}>
-          <button onClick={() => onBatchUpdate(batch, "prod_done")} className="hover-lift" style={{width:"100%", padding:"14px", background:"#097353", color:"#FFFFFF", border:"none", borderRadius:10, fontSize:14, fontWeight:800, cursor:"pointer", letterSpacing:"0.01em", boxShadow:"0 4px 12px rgba(9,115,83,0.3)"}}>✓ Batch Complete — Mark as Done</button>
-          <Btn full size="sm" variant="ghost" onClick={() => onBatchUpdate(batch, "pending")}>↩ Undo Batch</Btn>
+
+        {/* Sub-items from merged orders */}
+        {isMerged&&(
+          <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:16,background:"rgba(232,146,10,0.06)",borderRadius:10,padding:"12px 14px",border:"1px solid rgba(232,146,10,0.1)"}}>
+            {batch.items.map((sub, i) => (
+              <div key={i} style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center"}}>
+                <span style={{fontSize:11,color:sub.restaurant==="Vins"?C.ol:C.am,background:sub.restaurant==="Vins"?C.ol+"1A":C.am+"1A",borderRadius:6,padding:"3px 8px",fontWeight:800}}>{sub.restaurant}</span>
+                <span style={{fontSize:11,color:C.chM,fontWeight:700}}>{sub.poName||"Standard PO"}</span>
+                {sub.qty&&<span style={{fontSize:11,color:C.am,fontFamily:"'JetBrains Mono',monospace",fontWeight:800,marginLeft:"auto"}}>{sub.qty} {sub.unit}</span>}
+              </div>
+            ))}
+          </div>
+        )}
+        {!isMerged&&batch.items[0]&&(
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center",marginBottom:14}}>
+            <span style={{fontSize:11,color:batch.items[0].restaurant==="Vins"?C.ol:C.am,background:batch.items[0].restaurant==="Vins"?C.ol+"1A":C.am+"1A",borderRadius:6,padding:"3px 8px",fontWeight:800}}>{batch.items[0].restaurant}</span>
+            <span style={{fontSize:11,color:C.chM,fontWeight:700}}>{batch.items[0].poName||"Standard PO"}</span>
+          </div>
+        )}
+
+        {/* Recipe card */}
+        <div style={{marginBottom:18}}><RecipeCard name={batch.displayProduct}/></div>
+
+        {/* Action */}
+        <div style={{display:"flex",flexDirection:"column",gap:8,paddingTop:16,borderTop:"1px solid rgba(255,255,255,0.06)"}}>
+          <button className="batch-complete-btn" onClick={()=>onBatchUpdate(batch,"prod_done")}>✓ Batch Complete — Mark Ready to Pack</button>
+          <button onClick={()=>onBatchUpdate(batch,"pending")} style={{width:"100%",padding:"10px",background:"transparent",border:"1px solid rgba(255,255,255,0.07)",borderRadius:10,fontSize:12,fontWeight:700,color:C.chL,cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>↩ Undo Batch</button>
         </div>
       </div>
     </div>
@@ -1796,8 +2011,17 @@ function ProductionView({orders, dailyProductions = [], onBatchUpdate, onDailyPr
       )}
 
       <div className="glass-header">
-        <div style={{fontSize:26,fontWeight:900,color:C.ch,letterSpacing:"-0.03em",marginBottom:6}}>Master Production Queue</div>
-        <div style={{fontSize:13,color:C.chL, fontWeight:500}}>{relevantDPs.length} daily plan(s) · {totalBatches} active order batch(es) cooking</div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12}}>
+          <div>
+            <div style={{fontSize:28,fontWeight:900,color:C.ch,letterSpacing:"-0.04em",marginBottom:6}}>Master Production Queue</div>
+            <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
+              {relevantDPs.length>0&&<span style={{fontSize:10,color:C.amDk,background:C.amBg,border:"1px solid rgba(232,146,10,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800}}>{relevantDPs.length} daily plan{relevantDPs.length!==1?"s":""}</span>}
+              {totalBatches>0&&<span style={{fontSize:10,color:"#FBB040",background:"rgba(251,176,64,0.08)",border:"1px solid rgba(251,176,64,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800,display:"flex",alignItems:"center",gap:5}}><span style={{width:5,height:5,borderRadius:"50%",background:"#FBB040",display:"inline-block",animation:"pulseSoft 1.8s infinite"}}/>{totalBatches} batch{totalBatches!==1?"es":""} cooking</span>}
+              {relevantDPs.length===0&&totalBatches===0&&<span style={{fontSize:12,color:C.chL,fontWeight:600}}>All quiet — no active production</span>}
+            </div>
+          </div>
+          <button onClick={()=>setShowExtraModal(true)} style={{padding:"9px 16px",background:"rgba(232,146,10,0.1)",border:"1px solid rgba(232,146,10,0.3)",borderRadius:10,fontSize:12,fontWeight:800,color:C.amDk,cursor:"pointer",fontFamily:"inherit",flexShrink:0,transition:"all 0.15s",whiteSpace:"nowrap"}}>+ Log Extra</button>
+        </div>
       </div>
       
       <DailyProductionSection 
@@ -1835,9 +2059,10 @@ function ProductionView({orders, dailyProductions = [], onBatchUpdate, onDailyPr
       )}
 
       {relevantDPs.length === 0 && totalBatches === 0 && (
-        <div className="animate-fade-up" style={{textAlign:"center",padding:"80px 0",color:C.chXL}}>
-          <div style={{fontSize:48,marginBottom:16}}>✓</div>
-          <div style={{fontSize:16,fontWeight:700,color:C.chL}}>Kitchen queue is clear</div>
+        <div className="animate-fade-up empty-state">
+          <div style={{fontSize:52,marginBottom:16,filter:"drop-shadow(0 0 18px rgba(22,163,74,0.3))"}}>✓</div>
+          <div style={{fontSize:18,fontWeight:900,color:C.ch,marginBottom:6}}>Kitchen Queue Clear</div>
+          <div style={{fontSize:13,color:C.chL,fontWeight:500,lineHeight:1.5}}>No active batches or daily production plans.</div>
         </div>
       )}
     </div>
@@ -1864,12 +2089,13 @@ function OrderingView({order}){
         </div>
       )}
 
-      <div className="animate-fade-up" style={{background:C.w, borderRadius:16, padding:"24px 30px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:24, display:"flex", alignItems:"center", gap:20}}>
-        <ProgressRing radius={ringRadius} stroke={isMobile ? 10 : 8} progress={pct} color={pct === 100 ? "#097353" : C.ol} />
+      <div className="animate-fade-up glass-card" style={{borderRadius:16,padding:"22px 28px",marginBottom:22,display:"flex",alignItems:"center",gap:20,position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${pct===100?"rgba(74,222,128,0.3)":"rgba(211,17,24,0.22)"},transparent)`,pointerEvents:"none"}}/>
+        <ProgressRing radius={ringRadius} stroke={isMobile?10:8} progress={pct} color={pct===100?"#4ADE80":C.ol} />
         <div>
-          <div style={{fontSize:10, color:C.chL, textTransform:"uppercase", letterSpacing:"0.12em", fontWeight:800, marginBottom:4}}>Fulfillment</div>
-          <div style={{fontSize: isMobile ? 40 : 32, color: pct===100 ? "#097353" : C.ch, fontWeight:900, lineHeight:1, letterSpacing:"-0.03em"}}>{pct}%</div>
-          <div style={{fontSize:11, color:C.chL, marginTop:6, fontWeight:600}}>{s.packed + s.delivered} of {s.total} items</div>
+          <div style={{fontSize:10,color:C.chL,textTransform:"uppercase",letterSpacing:"0.12em",fontWeight:800,marginBottom:4}}>Fulfillment</div>
+          <div style={{fontSize:isMobile?40:32,color:pct===100?"#4ADE80":C.ch,fontWeight:900,lineHeight:1,letterSpacing:"-0.03em"}}>{pct}%</div>
+          <div style={{fontSize:11,color:C.chL,marginTop:6,fontWeight:600}}>{s.packed+s.delivered} of {s.total} items</div>
         </div>
       </div>
       {(s.short>0||s.oos>0)&&(<div className="animate-fade-up" style={{padding:"14px 18px",background:C.amBg,border:"1px solid "+C.amBgD,borderRadius:12,marginBottom:20,fontSize:13,color:C.amDk,fontWeight:600}}><span style={{fontSize:18}}>⚠</span> <div>{s.short>0?`${s.short} item(s) are short-stocked. `:""}{s.oos>0?`${s.oos} item(s) are out of stock. `:""}TFC will contact you regarding alternatives.</div></div>)}
@@ -1922,20 +2148,58 @@ function AdminOrdersTab({ orders }) {
   orders.forEach(o=>{const s=oStats(o);Object.keys(totals).forEach(k=>{totals[k]+=(s[k]||0);});});
   
   if(orders.length === 0) return (
-    <div className="animate-fade-up" style={{textAlign:"center", padding:"60px 20px", background:C.w, borderRadius:16, border:"1px solid "+C.bdrL}}>
-      <div style={{fontSize:56, marginBottom:16}}>📋</div>
-      <div style={{fontSize:18, fontWeight:900, color:C.ch, marginBottom:8}}>No orders yet</div>
-      <div style={{fontSize:13, color:C.chL, fontWeight:500, maxWidth:280, margin:"0 auto 24px"}}>Tap the + Create Order button in the sidebar to add your first order.</div>
-      <div style={{fontSize:12, color:C.chL, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", gap:8}}><span style={{fontSize:16}}>←</span> Start from the sidebar</div>
+    <div className="animate-fade-up glass-card empty-state" style={{borderRadius:18}}>
+      <div className="empty-icon">📋</div>
+      <div style={{fontSize:18,fontWeight:900,color:C.ch,marginBottom:8}}>No orders yet</div>
+      <div style={{fontSize:13,color:C.chL,fontWeight:500,maxWidth:260,lineHeight:1.6,marginBottom:20}}>Tap <strong style={{color:C.ch}}>+ Create Order</strong> in the sidebar to add your first order.</div>
+      <div style={{display:"flex",alignItems:"center",gap:8,fontSize:12,color:C.ol,fontWeight:700,background:C.olBg,border:"1px solid "+C.olBgD,borderRadius:8,padding:"8px 14px"}}><span>←</span> Start from the sidebar</div>
     </div>
   );
 
   return (
     <div className="animate-fade-in">
-      <div style={{marginBottom:24}}><AdminDonutChart packed={totals.packed + totals.delivered} pending={totals.prod + totals.prod_done + totals.pending} issues={totals.short + totals.oos} /></div>
-      <StatRow s={totals}/>
-      <SectionLabel text="Recent Orders"/>
-      {orders.slice(0,5).map((o, idx)=>{ const s=oStats(o); const rc=o.restaurant==="Vins"?C.ol:C.am; const pct=s.total?Math.round(((s.packed + s.delivered)/s.total)*100):0; return( <div key={o.id} className={`animate-fade-up hover-lift ${pct===100?'celebration-card':''}`} style={{animationDelay:`${idx*0.05}s`, background:C.w,borderRadius:14,border:"1px solid "+C.bdrL,padding:"16px 20px",marginBottom:10,boxShadow:C.sh}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}><div style={{display:"flex",alignItems:"center",gap:12}}><span style={{fontSize:12,fontWeight:900,color:rc,background:rc+"1A",borderRadius:6,padding:"4px 10px"}}>{o.restaurant}</span><span style={{fontSize:12,color:C.chL, fontWeight:600}}>{o.poName || o.orderDate}</span></div><span style={{fontSize:14,fontWeight:800,color:pct===100?C.ol:C.ch}}>{pct}%</span></div><div style={{height:6,background:C.bdrL,borderRadius:99,overflow:"hidden"}}><div style={{height:6,width:pct+"%",background:C.ol,borderRadius:99, transition:"width 0.8s cubic-bezier(0.16, 1, 0.3, 1)"}}/></div></div> ); })}
+      <div style={{marginBottom:20}}><AdminDonutChart packed={totals.packed + totals.delivered} pending={totals.prod + totals.prod_done + totals.pending} issues={totals.short + totals.oos} /></div>
+
+      {/* Global stat grid */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:22}}>
+        {[
+          {label:"Total Items",val:totals.total,color:"#8896B3"},
+          {label:"Packed",     val:totals.packed+totals.delivered, color:"#4ADE80"},
+          {label:"Cooking",    val:totals.prod+totals.prod_done, color:C.am},
+          {label:"Issues",     val:totals.short+totals.oos, color:C.rd},
+        ].map(s=>(
+          <div key={s.label} className="glass-card animate-fade-up" style={{borderRadius:12,padding:"14px 8px",textAlign:"center",border:"1px solid rgba(255,255,255,0.06)",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${s.color}35,transparent)`}}/>
+            <div style={{fontSize:24,fontWeight:900,color:s.color,lineHeight:1,letterSpacing:"-0.04em"}}>{s.val}</div>
+            <div style={{fontSize:9,color:C.chL,marginTop:5,textTransform:"uppercase",letterSpacing:"0.1em",fontWeight:700}}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <SectionLabel text="Active Orders"/>
+      {orders.slice(0,5).map((o, idx)=>{
+        const s=oStats(o); const rc=o.restaurant==="Vins"?C.ol:C.am;
+        const pct=s.total?Math.round(((s.packed+s.delivered)/s.total)*100):0;
+        const hasIssue=s.short+s.oos>0;
+        return(
+          <div key={o.id} className={`animate-fade-up glass-card hover-lift ${pct===100?"celebration-card":""}`}
+            style={{animationDelay:`${idx*0.05}s`,borderRadius:14,padding:"16px 20px",marginBottom:10,position:"relative",overflow:"hidden",border:`1px solid ${hasIssue?"rgba(220,38,38,0.2)":"rgba(255,255,255,0.06)"}`}}>
+            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${rc}30,transparent)`}}/>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <span style={{fontSize:11,fontWeight:900,color:rc,background:rc+"18",borderRadius:6,padding:"3px 9px"}}>{o.restaurant}</span>
+                <span style={{fontSize:12,color:C.chM,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:160}}>{o.poName||o.orderDate}</span>
+                {hasIssue&&<span style={{fontSize:9,color:C.rd,background:"rgba(220,38,38,0.1)",border:"1px solid rgba(220,38,38,0.25)",borderRadius:20,padding:"2px 7px",fontWeight:900}}>⚠ Issues</span>}
+              </div>
+              <span style={{fontSize:16,fontWeight:900,color:pct===100?"#4ADE80":C.ch,letterSpacing:"-0.02em"}}>{pct}%</span>
+            </div>
+            <div style={{height:5,background:"rgba(255,255,255,0.06)",borderRadius:99,overflow:"hidden"}}>
+              <div style={{height:5,width:pct+"%",background:pct===100?"linear-gradient(90deg,#16A34A,#4ADE80)":"linear-gradient(90deg,"+rc+","+rc+"BB)",borderRadius:99,transition:"width 1s cubic-bezier(0.16,1,0.3,1)",boxShadow:pct===100?"0 0 8px rgba(74,222,128,0.5)":"none"}}/>
+            </div>
+            <div style={{fontSize:10,color:C.chL,marginTop:6,fontWeight:600}}>{s.packed+s.delivered}/{s.total} items fulfilled</div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -1965,48 +2229,67 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
       </div>
 
       {weekDays.map(day => {
+        const isToday = day.date === getLocalYMD();
+        const isActive = day.dp?.status === "active";
+
         if (!day.dp) {
           return (
-            <div key={day.date} style={{background:"#141928",border:"2px dashed #1E2A44",borderRadius:10,padding:14,textAlign:"center",color:C.chXL,fontSize:12,fontWeight:700,marginBottom:8}}>
-              {day.dayOfWeek} {day.displayDate} — No production planned &nbsp; 
-              <button onClick={() => setEditingDay(day)} className="hover-lift" style={{background:"none",border:"none",color:C.ol,fontWeight:800,cursor:"pointer"}}>+ Create</button>
+            <div key={day.date} className="day-tile-empty">
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                <div>
+                  <span style={{fontSize:11,fontWeight:900,color:isToday?C.ol:C.chL,textTransform:"uppercase",letterSpacing:"0.1em"}}>{day.dayOfWeek}</span>
+                  <span style={{fontSize:11,color:C.chL,fontWeight:600,marginLeft:8}}>{day.displayDate}</span>
+                  {isToday&&<span style={{marginLeft:8,fontSize:9,background:C.olBg,color:C.ol,border:"1px solid "+C.olBgD,borderRadius:20,padding:"2px 7px",fontWeight:900}}>TODAY</span>}
+                </div>
+                <button onClick={()=>setEditingDay(day)} style={{background:"rgba(211,17,24,0.09)",border:"1px solid rgba(211,17,24,0.25)",borderRadius:8,padding:"5px 12px",fontSize:11,fontWeight:800,color:C.ol,cursor:"pointer",fontFamily:"inherit"}}>+ Plan</button>
+              </div>
             </div>
           );
         }
-        
+
+        const doneCnt = day.dp.items.filter(i=>i.status==="prod_done").length;
+        const totalCnt = day.dp.items.length;
+
         return (
-          <div key={day.date} style={{background:"#0A0C14",border:"1px solid #1E2A44",borderRadius:14,padding:16,margin:"12px 0",fontSize:12}}>
-            <div style={{fontSize:10,fontWeight:900,letterSpacing:"1.5px",textTransform:"uppercase",color:C.chM,marginBottom:12,paddingBottom:10,borderBottom:"1px solid "+C.bdrL, display:"flex", alignItems:"center", gap:8}}>
-              {day.dayOfWeek} · {day.displayDate}
-              <span style={{ fontSize:9, fontWeight:900, padding:"2px 6px", borderRadius:6, background: day.dp.status === 'active' ? "rgba(22, 163, 74, 0.15)" : "rgba(136, 150, 179, 0.15)", color: day.dp.status === 'active' ? "#4ADE80" : "#8896B3" }}>
-                {day.dp.status.toUpperCase()}
-              </span>
-            </div>
-            {day.dp.items.map(item => (
-              <div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid "+C.bdrL,fontSize:11}}>
+          <div key={day.date} className={`day-tile ${isActive?"day-tile-active":""}`} style={{border:isToday?"1px solid rgba(211,17,24,0.3)":""}}>
+            {/* Day header */}
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,paddingBottom:10,borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <div>
-                  <div style={{fontWeight:800,color:C.ch, display:"flex", alignItems:"center", gap:6, flexWrap:"wrap"}}>
-                    {item.product}
-                    {item.status === 'prod_done' && <span style={{background: "rgba(22, 163, 74, 0.15)", color: "#4ADE80", fontSize: 9, fontWeight: 900, padding: "2px 6px", borderRadius: 4, border: "1px solid rgba(22, 163, 74, 0.3)" }}>✓ DONE</span>}
-                    {item.isExtra && <span style={{background: "rgba(184, 111, 6, 0.15)", color: "#E8920A", fontSize: 9, fontWeight: 900, padding: "2px 6px", borderRadius: 4, border: "1px solid rgba(184, 111, 6, 0.3)" }}>+ EXTRA</span>}
-                  </div>
-                  {item.recipeName && <div style={{fontSize:10,color:C.ol,fontWeight:700,marginTop:2}}>📖 Recipe matched</div>}
-                  {!item.recipeName && <div style={{fontSize:10,color:C.chL,marginTop:2}}>Custom item</div>}
-                  {item.notes && <div style={{fontSize:10,color:C.chL,marginTop:2, fontStyle:"italic"}}>📝 {item.notes}</div>}
+                  <div style={{fontSize:11,fontWeight:900,color:isToday?C.ol:C.ch,textTransform:"uppercase",letterSpacing:"0.1em"}}>{day.dayOfWeek} · {day.displayDate}</div>
                 </div>
-                <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4}}>
-                  <div style={{fontFamily:"monospace",fontWeight:700,color:C.am,fontSize:10}}>Plan: {item.kgQty} kg {item.packetQty > 0 ? `| ${item.packetQty} pkts` : ''}</div>
-                  {item.status === 'prod_done' && (
-                    <div style={{fontFamily:"monospace",fontWeight:700,color:"#4ADE80",fontSize:10}}>
-                      Act: {item.actualKgQty ?? item.kgQty} kg {item.actualPacketQty > 0 || item.packetQty > 0 ? `| ${item.actualPacketQty ?? item.packetQty} pkts` : ''}
-                    </div>
-                  )}
+                <span style={{fontSize:9,fontWeight:900,padding:"2px 7px",borderRadius:20,
+                  background:isActive?"rgba(22,163,74,0.12)":"rgba(136,150,179,0.1)",
+                  color:isActive?"#4ADE80":"#8896B3",
+                  border:"1px solid "+(isActive?"rgba(22,163,74,0.3)":"rgba(136,150,179,0.2)")
+                }}>{isActive?"● LIVE":"○ DRAFT"}</span>
+                {isToday&&<span style={{fontSize:9,background:C.olBg,color:C.ol,border:"1px solid "+C.olBgD,borderRadius:20,padding:"2px 7px",fontWeight:900}}>TODAY</span>}
+              </div>
+              <span style={{fontSize:11,fontWeight:900,color:doneCnt===totalCnt&&totalCnt>0?"#4ADE80":C.chM}}>{doneCnt}/{totalCnt}</span>
+            </div>
+
+            {/* Items */}
+            {day.dp.items.map(item=>(
+              <div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.04)",fontSize:11}}>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontWeight:800,color:item.status==="prod_done"?"#4ADE80":C.ch,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",marginBottom:2,textDecoration:item.status==="prod_done"?"line-through":"none",opacity:item.status==="prod_done"?0.7:1}}>
+                    {item.product}
+                    {item.isExtra&&<span style={{background:"rgba(184,111,6,0.15)",color:C.am,fontSize:9,fontWeight:900,padding:"1px 5px",borderRadius:4}}>EXTRA</span>}
+                  </div>
+                  {item.recipeName&&<span style={{fontSize:9,color:C.ol,fontWeight:700}}>📖 recipe</span>}
+                  {item.notes&&<div style={{fontSize:10,color:C.chL,fontStyle:"italic",marginTop:1}}>📝 {item.notes}</div>}
+                </div>
+                <div style={{textAlign:"right",flexShrink:0,marginLeft:12}}>
+                  <div style={{fontFamily:"'JetBrains Mono',monospace",fontWeight:700,color:C.am,fontSize:10}}>{item.kgQty}kg{item.packetQty>0?` · ${item.packetQty}pkts`:""}</div>
+                  {item.status==="prod_done"&&<div style={{fontFamily:"'JetBrains Mono',monospace",fontWeight:700,color:"#4ADE80",fontSize:10}}>{item.actualKgQty??item.kgQty}kg ✓</div>}
                 </div>
               </div>
             ))}
+
+            {/* Actions */}
             <div style={{marginTop:10,paddingTop:10,display:"flex",gap:8}}>
-              <button onClick={() => setEditingDay(day)} className="hover-lift" style={{flex:1,padding:8,background:C.amBg,border:"1px solid "+C.amBgD,borderRadius:8,fontSize:11,fontWeight:800,color:C.am,cursor:"pointer"}}>✎ Edit Day</button>
-              <button onClick={() => { if(window.confirm("Delete this day's plan?")) onDeleteDP(day.dp.id); }} className="hover-lift" style={{flex:1,padding:8,background:C.rdBg,border:"1px solid "+C.rdBg,borderRadius:8,fontSize:11,fontWeight:800,color:C.rd,cursor:"pointer"}}>🗑 Remove</button>
+              <button onClick={()=>setEditingDay(day)} style={{flex:1,padding:"8px",background:"rgba(232,146,10,0.08)",border:"1px solid rgba(232,146,10,0.2)",borderRadius:8,fontSize:11,fontWeight:800,color:C.amDk,cursor:"pointer",fontFamily:"inherit"}}>✎ Edit</button>
+              <button onClick={()=>{if(window.confirm("Delete this day's plan?"))onDeleteDP(day.dp.id);}} style={{flex:1,padding:"8px",background:"rgba(220,38,38,0.07)",border:"1px solid rgba(220,38,38,0.18)",borderRadius:8,fontSize:11,fontWeight:800,color:C.rd,cursor:"pointer",fontFamily:"inherit"}}>🗑 Remove</button>
             </div>
           </div>
         );
@@ -2431,12 +2714,24 @@ function TFCOrderSystem(){
       }
       
       if (role === "packing") {
-        if (!activeOrder) return( <div className="animate-fade-in" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"60vh",gap:10}}><div style={{fontSize:48,color:C.chXL, animation:"fadeUp 1s ease infinite alternate"}}>👈</div><div style={{fontSize:16,fontWeight:800,color:C.ch}}>Select an order</div></div> );
+        if (!activeOrder) return(
+          <div className="animate-fade-in empty-state">
+            <div className="empty-icon">◻</div>
+            <div style={{fontSize:18,fontWeight:900,color:C.ch,marginBottom:6}}>Select an Order</div>
+            <div style={{fontSize:13,color:C.chL,fontWeight:500,maxWidth:220,lineHeight:1.5}}>Choose an order from the sidebar to start packing.</div>
+          </div>
+        );
         return <PackingView order={activeOrder} onUpdate={updateItem} orders={orders} notify={notify}/>;
       }
-      
+
       if (role === "vins" || role === "manja") {
-        if (!activeOrder) return( <div className="animate-fade-in" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"60vh",gap:10}}><div style={{fontSize:48,color:C.chXL, animation:"fadeUp 1s ease infinite alternate"}}>{viewOrders.length===0?"📋":"👈"}</div><div style={{fontSize:16,fontWeight:800,color:C.ch}}>{viewOrders.length===0?"No orders yet":"Select an order"}</div></div> );
+        if (!activeOrder) return(
+          <div className="animate-fade-in empty-state">
+            <div className="empty-icon">{viewOrders.length===0?"📋":"👈"}</div>
+            <div style={{fontSize:18,fontWeight:900,color:C.ch,marginBottom:6}}>{viewOrders.length===0?"No Orders Yet":"Select an Order"}</div>
+            <div style={{fontSize:13,color:C.chL,fontWeight:500,maxWidth:220,lineHeight:1.5}}>{viewOrders.length===0?"Your admin will create orders shortly.":"Pick an order from the sidebar to view its status."}</div>
+          </div>
+        );
         return <OrderingView order={activeOrder}/>;
       }
     };
