@@ -10,6 +10,9 @@ import {
 const recipeData = require("./TFC_Recipes_Database.json");
 const RECIPE_DB = recipeData || [];
 
+const itemsData = require("./TFC_Items_Database.json");
+const ITEMS_DB = itemsData || [];
+
 /* ═══════════════════════════════════════════════════════════════
    PREMIUM CSS ANIMATIONS & DARK MODE (V7 FINAL)
 ═══════════════════════════════════════════════════════════════ */
@@ -130,6 +133,15 @@ function findRecipe(name){
   if(!name) return null;
   const exactMatch = RECIPE_DB.find(r => r.recipe_name && r.recipe_name.toUpperCase().trim() === name.toUpperCase().trim());
   return exactMatch ? {...exactMatch, matchScore: 1} : null;
+}
+
+function findItemCode(name) {
+  if (!name) return null;
+  const upper = name.trim().toUpperCase();
+  const recipe = RECIPE_DB.find(r => r.recipe_name && r.recipe_name.toUpperCase().trim() === upper);
+  if (recipe && recipe.item_code) return recipe.item_code;
+  const item = ITEMS_DB.find(i => i.name && i.name.trim().toUpperCase() === upper);
+  return item ? item.item_code : null;
 }
 
 function findRecipeFuzzyBulk(lineText) {
@@ -859,7 +871,10 @@ function NewOrderModal({onClose,onSubmit,notify}){
 
   return(
     <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0, 0, 0, 0.85)",backdropFilter:"blur(4px)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
-      <datalist id="recipe-database">{RECIPE_DB.map(r => <option key={r.recipe_id} value={r.recipe_name} />)}</datalist>
+      <datalist id="recipe-database">
+        {RECIPE_DB.map(r => <option key={r.recipe_id} value={r.recipe_name} label={r.item_code ? `${r.recipe_name} · ${r.item_code}` : r.recipe_name} />)}
+        {ITEMS_DB.filter(i => {const u=i.name.trim().toUpperCase(); return !RECIPE_DB.some(r=>r.recipe_name&&r.recipe_name.toUpperCase().trim()===u);}).map(i => <option key={i.item_code+"_"+i.name} value={i.name} label={`${i.name} · ${i.item_code}`} />)}
+      </datalist>
       <div className="animate-fade-up" style={{background:"#0F1422",borderRadius:isMobile?"28px 28px 0 0":24,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column",boxShadow:C.shM}}>
         <div style={{padding:"20px 30px",borderBottom:"1px solid #1A2640",flexShrink:0}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div><div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Draft Purchase Order</div><div style={{fontSize:13,color:C.chL,marginTop:4, fontWeight:500}}>Configure details and build your item list below.</div></div><button onClick={onClose} className="hover-lift" style={{background:C.off,border:"none",borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:16,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button></div></div>
         <div className="custom-scrollbar" style={{overflowY:"auto",flex:1,padding:"24px 30px"}}>
@@ -928,7 +943,10 @@ function EditOrderModal({order, onClose, onSave, notify}){
 
   return(
     <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0, 0, 0, 0.85)",backdropFilter:"blur(4px)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
-      <datalist id="recipe-database">{RECIPE_DB.map(r => <option key={r.recipe_id} value={r.recipe_name} />)}</datalist>
+      <datalist id="recipe-database">
+        {RECIPE_DB.map(r => <option key={r.recipe_id} value={r.recipe_name} label={r.item_code ? `${r.recipe_name} · ${r.item_code}` : r.recipe_name} />)}
+        {ITEMS_DB.filter(i => {const u=i.name.trim().toUpperCase(); return !RECIPE_DB.some(r=>r.recipe_name&&r.recipe_name.toUpperCase().trim()===u);}).map(i => <option key={i.item_code+"_"+i.name} value={i.name} label={`${i.name} · ${i.item_code}`} />)}
+      </datalist>
       <div className="animate-fade-up" style={{background:"#0F1422",borderRadius:isMobile?"28px 28px 0 0":24,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column",boxShadow:C.shM}}>
         <div style={{padding:"24px 30px 20px",borderBottom:"1px solid #1A2640",flexShrink:0}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div><div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Edit Live Order</div><div style={{fontSize:13,color:C.chL,marginTop:4, fontWeight:500}}>Modify quantities, dates, or remove items.</div></div><button onClick={onClose} className="hover-lift" style={{background:C.off,border:"none",borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:16,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button></div></div>
         <div className="custom-scrollbar" style={{overflowY:"auto",flex:1,padding:"24px 30px"}}>
@@ -1082,8 +1100,11 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10,marginBottom:item.status!=='delivered'?10:8}}>
               <div style={{flex:1,minWidth:0}}>
                 <div style={{color:"#EEF2FF",fontSize:14,fontWeight:800,lineHeight:1.25,marginBottom:4,letterSpacing:"-0.01em"}}>{item.product}</div>
-                <div style={{fontSize:11,color:item.status==='short'?"#B86F06":"#5A6A8A",fontFamily:"'JetBrains Mono',monospace",fontWeight:600}}>
-                  {item.status==='short'?`Sent ${item.packedQty||0} / Req ${item.qty} ${item.unit}`:`${item.qty} ${item.unit}`}
+                <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                  <div style={{fontSize:11,color:item.status==='short'?"#B86F06":"#5A6A8A",fontFamily:"'JetBrains Mono',monospace",fontWeight:600}}>
+                    {item.status==='short'?`Sent ${item.packedQty||0} / Req ${item.qty} ${item.unit}`:`${item.qty} ${item.unit}`}
+                  </div>
+                  {(()=>{const code=findItemCode(item.product); return code?<span style={{fontSize:10,fontWeight:900,color:"#D31118",background:"rgba(211,17,24,0.12)",border:"1px solid rgba(211,17,24,0.3)",borderRadius:5,padding:"2px 7px",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.04em"}}># {code}</span>:null;})()}
                 </div>
               </div>
               <span style={{fontSize:10,fontWeight:800,padding:"5px 11px",borderRadius:20,color:cur.c,background:cur.c+"18",border:"1px solid "+cur.c+"35",whiteSpace:"nowrap",flexShrink:0,letterSpacing:"0.04em"}}>{cur.label}</span>
