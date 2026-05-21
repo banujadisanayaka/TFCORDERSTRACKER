@@ -1,10 +1,11 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from "react";
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { 
+import {
   getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot,
-  updateDoc, writeBatch, query, where, getDocs 
+  updateDoc, writeBatch, query, where, getDocs
 } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 
 // ⚠️ Force-load the JSON database bypassing strict compilers
 const recipeData = require("./TFC_Recipes_Database.json");
@@ -115,6 +116,9 @@ const firebaseConfig = {
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+const OWNER_EMAIL = "banuja2005@gmail.com";
 
 /* ═══════════════════════════════════════════════════════════════
    HELPERS & HOOKS
@@ -189,11 +193,11 @@ const C={
 };
 
 const ROLES={
-  admin:{label:"Admin",icon:"⚙",color:C.ch,accent:C.ol,bg:C.beige,pwd:true,pwdStr:"TFC@123",desc:"Create and manage all orders"},
-  packing:{label:"Packing",icon:"◻",color:C.ol,accent:C.ol,bg:C.olBg,pwd:true,pwdStr:"tfc@123",desc:"Smart status updater for dispatch"},
-  production:{label:"Production",icon:"◈",color:C.am,accent:C.am,bg:C.amBg,pwd:true,pwdStr:"tfc@123",desc:"Production queue with recipes"},
-  vins:{label:"Vins Kitchen",icon:"V",color:C.chM,accent:C.chM,bg:C.beige,pwd:false,desc:"Live delivery tracker interface"},
-  manja:{label:"Manja Kitchen",icon:"M",color:C.amDk,accent:C.amDk,bg:C.amBg,pwd:false,desc:"Live delivery tracker interface"},
+  admin:{label:"Admin",icon:"⚙",color:C.ch,accent:C.ol,bg:C.beige,desc:"Create and manage all orders"},
+  packing:{label:"Packing",icon:"◻",color:C.ol,accent:C.ol,bg:C.olBg,desc:"Smart status updater for dispatch"},
+  production:{label:"Production",icon:"◈",color:C.am,accent:C.am,bg:C.amBg,desc:"Production queue with recipes"},
+  vins:{label:"Vins Kitchen",icon:"V",color:C.chM,accent:C.chM,bg:C.beige,desc:"Live delivery tracker interface"},
+  manja:{label:"Manja Kitchen",icon:"M",color:C.amDk,accent:C.amDk,bg:C.amBg,desc:"Live delivery tracker interface"},
 };
 
 const SC = {
