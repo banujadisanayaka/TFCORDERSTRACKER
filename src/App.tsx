@@ -788,23 +788,316 @@ function SplashScreen() {
   );
 }
 
-function RoleSelectScreen({onSelect}){
-  const [hov,setHov]=useState(null); const isMobile = useIsMobile(); const keys=Object.keys(ROLES);
+function LoginScreen({ onSignIn }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleClick() {
+    setLoading(true);
+    setError("");
+    try {
+      await onSignIn();
+    } catch (e) {
+      setError("Sign-in failed. Please try again.");
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div className="animate-fade-in" style={{ minHeight:"100vh", background:"linear-gradient(160deg, #060810 0%, #090D18 60%, #0B1020 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:28, fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif" }}>
+      <div className="animate-fade-up" style={{ width:"100%", maxWidth:400 }}>
+        <div style={{ textAlign:"center", marginBottom:48 }}>
+          <div style={{ width:80, height:80, borderRadius:"50%", background:"#1A1A1A", display:"flex", alignItems:"center", justifyContent:"center", fontSize:36, margin:"0 auto 24px", boxShadow:"0 4px 24px rgba(211,17,24,0.2)" }}>🍽️</div>
+          <div style={{ fontSize:26, fontWeight:900, color:C.ch, letterSpacing:"-0.03em", marginBottom:8 }}>The Food Company</div>
+          <div style={{ fontSize:13, color:C.chL, fontWeight:500 }}>Operations Hub — Sign in to continue</div>
+        </div>
+
+        <div style={{ background:C.w, borderRadius:20, padding:"32px 28px", border:"1px solid "+C.bdrL, boxShadow:C.shM }}>
+          <div style={{ fontSize:14, fontWeight:700, color:C.chM, marginBottom:20, textAlign:"center" }}>Sign in with your Google account</div>
+
+          <button
+            onClick={handleClick}
+            disabled={loading}
+            style={{ width:"100%", padding:"14px 20px", background:"linear-gradient(135deg, #D31118, #8A0B10)", border:"none", borderRadius:12, cursor:loading?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:12, boxShadow:"0 4px 16px rgba(211,17,24,0.35)", opacity:loading?0.7:1, transition:"all 0.2s" }}
+          >
+            <div style={{ width:24, height:24, borderRadius:"50%", background:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:14, fontWeight:900, color:"#D31118", flexShrink:0 }}>G</div>
+            <span style={{ fontSize:15, fontWeight:800, color:"#FFFFFF", letterSpacing:"0.01em" }}>{loading ? "Signing in..." : "Continue with Google"}</span>
+          </button>
+
+          {error && (
+            <div className="animate-fade-in" style={{ marginTop:16, fontSize:12, color:C.rd, fontWeight:700, textAlign:"center", background:C.rdBg, padding:"10px 14px", borderRadius:8 }}>{error}</div>
+          )}
+        </div>
+
+        <div style={{ textAlign:"center", marginTop:32, fontSize:11, color:"#2A3450", fontWeight:600 }}>
+          Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur
+          <div style={{ fontSize:10, marginTop:6, fontWeight:500, opacity:0.7 }}>© 2026 Made by Banuja Disanayaka</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RequestAccessScreen({ authUser, onSubmit, onSignOut }) {
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [hov, setHov] = useState(null);
+  const isMobile = useIsMobile();
+
+  async function handleRequest() {
+    if (!selectedRole) return;
+    setSubmitting(true);
+    await onSubmit(selectedRole);
+    setSubmitted(true);
+    setSubmitting(false);
+  }
+
+  return (
+    <div className="animate-fade-in custom-scrollbar" style={{ minHeight:"100vh", background:"linear-gradient(160deg, #060810 0%, #090D18 60%, #0B1020 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:28, fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif" }}>
+      <div style={{ width:"100%", maxWidth:540 }}>
+        <div className="animate-fade-up" style={{ background:C.w, borderRadius:16, padding:"20px 24px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:28, display:"flex", alignItems:"center", gap:16 }}>
+          {authUser.photoURL ? (
+            <img src={authUser.photoURL} alt="" style={{ width:48, height:48, borderRadius:"50%", border:"2px solid "+C.ol, flexShrink:0 }} />
+          ) : (
+            <div style={{ width:48, height:48, borderRadius:"50%", background:C.ol, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, fontWeight:900, color:"#fff", flexShrink:0 }}>
+              {authUser.displayName?.[0] || "?"}
+            </div>
+          )}
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontSize:15, fontWeight:800, color:C.ch, marginBottom:2, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{authUser.displayName || "Unknown"}</div>
+            <div style={{ fontSize:12, color:C.chL, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{authUser.email}</div>
+          </div>
+          <button onClick={onSignOut} style={{ background:"none", border:"1px solid "+C.bdrL, color:C.chL, padding:"6px 12px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Sign Out</button>
+        </div>
+
+        <div className="animate-fade-up" style={{ textAlign:"center", marginBottom:32 }}>
+          <div style={{ fontSize:20, fontWeight:900, color:C.ch, letterSpacing:"-0.02em", marginBottom:8 }}>Request Access</div>
+          <div style={{ fontSize:13, color:C.chL, fontWeight:500 }}>Select the role you need access to. Your request will be reviewed by the owner.</div>
+        </div>
+
+        {submitted ? (
+          <div className="animate-fade-up" style={{ background:"rgba(9,115,83,0.15)", border:"1px solid rgba(9,115,83,0.4)", borderRadius:16, padding:"32px 24px", textAlign:"center" }}>
+            <div style={{ fontSize:36, marginBottom:16 }}>✓</div>
+            <div style={{ fontSize:18, fontWeight:900, color:"#4ADE80", marginBottom:8 }}>Request Sent!</div>
+            <div style={{ fontSize:13, color:C.chM, fontWeight:500 }}>Your request for <strong style={{ color:C.ch }}>{ROLES[selectedRole]?.label}</strong> access has been submitted. You'll be notified when it's approved.</div>
+          </div>
+        ) : (
+          <>
+            <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap:12, marginBottom:24 }}>
+              {Object.entries(ROLES).map(([k, r], i) => {
+                const isSelected = selectedRole === k;
+                const isHov = hov === k;
+                return (
+                  <div key={k} onClick={() => setSelectedRole(k)} onMouseEnter={() => setHov(k)} onMouseLeave={() => setHov(null)}
+                    className="animate-fade-up hover-lift"
+                    style={{ animationDelay:`${i*0.05}s`, gridColumn:(!isMobile && i===4)?"1 / -1":"auto", background:isSelected?r.bg:C.w, border:"2px solid "+(isSelected?r.color:isHov?r.color:C.bdrL), borderTop:"3px solid "+r.color, borderRadius:16, padding:"20px 22px", cursor:"pointer", boxShadow:isSelected||isHov?C.shM:C.sh, display:"flex", flexDirection:"column", gap:10, alignItems:"flex-start", transition:"all 0.2s" }}>
+                    <div style={{ width:40, height:40, background:r.bg, borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:900, color:r.color, transition:"transform 0.2s", transform:isHov||isSelected?"scale(1.1)":"scale(1)" }}>{r.icon}</div>
+                    <div>
+                      <div style={{ fontSize:15, fontWeight:800, color:C.ch, marginBottom:3 }}>{r.label}</div>
+                      <div style={{ fontSize:12, color:C.chL, lineHeight:1.5, fontWeight:500 }}>{r.desc}</div>
+                    </div>
+                    {isSelected && <div style={{ fontSize:11, color:r.color, fontWeight:800, marginTop:"auto", paddingTop:6 }}>✓ Selected</div>}
+                  </div>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={handleRequest}
+              disabled={!selectedRole || submitting}
+              style={{ width:"100%", padding:"15px", background:selectedRole?"linear-gradient(135deg, #D31118, #8A0B10)":"#1E2A44", border:"none", borderRadius:12, color:selectedRole?"#fff":C.chL, fontSize:15, fontWeight:800, cursor:selectedRole&&!submitting?"pointer":"not-allowed", boxShadow:selectedRole?"0 4px 16px rgba(211,17,24,0.35)":"none", transition:"all 0.2s", opacity:submitting?0.7:1 }}
+            >
+              {submitting ? "Sending Request..." : selectedRole ? `Request ${ROLES[selectedRole]?.label} Access` : "Select a Role Above"}
+            </button>
+          </>
+        )}
+
+        <div style={{ textAlign:"center", marginTop:28, fontSize:11, color:"#2A3450", fontWeight:600 }}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
+      </div>
+    </div>
+  );
+}
+
+function PendingScreen({ request, authUser, onSignOut }) {
+  return (
+    <div className="animate-fade-in" style={{ minHeight:"100vh", background:"linear-gradient(160deg, #060810 0%, #090D18 60%, #0B1020 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:28, fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif" }}>
+      <div className="animate-fade-up" style={{ width:"100%", maxWidth:420 }}>
+        <div style={{ background:C.w, borderRadius:16, padding:"20px 24px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:24, display:"flex", alignItems:"center", gap:16 }}>
+          {authUser.photoURL ? (
+            <img src={authUser.photoURL} alt="" style={{ width:44, height:44, borderRadius:"50%", border:"2px solid "+C.bdrL, flexShrink:0 }} />
+          ) : (
+            <div style={{ width:44, height:44, borderRadius:"50%", background:C.bdrL, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, color:C.chM, flexShrink:0 }}>
+              {authUser.displayName?.[0] || "?"}
+            </div>
+          )}
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontSize:14, fontWeight:800, color:C.ch, marginBottom:2 }}>{authUser.displayName}</div>
+            <div style={{ fontSize:11, color:C.chL }}>{authUser.email}</div>
+          </div>
+          <button onClick={onSignOut} style={{ background:"none", border:"1px solid "+C.bdrL, color:C.chL, padding:"6px 12px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Sign Out</button>
+        </div>
+
+        <div style={{ background:C.amBg, border:"1px solid "+C.amBgD, borderRadius:20, padding:"40px 32px", textAlign:"center" }}>
+          <div style={{ fontSize:48, marginBottom:20 }}>⏳</div>
+          <div style={{ fontSize:22, fontWeight:900, color:C.ch, letterSpacing:"-0.02em", marginBottom:12 }}>Awaiting Approval</div>
+          <div style={{ fontSize:13, color:C.chM, fontWeight:500, lineHeight:1.6, marginBottom:20 }}>
+            Your request for <strong style={{ color:C.am }}>{ROLES[request.requestedRole]?.label || request.requestedRole}</strong> access has been submitted. The owner will review and approve your request.
+          </div>
+          <div style={{ background:C.w, borderRadius:12, padding:"12px 16px", border:"1px solid "+C.bdrL, display:"inline-flex", alignItems:"center", gap:8 }}>
+            <span style={{ width:8, height:8, borderRadius:"50%", background:C.am, display:"inline-block", animation:"pulseSoft 2s infinite" }} />
+            <span style={{ fontSize:12, color:C.chM, fontWeight:700 }}>Pending review</span>
+          </div>
+        </div>
+
+        <div style={{ textAlign:"center", marginTop:24, fontSize:11, color:"#2A3450", fontWeight:600 }}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
+      </div>
+    </div>
+  );
+}
+
+function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemoveUser, onBack, authUser, onSignOut }) {
+  const [tab, setTab] = useState("requests");
+  const isMobile = useIsMobile();
+  const pendingRequests = requests.filter(r => r.status === "pending");
+
+  return (
+    <div className="animate-fade-in" style={{ minHeight:"100vh", background:"linear-gradient(160deg, #060810 0%, #090D18 60%, #0B1020 100%)", display:"flex", flexDirection:"column", fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif" }}>
+      <div style={{ background:"rgba(9,11,16,0.95)", borderBottom:"1px solid "+C.bdrL, padding:"16px 24px", backdropFilter:"blur(12px)", display:"flex", alignItems:"center", gap:16, flexShrink:0 }}>
+        <button onClick={onBack} style={{ background:C.off, border:"1px solid "+C.bdrL, color:C.chM, padding:"8px 14px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>← Back</button>
+        <div style={{ flex:1 }}>
+          <div style={{ fontSize:16, fontWeight:900, color:C.ch }}>Control Panel</div>
+          <div style={{ fontSize:11, color:C.chL }}>Owner: {authUser.email}</div>
+        </div>
+        <button onClick={onSignOut} style={{ background:"none", border:"1px solid "+C.bdrL, color:C.chL, padding:"6px 12px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Sign Out</button>
+      </div>
+
+      <div style={{ display:"flex", background:"#0A0C14", borderBottom:"1px solid "+C.bdrL, flexShrink:0 }}>
+        {[{ key:"requests", label:`Pending Requests ${pendingRequests.length > 0 ? "("+pendingRequests.length+")" : ""}` }, { key:"users", label:`Manage Users (${authorizedUsers.length})` }].map(t => (
+          <button key={t.key} onClick={() => setTab(t.key)} style={{ flex:1, padding:"14px 16px", background:"none", border:"none", borderBottom:"3px solid "+(tab===t.key?C.ol:"transparent"), color:tab===t.key?C.ol:C.chL, fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit", transition:"all 0.2s" }}>{t.label}</button>
+        ))}
+      </div>
+
+      <div className="custom-scrollbar" style={{ flex:1, overflowY:"auto", padding: isMobile ? 20 : 32 }}>
+        {tab === "requests" && (
+          <div>
+            {pendingRequests.length === 0 ? (
+              <div className="animate-fade-up" style={{ textAlign:"center", padding:"60px 20px", color:C.chXL }}>
+                <div style={{ fontSize:48, marginBottom:16 }}>✓</div>
+                <div style={{ fontSize:16, fontWeight:700 }}>No pending requests</div>
+              </div>
+            ) : pendingRequests.map((req, i) => (
+              <div key={req.id} className="animate-fade-up" style={{ animationDelay:`${i*0.05}s`, background:C.w, borderRadius:16, padding:"20px 24px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:12 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:16 }}>
+                  {req.photoURL ? (
+                    <img src={req.photoURL} alt="" style={{ width:48, height:48, borderRadius:"50%", border:"2px solid "+C.bdrL, flexShrink:0 }} />
+                  ) : (
+                    <div style={{ width:48, height:48, borderRadius:"50%", background:C.bdrL, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, color:C.chM, flexShrink:0 }}>{req.name?.[0] || "?"}</div>
+                  )}
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:15, fontWeight:800, color:C.ch, marginBottom:2 }}>{req.name}</div>
+                    <div style={{ fontSize:12, color:C.chL, marginBottom:4 }}>{req.email}</div>
+                    <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                      <span style={{ fontSize:11, fontWeight:800, color:ROLES[req.requestedRole]?.color || C.chM, background:ROLES[req.requestedRole]?.bg || C.off, border:"1px solid "+(ROLES[req.requestedRole]?.color || C.bdrL)+"40", borderRadius:6, padding:"3px 8px" }}>{ROLES[req.requestedRole]?.icon} {ROLES[req.requestedRole]?.label || req.requestedRole}</span>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display:"flex", gap:10 }}>
+                  <button onClick={() => onApprove(req)} style={{ flex:1, padding:"11px", background:"linear-gradient(135deg, #097353, #065A40)", border:"none", borderRadius:10, color:"#fff", fontSize:13, fontWeight:800, cursor:"pointer", boxShadow:"0 3px 10px rgba(9,115,83,0.3)", fontFamily:"inherit" }}>✓ Approve</button>
+                  <button onClick={() => onReject(req)} style={{ flex:1, padding:"11px", background:C.rdBg, border:"1px solid rgba(220,38,38,0.3)", borderRadius:10, color:C.rd, fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>✕ Reject</button>
+                </div>
+              </div>
+            ))}
+
+            {requests.filter(r => r.status !== "pending").length > 0 && (
+              <div style={{ marginTop:24 }}>
+                <div style={{ fontSize:10, fontWeight:900, color:C.chL, textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:12 }}>Past Requests</div>
+                {requests.filter(r => r.status !== "pending").map((req, i) => (
+                  <div key={req.id} className="animate-fade-up" style={{ animationDelay:`${i*0.03}s`, background:C.off, borderRadius:12, padding:"14px 18px", border:"1px solid "+C.bdrL, marginBottom:8, display:"flex", alignItems:"center", gap:12, opacity:0.7 }}>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ fontSize:13, fontWeight:700, color:C.ch }}>{req.name}</div>
+                      <div style={{ fontSize:11, color:C.chL }}>{req.email} · {ROLES[req.requestedRole]?.label || req.requestedRole}</div>
+                    </div>
+                    <span style={{ fontSize:11, fontWeight:800, padding:"3px 8px", borderRadius:6, background:req.status==="approved"?"rgba(9,115,83,0.2)":C.rdBg, color:req.status==="approved"?"#4ADE80":C.rd, border:"1px solid "+(req.status==="approved"?"rgba(9,115,83,0.4)":"rgba(220,38,38,0.3)") }}>{req.status}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === "users" && (
+          <div>
+            {authorizedUsers.length === 0 ? (
+              <div className="animate-fade-up" style={{ textAlign:"center", padding:"60px 20px", color:C.chXL }}>
+                <div style={{ fontSize:16, fontWeight:700 }}>No authorized users yet</div>
+              </div>
+            ) : authorizedUsers.map((user, i) => (
+              <div key={user.email} className="animate-fade-up" style={{ animationDelay:`${i*0.05}s`, background:C.w, borderRadius:16, padding:"18px 22px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:12, display:"flex", alignItems:"center", gap:14 }}>
+                {user.photoURL ? (
+                  <img src={user.photoURL} alt="" style={{ width:44, height:44, borderRadius:"50%", border:"2px solid "+C.bdrL, flexShrink:0 }} />
+                ) : (
+                  <div style={{ width:44, height:44, borderRadius:"50%", background:C.bdrL, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, color:C.chM, flexShrink:0 }}>{user.name?.[0] || "?"}</div>
+                )}
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:14, fontWeight:800, color:C.ch, marginBottom:2 }}>{user.name}</div>
+                  <div style={{ fontSize:11, color:C.chL, marginBottom:6 }}>{user.email}</div>
+                  <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+                    {(user.roles || []).map(role => (
+                      <span key={role} style={{ fontSize:11, fontWeight:800, color:ROLES[role]?.color || C.chM, background:ROLES[role]?.bg || C.off, border:"1px solid "+(ROLES[role]?.color || C.bdrL)+"40", borderRadius:6, padding:"3px 8px" }}>{ROLES[role]?.icon} {ROLES[role]?.label || role}</span>
+                    ))}
+                  </div>
+                </div>
+                <button onClick={() => { if(window.confirm(`Remove ${user.name}?`)) onRemoveUser(user.email); }} style={{ background:C.rdBg, border:"1px solid rgba(220,38,38,0.3)", color:C.rd, padding:"8px 12px", borderRadius:8, fontSize:11, fontWeight:800, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Remove</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, authUser, onSignOut, pendingCount }) {
+  const [hov,setHov]=useState(null); const isMobile = useIsMobile();
+  const keys = availableRoles || Object.keys(ROLES);
   return(
     <div className="animate-fade-in custom-scrollbar" style={{minHeight:"100vh",background:"linear-gradient(160deg, #060810 0%, #090D18 60%, #0B1020 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:28,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
       <div style={{width:"100%",maxWidth:540}}>
-        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:48}}>
+        {authUser && (
+          <div className="animate-fade-up" style={{ background:C.w, borderRadius:14, padding:"14px 18px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:28, display:"flex", alignItems:"center", gap:12 }}>
+            {authUser.photoURL ? (
+              <img src={authUser.photoURL} alt="" style={{ width:40, height:40, borderRadius:"50%", border:"2px solid "+(isOwner?C.ol:C.bdrL), flexShrink:0 }} />
+            ) : (
+              <div style={{ width:40, height:40, borderRadius:"50%", background:isOwner?C.ol:C.bdrL, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:900, color:"#fff", flexShrink:0 }}>
+                {authUser.displayName?.[0] || "?"}
+              </div>
+            )}
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ fontSize:13, fontWeight:800, color:C.ch, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{authUser.displayName || "User"}</div>
+              <div style={{ fontSize:11, color:isOwner?C.ol:C.chL, fontWeight:isOwner?800:500 }}>{isOwner?"Owner":"Authorized User"}</div>
+            </div>
+            {isOwner && (
+              <button onClick={onControlPanel} style={{ background:C.olBg, border:"1px solid "+C.olBgD, color:C.olDk, padding:"8px 14px", borderRadius:8, fontSize:11, fontWeight:800, cursor:"pointer", flexShrink:0, fontFamily:"inherit", position:"relative" }}>
+                Control Panel
+                {pendingCount > 0 && <span style={{ position:"absolute", top:-6, right:-6, background:C.rd, color:"#fff", borderRadius:"50%", width:16, height:16, fontSize:9, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", border:"2px solid #090D18" }}>{pendingCount}</span>}
+              </button>
+            )}
+            <button onClick={onSignOut} style={{ background:"none", border:"1px solid "+C.bdrL, color:C.chL, padding:"6px 10px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Sign Out</button>
+          </div>
+        )}
+        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:32}}>
           <div style={{width: 64, height: 64, borderRadius: "50%", background: "#1A1A1A", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, margin: "0 auto 20px", boxShadow: "0 4px 16px rgba(26,26,26,0.15)"}}>🍽️</div>
           <div style={{fontSize:22,fontWeight:900,color:C.ch,letterSpacing:"-0.02em",lineHeight:1}}>Welcome back.</div><div style={{fontSize:14,color:"#8896B3",fontWeight:500,marginTop:8}}>Select your operational role to continue</div>
         </div>
         <div style={{display:"grid",gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",gap:14}}>
           {keys.map((k,i)=>{
-            const r=ROLES[k]; const isHov=hov===k;
+            const r=ROLES[k]; if(!r) return null; const isHov=hov===k;
             return(
               <div key={k} onClick={()=>onSelect(k)} onMouseEnter={()=>setHov(k)} onMouseLeave={()=>setHov(null)} className="animate-fade-up hover-lift" style={{animationDelay: `${i * 0.05}s`, gridColumn:(!isMobile && i===4) ? "1 / -1" : "auto", background:C.w,border:"2px solid "+(isHov?r.color:C.bdrL),borderTop:"3px solid "+r.color,borderRadius:16,padding:"22px 24px",cursor:"pointer",boxShadow:isHov?C.shM:C.sh,display:"flex",flexDirection:"column",gap:12,alignItems:"flex-start"}}>
                 <div style={{width:44,height:44,background:r.bg,borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:900,color:r.color, transition:"transform 0.2s", transform:isHov?"scale(1.1)":"scale(1)"}}>{r.icon}</div>
                 <div><div style={{fontSize:16,fontWeight:800,color:C.ch,marginBottom:4,letterSpacing:"-0.01em"}}>{r.label}</div><div style={{fontSize:12,color:C.chL,lineHeight:1.5, fontWeight:500}}>{r.desc}</div></div>
-                {r.pwd ? <div style={{fontSize:11, color:C.chL, display:"flex", alignItems:"center", gap:6, fontWeight:600, marginTop:"auto", paddingTop:8}}><span>🔒</span>Password required</div> : <div style={{fontSize:11, color:"#097353", display:"flex", alignItems:"center", gap:6, fontWeight:700, marginTop:"auto", paddingTop:8, background:"rgba(9,115,83,0.15)", padding:"6px 10px", borderRadius:6, width:"fit-content"}}>✓ No password needed</div>}
+                <div style={{fontSize:11, color:"#097353", display:"flex", alignItems:"center", gap:6, fontWeight:700, marginTop:"auto", paddingTop:8, background:"rgba(9,115,83,0.15)", padding:"6px 10px", borderRadius:6, width:"fit-content"}}>✓ Tap to enter</div>
               </div>
             );
           })}
@@ -815,31 +1108,6 @@ function RoleSelectScreen({onSelect}){
   );
 }
 
-function PasswordScreen({role,onSuccess,onBack}){
-  const [pwd,setPwd]=useState(""); const [err,setErr]=useState(""); const r=ROLES[role];
-  const [showPwd, setShowPwd] = useState(false);
-  const [shake, setShake] = useState(false);
-
-  function tryLogin(){ if(pwd===r.pwdStr){onSuccess();}else{setErr("Incorrect access code.");setPwd("");setShake(true);setTimeout(() => setShake(false), 500);} }
-  function handleKey(e){if(e.key==="Enter")tryLogin();}
-  return(
-    <div className="animate-fade-in" style={{minHeight:"100vh",background:C.beige,display:"flex",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
-      <div className="animate-fade-up" style={{background:C.w,borderRadius:24,padding:"48px 40px",width:"100%",maxWidth:400,boxShadow:C.shM,border:"1px solid "+C.bdrL}}>
-        <div style={{textAlign:"center",marginBottom:36}}><div style={{width:64,height:64,background:r.bg,borderRadius:18,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px",fontSize:26,fontWeight:900,color:r.color}}>{r.icon}</div><div style={{fontSize:24,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>{r.label}</div><div style={{fontSize:14,color:C.chL,marginTop:6, fontWeight:500}}>Enter your password to proceed</div></div>
-        
-        <div className={shake ? "shake" : ""} style={{position:"relative", marginBottom:24}}>
-          <input value={pwd} onChange={e=>{setPwd(e.target.value);setErr("");}} onKeyDown={handleKey} type={showPwd ? "text" : "password"} placeholder="••••••••" autoFocus style={{padding:"16px 48px 16px 20px",border:"2px solid "+(err?C.rd:C.bdr),borderRadius:12,fontSize:18,color:C.ch,outline:"none",background:C.off,width:"100%",boxSizing:"border-box",letterSpacing:"0.2em", textAlign:"center", transition:"border-color 0.2s"}}/>
-          <button onClick={() => setShowPwd(!showPwd)} type="button" style={{position:"absolute", right:14, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", cursor:"pointer", fontSize:16, color:"#757575", padding:4}}>
-            {showPwd ? "🙈" : "👁️"}
-          </button>
-          {err&&<div className="animate-fade-in" style={{fontSize:12,color:C.rd,marginTop:8,fontWeight:600, textAlign:"center"}}>{err}</div>}
-        </div>
-        
-        <div style={{display:"flex",flexDirection:"column",gap:12}}><Btn onClick={tryLogin} variant="primary" full>Authorize Access</Btn><Btn onClick={onBack} full>Cancel</Btn></div>
-      </div>
-    </div>
-  );
-}
 
 function NewOrderModal({onClose,onSubmit,notify}){
   const isMobile = useIsMobile(); const [rest,setRest]=useState("Vins"); const [poName, setPoName] = useState(""); const [poDate, setPoDate] = useState(fmtDate()); const [delDate, setDelDate] = useState(""); const [stagedItems, setStagedItems] = useState([]);
@@ -1624,17 +1892,113 @@ class ErrorBoundary extends React.Component {
 
 function TFCOrderSystem(){
   const isMobile = useIsMobile();
-  const [splashState, setSplashState] = useState("visible"); 
+  const [splashState, setSplashState] = useState("visible");
   const [phase,setPhase]=useState("select"); const [role,setRole]=useState(null);
-  
+
   const [orders,setOrders]=useState([]);
   const [dailyProductions, setDailyProductions] = useState([]);
-  const [loadingInitial, setLoadingInitial] = useState(true); 
-  
-  const [activeId,setActiveId]=useState(null); const [showModal,setShowModal]=useState(false); const [editingOrder, setEditingOrder] = useState(null); const [toast,setToast] = useState(null); const [sidebarOpen, setSidebarOpen]=useState(false); 
+  const [loadingInitial, setLoadingInitial] = useState(true);
+
+  const [activeId,setActiveId]=useState(null); const [showModal,setShowModal]=useState(false); const [editingOrder, setEditingOrder] = useState(null); const [toast,setToast] = useState(null); const [sidebarOpen, setSidebarOpen]=useState(false);
+
+  // Auth state
+  const [authUser, setAuthUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [userRecord, setUserRecord] = useState(null);
+  const [userRecordLoading, setUserRecordLoading] = useState(false);
+  const [accessRequest, setAccessRequest] = useState(null);
+  const [accessRequests, setAccessRequests] = useState([]);
+  const [authorizedUsers, setAuthorizedUsers] = useState([]);
 
   useEffect(() => { const timer1 = setTimeout(() => setSplashState("fading"), 2000); const timer2 = setTimeout(() => setSplashState("hidden"), 2500); return () => { clearTimeout(timer1); clearTimeout(timer2); }; }, []);
   function notify(msg,type="success"){ setToast({msg,type}); setTimeout(()=>setToast(null),4000); }
+
+  // Auth state listener
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setAuthUser(user);
+      setAuthLoading(false);
+    });
+    return () => unsub();
+  }, []);
+
+  // Listen to user's Firestore record
+  useEffect(() => {
+    if (!authUser) { setUserRecord(null); setAccessRequest(null); return; }
+    if (authUser.email === OWNER_EMAIL) return;
+
+    setUserRecordLoading(true);
+    const unsubRecord = onSnapshot(doc(db, "authorized_users", authUser.email), (snap) => {
+      setUserRecord(snap.exists() ? snap.data() : null);
+      setUserRecordLoading(false);
+    });
+
+    const q = query(collection(db, "access_requests"), where("email", "==", authUser.email), where("status", "==", "pending"));
+    const unsubReq = onSnapshot(q, (snap) => {
+      setAccessRequest(snap.empty ? null : snap.docs[0].data());
+    });
+
+    return () => { unsubRecord(); unsubReq(); };
+  }, [authUser]);
+
+  // Owner listeners
+  useEffect(() => {
+    if (!authUser || authUser.email !== OWNER_EMAIL) return;
+    const unsubReqs = onSnapshot(collection(db, "access_requests"), (snap) => {
+      setAccessRequests(snap.docs.map(d => d.data()).sort((a,b) => b.createdAt - a.createdAt));
+    });
+    const unsubUsers = onSnapshot(collection(db, "authorized_users"), (snap) => {
+      setAuthorizedUsers(snap.docs.map(d => d.data()));
+    });
+    return () => { unsubReqs(); unsubUsers(); };
+  }, [authUser]);
+
+  async function handleGoogleSignIn() {
+    try { await signInWithPopup(auth, googleProvider); }
+    catch(e) { notify("Sign-in failed. Please try again.", "error"); }
+  }
+
+  async function handleSignOut() {
+    await signOut(auth);
+    setPhase("select"); setRole(null); setActiveId(null);
+    setUserRecord(null); setAccessRequest(null);
+  }
+
+  async function submitAccessRequest(requestedRole) {
+    try {
+      const id = "req_" + Date.now();
+      await setDoc(doc(db, "access_requests", id), {
+        id, email: authUser.email, name: authUser.displayName, photoURL: authUser.photoURL,
+        requestedRole, status: "pending", createdAt: Date.now()
+      });
+      notify("Request sent! Waiting for owner approval.");
+    } catch(e) { notify("Failed to send request", "error"); }
+  }
+
+  async function approveRequest(request) {
+    try {
+      await setDoc(doc(db, "authorized_users", request.email), {
+        email: request.email, name: request.name, photoURL: request.photoURL,
+        roles: [request.requestedRole], approvedAt: Date.now()
+      });
+      await setDoc(doc(db, "access_requests", request.id), { ...request, status: "approved" });
+      notify(`${request.name} approved as ${ROLES[request.requestedRole]?.label || request.requestedRole}!`);
+    } catch(e) { notify("Failed to approve", "error"); }
+  }
+
+  async function rejectRequest(request) {
+    try {
+      await setDoc(doc(db, "access_requests", request.id), { ...request, status: "rejected" });
+      notify("Request rejected.");
+    } catch(e) { notify("Failed to reject", "error"); }
+  }
+
+  async function removeUser(email) {
+    try {
+      await deleteDoc(doc(db, "authorized_users", email));
+      notify("User removed.");
+    } catch(e) { notify("Failed to remove user", "error"); }
+  }
 
   useEffect(() => {
     const ordersCol = collection(db, "orders");
@@ -1748,14 +2112,45 @@ function TFCOrderSystem(){
     } catch (e) { console.error("updateDailyProdItem failed:", e); notify("Update failed", "error"); }
   }
 
-  function selectRole(r){setRole(r);setPhase(ROLES[r].pwd?"password":"app");}
+  function selectRole(r){ setRole(r); setPhase("app"); }
 
   if (splashState === "visible" || splashState === "fading") return ( <><style>{GLOBAL_STYLES}</style><div style={{ opacity: splashState === "fading" ? 0 : 1, transition: "opacity 0.5s ease" }}><SplashScreen /></div></> );
 
+  // Auth loading
+  if (authLoading) return (<><style>{GLOBAL_STYLES}</style><SplashScreen /></>);
+
+  // Not logged in
+  if (!authUser) return (<><style>{GLOBAL_STYLES}</style><LoginScreen onSignIn={handleGoogleSignIn} /></>);
+
+  // Loading user's Firestore record
+  if (userRecordLoading) return (<><style>{GLOBAL_STYLES}</style><SplashScreen /></>);
+
   let AppContent;
-  if(phase==="select") AppContent = <RoleSelectScreen onSelect={selectRole}/>;
-  else if(phase==="password") AppContent = <PasswordScreen role={role} onSuccess={()=>setPhase("app")} onBack={()=>{setPhase("select");setRole(null);}}/>;
-  else {
+  const isOwner = authUser.email === OWNER_EMAIL;
+  const availableRoles = isOwner ? Object.keys(ROLES) : (userRecord?.roles || []);
+
+  if (phase === "control_panel") {
+    AppContent = <ControlPanel
+      requests={accessRequests} authorizedUsers={authorizedUsers}
+      onApprove={approveRequest} onReject={rejectRequest} onRemoveUser={removeUser}
+      onBack={() => setPhase("select")} authUser={authUser} onSignOut={handleSignOut}
+    />;
+  } else if(phase==="select") {
+    if (!isOwner && !userRecord) {
+      if (accessRequest) {
+        AppContent = <PendingScreen request={accessRequest} authUser={authUser} onSignOut={handleSignOut} />;
+      } else {
+        AppContent = <RequestAccessScreen authUser={authUser} onSubmit={submitAccessRequest} onSignOut={handleSignOut} />;
+      }
+    } else {
+      AppContent = <RoleSelectScreen
+        availableRoles={availableRoles} onSelect={selectRole}
+        isOwner={isOwner} onControlPanel={() => setPhase("control_panel")}
+        authUser={authUser} onSignOut={handleSignOut}
+        pendingCount={accessRequests.filter(r => r.status === "pending").length}
+      />;
+    }
+  } else {
     const viewOrders=role==="vins"?orders.filter(o=>o.restaurant==="Vins"):role==="manja"?orders.filter(o=>o.restaurant==="Manja"):orders;
     const activeOrder=orders.find(o=>o.id===activeId)||null;
     const roleConfig=ROLES[role];
@@ -1833,7 +2228,7 @@ function TFCOrderSystem(){
                 <span style={{position:"absolute", top:-6, right:-6, background:"#D31118", color:"#FFFFFF", borderRadius:"50%", width:18, height:18, fontSize:10, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", border:"2px solid #0E1018", animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>
               )}
             </div>
-            <Btn size="sm" variant="dark" onClick={()=>{setPhase("select");setRole(null);setActiveId(null);}}>Switch</Btn>
+            <Btn size="sm" variant="dark" onClick={()=>{setPhase("select");setRole(null);setActiveId(null);}}>Roles</Btn>
           </div>
         </div>
 
