@@ -839,16 +839,20 @@ function LoginScreen({ onSignIn }) {
 }
 
 function RequestAccessScreen({ authUser, onSubmit, onSignOut }) {
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedRoles, setSelectedRoles] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [hov, setHov] = useState(null);
   const isMobile = useIsMobile();
 
+  function toggleRole(k) {
+    setSelectedRoles(prev => prev.includes(k) ? prev.filter(r => r !== k) : [...prev, k]);
+  }
+
   async function handleRequest() {
-    if (!selectedRole) return;
+    if (selectedRoles.length === 0) return;
     setSubmitting(true);
-    await onSubmit(selectedRole);
+    await onSubmit(selectedRoles);
     setSubmitted(true);
     setSubmitting(false);
   }
@@ -873,23 +877,23 @@ function RequestAccessScreen({ authUser, onSubmit, onSignOut }) {
 
         <div className="animate-fade-up" style={{ textAlign:"center", marginBottom:32 }}>
           <div style={{ fontSize:20, fontWeight:900, color:C.ch, letterSpacing:"-0.02em", marginBottom:8 }}>Request Access</div>
-          <div style={{ fontSize:13, color:C.chL, fontWeight:500 }}>Select the role you need access to. Your request will be reviewed by the owner.</div>
+          <div style={{ fontSize:13, color:C.chL, fontWeight:500 }}>Select one or more roles you need access to. Your request will be reviewed by the owner.</div>
         </div>
 
         {submitted ? (
           <div className="animate-fade-up" style={{ background:"rgba(9,115,83,0.15)", border:"1px solid rgba(9,115,83,0.4)", borderRadius:16, padding:"32px 24px", textAlign:"center" }}>
             <div style={{ fontSize:36, marginBottom:16 }}>✓</div>
             <div style={{ fontSize:18, fontWeight:900, color:"#4ADE80", marginBottom:8 }}>Request Sent!</div>
-            <div style={{ fontSize:13, color:C.chM, fontWeight:500 }}>Your request for <strong style={{ color:C.ch }}>{ROLES[selectedRole]?.label}</strong> access has been submitted. You'll be notified when it's approved.</div>
+            <div style={{ fontSize:13, color:C.chM, fontWeight:500 }}>Your request for <strong style={{ color:C.ch }}>{selectedRoles.map(r => ROLES[r]?.label).join(", ")}</strong> access has been submitted. You'll be notified when it's approved.</div>
           </div>
         ) : (
           <>
             <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap:12, marginBottom:24 }}>
               {Object.entries(ROLES).map(([k, r], i) => {
-                const isSelected = selectedRole === k;
+                const isSelected = selectedRoles.includes(k);
                 const isHov = hov === k;
                 return (
-                  <div key={k} onClick={() => setSelectedRole(k)} onMouseEnter={() => setHov(k)} onMouseLeave={() => setHov(null)}
+                  <div key={k} onClick={() => toggleRole(k)} onMouseEnter={() => setHov(k)} onMouseLeave={() => setHov(null)}
                     className="animate-fade-up hover-lift"
                     style={{ animationDelay:`${i*0.05}s`, gridColumn:(!isMobile && i===4)?"1 / -1":"auto", background:isSelected?r.bg:C.w, border:"2px solid "+(isSelected?r.color:isHov?r.color:C.bdrL), borderTop:"3px solid "+r.color, borderRadius:16, padding:"20px 22px", cursor:"pointer", boxShadow:isSelected||isHov?C.shM:C.sh, display:"flex", flexDirection:"column", gap:10, alignItems:"flex-start", transition:"all 0.2s" }}>
                     <div style={{ width:40, height:40, background:r.bg, borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:900, color:r.color, transition:"transform 0.2s", transform:isHov||isSelected?"scale(1.1)":"scale(1)" }}>{r.icon}</div>
@@ -905,10 +909,10 @@ function RequestAccessScreen({ authUser, onSubmit, onSignOut }) {
 
             <button
               onClick={handleRequest}
-              disabled={!selectedRole || submitting}
-              style={{ width:"100%", padding:"15px", background:selectedRole?"linear-gradient(135deg, #D31118, #8A0B10)":"#1E2A44", border:"none", borderRadius:12, color:selectedRole?"#fff":C.chL, fontSize:15, fontWeight:800, cursor:selectedRole&&!submitting?"pointer":"not-allowed", boxShadow:selectedRole?"0 4px 16px rgba(211,17,24,0.35)":"none", transition:"all 0.2s", opacity:submitting?0.7:1 }}
+              disabled={selectedRoles.length === 0 || submitting}
+              style={{ width:"100%", padding:"15px", background:selectedRoles.length>0?"linear-gradient(135deg, #D31118, #8A0B10)":"#1E2A44", border:"none", borderRadius:12, color:selectedRoles.length>0?"#fff":C.chL, fontSize:15, fontWeight:800, cursor:selectedRoles.length>0&&!submitting?"pointer":"not-allowed", boxShadow:selectedRoles.length>0?"0 4px 16px rgba(211,17,24,0.35)":"none", transition:"all 0.2s", opacity:submitting?0.7:1 }}
             >
-              {submitting ? "Sending Request..." : selectedRole ? `Request ${ROLES[selectedRole]?.label} Access` : "Select a Role Above"}
+              {submitting ? "Sending Request..." : selectedRoles.length > 0 ? `Request Access (${selectedRoles.length} role${selectedRoles.length>1?"s":""})` : "Select Roles Above"}
             </button>
           </>
         )}
@@ -942,7 +946,7 @@ function PendingScreen({ request, authUser, onSignOut }) {
           <div style={{ fontSize:48, marginBottom:20 }}>⏳</div>
           <div style={{ fontSize:22, fontWeight:900, color:C.ch, letterSpacing:"-0.02em", marginBottom:12 }}>Awaiting Approval</div>
           <div style={{ fontSize:13, color:C.chM, fontWeight:500, lineHeight:1.6, marginBottom:20 }}>
-            Your request for <strong style={{ color:C.am }}>{ROLES[request.requestedRole]?.label || request.requestedRole}</strong> access has been submitted. The owner will review and approve your request.
+            Your request for <strong style={{ color:C.am }}>{(request.requestedRoles || [request.requestedRole]).map(r => ROLES[r]?.label || r).join(", ")}</strong> access has been submitted. The owner will review and approve your request.
           </div>
           <div style={{ background:C.w, borderRadius:12, padding:"12px 16px", border:"1px solid "+C.bdrL, display:"inline-flex", alignItems:"center", gap:8 }}>
             <span style={{ width:8, height:8, borderRadius:"50%", background:C.am, display:"inline-block", animation:"pulseSoft 2s infinite" }} />
@@ -998,7 +1002,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
                     <div style={{ fontSize:15, fontWeight:800, color:C.ch, marginBottom:2 }}>{req.name}</div>
                     <div style={{ fontSize:12, color:C.chL, marginBottom:4 }}>{req.email}</div>
                     <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                      <span style={{ fontSize:11, fontWeight:800, color:ROLES[req.requestedRole]?.color || C.chM, background:ROLES[req.requestedRole]?.bg || C.off, border:"1px solid "+(ROLES[req.requestedRole]?.color || C.bdrL)+"40", borderRadius:6, padding:"3px 8px" }}>{ROLES[req.requestedRole]?.icon} {ROLES[req.requestedRole]?.label || req.requestedRole}</span>
+                      <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>{(req.requestedRoles || [req.requestedRole]).map(r => <span key={r} style={{ fontSize:11, fontWeight:800, color:ROLES[r]?.color || C.chM, background:ROLES[r]?.bg || C.off, border:"1px solid "+(ROLES[r]?.color || C.bdrL)+"40", borderRadius:6, padding:"3px 8px" }}>{ROLES[r]?.icon} {ROLES[r]?.label || r}</span>)}</div>
                     </div>
                   </div>
                 </div>
@@ -1016,7 +1020,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
                   <div key={req.id} className="animate-fade-up" style={{ animationDelay:`${i*0.03}s`, background:C.off, borderRadius:12, padding:"14px 18px", border:"1px solid "+C.bdrL, marginBottom:8, display:"flex", alignItems:"center", gap:12, opacity:0.7 }}>
                     <div style={{ flex:1, minWidth:0 }}>
                       <div style={{ fontSize:13, fontWeight:700, color:C.ch }}>{req.name}</div>
-                      <div style={{ fontSize:11, color:C.chL }}>{req.email} · {ROLES[req.requestedRole]?.label || req.requestedRole}</div>
+                      <div style={{ fontSize:11, color:C.chL }}>{req.email} · {(req.requestedRoles || [req.requestedRole]).map(r => ROLES[r]?.label || r).join(", ")}</div>
                     </div>
                     <span style={{ fontSize:11, fontWeight:800, padding:"3px 8px", borderRadius:6, background:req.status==="approved"?"rgba(9,115,83,0.2)":C.rdBg, color:req.status==="approved"?"#4ADE80":C.rd, border:"1px solid "+(req.status==="approved"?"rgba(9,115,83,0.4)":"rgba(220,38,38,0.3)") }}>{req.status}</span>
                   </div>
@@ -1964,12 +1968,12 @@ function TFCOrderSystem(){
     setUserRecord(null); setAccessRequest(null);
   }
 
-  async function submitAccessRequest(requestedRole) {
+  async function submitAccessRequest(requestedRoles) {
     try {
       const id = "req_" + Date.now();
       await setDoc(doc(db, "access_requests", id), {
         id, email: authUser.email, name: authUser.displayName, photoURL: authUser.photoURL,
-        requestedRole, status: "pending", createdAt: Date.now()
+        requestedRole: requestedRoles[0], requestedRoles, status: "pending", createdAt: Date.now()
       });
       notify("Request sent! Waiting for owner approval.");
     } catch(e) { notify("Failed to send request", "error"); }
@@ -1977,12 +1981,13 @@ function TFCOrderSystem(){
 
   async function approveRequest(request) {
     try {
+      const rolesToGrant = request.requestedRoles || [request.requestedRole];
       await setDoc(doc(db, "authorized_users", request.email), {
         email: request.email, name: request.name, photoURL: request.photoURL,
-        roles: [request.requestedRole], approvedAt: Date.now()
+        roles: rolesToGrant, approvedAt: Date.now()
       });
       await setDoc(doc(db, "access_requests", request.id), { ...request, status: "approved" });
-      notify(`${request.name} approved as ${ROLES[request.requestedRole]?.label || request.requestedRole}!`);
+      notify(`${request.name} approved for ${rolesToGrant.map(r => ROLES[r]?.label || r).join(", ")}!`);
     } catch(e) { notify("Failed to approve", "error"); }
   }
 
