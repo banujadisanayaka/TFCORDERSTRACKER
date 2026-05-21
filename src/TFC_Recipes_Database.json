@@ -40,14 +40,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach the applicable “Madras Spiced Chicken” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach the applicable \u201cMadras Spiced Chicken\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F360"
   },
   {
     "recipe_id": "R002",
@@ -90,7 +91,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach the applicable “Jamaican Jerk Chicken” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach the applicable \u201cJamaican Jerk Chicken\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
@@ -100,7 +101,8 @@
     "notes": [
       "Note: Jamaican Jerk Seasoning contains Dried Thyme, Allspice, Ceylon Cinnamon Powder, Chilli",
       "Flakes, Nutmeg, Salt, Black Pepper, Sugar"
-    ]
+    ],
+    "item_code": "F368"
   },
   {
     "recipe_id": "R003",
@@ -121,7 +123,7 @@
         "line_no": 2,
         "type": "ingredient",
         "item": "Himalayan Salt",
-        "qty": "¼ tsp"
+        "qty": "\u00bc tsp"
       },
       {
         "line_no": 3,
@@ -137,7 +139,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Add Chicken to a steel mixing bowl, add 160g of Cajun Marinade & ¼ tsp himalayan pink salt per 1kg of chicken. Wearing gloves, use hands to mix well ensuring marinade covers all parts of the chicken."
+        "instruction": "Add Chicken to a steel mixing bowl, add 160g of Cajun Marinade & \u00bc tsp himalayan pink salt per 1kg of chicken. Wearing gloves, use hands to mix well ensuring marinade covers all parts of the chicken."
       },
       {
         "step_no": 3,
@@ -149,7 +151,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach the applicable “Cajun Chicken” ear tags to the top of the packet using a stapler"
+        "instruction": "Attach the applicable \u201cCajun Chicken\u201d ear tags to the top of the packet using a stapler"
       },
       {
         "step_no": 6,
@@ -159,7 +161,8 @@
     "notes": [
       "Note: Cajun Seasoning contains Smoked Hot Paprika, Garlic Powder, Onion Powder, Italian Herbs",
       "(Dried Rosemary, Dried Thyme, Garlic Powder, Paprika, Salt), Salt, Black Pepper, Sugar"
-    ]
+    ],
+    "item_code": "F364"
   },
   {
     "recipe_id": "R004",
@@ -202,14 +205,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach the applicable “Smoky BBQ Chicken” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach the applicable \u201cSmoky BBQ Chicken\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F366"
   },
   {
     "recipe_id": "R005",
@@ -252,14 +256,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach “Pepper Teriyaki Legendary” ear tag to the top of the packet using a stapler."
+        "instruction": "Attach \u201cPepper Teriyaki Legendary\u201d ear tag to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F533"
   },
   {
     "recipe_id": "R006",
@@ -302,7 +307,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach the “Mexican Blaze Chicken Thighs” ear tag to the top of the packet using a stapler."
+        "instruction": "Attach the \u201cMexican Blaze Chicken Thighs\u201d ear tag to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
@@ -313,7 +318,8 @@
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F361"
   },
   {
     "recipe_id": "R007",
@@ -356,14 +362,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach “Percik Spiced Chicken Thighs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cPercik Spiced Chicken Thighs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller. Test adding 200gm to 1kg - updated by Ananth 5/08/2024"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "BBQ 21"
   },
   {
     "recipe_id": "R008",
@@ -434,14 +441,15 @@
       },
       {
         "step_no": 6,
-        "instruction": "Attach the “CREAMY MUSTARD ROSEMARY CHICKEN BREASTS” ear tags to the top of the packet using a stapler"
+        "instruction": "Attach the \u201cCREAMY MUSTARD ROSEMARY CHICKEN BREASTS\u201d ear tags to the top of the packet using a stapler"
       },
       {
         "step_no": 7,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in deep chiller. (0-5c)"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F216"
   },
   {
     "recipe_id": "R009",
@@ -512,14 +520,15 @@
       },
       {
         "step_no": 6,
-        "instruction": "Attach the “CHIMICHURRI GREEN HEB CHICKEN BREASTS/ THIGH” ear tags to the top of the packet using a stapler"
+        "instruction": "Attach the \u201cCHIMICHURRI GREEN HEB CHICKEN BREASTS/ THIGH\u201d ear tags to the top of the packet using a stapler"
       },
       {
         "step_no": 7,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in deep chiller. (0-5c)"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F565"
   },
   {
     "recipe_id": "R010",
@@ -588,7 +597,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Ensure Whole Chicken without Head/Feet – 1.6 kg is properly thawed (if frozen), drained, and at 0–5°C."
+        "instruction": "Ensure Whole Chicken without Head/Feet \u2013 1.6 kg is properly thawed (if frozen), drained, and at 0\u20135\u00b0C."
       },
       {
         "step_no": 2,
@@ -596,27 +605,27 @@
       },
       {
         "step_no": 3,
-        "instruction": "Drizzle Cooking Oil – 40 g evenly over the chicken."
+        "instruction": "Drizzle Cooking Oil \u2013 40 g evenly over the chicken."
       },
       {
         "step_no": 4,
-        "instruction": "Spread Paprika Spiced Marinade – 100 g evenly on all sides; rub thoroughly using gloves."
+        "instruction": "Spread Paprika Spiced Marinade \u2013 100 g evenly on all sides; rub thoroughly using gloves."
       },
       {
         "step_no": 5,
-        "instruction": "Sprinkle Himalayan Pink Salt – 10 g evenly."
+        "instruction": "Sprinkle Himalayan Pink Salt \u2013 10 g evenly."
       },
       {
         "step_no": 6,
-        "instruction": "Sprinkle Sarawak Black Pepper Coarse – 10 g evenly."
+        "instruction": "Sprinkle Sarawak Black Pepper Coarse \u2013 10 g evenly."
       },
       {
         "step_no": 7,
-        "instruction": "Place the marinated chicken flat onto a large black tray – size 23."
+        "instruction": "Place the marinated chicken flat onto a large black tray \u2013 size 23."
       },
       {
         "step_no": 8,
-        "instruction": "Garnish Basil, Italian Parsley, Thyme, and Rosemary – Fresh Herbs on top as garnish."
+        "instruction": "Garnish Basil, Italian Parsley, Thyme, and Rosemary \u2013 Fresh Herbs on top as garnish."
       },
       {
         "step_no": 9,
@@ -624,14 +633,15 @@
       },
       {
         "step_no": 10,
-        "instruction": "Attach a TFC sticker on top and write the dish name: “Paprika Spiced Whole Chicken.”"
+        "instruction": "Attach a TFC sticker on top and write the dish name: \u201cPaprika Spiced Whole Chicken.\u201d"
       },
       {
         "step_no": 11,
         "instruction": "Tag expiry date 5 days from preparation."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R011",
@@ -700,7 +710,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Ensure Whole Chicken without Head/Feet – 1.6 kg is properly thawed (if frozen), drained, and at 0–5°C."
+        "instruction": "Ensure Whole Chicken without Head/Feet \u2013 1.6 kg is properly thawed (if frozen), drained, and at 0\u20135\u00b0C."
       },
       {
         "step_no": 2,
@@ -708,27 +718,27 @@
       },
       {
         "step_no": 3,
-        "instruction": "Drizzle Cooking Oil – 40 g evenly over the chicken."
+        "instruction": "Drizzle Cooking Oil \u2013 40 g evenly over the chicken."
       },
       {
         "step_no": 4,
-        "instruction": "Spread English Mustard Marinade – 100 g evenly on all sides; rub thoroughly using gloves."
+        "instruction": "Spread English Mustard Marinade \u2013 100 g evenly on all sides; rub thoroughly using gloves."
       },
       {
         "step_no": 5,
-        "instruction": "Sprinkle Himalayan Pink Salt – 10 g evenly."
+        "instruction": "Sprinkle Himalayan Pink Salt \u2013 10 g evenly."
       },
       {
         "step_no": 6,
-        "instruction": "Sprinkle Sarawak Black Pepper Coarse – 10 g evenly."
+        "instruction": "Sprinkle Sarawak Black Pepper Coarse \u2013 10 g evenly."
       },
       {
         "step_no": 7,
-        "instruction": "Place the marinated chicken flat onto a large black tray – size 23."
+        "instruction": "Place the marinated chicken flat onto a large black tray \u2013 size 23."
       },
       {
         "step_no": 8,
-        "instruction": "Garnish Basil, Italian Parsley, Thyme, and Rosemary – Fresh Herbs on top as garnish."
+        "instruction": "Garnish Basil, Italian Parsley, Thyme, and Rosemary \u2013 Fresh Herbs on top as garnish."
       },
       {
         "step_no": 9,
@@ -736,7 +746,7 @@
       },
       {
         "step_no": 10,
-        "instruction": "Attach a TFC sticker on top and write the dish name: “English Mustard Chicken.”"
+        "instruction": "Attach a TFC sticker on top and write the dish name: \u201cEnglish Mustard Chicken.\u201d"
       },
       {
         "step_no": 11,
@@ -747,7 +757,8 @@
         "instruction": "Store in the chiller until ready for sale."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R012",
@@ -774,7 +785,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Use FRZ Bone in Lamb Shoulder Chop Slices, ½” thick. Ensure lamb is properly thawed, drained, and is at chilled temperature (0-5c)."
+        "instruction": "Use FRZ Bone in Lamb Shoulder Chop Slices, \u00bd\u201d thick. Ensure lamb is properly thawed, drained, and is at chilled temperature (0-5c)."
       },
       {
         "step_no": 2,
@@ -790,14 +801,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach the “Rosemary Garlic EVOO Lamb Chops” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach the \u201cRosemary Garlic EVOO Lamb Chops\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F373"
   },
   {
     "recipe_id": "R013",
@@ -824,7 +836,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Use FRZ Bone in Lamb Shoulder Chop Slices, ½ “ thick OR FRZ Lamb Rack Slices. Ensure lamb is properly thawed, drained, and is at chilled temperature (0-5c). Ensure lamb racks are trimmed to maximum of ½ cm thickness & should be in FRENCH LAMB RACK cut(trim the tip of the bone for 3cm)"
+        "instruction": "Use FRZ Bone in Lamb Shoulder Chop Slices, \u00bd \u201c thick OR FRZ Lamb Rack Slices. Ensure lamb is properly thawed, drained, and is at chilled temperature (0-5c). Ensure lamb racks are trimmed to maximum of \u00bd cm thickness & should be in FRENCH LAMB RACK cut(trim the tip of the bone for 3cm)"
       },
       {
         "step_no": 2,
@@ -840,14 +852,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach the applicable “Paprika Spiced Lamb” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach the applicable \u201cPaprika Spiced Lamb\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 5days from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F375"
   },
   {
     "recipe_id": "R014",
@@ -890,14 +903,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach “Mesquite Lamb Steaks” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cMesquite Lamb Steaks\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 3months days from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F376"
   },
   {
     "recipe_id": "R015",
@@ -924,7 +938,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Use FRZ Lamb Rack Slices. Ensure lamb is properly thawed, drained, and is at chilled temperature (0-5c). Ensure lamb racks are trimmed to maximum of ½ cm thickness & should be in FRENCH LAMB RACK cut(trim the tip of the bone for 3cm)"
+        "instruction": "Use FRZ Lamb Rack Slices. Ensure lamb is properly thawed, drained, and is at chilled temperature (0-5c). Ensure lamb racks are trimmed to maximum of \u00bd cm thickness & should be in FRENCH LAMB RACK cut(trim the tip of the bone for 3cm)"
       },
       {
         "step_no": 2,
@@ -940,14 +954,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach the “English Mustard Lamb Rack” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach the \u201cEnglish Mustard Lamb Rack\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "BBQ 25"
   },
   {
     "recipe_id": "R016",
@@ -990,14 +1005,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach “CREAMY ROSEMARY LAMB STRIPLOIN” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cCREAMY ROSEMARY LAMB STRIPLOIN\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 3months from the date of production. Store in Freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F537"
   },
   {
     "recipe_id": "R017",
@@ -1036,7 +1052,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Ensure the Frozen Boneless Lamb Leg Full – 1.5 kg is properly thawed, drained, and at chilled temperature (0–5°C)."
+        "instruction": "Ensure the Frozen Boneless Lamb Leg Full \u2013 1.5 kg is properly thawed, drained, and at chilled temperature (0\u20135\u00b0C)."
       },
       {
         "step_no": 2,
@@ -1044,19 +1060,19 @@
       },
       {
         "step_no": 3,
-        "instruction": "Drizzle Cooking Oil – 50 g evenly over the top surface of the lamb."
+        "instruction": "Drizzle Cooking Oil \u2013 50 g evenly over the top surface of the lamb."
       },
       {
         "step_no": 4,
-        "instruction": "Spread Paprika Spiced Marinade – 135 g evenly across the lamb, using hands (wear gloves) to rub the marinade thoroughly on all sides"
+        "instruction": "Spread Paprika Spiced Marinade \u2013 135 g evenly across the lamb, using hands (wear gloves) to rub the marinade thoroughly on all sides"
       },
       {
         "step_no": 5,
-        "instruction": "Place the marinated meat flat onto a large black tray – size 23.."
+        "instruction": "Place the marinated meat flat onto a large black tray \u2013 size 23.."
       },
       {
         "step_no": 6,
-        "instruction": "Garnish Rosemary – Fresh Herb – 15 g on top as a garnish."
+        "instruction": "Garnish Rosemary \u2013 Fresh Herb \u2013 15 g on top as a garnish."
       },
       {
         "step_no": 7,
@@ -1064,7 +1080,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Place a TFC sticker on top and write the name of the dish: “Paprika Spiced Lamb Leg.”"
+        "instruction": "Place a TFC sticker on top and write the name of the dish: \u201cPaprika Spiced Lamb Leg.\u201d"
       },
       {
         "step_no": 9,
@@ -1075,7 +1091,8 @@
         "instruction": "Store in the chiller until ready for sale."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R018",
@@ -1114,7 +1131,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Ensure the Frozen Boneless Lamb Leg Full – 1.5 kg is properly thawed, drained, and at chilled temperature (0–5°C)."
+        "instruction": "Ensure the Frozen Boneless Lamb Leg Full \u2013 1.5 kg is properly thawed, drained, and at chilled temperature (0\u20135\u00b0C)."
       },
       {
         "step_no": 2,
@@ -1122,19 +1139,19 @@
       },
       {
         "step_no": 3,
-        "instruction": "Drizzle Cooking Oil – 50 g evenly over the top surface of the lamb."
+        "instruction": "Drizzle Cooking Oil \u2013 50 g evenly over the top surface of the lamb."
       },
       {
         "step_no": 4,
-        "instruction": "Spread English Mustard Marinade – 135 g evenly across the lamb, using hands (wear gloves) to rub the marinade thoroughly on all sides"
+        "instruction": "Spread English Mustard Marinade \u2013 135 g evenly across the lamb, using hands (wear gloves) to rub the marinade thoroughly on all sides"
       },
       {
         "step_no": 5,
-        "instruction": "Place the marinated meat flat onto a large black tray – size 23.."
+        "instruction": "Place the marinated meat flat onto a large black tray \u2013 size 23.."
       },
       {
         "step_no": 6,
-        "instruction": "Garnish Rosemary – Fresh Herb – 15 g on top as a garnish."
+        "instruction": "Garnish Rosemary \u2013 Fresh Herb \u2013 15 g on top as a garnish."
       },
       {
         "step_no": 7,
@@ -1142,7 +1159,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Place a TFC sticker on top and write the name of the dish: “English Mustard Lamb Leg.”"
+        "instruction": "Place a TFC sticker on top and write the name of the dish: \u201cEnglish Mustard Lamb Leg.\u201d"
       },
       {
         "step_no": 9,
@@ -1153,7 +1170,8 @@
         "instruction": "Store in the chiller until ready for sale."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R019",
@@ -1196,14 +1214,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach “Herb Butter Sirloin Steaks” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cHerb Butter Sirloin Steaks\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F378"
   },
   {
     "recipe_id": "R020",
@@ -1246,14 +1265,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Attach “Paprika Spiced Sirloin Steaks” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cPaprika Spiced Sirloin Steaks\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F379"
   },
   {
     "recipe_id": "R021",
@@ -1328,14 +1348,15 @@
       },
       {
         "step_no": 10,
-        "instruction": "Attach the “Salt & Pepper Ribeye Steaks” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach the \u201cSalt & Pepper Ribeye Steaks\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 11,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F381"
   },
   {
     "recipe_id": "R022",
@@ -1368,7 +1389,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Ensure FRZ Aus Grass Fed Sirloin – 1 kg (500 g portions) is properly thawed (if frozen), drained, and at 0–5°C."
+        "instruction": "Ensure FRZ Aus Grass Fed Sirloin \u2013 1 kg (500 g portions) is properly thawed (if frozen), drained, and at 0\u20135\u00b0C."
       },
       {
         "step_no": 2,
@@ -1376,15 +1397,15 @@
       },
       {
         "step_no": 3,
-        "instruction": "Add Paprika Marinade – 90 g and rub thoroughly on all sides using gloves."
+        "instruction": "Add Paprika Marinade \u2013 90 g and rub thoroughly on all sides using gloves."
       },
       {
         "step_no": 4,
-        "instruction": "Place the marinated steaks flat onto a large black tray – size 23."
+        "instruction": "Place the marinated steaks flat onto a large black tray \u2013 size 23."
       },
       {
         "step_no": 5,
-        "instruction": "Garnish Thyme – Herb Fresh – 40 g evenly on top as garnish."
+        "instruction": "Garnish Thyme \u2013 Herb Fresh \u2013 40 g evenly on top as garnish."
       },
       {
         "step_no": 6,
@@ -1392,7 +1413,7 @@
       },
       {
         "step_no": 7,
-        "instruction": "Attach a TFC sticker on top and write the dish name: “Smoked Paprika Spiced Beef.”"
+        "instruction": "Attach a TFC sticker on top and write the dish name: \u201cSmoked Paprika Spiced Beef.\u201d"
       },
       {
         "step_no": 8,
@@ -1411,7 +1432,8 @@
         "instruction": "Store in the chiller until ready for sale."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R023",
@@ -1442,7 +1464,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Using a bread knife, cut diagonal slits into baguette to make 8 equal sections. Be sure to only cut ¾ way into the baguette. DO NOT CUT THROUGH."
+        "instruction": "Using a bread knife, cut diagonal slits into baguette to make 8 equal sections. Be sure to only cut \u00be way into the baguette. DO NOT CUT THROUGH."
       },
       {
         "step_no": 3,
@@ -1462,14 +1484,15 @@
       },
       {
         "step_no": 7,
-        "instruction": "Place “Garlic Baguette” sticker on top."
+        "instruction": "Place \u201cGarlic Baguette\u201d sticker on top."
       },
       {
         "step_no": 8,
         "instruction": "Tag expiry date to be 10 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "TF00245"
   },
   {
     "recipe_id": "R024",
@@ -1542,14 +1565,15 @@
       },
       {
         "step_no": 11,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Spiced Paneer & Pineapple Skewers” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cSpiced Paneer & Pineapple Skewers\u201d on the sticker."
       },
       {
         "step_no": 12,
         "instruction": "Tag expiry date to be 3 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "Sk108"
   },
   {
     "recipe_id": "R025",
@@ -1588,7 +1612,7 @@
         "line_no": 5,
         "type": "ingredient",
         "item": "Paprika Marinade",
-        "qty": "¼ cup"
+        "qty": "\u00bc cup"
       }
     ],
     "steps": [
@@ -1634,14 +1658,15 @@
       },
       {
         "step_no": 11,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Smoky Paprika Eggplant Skewers” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cSmoky Paprika Eggplant Skewers\u201d on the sticker."
       },
       {
         "step_no": 12,
         "instruction": "Tag expiry date to be 3 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "SK107"
   },
   {
     "recipe_id": "R026",
@@ -1668,7 +1693,7 @@
         "line_no": 3,
         "type": "ingredient",
         "item": "Cajun Marinade",
-        "qty": "¼ cup"
+        "qty": "\u00bc cup"
       }
     ],
     "steps": [
@@ -1686,7 +1711,7 @@
       },
       {
         "step_no": 4,
-        "instruction": "Add White Button Mushrooms into a mixing bowl. add ¼ cup of Cajun Marinade. Wearing gloves, gently use hands to mix well till fully incorporated."
+        "instruction": "Add White Button Mushrooms into a mixing bowl. add \u00bc cup of Cajun Marinade. Wearing gloves, gently use hands to mix well till fully incorporated."
       },
       {
         "step_no": 5,
@@ -1702,14 +1727,15 @@
       },
       {
         "step_no": 8,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Cajun Mushroom Skewers” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cCajun Mushroom Skewers\u201d on the sticker."
       },
       {
         "step_no": 9,
         "instruction": "Tag expiry date to be 3 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "SK105"
   },
   {
     "recipe_id": "R027",
@@ -1730,25 +1756,25 @@
         "line_no": 2,
         "type": "ingredient",
         "item": "Himalayan Pink Salt",
-        "qty": "¼ tsp"
+        "qty": "\u00bc tsp"
       },
       {
         "line_no": 3,
         "type": "ingredient",
         "item": "Paprika powder",
-        "qty": "½ tbsp"
+        "qty": "\u00bd tbsp"
       },
       {
         "line_no": 4,
         "type": "ingredient",
         "item": "Cayenne powder",
-        "qty": "½ tsp"
+        "qty": "\u00bd tsp"
       },
       {
         "line_no": 5,
         "type": "ingredient",
         "item": "Black pepper coarse",
-        "qty": "½ tsp"
+        "qty": "\u00bd tsp"
       },
       {
         "line_no": 6,
@@ -1787,7 +1813,8 @@
         "instruction": "Take them out and coat the corn with the parmesan cheese."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R028",
@@ -1945,7 +1972,8 @@
         "instruction": "Do not stack on top of each other as it will mess up the coating."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R029",
@@ -1959,7 +1987,7 @@
       {
         "line_no": 1,
         "type": "ingredient",
-        "item": "Chilled 5” Squid",
+        "item": "Chilled 5\u201d Squid",
         "qty": "1000 g / 12 nos"
       },
       {
@@ -2018,14 +2046,15 @@
       },
       {
         "step_no": 11,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Garlic Chilli Squid Skewers” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cGarlic Chilli Squid Skewers\u201d on the sticker."
       },
       {
         "step_no": 12,
         "instruction": "Tag expiry date to be 3 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "SK104"
   },
   {
     "recipe_id": "R030",
@@ -2158,14 +2187,15 @@
       },
       {
         "step_no": 11,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Herb Butter Sirloin Kebabs” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cHerb Butter Sirloin Kebabs\u201d on the sticker."
       },
       {
         "step_no": 12,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F378"
   },
   {
     "recipe_id": "R031",
@@ -2294,14 +2324,15 @@
       },
       {
         "step_no": 10,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Cajun Chicken Breast Skewers” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cCajun Chicken Breast Skewers\u201d on the sticker."
       },
       {
         "step_no": 11,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F364"
   },
   {
     "recipe_id": "R032",
@@ -2430,14 +2461,15 @@
       },
       {
         "step_no": 10,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Creamy Mustard Rosemary Chicken Breast Skewers” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cCreamy Mustard Rosemary Chicken Breast Skewers\u201d on the sticker."
       },
       {
         "step_no": 11,
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F216"
   },
   {
     "recipe_id": "R033",
@@ -2516,7 +2548,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Let the mushrooms marinate for at least 15–20 minutes. Assemble the Skewers"
+        "instruction": "Let the mushrooms marinate for at least 15\u201320 minutes. Assemble the Skewers"
       },
       {
         "step_no": 6,
@@ -2540,7 +2572,7 @@
       },
       {
         "step_no": 11,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker on the top right corner and write “Teriyaki Oyster Mushroom Skewers” with a permanent black marker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker on the top right corner and write \u201cTeriyaki Oyster Mushroom Skewers\u201d with a permanent black marker."
       },
       {
         "step_no": 12,
@@ -2551,7 +2583,8 @@
         "instruction": "Store in a chiller until use."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "Sk111"
   },
   {
     "recipe_id": "R034",
@@ -2636,7 +2669,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Peel red onions and cut into squares or wedges, about 2.5–3 cm each"
+        "instruction": "Peel red onions and cut into squares or wedges, about 2.5\u20133 cm each"
       },
       {
         "step_no": 3,
@@ -2652,7 +2685,7 @@
       },
       {
         "step_no": 6,
-        "instruction": "Cut 600 g boneless duck breast into even cubes (~50 g per cube, 2.5–3 cm)."
+        "instruction": "Cut 600 g boneless duck breast into even cubes (~50 g per cube, 2.5\u20133 cm)."
       },
       {
         "step_no": 7,
@@ -2692,7 +2725,7 @@
       },
       {
         "step_no": 16,
-        "instruction": "Apply a “Big Boyz BBQ Round” sticker on the top right corner and write “Teriyaki Duck & Onion Skewers” with a permanent black marker."
+        "instruction": "Apply a \u201cBig Boyz BBQ Round\u201d sticker on the top right corner and write \u201cTeriyaki Duck & Onion Skewers\u201d with a permanent black marker."
       },
       {
         "step_no": 17,
@@ -2703,7 +2736,8 @@
         "instruction": "Store in a chiller until use."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "Sk112"
   },
   {
     "recipe_id": "R035",
@@ -2776,7 +2810,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "On a pan, over MEDIUM fire, dry saute crushed garlic till it’s slightly smoky (5 – 7 seconds)."
+        "instruction": "On a pan, over MEDIUM fire, dry saute crushed garlic till it\u2019s slightly smoky (5 \u2013 7 seconds)."
       },
       {
         "step_no": 6,
@@ -2788,7 +2822,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Distribute sliced chilies into clean jars using a tong, making them ¾ full."
+        "instruction": "Distribute sliced chilies into clean jars using a tong, making them \u00be full."
       },
       {
         "step_no": 9,
@@ -2796,7 +2830,7 @@
       },
       {
         "step_no": 10,
-        "instruction": "Apply “Pickled Jalapenos” sticker on the centre of the packaging. Apply bottle seal around the bottle lid, and seal tight using the heat of a hairdryer."
+        "instruction": "Apply \u201cPickled Jalapenos\u201d sticker on the centre of the packaging. Apply bottle seal around the bottle lid, and seal tight using the heat of a hairdryer."
       },
       {
         "step_no": 11,
@@ -2807,7 +2841,8 @@
         "instruction": "Tag expiry date to be 2 months from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "TF00280"
   },
   {
     "recipe_id": "R036",
@@ -2868,11 +2903,11 @@
       },
       {
         "step_no": 5,
-        "instruction": "Form each 300g meatball into 10 smaller meatballs and slowly arrange it in a large tray. Ensure to not press the meatballs down. Every layer of meatballs in the tray need to be layered with parchment paper to ensure they don’t stick to each other. Once done, cling wrap till air tight and place in a freezer for 24 hours."
+        "instruction": "Form each 300g meatball into 10 smaller meatballs and slowly arrange it in a large tray. Ensure to not press the meatballs down. Every layer of meatballs in the tray need to be layered with parchment paper to ensure they don\u2019t stick to each other. Once done, cling wrap till air tight and place in a freezer for 24 hours."
       },
       {
         "step_no": 6,
-        "instruction": "Remove frozen meatballs from the freezer. Wear gloves to lightly knock them apart so that they don’t stick to each other."
+        "instruction": "Remove frozen meatballs from the freezer. Wear gloves to lightly knock them apart so that they don\u2019t stick to each other."
       },
       {
         "step_no": 7,
@@ -2880,7 +2915,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Italian Lamb Meatballs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cItalian Lamb Meatballs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
@@ -2890,7 +2925,8 @@
     "notes": [
       "Note: All mutton/ lamb meat/ fat trimming can be used to substitute mutton trunk. Max to use is",
       "200 gm trimming per 1kg recipe."
-    ]
+    ],
+    "item_code": "F406"
   },
   {
     "recipe_id": "R037",
@@ -2963,7 +2999,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Italian Beef Meatballs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cItalian Beef Meatballs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
@@ -2974,7 +3010,8 @@
       "Note: All beef meat/ fat trimmings can be used to substitute brisket. Max to use is 200 gm",
       "trimming per 1kg recipe. When Brisket is not available, 800g topside plus 200g beef fat per 1kg",
       "recipe may be used as a substitute."
-    ]
+    ],
+    "item_code": "F405"
   },
   {
     "recipe_id": "R038",
@@ -3053,14 +3090,15 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Italian Chicken Meatballs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cItalian Chicken Meatballs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F606"
   },
   {
     "recipe_id": "R039",
@@ -3087,13 +3125,13 @@
         "line_no": 3,
         "type": "ingredient",
         "item": "Breadcrumbs",
-        "qty": "½ cup"
+        "qty": "\u00bd cup"
       },
       {
         "line_no": 4,
         "type": "ingredient",
         "item": "Fresh milk",
-        "qty": "½ cup"
+        "qty": "\u00bd cup"
       },
       {
         "line_no": 5,
@@ -3105,7 +3143,7 @@
         "line_no": 6,
         "type": "ingredient",
         "item": "Onion (finely grated)",
-        "qty": "¼ cup"
+        "qty": "\u00bc cup"
       },
       {
         "line_no": 7,
@@ -3129,13 +3167,13 @@
         "line_no": 10,
         "type": "ingredient",
         "item": "Black pepper",
-        "qty": "½ tsp"
+        "qty": "\u00bd tsp"
       },
       {
         "line_no": 11,
         "type": "ingredient",
         "item": "Salt",
-        "qty": "1½ tsp"
+        "qty": "1\u00bd tsp"
       },
       {
         "line_no": 12,
@@ -3153,7 +3191,7 @@
         "line_no": 14,
         "type": "ingredient",
         "item": "Nutmeg powder",
-        "qty": "½ tsp"
+        "qty": "\u00bd tsp"
       }
     ],
     "steps": [
@@ -3179,14 +3217,15 @@
       },
       {
         "step_no": 6,
-        "instruction": "Attach “Roma Beef Meatballs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cRoma Beef Meatballs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 7,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "TFC102"
   },
   {
     "recipe_id": "R040",
@@ -3253,14 +3292,15 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Italian Vegan Meatballs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cItalian Vegan Meatballs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F404"
   },
   {
     "recipe_id": "R041",
@@ -3335,7 +3375,7 @@
       },
       {
         "step_no": 7,
-        "instruction": "Attach “Moroccan Feta Lamb Kebabs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cMoroccan Feta Lamb Kebabs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 8,
@@ -3345,7 +3385,8 @@
     "notes": [
       "Note: All lamb/ mutton meat/ fat trimmings can be used to substitute trunk. Max to use is",
       "200 gm trimming per 1kg recipe."
-    ]
+    ],
+    "item_code": "F603"
   },
   {
     "recipe_id": "R042",
@@ -3414,7 +3455,7 @@
       },
       {
         "step_no": 7,
-        "instruction": "Attach “Moroccan Ricotta Beef Kebabs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cMoroccan Ricotta Beef Kebabs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 8,
@@ -3425,7 +3466,8 @@
       "Note: All beef meat/ fat trimmings can be used to substitute brisket. Max to use is 200 gm",
       "trimming per 1kg recipe. When Brisket is not available 800g topside plus 200g beef fat per 1kg",
       "recipe may be used as a substitute."
-    ]
+    ],
+    "item_code": "F602"
   },
   {
     "recipe_id": "R043",
@@ -3452,7 +3494,7 @@
         "line_no": 3,
         "type": "ingredient",
         "item": "Onion (grated)",
-        "qty": "¼ cup"
+        "qty": "\u00bc cup"
       },
       {
         "line_no": 4,
@@ -3476,13 +3518,13 @@
         "line_no": 7,
         "type": "ingredient",
         "item": "Chili flakes (optional)",
-        "qty": "½ tsp"
+        "qty": "\u00bd tsp"
       },
       {
         "line_no": 8,
         "type": "ingredient",
         "item": "Salt",
-        "qty": "1½ tsp"
+        "qty": "1\u00bd tsp"
       },
       {
         "line_no": 9,
@@ -3526,10 +3568,11 @@
       },
       {
         "step_no": 6,
-        "instruction": "Attach “SpiceTrail Beef Kebabs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cSpiceTrail Beef Kebabs\u201d ear tags to the top of the packet using a stapler."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "TFC101"
   },
   {
     "recipe_id": "R044",
@@ -3592,14 +3635,15 @@
       },
       {
         "step_no": 7,
-        "instruction": "Attach “Up-Beet Vegan Kebabs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cUp-Beet Vegan Kebabs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 8,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R045",
@@ -3712,14 +3756,15 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “Up-Beet Vegan Kebabs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cUp-Beet Vegan Kebabs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in the freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R046",
@@ -3850,14 +3895,15 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “Mushroom Teriyaki Kebabs” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cMushroom Teriyaki Kebabs\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in the freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "TF001812"
   },
   {
     "recipe_id": "R047",
@@ -3928,7 +3974,7 @@
       },
       {
         "step_no": 3,
-        "instruction": "Add mince to a mixing bowl. Add 1 tsp Himalayan Salt, ½ tbs Black Pepper Course, ½ tbs Onion Powder, 200gm Cheddar Cheese Cubes and 1 tbs Haco Chicken Stock per 2kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
+        "instruction": "Add mince to a mixing bowl. Add 1 tsp Himalayan Salt, \u00bd tbs Black Pepper Course, \u00bd tbs Onion Powder, 200gm Cheddar Cheese Cubes and 1 tbs Haco Chicken Stock per 2kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
       },
       {
         "step_no": 4,
@@ -3940,7 +3986,7 @@
       },
       {
         "step_no": 6,
-        "instruction": "don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 7,
@@ -3956,7 +4002,7 @@
       },
       {
         "step_no": 10,
-        "instruction": "Attach “Breakfast Chicken Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cBreakfast Chicken Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 11,
@@ -3966,7 +4012,8 @@
     "notes": [
       "Edited by Joyce on 12.6.2022 - Changed portioning of chicken from 1 kg each for chicken breasts and chicken chops to",
       "0.5 kg each for chicken breasts and chicken chops."
-    ]
+    ],
+    "item_code": "F455"
   },
   {
     "recipe_id": "R048",
@@ -4053,7 +4100,7 @@
       },
       {
         "step_no": 4,
-        "instruction": "Add mince to a mixing bowl. Add 1.5 tsp Himalayan Salt, ½ tbs Black Pepper Coarse, ½ cup chopped and sauteed Yellow Onion, ½ cup chopped and sauteed Green Capsicum, 200gm Cheddar Cheese Cubes, ½ tsp Cayenne Pepper, ½ tbs Haco Chicken Stock, and ½ tbs Liquid Smoke per 1kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
+        "instruction": "Add mince to a mixing bowl. Add 1.5 tsp Himalayan Salt, \u00bd tbs Black Pepper Coarse, \u00bd cup chopped and sauteed Yellow Onion, \u00bd cup chopped and sauteed Green Capsicum, 200gm Cheddar Cheese Cubes, \u00bd tsp Cayenne Pepper, \u00bd tbs Haco Chicken Stock, and \u00bd tbs Liquid Smoke per 1kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
       },
       {
         "step_no": 5,
@@ -4065,7 +4112,7 @@
       },
       {
         "step_no": 7,
-        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 8,
@@ -4081,7 +4128,7 @@
       },
       {
         "step_no": 11,
-        "instruction": "Attach “Roman Chicken Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cRoman Chicken Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 12,
@@ -4090,7 +4137,8 @@
     ],
     "notes": [
       "Edited by Joyce on 22.6.2022 - Increased Himalayan Pink Salt."
-    ]
+    ],
+    "item_code": "DIY017"
   },
   {
     "recipe_id": "R049",
@@ -4143,7 +4191,7 @@
       },
       {
         "step_no": 3,
-        "instruction": "Add mince to a mixing bowl. Add 100g of Cajun Marinade, and ½ tsp Liquid Smoke per 1kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
+        "instruction": "Add mince to a mixing bowl. Add 100g of Cajun Marinade, and \u00bd tsp Liquid Smoke per 1kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
       },
       {
         "step_no": 4,
@@ -4151,7 +4199,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 6,
@@ -4167,7 +4215,7 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “Cajun Chicken Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cCajun Chicken Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
@@ -4176,7 +4224,8 @@
     ],
     "notes": [
       "Edited by Joyce on 22.6.2022 - Added Himalayan Pink Salt."
-    ]
+    ],
+    "item_code": "F454"
   },
   {
     "recipe_id": "R050",
@@ -4229,7 +4278,7 @@
       },
       {
         "step_no": 3,
-        "instruction": "Add mince to a mixing bowl. Add 100g of Cajun Marinade, and ½ tsp Liquid Smoke per 1kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
+        "instruction": "Add mince to a mixing bowl. Add 100g of Cajun Marinade, and \u00bd tsp Liquid Smoke per 1kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
       },
       {
         "step_no": 4,
@@ -4237,7 +4286,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Working from the end of the filled casing, measure about 1.5 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 155g - 165g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot, and coil each sausage to form a ring. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while coiling the sausages into rings, and arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 1.5 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 155g - 165g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot, and coil each sausage to form a ring. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while coiling the sausages into rings, and arranging each sausage carefully in a tray."
       },
       {
         "step_no": 6,
@@ -4253,7 +4302,7 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “Louisiana Chicken Ring Sausage” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cLouisiana Chicken Ring Sausage\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
@@ -4262,7 +4311,8 @@
     ],
     "notes": [
       "Edited by Joyce on 22.6.2022 - Added Himalayan Pink Salt."
-    ]
+    ],
+    "item_code": "F452"
   },
   {
     "recipe_id": "R051",
@@ -4311,7 +4361,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 6,
@@ -4327,7 +4377,7 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “Habanero Chicken Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cHabanero Chicken Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
@@ -4336,7 +4386,8 @@
     ],
     "notes": [
       "Edited by Joyce on 1.7.2022 - Reduced Habanero Marinade from 200g per 1 kg mince to 160g per 1 kg mince."
-    ]
+    ],
+    "item_code": "F453"
   },
   {
     "recipe_id": "R052",
@@ -4381,7 +4432,7 @@
         "line_no": 6,
         "type": "ingredient",
         "item": "Ground Nutmeg",
-        "qty": "¼ tsp (1gm)"
+        "qty": "\u00bc tsp (1gm)"
       },
       {
         "line_no": 7,
@@ -4419,11 +4470,11 @@
       },
       {
         "step_no": 3,
-        "instruction": "Add mince to a mixing bowl. Add 2 tsp Himalayan Salt, ½ tsp Ground White Pepper, 1 tsp Dried Marjoram, ¼ tsp Ground Nutmeg, ¼ tsp Caraway seeds & 1tsp Chicken Stock, per 1kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
+        "instruction": "Add mince to a mixing bowl. Add 2 tsp Himalayan Salt, \u00bd tsp Ground White Pepper, 1 tsp Dried Marjoram, \u00bc tsp Ground Nutmeg, \u00bc tsp Caraway seeds & 1tsp Chicken Stock, per 1kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
       },
       {
         "step_no": 4,
-        "instruction": "Gradually add 100ml of cold water while mixing to improve the sausage’s texture and help bind the ingredients."
+        "instruction": "Gradually add 100ml of cold water while mixing to improve the sausage\u2019s texture and help bind the ingredients."
       },
       {
         "step_no": 5,
@@ -4431,7 +4482,7 @@
       },
       {
         "step_no": 6,
-        "instruction": "Working from the end of the filled casing, measure about 10-12 cm of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get 80g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 10-12 cm of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get 80g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 7,
@@ -4447,14 +4498,15 @@
       },
       {
         "step_no": 10,
-        "instruction": "Attach “Nuremberg Bratwurst Chicken Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cNuremberg Bratwurst Chicken Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 11,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in the freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F548"
   },
   {
     "recipe_id": "R053",
@@ -4549,11 +4601,11 @@
       },
       {
         "step_no": 3,
-        "instruction": "Add mince to a mixing bowl. Add 2.5 tsp Himalayan Salt, 1 tsp Black Pepper Coarse, ½ tsp Ground White Pepper, 1 tbsp Dried Sage,½ tsp Ground Nutmeg, ½ tsp Cayenne Pepper, 1 tbsp Fresh Thyme, and Garlic Minced (2cloves) per 1kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
+        "instruction": "Add mince to a mixing bowl. Add 2.5 tsp Himalayan Salt, 1 tsp Black Pepper Coarse, \u00bd tsp Ground White Pepper, 1 tbsp Dried Sage,\u00bd tsp Ground Nutmeg, \u00bd tsp Cayenne Pepper, 1 tbsp Fresh Thyme, and Garlic Minced (2cloves) per 1kg of mince. Wearing gloves, use hands to mix well till fully incorporated."
       },
       {
         "step_no": 4,
-        "instruction": "Gradually add 80ml (5 tablespoons) of cold water while mixing to improve the sausage’s texture and help bind the ingredients."
+        "instruction": "Gradually add 80ml (5 tablespoons) of cold water while mixing to improve the sausage\u2019s texture and help bind the ingredients."
       },
       {
         "step_no": 5,
@@ -4561,7 +4613,7 @@
       },
       {
         "step_no": 6,
-        "instruction": "Working from the end of the filled casing, measure about 15-20 cm of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 165g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a"
+        "instruction": "Working from the end of the filled casing, measure about 15-20 cm of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 165g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a"
       },
       {
         "step_no": 7,
@@ -4581,14 +4633,15 @@
       },
       {
         "step_no": 11,
-        "instruction": "Attach “Cumberland Chicken Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cCumberland Chicken Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 12,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in the freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F545"
   },
   {
     "recipe_id": "R054",
@@ -4633,7 +4686,7 @@
         "line_no": 6,
         "type": "ingredient",
         "item": "Ground Nutmeg",
-        "qty": "¼ tsp (1gm)"
+        "qty": "\u00bc tsp (1gm)"
       },
       {
         "line_no": 7,
@@ -4651,7 +4704,7 @@
         "line_no": 9,
         "type": "ingredient",
         "item": "NZ Unsalted Butter",
-        "qty": "1 ½ tbsp (20gm)"
+        "qty": "1 \u00bd tbsp (20gm)"
       },
       {
         "line_no": 10,
@@ -4671,7 +4724,7 @@
       },
       {
         "step_no": 3,
-        "instruction": "Add mince to a mixing bowl. Add 2 tsp Himalayan Salt, 1 tsp Ground White Pepper, ¼ tsp Ground Nutmeg, stir in the cooled sauteed onions per 1kg of mince. Add in egg whites(2nos) & slowly mix with the whipping cream (200ml). Wearing gloves, use hands to mix well till fully incorporated."
+        "instruction": "Add mince to a mixing bowl. Add 2 tsp Himalayan Salt, 1 tsp Ground White Pepper, \u00bc tsp Ground Nutmeg, stir in the cooled sauteed onions per 1kg of mince. Add in egg whites(2nos) & slowly mix with the whipping cream (200ml). Wearing gloves, use hands to mix well till fully incorporated."
       },
       {
         "step_no": 4,
@@ -4679,7 +4732,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Working from the end of the filled casing, measure about 10-12 cm of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get 80g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 10-12 cm of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get 80g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 6,
@@ -4695,14 +4748,15 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “Boudin Blanc Chicken Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cBoudin Blanc Chicken Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in the freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F562"
   },
   {
     "recipe_id": "R055",
@@ -4751,7 +4805,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 80gm-85gm. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 80gm-85gm. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 6,
@@ -4767,7 +4821,7 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “Mesquite Lamb Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cMesquite Lamb Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
@@ -4778,7 +4832,8 @@
       "Note: All mutton/ lamb meat/ fat trimming can be used to substitute mutton trunk. Max to use is",
       "200 gm trimming per 1kg recipe.",
       "Edited by Joyce on 22.6.2022 - Increased Paprika Spice Marinade from 100g to 130g. Added Himalayan Pink Salt."
-    ]
+    ],
+    "item_code": "F472"
   },
   {
     "recipe_id": "R056",
@@ -4827,7 +4882,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 6,
@@ -4843,7 +4898,7 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “English Mustard Beef Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cEnglish Mustard Beef Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
@@ -4856,7 +4911,8 @@
       "recipe may be used as a substitute.",
       "Edited by Joyce on 22.6.2022 - Added Himalayan Pink Salt",
       "Edited by Joyce on 1.7.2022 - Increased English Mustard Marinade from 135g to 160g"
-    ]
+    ],
+    "item_code": "F482"
   },
   {
     "recipe_id": "R057",
@@ -4899,7 +4955,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 6,
@@ -4915,7 +4971,7 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “Bumba Beef Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cBumba Beef Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
@@ -4927,7 +4983,8 @@
       "trimming per 1kg recipe. When Brisket is not available 800g topside plus 200g beef fat per 1kg",
       "recipe may be used as a substitute.",
       "Edited by Joyce on 1.7.2022 - Increased Bumba Seasoning from 40g to 60g"
-    ]
+    ],
+    "item_code": "F448"
   },
   {
     "recipe_id": "R058",
@@ -4982,7 +5039,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 6,
@@ -5006,7 +5063,8 @@
       "trimming per 1kg recipe. When Brisket is not available 800g topside plus 200g beef fat per 1kg",
       "recipe may be used as a substitute.",
       "Breakfast Beef Sausages are only sold on a wholesale basis, and not for retail."
-    ]
+    ],
+    "item_code": "F470"
   },
   {
     "recipe_id": "R059",
@@ -5033,13 +5091,13 @@
         "line_no": 3,
         "type": "ingredient",
         "item": "Fresh milk",
-        "qty": "½ cup"
+        "qty": "\u00bd cup"
       },
       {
         "line_no": 4,
         "type": "ingredient",
         "item": "Breadcrumbs",
-        "qty": "½ cup"
+        "qty": "\u00bd cup"
       },
       {
         "line_no": 5,
@@ -5051,25 +5109,25 @@
         "line_no": 6,
         "type": "ingredient",
         "item": "Garlic powder",
-        "qty": "½ tsp"
+        "qty": "\u00bd tsp"
       },
       {
         "line_no": 7,
         "type": "ingredient",
         "item": "Nutmeg",
-        "qty": "¼ tsp"
+        "qty": "\u00bc tsp"
       },
       {
         "line_no": 8,
         "type": "ingredient",
         "item": "White pepper",
-        "qty": "½ tsp"
+        "qty": "\u00bd tsp"
       },
       {
         "line_no": 9,
         "type": "ingredient",
         "item": "Ground coriander",
-        "qty": "½ tsp"
+        "qty": "\u00bd tsp"
       },
       {
         "line_no": 10,
@@ -5081,7 +5139,7 @@
         "line_no": 11,
         "type": "ingredient",
         "item": "Salt",
-        "qty": "1½ tsp"
+        "qty": "1\u00bd tsp"
       },
       {
         "line_no": 12,
@@ -5119,7 +5177,7 @@
       },
       {
         "step_no": 6,
-        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 70g- 80g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 70g- 80g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 7,
@@ -5135,14 +5193,15 @@
       },
       {
         "step_no": 10,
-        "instruction": "Attach “Smoky Ember Beef Sausage” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cSmoky Ember Beef Sausage\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 11,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "TFC103"
   },
   {
     "recipe_id": "R060",
@@ -5185,7 +5244,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don’t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
+        "instruction": "Working from the end of the filled casing, measure about 1 foot of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get it between 90g - 110g. If you don\u2019t, try the same process again till you get it. Once you do, cut it off and tie the loose end up in a knot. Use this piece as a guideline to form all the rest of the sausages into this length and repeat the same process while arranging each sausage carefully in a tray."
       },
       {
         "step_no": 6,
@@ -5201,7 +5260,7 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “Chilli Salmon Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cChilli Salmon Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
@@ -5211,7 +5270,8 @@
     "notes": [
       "Note: We can use Salmon Trimmings from TFC Damansara or order salmon trimmings from",
       "Supplier, Albatross. Make sure the trimming is nice. This can be substituted with the salmon fillets."
-    ]
+    ],
+    "item_code": "91455"
   },
   {
     "recipe_id": "R061",
@@ -5232,7 +5292,7 @@
         "line_no": 2,
         "type": "ingredient",
         "item": "Black Truffle Pate (500G)",
-        "qty": "⅛ cup"
+        "qty": "\u215b cup"
       },
       {
         "line_no": 3,
@@ -5286,7 +5346,7 @@
         "line_no": 11,
         "type": "ingredient",
         "item": "Sarawak Black Pepper Coarse",
-        "qty": "¼ tsp (1gm)"
+        "qty": "\u00bc tsp (1gm)"
       },
       {
         "line_no": 12,
@@ -5314,7 +5374,7 @@
       },
       {
         "step_no": 5,
-        "instruction": "Working from the end of the filled casing, measure about 10-12 cm of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get 80g. If you don’t, try the"
+        "instruction": "Working from the end of the filled casing, measure about 10-12 cm of sausage and twist the skin to mark a separation. Weigh this piece to ensure you get 80g. If you don\u2019t, try the"
       },
       {
         "step_no": 6,
@@ -5334,14 +5394,15 @@
       },
       {
         "step_no": 10,
-        "instruction": "Attach “Truffle Duck Sausages” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cTruffle Duck Sausages\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 11,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in the freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F577"
   },
   {
     "recipe_id": "R062",
@@ -5420,14 +5481,15 @@
       },
       {
         "step_no": 8,
-        "instruction": "Apply “Lemon & Herb Chicken Patties” stickers to the top of the packet positioning it in the center of the packet."
+        "instruction": "Apply \u201cLemon & Herb Chicken Patties\u201d stickers to the top of the packet positioning it in the center of the packet."
       },
       {
         "step_no": 9,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F393"
   },
   {
     "recipe_id": "R063",
@@ -5506,14 +5568,15 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Jamaican Jerk Chicken Patties” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cJamaican Jerk Chicken Patties\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer. Recipe Created by Culinary Innovator Navin Karu, Date: 2/9/2022, Adjust Jamaican Marinade from 180g to 200gm, add 1 egg, breadcrumb 50g"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F391"
   },
   {
     "recipe_id": "R064",
@@ -5594,14 +5657,15 @@
       },
       {
         "step_no": 10,
-        "instruction": "Apply “Herb Breaded Panko Chicken Patties” stickers to the top of the packet positioning it in the center of the packet."
+        "instruction": "Apply \u201cHerb Breaded Panko Chicken Patties\u201d stickers to the top of the packet positioning it in the center of the packet."
       },
       {
         "step_no": 11,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F392"
   },
   {
     "recipe_id": "R065",
@@ -5662,7 +5726,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Homestyle Lamb Patties” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cHomestyle Lamb Patties\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
@@ -5672,7 +5736,8 @@
     "notes": [
       "Note: All mutton/ lamb meat/ fat trimming can be used to substitute mutton trunk. Max to use is",
       "200 gm trimming per 1kg recipe."
-    ]
+    ],
+    "item_code": "F387"
   },
   {
     "recipe_id": "R066",
@@ -5739,7 +5804,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Big Boyz Classic Lamb Patties” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cBig Boyz Classic Lamb Patties\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
@@ -5749,7 +5814,8 @@
     "notes": [
       "Note: All mutton/ lamb meat/ fat trimming can be used to substitute mutton trunk. Max to use is 200",
       "gm trimming per 1kg recipe."
-    ]
+    ],
+    "item_code": "F386"
   },
   {
     "recipe_id": "R067",
@@ -5804,7 +5870,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Homestyle Beef Patties” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cHomestyle Beef Patties\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
@@ -5816,7 +5882,8 @@
       "trimming per 1kg recipe.",
       "When Brisket is not available, 800g topside plus 200g beef fat per 1kg recipe may be used as a",
       "substitute."
-    ]
+    ],
+    "item_code": "SEAS0002"
   },
   {
     "recipe_id": "R068",
@@ -5877,7 +5944,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Big Boyz Classic Beef Patties” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cBig Boyz Classic Beef Patties\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
@@ -5889,7 +5956,8 @@
       "trimming per 1kg recipe.",
       "When Brisket is not available, 800g topside plus 200g beef fat per 1kg recipe may be used as a",
       "substitute."
-    ]
+    ],
+    "item_code": "F384"
   },
   {
     "recipe_id": "R069",
@@ -5921,7 +5989,7 @@
       {
         "line_no": 4,
         "type": "ingredient",
-        "item": "Mayonnaise (Vin’s)",
+        "item": "Mayonnaise (Vin\u2019s)",
         "qty": "100 g"
       },
       {
@@ -5968,7 +6036,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Truffle Angus Patty” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cTruffle Angus Patty\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
@@ -5979,7 +6047,8 @@
       "Note: All frozen 5 Day Salt & Pepper Ribeye, frozen 9 Day Ribeye or Sirloin, Angus, Wagyu Fat can",
       "be used to make Truffle Angus Patty.",
       "Edited by Joyce on 1.7.2022 - Reduced Himalayan Pink Salt from 8g to 5g per 1 kg of mince"
-    ]
+    ],
+    "item_code": "F409"
   },
   {
     "recipe_id": "R070",
@@ -6006,13 +6075,13 @@
         "line_no": 3,
         "type": "ingredient",
         "item": "Fresh milk",
-        "qty": "½ cup"
+        "qty": "\u00bd cup"
       },
       {
         "line_no": 4,
         "type": "ingredient",
         "item": "Breadcrumbs",
-        "qty": "½ cup"
+        "qty": "\u00bd cup"
       },
       {
         "line_no": 5,
@@ -6048,7 +6117,7 @@
         "line_no": 10,
         "type": "ingredient",
         "item": "Salt",
-        "qty": "1½ tsp"
+        "qty": "1\u00bd tsp"
       },
       {
         "line_no": 11,
@@ -6100,14 +6169,15 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “TenderGrill beef Patty” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cTenderGrill beef Patty\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "TFC100"
   },
   {
     "recipe_id": "R071",
@@ -6202,7 +6272,7 @@
       },
       {
         "step_no": 9,
-        "instruction": "Attach “Herb Angus Patty” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cHerb Angus Patty\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 10,
@@ -6213,7 +6283,8 @@
       "Note: All frozen 5 Day Salt & Pepper Ribeye, frozen 9 Day Ribeye or Sirloin, Angus, Wagyu Fat can",
       "be used to make Herb Angus Patty.",
       "Edited by Joyce on 1.7.2022 - Reduced Himalayan Pink Salt from 8g to 5g per 1 kg of mince"
-    ]
+    ],
+    "item_code": "F155"
   },
   {
     "recipe_id": "R072",
@@ -6298,14 +6369,15 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Big Boyz Beef Patties” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cBig Boyz Beef Patties\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F576"
   },
   {
     "recipe_id": "R073",
@@ -6372,14 +6444,15 @@
       },
       {
         "step_no": 8,
-        "instruction": "Apply “Sweet Basil & Onion Burgers” stickers to the top of the packet positioning it in the center of the packet."
+        "instruction": "Apply \u201cSweet Basil & Onion Burgers\u201d stickers to the top of the packet positioning it in the center of the packet."
       },
       {
         "step_no": 9,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R074",
@@ -6446,14 +6519,15 @@
       },
       {
         "step_no": 8,
-        "instruction": "Apply “Beetroot Patties” stickers to the top of the packet positioning it in the center of the packet."
+        "instruction": "Apply \u201cBeetroot Patties\u201d stickers to the top of the packet positioning it in the center of the packet."
       },
       {
         "step_no": 9,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R075",
@@ -6538,14 +6612,15 @@
       },
       {
         "step_no": 8,
-        "instruction": "Apply “Mushroom Teriyaki Burgers” stickers to the top of the packet positioning it in the center of the packet."
+        "instruction": "Apply \u201cMushroom Teriyaki Burgers\u201d stickers to the top of the packet positioning it in the center of the packet."
       },
       {
         "step_no": 9,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer.h"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "TF001812"
   },
   {
     "recipe_id": "R076",
@@ -6600,7 +6675,7 @@
       },
       {
         "step_no": 8,
-        "instruction": "Attach “Chilli Salmon Patty” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cChilli Salmon Patty\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 9,
@@ -6611,7 +6686,8 @@
       "Note: We can use Salmon Trimmings from TFC Damansara or order salmon trimmings from",
       "Supplier, Albatross. Make sure the trimming are nice and this can be substituted with the salmon",
       "fillets."
-    ]
+    ],
+    "item_code": "F394"
   },
   {
     "recipe_id": "R077",
@@ -6650,14 +6726,15 @@
       },
       {
         "step_no": 4,
-        "instruction": "Attach “Roasted Chilli Salmon Fillets” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cRoasted Chilli Salmon Fillets\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 5,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F382"
   },
   {
     "recipe_id": "R078",
@@ -6671,7 +6748,7 @@
       {
         "line_no": 1,
         "type": "ingredient",
-        "item": "Minced Squid (FRZ 5” Squid)",
+        "item": "Minced Squid (FRZ 5\u201d Squid)",
         "qty": "1000 g"
       },
       {
@@ -6726,11 +6803,11 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Use defrosted FRZ 5” Squid and FRZ Whole Giant Trevally."
+        "instruction": "Use defrosted FRZ 5\u201d Squid and FRZ Whole Giant Trevally."
       },
       {
         "step_no": 2,
-        "instruction": "Remove skin and thoroughly clean FRZ 5” Squid, removing its innards, beak, and spine. Cut squid into large 2 inch pieces."
+        "instruction": "Remove skin and thoroughly clean FRZ 5\u201d Squid, removing its innards, beak, and spine. Cut squid into large 2 inch pieces."
       },
       {
         "step_no": 3,
@@ -6778,7 +6855,7 @@
       },
       {
         "step_no": 14,
-        "instruction": "Apply “Creole Seafood Croquettes” stickers to the top of the packet positioning it in the center of the packet."
+        "instruction": "Apply \u201cCreole Seafood Croquettes\u201d stickers to the top of the packet positioning it in the center of the packet."
       },
       {
         "step_no": 15,
@@ -6788,7 +6865,8 @@
     "notes": [
       "Note: We can use any White Fish or any White Fish Trimmings (boneless) from TFC Damansara.",
       "White Fish includes Giant Trevally, Golden Snapper, and Barramundi."
-    ]
+    ],
+    "item_code": "TFC2166"
   },
   {
     "recipe_id": "R079",
@@ -6831,14 +6909,15 @@
       },
       {
         "step_no": 5,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Creole Sea Tiger Prawns” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cCreole Sea Tiger Prawns\u201d on the sticker."
       },
       {
         "step_no": 6,
-        "instruction": "Cling wrap the container containing the remaining Creole Sauce. Apply “Big Boyz BBQ Round” sticker to the top of the container positioning it in the top right corner of the container, and using a permanent black marker, write “Creole Sauce”. This Creole Sauce in container is for customers / BBZ BBQ Event crew to use to baste the Creole Sea Tiger Prawns during the cooking process."
+        "instruction": "Cling wrap the container containing the remaining Creole Sauce. Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the container positioning it in the top right corner of the container, and using a permanent black marker, write \u201cCreole Sauce\u201d. This Creole Sauce in container is for customers / BBZ BBQ Event crew to use to baste the Creole Sea Tiger Prawns during the cooking process."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "SK101"
   },
   {
     "recipe_id": "R080",
@@ -6859,7 +6938,7 @@
         "line_no": 2,
         "type": "ingredient",
         "item": "Himalayan Pink Salt",
-        "qty": "½ tsp"
+        "qty": "\u00bd tsp"
       },
       {
         "line_no": 3,
@@ -6881,7 +6960,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Use ½ tsp of Himalayan Pink Salt per 1 kg of Tenggiri Steaks. Sprinkle Himalayan Pink Salt on both sides of the flesh of the Tenggiri Steaks, and pat the salt in."
+        "instruction": "Use \u00bd tsp of Himalayan Pink Salt per 1 kg of Tenggiri Steaks. Sprinkle Himalayan Pink Salt on both sides of the flesh of the Tenggiri Steaks, and pat the salt in."
       },
       {
         "step_no": 3,
@@ -6897,14 +6976,15 @@
       },
       {
         "step_no": 6,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Madras Spiced Tenggiri Steaks” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cMadras Spiced Tenggiri Steaks\u201d on the sticker."
       },
       {
         "step_no": 7,
         "instruction": "Tag expiry date to be 3 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F412"
   },
   {
     "recipe_id": "R081",
@@ -6925,7 +7005,7 @@
         "line_no": 2,
         "type": "ingredient",
         "item": "Himalayan Pink Salt",
-        "qty": "½ tsp"
+        "qty": "\u00bd tsp"
       },
       {
         "line_no": 3,
@@ -6947,7 +7027,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Use ½ tsp of Himalayan Pink Salt per 1 kg of Senangin Steaks. Sprinkle Himalayan Pink Salt on both sides of the flesh of the Senangin Steaks, and pat the salt in."
+        "instruction": "Use \u00bd tsp of Himalayan Pink Salt per 1 kg of Senangin Steaks. Sprinkle Himalayan Pink Salt on both sides of the flesh of the Senangin Steaks, and pat the salt in."
       },
       {
         "step_no": 3,
@@ -6963,14 +7043,15 @@
       },
       {
         "step_no": 6,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Madras Spiced Threadfin Steaks” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cMadras Spiced Threadfin Steaks\u201d on the sticker."
       },
       {
         "step_no": 7,
         "instruction": "Tag expiry date to be 3 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F496"
   },
   {
     "recipe_id": "R082",
@@ -7007,7 +7088,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Use ½ tsp of Himalayan Pink Salt per 1 kg ofBarramundi/Siakap Fillets. Sprinkle Himalayan Pink Salt on all sides of the flesh of the Barramundi/Siakap Fillets, and pat the salt in."
+        "instruction": "Use \u00bd tsp of Himalayan Pink Salt per 1 kg ofBarramundi/Siakap Fillets. Sprinkle Himalayan Pink Salt on all sides of the flesh of the Barramundi/Siakap Fillets, and pat the salt in."
       },
       {
         "step_no": 3,
@@ -7019,20 +7100,21 @@
       },
       {
         "step_no": 5,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “Mesquite Spiced Seabass Fillets” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cMesquite Spiced Seabass Fillets\u201d on the sticker."
       },
       {
         "step_no": 6,
         "instruction": "Tag expiry date to be 3 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F413"
   },
   {
     "recipe_id": "R083",
     "section": "SEAFOOD",
     "section_code": "S",
-    "recipe_name": "UDANG GALAH CREOLE – BUTTER BASTED BBQ LIVE",
+    "recipe_name": "UDANG GALAH CREOLE \u2013 BUTTER BASTED BBQ LIVE",
     "portion": "2 kg (10 SERVING)",
     "qty_column_label": "INGREDIENTS",
     "source_pages": "121-122",
@@ -7109,11 +7191,11 @@
       },
       {
         "step_no": 6,
-        "instruction": "Wrap tightly with cling film and store chilled at 0–4°C until dispatch"
+        "instruction": "Wrap tightly with cling film and store chilled at 0\u20134\u00b0C until dispatch"
       },
       {
         "step_no": 7,
-        "instruction": "Apply “Big Boyz BBQ Round” sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write “UDANG GALAH CREOLE – BUTTER BASTED BBQ LIVE” on the sticker."
+        "instruction": "Apply \u201cBig Boyz BBQ Round\u201d sticker to the top of the packet positioning it in the top right corner of the packet and using a permanent black marker, write \u201cUDANG GALAH CREOLE \u2013 BUTTER BASTED BBQ LIVE\u201d on the sticker."
       },
       {
         "step_no": 8,
@@ -7168,7 +7250,8 @@
         "instruction": "Garnish with chopped parsley about 1 tsp per prawn"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R084",
@@ -7238,7 +7321,8 @@
         "instruction": "Keep in a dry container for when making burger patties."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "SEAS0002"
   },
   {
     "recipe_id": "R085",
@@ -7314,7 +7398,8 @@
         "instruction": "Keep in a dry container for when making burger patties."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "SEAS0002"
   },
   {
     "recipe_id": "R086",
@@ -7380,7 +7465,8 @@
         "instruction": "Mix all ingredients in a dry bowl and store in a dry container and use for making patties"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0007"
   },
   {
     "recipe_id": "R087",
@@ -7432,7 +7518,8 @@
         "instruction": "Keep in a dry container and keep in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "SEAS0005"
   },
   {
     "recipe_id": "R088",
@@ -7472,7 +7559,8 @@
         "instruction": "Keep in airtight container."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "SEAS0004"
   },
   {
     "recipe_id": "R089",
@@ -7524,7 +7612,8 @@
         "instruction": "Keep in an airtight container."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "TF00177"
   },
   {
     "recipe_id": "R090",
@@ -7564,7 +7653,8 @@
         "instruction": "Keep in an airtight container."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R091",
@@ -7622,7 +7712,8 @@
         "instruction": "Keep in an airtight container."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "SEAS0009"
   },
   {
     "recipe_id": "R092",
@@ -7694,7 +7785,8 @@
     ],
     "notes": [
       "Edited by Menaka on 30.3.2026 - Increased Himalayan Pink Salt from 25g to 33g"
-    ]
+    ],
+    "item_code": "SEAS0006"
   },
   {
     "recipe_id": "R093",
@@ -7734,7 +7826,8 @@
         "instruction": "Keep in an airtight container."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R094",
@@ -7810,7 +7903,8 @@
         "instruction": "Stir using the whisker for 5min till the Salt & Sugar Dissolve completely."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0001"
   },
   {
     "recipe_id": "R095",
@@ -7922,7 +8016,8 @@
         "instruction": "Stir using the whisker for 5min. Edit, we are adding brown sugar because current taste is sour , we added 180gm I want to test the salt level to 90gm of salt (one batch) I add 150 gm of yoghourt (one batch) - updated by Ananth 05/08/2024"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0002"
   },
   {
     "recipe_id": "R096",
@@ -8028,7 +8123,8 @@
         "instruction": "Stir using the whisker for 5min."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R097",
@@ -8162,7 +8258,8 @@
         "instruction": "Stir using the whisker for 5min. Add in Liquid Smoke 40g, Soy Sauce 80g, Adjust Salt from 60g to 120g, Sugar from 75g to 120g"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0004"
   },
   {
     "recipe_id": "R098",
@@ -8226,7 +8323,8 @@
         "instruction": "Stir using the whisker for 5min. Adjust Salt from 290g to 170gm, Dry Rosemary from 92g to 70gm -Ananth 16/08/2024"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0005"
   },
   {
     "recipe_id": "R099",
@@ -8272,7 +8370,8 @@
         "instruction": "Stir using the whisker for 5min."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0006"
   },
   {
     "recipe_id": "R100",
@@ -8318,7 +8417,8 @@
         "instruction": "Stir using the whisker for 5min. Adjustment on Liquid Smoke from 15g to 50G- Updated by Ananth 06/08/2024 Adjust Chicken stock from 1.25tbsp to 2tbsp, add salt 1tsp. -Updated by Ananth 16/08/2024"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0008"
   },
   {
     "recipe_id": "R101",
@@ -8400,7 +8500,8 @@
         "instruction": "Stir using the whisker for 5min."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0009"
   },
   {
     "recipe_id": "R102",
@@ -8476,7 +8577,8 @@
         "instruction": "Stir using the whisker for 5min. Replace Black Pepper to White Pepper Powder 50gm, Adjust Garlic Chop from 540g to 300gm, Garlic Powder from 180g to 100g, add Onion Powder 100g, add Liquid Smoke 40g, add Salt 30g - Updated by Ananth 06/08/2024 Adjust salt to 40gm - Ananth 16/08/2024 Add in Caramel Dark Soy Sauce 80gm - Ananth 16/10/2024"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0010"
   },
   {
     "recipe_id": "R103",
@@ -8528,7 +8630,8 @@
         "instruction": "Stir using the whisker for 5min."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0011"
   },
   {
     "recipe_id": "R104",
@@ -8670,7 +8773,8 @@
         "instruction": "Stir using the whisker for 5min. Edit, we are adding brown sugar because current taste is sour , we added 180gm additional with new recipe being 360gm. Testing to increase salt to 50gm - updated by Ananth 05/08/2024"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0012"
   },
   {
     "recipe_id": "R105",
@@ -8734,7 +8838,8 @@
         "instruction": "Stir using the whisker for 5min. Change Salt from 1tbsp to 1tsp, Mince Garlic from 90g to 50g, Mince Ginger from 90g to 50g, Remove Fish stock 3/4tsp"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R106",
@@ -8794,7 +8899,8 @@
         "instruction": "For use in garlic bread and others"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0013"
   },
   {
     "recipe_id": "R107",
@@ -8840,7 +8946,8 @@
         "instruction": "Stir using the whisker for 5min."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "MAR0014"
   },
   {
     "recipe_id": "R108",
@@ -8860,7 +8967,7 @@
       {
         "line_no": 2,
         "type": "ingredient",
-        "item": "BBQ SAUCE WITH GUINNESS REDUCTION(REFER BULK VIN’S BULK RECIPE)",
+        "item": "BBQ SAUCE WITH GUINNESS REDUCTION(REFER BULK VIN\u2019S BULK RECIPE)",
         "qty": "160GM"
       },
       {
@@ -8896,7 +9003,8 @@
         "instruction": "Tag expiry date to be 5 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "BBQ 17"
   },
   {
     "recipe_id": "R109",
@@ -8916,7 +9024,7 @@
       {
         "line_no": 2,
         "type": "ingredient",
-        "item": "Bird’s eye chili or any hot chili): chopped",
+        "item": "Bird\u2019s eye chili or any hot chili): chopped",
         "qty": "10-15 (approx. 50-75 grams)"
       },
       {
@@ -9001,7 +9109,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Red bell peppers: , roasted 4 large (approx. 800 grams) and chopped Bird’s eye chili or any hot 10-15 (approx. 50-75 grams) chili): chopped Garlic: , minced 10 cloves (approx. 30 grams) Lemon juice: 120 ml (8 tablespoons) Olive oil: 240 ml (16 tablespoons) White vinegar: 120 ml (8 tablespoons) Paprika: 2 tablespoons (approx. 14 grams) Salt: 2 tablespoons (approx. 36 grams) Brown sugar: 2 tablespoons (approx. 28 grams) Oregano: 1 tablespoon (approx. 3 grams) Thyme: 1 tablespoon (approx. 3 grams) Bay leaves: 3 (approx. 2 grams) Black pepper: 1 tablespoon (approx. 6 grams) Cayenne pepper: 1 teaspoon (approx. 2 grams, optional for extra heat) Onion: 1 large (approx. 150 grams), chopped"
+        "instruction": "Red bell peppers: , roasted 4 large (approx. 800 grams) and chopped Bird\u2019s eye chili or any hot 10-15 (approx. 50-75 grams) chili): chopped Garlic: , minced 10 cloves (approx. 30 grams) Lemon juice: 120 ml (8 tablespoons) Olive oil: 240 ml (16 tablespoons) White vinegar: 120 ml (8 tablespoons) Paprika: 2 tablespoons (approx. 14 grams) Salt: 2 tablespoons (approx. 36 grams) Brown sugar: 2 tablespoons (approx. 28 grams) Oregano: 1 tablespoon (approx. 3 grams) Thyme: 1 tablespoon (approx. 3 grams) Bay leaves: 3 (approx. 2 grams) Black pepper: 1 tablespoon (approx. 6 grams) Cayenne pepper: 1 teaspoon (approx. 2 grams, optional for extra heat) Onion: 1 large (approx. 150 grams), chopped"
       },
       {
         "step_no": 2,
@@ -9064,7 +9172,8 @@
         "instruction": "For marinating, use about 100-150 grams of marinade per 1 kg of meat or vegetables. This recipe should yield approximately 1 kg of peri peri marinade, perfect for multiple uses. Adjust the number of chili peppers and cayenne pepper based on your heat preference."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R110",
@@ -9121,7 +9230,7 @@
         "line_no": 8,
         "type": "ingredient",
         "item": "Plain Flour",
-        "qty": "⅓ cup (80g)"
+        "qty": "\u2153 cup (80g)"
       },
       {
         "line_no": 9,
@@ -9149,7 +9258,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Season the Chicken Mixture: Add mince to a mixing bowl. Add ½ tsp Black Pepper Coarse, ½ tsp Garlic Powder, ½ tsp Onion Powder, ½ tspPaprika Powder, 1 tsp Himalayan Pink Salt per 1kg of mince. Wearing gloves, use your hands to mix well till fully incorporated."
+        "instruction": "Season the Chicken Mixture: Add mince to a mixing bowl. Add \u00bd tsp Black Pepper Coarse, \u00bd tsp Garlic Powder, \u00bd tsp Onion Powder, \u00bd tspPaprika Powder, 1 tsp Himalayan Pink Salt per 1kg of mince. Wearing gloves, use your hands to mix well till fully incorporated."
       },
       {
         "step_no": 3,
@@ -9189,14 +9298,15 @@
       },
       {
         "step_no": 12,
-        "instruction": "Attach “Chicken Nugget” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cChicken Nugget\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 13,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in the freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F300"
   },
   {
     "recipe_id": "R111",
@@ -9247,7 +9357,7 @@
         "line_no": 7,
         "type": "ingredient",
         "item": "Plain Flour",
-        "qty": "½ cup (100g)"
+        "qty": "\u00bd cup (100g)"
       },
       {
         "line_no": 8,
@@ -9269,7 +9379,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Season the Fish: Season the fish fillets with ½ tsp White Pepper Powder, ½ tsp Paprika Powder, 1 tsp Himalayan Pink Salt, 1tbsp Fish Stock & add a little lemon zest for a fresh zing. Wearing gloves, use your hands to mix well till fully incorporated."
+        "instruction": "Season the Fish: Season the fish fillets with \u00bd tsp White Pepper Powder, \u00bd tsp Paprika Powder, 1 tsp Himalayan Pink Salt, 1tbsp Fish Stock & add a little lemon zest for a fresh zing. Wearing gloves, use your hands to mix well till fully incorporated."
       },
       {
         "step_no": 3,
@@ -9305,14 +9415,15 @@
       },
       {
         "step_no": 11,
-        "instruction": "Attach “Fish Fingers” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cFish Fingers\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 12,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in the freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F568"
   },
   {
     "recipe_id": "R112",
@@ -9363,7 +9474,7 @@
         "line_no": 7,
         "type": "ingredient",
         "item": "Plain Flour",
-        "qty": "½ cup (100g)"
+        "qty": "\u00bd cup (100g)"
       },
       {
         "line_no": 8,
@@ -9385,7 +9496,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Season the Fish: Season the fish fillets with ½ tsp White Pepper Powder, ½ tsp Paprika Powder, 1 tsp Himalayan Pink Salt, 1tbsp Fish Stock & add a little lemon zest for a fresh zing. Wearing gloves, use your hands to mix well till fully incorporated."
+        "instruction": "Season the Fish: Season the fish fillets with \u00bd tsp White Pepper Powder, \u00bd tsp Paprika Powder, 1 tsp Himalayan Pink Salt, 1tbsp Fish Stock & add a little lemon zest for a fresh zing. Wearing gloves, use your hands to mix well till fully incorporated."
       },
       {
         "step_no": 3,
@@ -9421,14 +9532,15 @@
       },
       {
         "step_no": 11,
-        "instruction": "Attach “Fish Fillet” ear tags to the top of the packet using a stapler."
+        "instruction": "Attach \u201cFish Fillet\u201d ear tags to the top of the packet using a stapler."
       },
       {
         "step_no": 12,
         "instruction": "Tag expiry date to be 3 months from the date of production. Store in the freezer."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F572"
   },
   {
     "recipe_id": "R113",
@@ -9499,10 +9611,11 @@
       },
       {
         "step_no": 9,
-        "instruction": "Apply “Paprika Garlic Chicken Schnitzel” sticker on the center of the packaging, tag expiry date to be 3 days from the date of production. Store in chiller."
+        "instruction": "Apply \u201cPaprika Garlic Chicken Schnitzel\u201d sticker on the center of the packaging, tag expiry date to be 3 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R114",
@@ -9563,16 +9676,17 @@
       },
       {
         "step_no": 8,
-        "instruction": "Apply “Panko Garlic Butter Dory Fillets” sticker on the center of the packaging, tag expiry date to be 3 days from the date of production. Store in chiller."
+        "instruction": "Apply \u201cPanko Garlic Butter Dory Fillets\u201d sticker on the center of the packaging, tag expiry date to be 3 days from the date of production. Store in chiller."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "F383"
   },
   {
     "recipe_id": "R115",
     "section": "FROZEN",
     "section_code": "F",
-    "recipe_name": "WESTERN KIDS PASTA MIX Category: Bulk – Pre-Seasoned Minced Protein Usage: Pasta sauces (Bolognese, Carbonara-style, Cream Sauces), Rice, Patties Batch Size: 1 kg (4 × 250 g packs) Storage: Frozen ≤ –18°C Shelf Life: Up to 3 months (vacuum packed) Thawing: Chiller thaw ≤4°C overnight Allergens: None (unless dairy added during cooking) Portion Size: 250 g per pack Insert image here",
+    "recipe_name": "WESTERN KIDS PASTA MIX Category: Bulk \u2013 Pre-Seasoned Minced Protein Usage: Pasta sauces (Bolognese, Carbonara-style, Cream Sauces), Rice, Patties Batch Size: 1 kg (4 \u00d7 250 g packs) Storage: Frozen \u2264 \u201318\u00b0C Shelf Life: Up to 3 months (vacuum packed) Thawing: Chiller thaw \u22644\u00b0C overnight Allergens: None (unless dairy added during cooking) Portion Size: 250 g per pack Insert image here",
     "portion": "",
     "qty_column_label": "INGREDIENTS",
     "source_pages": "158-159",
@@ -9580,13 +9694,13 @@
       {
         "line_no": 1,
         "type": "ingredient",
-        "item": "Chicken/Beef/Lamb (Mince) -cold ≤4°C",
+        "item": "Chicken/Beef/Lamb (Mince) -cold \u22644\u00b0C",
         "qty": "750 g"
       },
       {
         "line_no": 2,
         "type": "ingredient",
-        "item": "Carrot (Minced 6–8 mm plate)",
+        "item": "Carrot (Minced 6\u20138 mm plate)",
         "qty": "150 g"
       },
       {
@@ -9605,7 +9719,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Chicken/Beef/Lamb (Mince) 750 g -cold ≤4°C Carrot (Minced 6–8 mm plate) 150 g Yellow Onion ( Minced 6-8 mm 60 g plate) Olive oil 20 g"
+        "instruction": "Chicken/Beef/Lamb (Mince) 750 g -cold \u22644\u00b0C Carrot (Minced 6\u20138 mm plate) 150 g Yellow Onion ( Minced 6-8 mm 60 g plate) Olive oil 20 g"
       },
       {
         "step_no": 2,
@@ -9617,7 +9731,7 @@
       },
       {
         "step_no": 4,
-        "instruction": "Fine salt 8–9 g (≈ 1½ tsp) Onion powder 2 g (≈ 1 tsp) Garlic powder 1 g (≈ ½ tsp) Dried parsley (fine) 1.5 g (≈ 1½ tsp) White pepper 0.5 g (≈ ¼ tsp) Nutmeg (ground) 0.15 g (tiny pinch) Spinach powder 3 g (≈ 1 tsp)"
+        "instruction": "Fine salt 8\u20139 g (\u2248 1\u00bd tsp) Onion powder 2 g (\u2248 1 tsp) Garlic powder 1 g (\u2248 \u00bd tsp) Dried parsley (fine) 1.5 g (\u2248 1\u00bd tsp) White pepper 0.5 g (\u2248 \u00bc tsp) Nutmeg (ground) 0.15 g (tiny pinch) Spinach powder 3 g (\u2248 1 tsp)"
       },
       {
         "step_no": 5,
@@ -9625,11 +9739,11 @@
       },
       {
         "step_no": 6,
-        "instruction": "TO BE DONE AHEAD OF TIME - Ensure meat temperature ≤4°C - Peel and rough-cut carrot and onion - Prepare meat mincer with 6–8 mm plate - Pre-weigh all dry ingredient"
+        "instruction": "TO BE DONE AHEAD OF TIME - Ensure meat temperature \u22644\u00b0C - Peel and rough-cut carrot and onion - Prepare meat mincer with 6\u20138 mm plate - Pre-weigh all dry ingredient"
       },
       {
         "step_no": 7,
-        "instruction": "Mince carrot and onion separately using a 6–8 mm plate, one pass only."
+        "instruction": "Mince carrot and onion separately using a 6\u20138 mm plate, one pass only."
       },
       {
         "step_no": 8,
@@ -9665,7 +9779,7 @@
       },
       {
         "step_no": 16,
-        "instruction": "Vacuum pack flat (≤3 cm thickness)"
+        "instruction": "Vacuum pack flat (\u22643 cm thickness)"
       },
       {
         "step_no": 17,
@@ -9716,13 +9830,14 @@
         "instruction": "Freezer-ready convenience"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R116",
     "section": "FROZEN",
     "section_code": "F",
-    "recipe_name": "ASIAN KIDS RICE MIX Category: Bulk – Pre-Seasoned Minced Protein Usage: Fried rice, rice bowls, noodle stir-fry, porridge, omelette fillings Batch Size: 1 kg (4 × 250 g packs) Storage: Frozen ≤ –18°C Shelf Life: Up to 3 months (vacuum packed) Thawing: Chiller thaw ≤4°C overnight Allergens: Sesame (sesame oil) Portion Size: 250 g per pack Insert image here",
+    "recipe_name": "ASIAN KIDS RICE MIX Category: Bulk \u2013 Pre-Seasoned Minced Protein Usage: Fried rice, rice bowls, noodle stir-fry, porridge, omelette fillings Batch Size: 1 kg (4 \u00d7 250 g packs) Storage: Frozen \u2264 \u201318\u00b0C Shelf Life: Up to 3 months (vacuum packed) Thawing: Chiller thaw \u22644\u00b0C overnight Allergens: Sesame (sesame oil) Portion Size: 250 g per pack Insert image here",
     "portion": "",
     "qty_column_label": "INGREDIENTS",
     "source_pages": "160-161",
@@ -9730,13 +9845,13 @@
       {
         "line_no": 1,
         "type": "ingredient",
-        "item": "Chicken/Beef/Lamb (Mince) -cold ≤4°C",
+        "item": "Chicken/Beef/Lamb (Mince) -cold \u22644\u00b0C",
         "qty": "750 g"
       },
       {
         "line_no": 2,
         "type": "ingredient",
-        "item": "Carrot (Minced 6–8 mm plate)",
+        "item": "Carrot (Minced 6\u20138 mm plate)",
         "qty": "150 g"
       },
       {
@@ -9761,7 +9876,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Chicken/Beef/Lamb (Mince) 750 g -cold ≤4°C Carrot (Minced 6–8 mm plate) 150 g Onion ( Minced 6-8 mm plate) 50 g Neutral Oil 20 g Sesame Oil 3 - 4 g"
+        "instruction": "Chicken/Beef/Lamb (Mince) 750 g -cold \u22644\u00b0C Carrot (Minced 6\u20138 mm plate) 150 g Onion ( Minced 6-8 mm plate) 50 g Neutral Oil 20 g Sesame Oil 3 - 4 g"
       },
       {
         "step_no": 2,
@@ -9773,7 +9888,7 @@
       },
       {
         "step_no": 4,
-        "instruction": "Fine salt 8–9 g (≈ 1½ tsp) Garlic powder 1 g (≈ ½ tsp) Onion powder 2 g (≈ 1 tsp) White pepper 0.5 g (≈ ¼ tsp) Ginger powder 0.4–0.5 g (≈ ¼ tsp) Spinach powder 3 g (≈ 1 tsp) Cornstarch 5 g (≈ 1½ tsp)"
+        "instruction": "Fine salt 8\u20139 g (\u2248 1\u00bd tsp) Garlic powder 1 g (\u2248 \u00bd tsp) Onion powder 2 g (\u2248 1 tsp) White pepper 0.5 g (\u2248 \u00bc tsp) Ginger powder 0.4\u20130.5 g (\u2248 \u00bc tsp) Spinach powder 3 g (\u2248 1 tsp) Cornstarch 5 g (\u2248 1\u00bd tsp)"
       },
       {
         "step_no": 5,
@@ -9781,11 +9896,11 @@
       },
       {
         "step_no": 6,
-        "instruction": "TO BE DONE AHEAD OF TIME - Ensure meat temperature ≤4°C - Peel and rough-cut carrot and onion - Prepare meat mincer with 6–8 mm plate - Pre-weigh all dry ingredient"
+        "instruction": "TO BE DONE AHEAD OF TIME - Ensure meat temperature \u22644\u00b0C - Peel and rough-cut carrot and onion - Prepare meat mincer with 6\u20138 mm plate - Pre-weigh all dry ingredient"
       },
       {
         "step_no": 7,
-        "instruction": "Mince carrot and onion separately using a 6–8 mm plate, one pass only."
+        "instruction": "Mince carrot and onion separately using a 6\u20138 mm plate, one pass only."
       },
       {
         "step_no": 8,
@@ -9821,7 +9936,7 @@
       },
       {
         "step_no": 16,
-        "instruction": "Vacuum pack flat (≤3 cm thickness)"
+        "instruction": "Vacuum pack flat (\u22643 cm thickness)"
       },
       {
         "step_no": 17,
@@ -9868,13 +9983,14 @@
         "instruction": "Freezer-ready convenience"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R117",
     "section": "FROZEN",
     "section_code": "F",
-    "recipe_name": "INDIAN TODDLER PROTEIN MIX Category: Bulk – Pre-Seasoned Minced Protein Usage: Soft curries, khichdi, rice bowls, mild gravies, mashable meals Batch Size: 1 kg (4 × 250 g packs) Storage: Frozen ≤ –18°C Shelf Life: Up to 3 months (vacuum packed) Thawing: Chiller thaw ≤4°C overnight Allergens: None Portion Size: 250 g per pack Insert image here",
+    "recipe_name": "INDIAN TODDLER PROTEIN MIX Category: Bulk \u2013 Pre-Seasoned Minced Protein Usage: Soft curries, khichdi, rice bowls, mild gravies, mashable meals Batch Size: 1 kg (4 \u00d7 250 g packs) Storage: Frozen \u2264 \u201318\u00b0C Shelf Life: Up to 3 months (vacuum packed) Thawing: Chiller thaw \u22644\u00b0C overnight Allergens: None Portion Size: 250 g per pack Insert image here",
     "portion": "",
     "qty_column_label": "INGREDIENTS",
     "source_pages": "162-163",
@@ -9882,13 +9998,13 @@
       {
         "line_no": 1,
         "type": "ingredient",
-        "item": "Chicken/Beef/Lamb (Mince) -cold ≤4°C",
+        "item": "Chicken/Beef/Lamb (Mince) -cold \u22644\u00b0C",
         "qty": "800 g"
       },
       {
         "line_no": 2,
         "type": "ingredient",
-        "item": "Carrot (Minced 6–8 mm plate)",
+        "item": "Carrot (Minced 6\u20138 mm plate)",
         "qty": "120 g"
       },
       {
@@ -9913,7 +10029,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Chicken/Beef/Lamb (Mince) 800 g -cold ≤4°C Carrot (Minced 6–8 mm plate) 120 g Onion ( Minced 6-8 mm plate) 40 g Curry leaves 5 g Coconut oil 15 g"
+        "instruction": "Chicken/Beef/Lamb (Mince) 800 g -cold \u22644\u00b0C Carrot (Minced 6\u20138 mm plate) 120 g Onion ( Minced 6-8 mm plate) 40 g Curry leaves 5 g Coconut oil 15 g"
       },
       {
         "step_no": 2,
@@ -9925,7 +10041,7 @@
       },
       {
         "step_no": 4,
-        "instruction": "Fine salt 8–9 g (≈ 1½ tsp) Turmeric powder 0.5 g (≈ ¼ tsp) Ginger powder 0.4 g (≈ ¼ tsp) Onion powder 1.5 g (≈ ¾ tsp) Garlic powder 0.5 g (≈ ¼ tsp) Spinach powder 2 g (≈ ¾ tsp) Cornstarch 5 g (≈ 1½ tsp) Garam masala 0.25 g (small pinch)"
+        "instruction": "Fine salt 8\u20139 g (\u2248 1\u00bd tsp) Turmeric powder 0.5 g (\u2248 \u00bc tsp) Ginger powder 0.4 g (\u2248 \u00bc tsp) Onion powder 1.5 g (\u2248 \u00be tsp) Garlic powder 0.5 g (\u2248 \u00bc tsp) Spinach powder 2 g (\u2248 \u00be tsp) Cornstarch 5 g (\u2248 1\u00bd tsp) Garam masala 0.25 g (small pinch)"
       },
       {
         "step_no": 5,
@@ -9933,11 +10049,11 @@
       },
       {
         "step_no": 6,
-        "instruction": "TO BE DONE AHEAD OF TIME - Ensure meat temperature ≤4°C - Peel and rough-cut carrot and onion - Prepare meat mincer with 6–8 mm plate - Pre-weigh all dry ingredient"
+        "instruction": "TO BE DONE AHEAD OF TIME - Ensure meat temperature \u22644\u00b0C - Peel and rough-cut carrot and onion - Prepare meat mincer with 6\u20138 mm plate - Pre-weigh all dry ingredient"
       },
       {
         "step_no": 7,
-        "instruction": "Mince carrot and onion separately using a 6–8 mm plate, one pass only."
+        "instruction": "Mince carrot and onion separately using a 6\u20138 mm plate, one pass only."
       },
       {
         "step_no": 8,
@@ -9973,7 +10089,7 @@
       },
       {
         "step_no": 16,
-        "instruction": "Vacuum pack flat (≤3 cm thickness)"
+        "instruction": "Vacuum pack flat (\u22643 cm thickness)"
       },
       {
         "step_no": 17,
@@ -10024,13 +10140,14 @@
         "instruction": "Freezer-ready convenience"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R118",
     "section": "FROZEN",
     "section_code": "F",
-    "recipe_name": "WESTERN KIDS BURGER PATTY Category: Bulk – Kids Burger Patty Usage: Burger buns, sliders, rice plates, kids’ meals Batch Size: 1 kg (14–16 patties) Storage: Frozen ≤ –18°C Shelf Life: Up to 3 months (vacuum packed) Thawing: Chiller thaw ≤4°C overnight Allergens: None (unless dairy added during serving) Portion Size: 60–70 g per patty Insert image here",
+    "recipe_name": "WESTERN KIDS BURGER PATTY Category: Bulk \u2013 Kids Burger Patty Usage: Burger buns, sliders, rice plates, kids\u2019 meals Batch Size: 1 kg (14\u201316 patties) Storage: Frozen \u2264 \u201318\u00b0C Shelf Life: Up to 3 months (vacuum packed) Thawing: Chiller thaw \u22644\u00b0C overnight Allergens: None (unless dairy added during serving) Portion Size: 60\u201370 g per patty Insert image here",
     "portion": "",
     "qty_column_label": "INGREDIENTS",
     "source_pages": "164-165",
@@ -10038,13 +10155,13 @@
       {
         "line_no": 1,
         "type": "ingredient",
-        "item": "Chicken/Beef (Mince) -cold ≤4°C",
+        "item": "Chicken/Beef (Mince) -cold \u22644\u00b0C",
         "qty": "750 g"
       },
       {
         "line_no": 2,
         "type": "ingredient",
-        "item": "Carrot (Minced 6–8 mm plate)",
+        "item": "Carrot (Minced 6\u20138 mm plate)",
         "qty": "120 g"
       },
       {
@@ -10057,19 +10174,19 @@
         "line_no": 4,
         "type": "ingredient",
         "item": "Olive Oil",
-        "qty": "30 g (≈ 2 tbsp)"
+        "qty": "30 g (\u2248 2 tbsp)"
       },
       {
         "line_no": 5,
         "type": "ingredient",
         "item": "Cornstarch",
-        "qty": "18 g (≈ 5 tsp)"
+        "qty": "18 g (\u2248 5 tsp)"
       }
     ],
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Chicken/Beef (Mince) -cold 750 g ≤4°C Carrot (Minced 6–8 mm plate) 120 g Onion ( Minced 6-8 mm plate) 50 g Olive Oil 30 g (≈ 2 tbsp) Cornstarch 18 g (≈ 5 tsp)"
+        "instruction": "Chicken/Beef (Mince) -cold 750 g \u22644\u00b0C Carrot (Minced 6\u20138 mm plate) 120 g Onion ( Minced 6-8 mm plate) 50 g Olive Oil 30 g (\u2248 2 tbsp) Cornstarch 18 g (\u2248 5 tsp)"
       },
       {
         "step_no": 2,
@@ -10081,7 +10198,7 @@
       },
       {
         "step_no": 4,
-        "instruction": "Fine salt 8–9 g (≈ 1½ tsp) Onion powder 2 g (≈ 1 tsp) Garlic powder 1 g (≈ ½ tsp) White pepper 0.4 g (small pinch) Dried parsley (fine) 1 g (≈ 1 tsp) Spinach powder 3 g (≈ 1 tsp)"
+        "instruction": "Fine salt 8\u20139 g (\u2248 1\u00bd tsp) Onion powder 2 g (\u2248 1 tsp) Garlic powder 1 g (\u2248 \u00bd tsp) White pepper 0.4 g (small pinch) Dried parsley (fine) 1 g (\u2248 1 tsp) Spinach powder 3 g (\u2248 1 tsp)"
       },
       {
         "step_no": 5,
@@ -10089,11 +10206,11 @@
       },
       {
         "step_no": 6,
-        "instruction": "TO BE DONE AHEAD OF TIME - Ensure meat temperature ≤4°C - Peel and rough-cut carrot and onion - Prepare meat mincer with 6–8 mm plate - Pre-weigh all dry ingredient"
+        "instruction": "TO BE DONE AHEAD OF TIME - Ensure meat temperature \u22644\u00b0C - Peel and rough-cut carrot and onion - Prepare meat mincer with 6\u20138 mm plate - Pre-weigh all dry ingredient"
       },
       {
         "step_no": 7,
-        "instruction": "Mince carrot and onion separately using a 6–8 mm plate, one pass only."
+        "instruction": "Mince carrot and onion separately using a 6\u20138 mm plate, one pass only."
       },
       {
         "step_no": 8,
@@ -10121,7 +10238,7 @@
       },
       {
         "step_no": 14,
-        "instruction": "Portion 60–70 g per patty"
+        "instruction": "Portion 60\u201370 g per patty"
       },
       {
         "step_no": 15,
@@ -10161,7 +10278,7 @@
       },
       {
         "step_no": 24,
-        "instruction": "After cooking: Must -Juicy centre, Soft bite, No crumble RETAIL NAME & LABEL (REFERENCE) Product Name: Western Kids Burger Patty Short Description (Front of Pack): Soft, juicy burger patties made especially for kids, with hidden vegetables. Back-of-Pack Usage: Perfect for burgers, sliders, or simple kids’ meals. Mildly seasoned and freezer-ready. Key Claims (Optional):"
+        "instruction": "After cooking: Must -Juicy centre, Soft bite, No crumble RETAIL NAME & LABEL (REFERENCE) Product Name: Western Kids Burger Patty Short Description (Front of Pack): Soft, juicy burger patties made especially for kids, with hidden vegetables. Back-of-Pack Usage: Perfect for burgers, sliders, or simple kids\u2019 meals. Mildly seasoned and freezer-ready. Key Claims (Optional):"
       },
       {
         "step_no": 25,
@@ -10176,7 +10293,8 @@
         "instruction": "No artificial colours"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R119",
@@ -10232,7 +10350,8 @@
         "instruction": "Stir well till all the butter is completely melted & blend well with the Baked bean."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "DIY022"
   },
   {
     "recipe_id": "R120",
@@ -10275,7 +10394,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Cut of the root of theSalad Lettuce Duo’s, & rinse in the water."
+        "instruction": "Cut of the root of theSalad Lettuce Duo\u2019s, & rinse in the water."
       },
       {
         "step_no": 3,
@@ -10292,7 +10411,8 @@
     ],
     "notes": [
       "Date: 11/4/2026 Innovated and Edited by: ulia"
-    ]
+    ],
+    "item_code": ""
   },
   {
     "recipe_id": "R121",
@@ -10318,7 +10438,7 @@
       {
         "line_no": 3,
         "type": "ingredient",
-        "item": "Vin’s BBQ Sauce",
+        "item": "Vin\u2019s BBQ Sauce",
         "qty": "100gm"
       },
       {
@@ -10410,7 +10530,8 @@
     ],
     "notes": [
       "Date: 12/3/2024 Innovated and Edited by: Culinary Innovator Navin Karu/sujan/ananth"
-    ]
+    ],
+    "item_code": "RAYA001"
   },
   {
     "recipe_id": "R122",
@@ -10500,7 +10621,8 @@
     ],
     "notes": [
       "Date: 12/3/2024 Innovated and Edited by: Culinary Innovator Navin Karu/sujan/ananth"
-    ]
+    ],
+    "item_code": ""
   },
   {
     "recipe_id": "R123",
@@ -10610,7 +10732,8 @@
     ],
     "notes": [
       "Date: 12/3/2024 Innovated and Edited by: Culinary Innovator Navin Karu/sujan/ananth"
-    ]
+    ],
+    "item_code": "RAYA005"
   },
   {
     "recipe_id": "R124",
@@ -10672,7 +10795,7 @@
       {
         "line_no": 9,
         "type": "ingredient",
-        "item": "Vin’s Onion Compote",
+        "item": "Vin\u2019s Onion Compote",
         "qty": "1 tbsp"
       },
       {
@@ -10716,7 +10839,8 @@
     ],
     "notes": [
       "Date: 12/3/2024 Innovated and Edited by: Culinary Innovator Navin Karu/sujan/ananth"
-    ]
+    ],
+    "item_code": "RAYA004"
   },
   {
     "recipe_id": "R125",
@@ -10737,7 +10861,7 @@
         "line_no": 2,
         "type": "ingredient",
         "item": "NZ unsalted butter",
-        "qty": "½ tbsp"
+        "qty": "\u00bd tbsp"
       },
       {
         "line_no": 3,
@@ -10785,7 +10909,7 @@
         "line_no": 10,
         "type": "ingredient",
         "item": "NZ unsalted butter",
-        "qty": "½ tbsp"
+        "qty": "\u00bd tbsp"
       },
       {
         "line_no": 11,
@@ -10848,7 +10972,8 @@
     ],
     "notes": [
       "Date: 12/3/2024 Innovated and Edited by: Culinary Innovator Navin Karu/sujan/ananth"
-    ]
+    ],
+    "item_code": ""
   },
   {
     "recipe_id": "R126",
@@ -10897,7 +11022,7 @@
       },
       {
         "step_no": 2,
-        "instruction": "Prepare the condiments — mayonnaise, onion compote, and honey mustard — for standby use."
+        "instruction": "Prepare the condiments \u2014 mayonnaise, onion compote, and honey mustard \u2014 for standby use."
       },
       {
         "step_no": 3,
@@ -10925,7 +11050,7 @@
       },
       {
         "step_no": 9,
-        "instruction": "Tap or knock the griller gently to check if the patty sticks.A cooked patty will lift or “jump” slightly from the griller."
+        "instruction": "Tap or knock the griller gently to check if the patty sticks.A cooked patty will lift or \u201cjump\u201d slightly from the griller."
       },
       {
         "step_no": 10,
@@ -10946,7 +11071,8 @@
     ],
     "notes": [
       "Take note: this recipe can be used for Jamaican chicken patty, Big Boyz Classic Lamb Patty, Big Boyz Classic Lamb Patty and all type of Vegan patty"
-    ]
+    ],
+    "item_code": ""
   },
   {
     "recipe_id": "R127",
@@ -11022,7 +11148,8 @@
     ],
     "notes": [
       "Take note: this recipe can be used for ALL TYPE of sausages in Big Boyz Barbeque"
-    ]
+    ],
+    "item_code": ""
   },
   {
     "recipe_id": "R128",
@@ -11067,7 +11194,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Set the wok with oil until it reach 180°C. Add the frozen fries and cook for 8 minutes. Add the end of 20 second of the process, fry the rosemary sprigs."
+        "instruction": "Set the wok with oil until it reach 180\u00b0C. Add the frozen fries and cook for 8 minutes. Add the end of 20 second of the process, fry the rosemary sprigs."
       },
       {
         "step_no": 2,
@@ -11082,7 +11209,8 @@
         "instruction": "Add Garlic Chili Aioli sauce in a sauce bowl and place it next to the fries near the heating lamp"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "BB114"
   },
   {
     "recipe_id": "R129",
@@ -11121,7 +11249,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Set the wok with oil until it reach 180°C. Add the frozen nugget and cook for 4-5 minutes."
+        "instruction": "Set the wok with oil until it reach 180\u00b0C. Add the frozen nugget and cook for 4-5 minutes."
       },
       {
         "step_no": 2,
@@ -11136,7 +11264,8 @@
         "instruction": "Add Big Boyz BBQ sauce in a sauce bowl and place it next to the nugget near the heating lamp"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R130",
@@ -11156,7 +11285,7 @@
       {
         "line_no": 2,
         "type": "ingredient",
-        "item": "Vin’s Tartar Sauce",
+        "item": "Vin\u2019s Tartar Sauce",
         "qty": "350g"
       },
       {
@@ -11169,7 +11298,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Set the wok with oil until it reach 180°C. Add the frozen fish finger and cook for 4-5 minutes until golden crispy brown"
+        "instruction": "Set the wok with oil until it reach 180\u00b0C. Add the frozen fish finger and cook for 4-5 minutes until golden crispy brown"
       },
       {
         "step_no": 2,
@@ -11184,7 +11313,8 @@
         "instruction": "Add Vins homemade Tartar sauce in a sauce bowl and place it next to the fish finger near the heating lamp"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": ""
   },
   {
     "recipe_id": "R131",
@@ -11259,7 +11389,7 @@
     "steps": [
       {
         "step_no": 1,
-        "instruction": "Cut burger bun horizontally in the middle, butter burger bun on each side with ½ tsp butter."
+        "instruction": "Cut burger bun horizontally in the middle, butter burger bun on each side with \u00bd tsp butter."
       },
       {
         "step_no": 2,
@@ -11330,7 +11460,8 @@
         "instruction": "[SIGNATURE SAUCE 1 TBSP]"
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "V606"
   },
   {
     "recipe_id": "R132",
@@ -11418,6 +11549,7 @@
         "instruction": "Serve with coleslaw and sauerkraut on side."
       }
     ],
-    "notes": []
+    "notes": [],
+    "item_code": "V604"
   }
 ]
