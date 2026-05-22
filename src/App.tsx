@@ -547,6 +547,27 @@ function getLocalYMD(d = new Date()) {
    THEME SYSTEM — dark / light palettes + context
 ═══════════════════════════════════════════════════════════════ */
 const ThemeCtx = React.createContext(true); // true = dark
+function useTheme(){
+  const isDark=React.useContext(ThemeCtx);
+  return {
+    isDark,
+    divider:  isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)",
+    subBg:    isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.04)",
+    cardBg:   isDark?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.025)",
+    chipBg:   isDark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.06)",
+    footerBg: isDark?"rgba(4,6,14,0.8)":"rgba(240,242,250,0.97)",
+    headerBg: isDark?"rgba(6,8,16,0.85)":"rgba(245,247,251,0.97)",
+    panelBg:  isDark?"rgba(6,9,18,0.7)":"rgba(240,244,252,0.92)",
+    editBg:   isDark?"#080C14":"#EEF2FC",
+    editBdr:  isDark?"#1E2A44":"#CBD5E1",
+    closeBg:  isDark?"rgba(255,255,255,0.05)":"rgba(0,0,0,0.06)",
+    closeBdr: isDark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.09)",
+    trackBg:  isDark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.08)",
+    svgTrack: isDark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.10)",
+    noteBg:   isDark?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)",
+    noteBdr:  isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)",
+  };
+}
 
 const DC={ // dark palette (default)
   w: "#141928", off: "#0E1018", beige: "#0E1018", beigeD: "#1B2238",
@@ -560,7 +581,7 @@ const DC={ // dark palette (default)
 };
 const LC={ // light palette
   w: "#FFFFFF", off: "#F2F4FA", beige: "#F2F4FA", beigeD: "#E4EAF4",
-  ch: "#0F172A", chM: "#334155", chL: "#64748B", chXL: "#CBD5E1",
+  ch: "#0F172A", chM: "#334155", chL: "#64748B", chXL: "#7A8BA8",
   bdr: "#CBD5E1", bdrL: "#E2E8F4",
   ol: "#D31118", olDk: "#A50D12", olBg: "rgba(211,17,24,0.09)", olBgD: "rgba(211,17,24,0.18)",
   am: "#D97706", amDk: "#92400E", amBg: "rgba(217,119,6,0.09)", amBgD: "rgba(217,119,6,0.18)",
@@ -659,6 +680,7 @@ function ProgressRing({ radius, stroke, progress, color }) {
 }
 
 function AdminDonutChart({ packed, pending, issues }) {
+  const th=useTheme();
   const total = packed + pending + issues || 1;
   const radius = 40; const circumference = 2 * Math.PI * radius;
   const pPacked = (packed/total)*circumference; const pIssues = (issues/total)*circumference;
@@ -669,7 +691,7 @@ function AdminDonutChart({ packed, pending, issues }) {
       <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(211,17,24,0.25),transparent)",pointerEvents:"none"}}/>
       <div style={{position:"relative", width:100, height:100, flexShrink:0}}>
         <svg height="100" width="100" style={{transform: "rotate(-90deg)"}}>
-          <circle stroke="rgba(255,255,255,0.06)" fill="transparent" strokeWidth="13" r={radius} cx="50" cy="50" />
+          <circle stroke={th.svgTrack} fill="transparent" strokeWidth="13" r={radius} cx="50" cy="50" />
           <circle stroke={C.rd} fill="transparent" strokeWidth="13" strokeDasharray={`${pIssues} ${circumference}`} style={{transition:"all 1.2s cubic-bezier(0.16,1,0.3,1)"}} strokeLinecap="round" r={radius} cx="50" cy="50" />
           <circle stroke={C.ol} fill="transparent" strokeWidth="13" strokeDasharray={`${pPacked} ${circumference}`} strokeDashoffset={-pIssues} style={{transition:"all 1.2s cubic-bezier(0.16,1,0.3,1)"}} strokeLinecap="round" r={radius} cx="50" cy="50" />
         </svg>
@@ -737,6 +759,7 @@ function StatRow({s}){
 }
 
 function RecipeCard({name}){
+  const th=useTheme();
   const r = findRecipe(name);
   const [showSteps, setShowSteps] = useState(false);
   if(!r) return null;
@@ -753,12 +776,12 @@ function RecipeCard({name}){
       </div>
 
       <div style={{padding:"14px 16px"}}>
-        {r.section&&<div style={{fontSize:10,color:C.chL,fontWeight:700,marginBottom:10,background:"rgba(255,255,255,0.04)",borderRadius:6,padding:"4px 8px",display:"inline-block"}}>{r.section}</div>}
+        {r.section&&<div style={{fontSize:10,color:C.chL,fontWeight:700,marginBottom:10,background:th.subBg,borderRadius:6,padding:"4px 8px",display:"inline-block"}}>{r.section}</div>}
         <div style={{fontSize:10,fontWeight:800,color:C.chL,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:8}}>{r.qty_column_label||"INGREDIENTS"}</div>
         {r.ingredients && r.ingredients.map((ing,i)=>{
           if(ing.type==="stage_label"||!ing.qty) return <div key={i} style={{marginTop:10,marginBottom:6,paddingBottom:4,borderBottom:"1px solid rgba(211,17,24,0.2)",color:C.ol,fontSize:11,fontWeight:900,letterSpacing:"0.04em"}}>{ing.item}</div>;
           return(
-            <div key={i} style={{display:"flex",justifyContent:"space-between",gap:10,fontSize:12,paddingBottom:7,marginBottom:7,borderBottom:i===r.ingredients.length-1?"none":"1px solid rgba(255,255,255,0.04)"}}>
+            <div key={i} style={{display:"flex",justifyContent:"space-between",gap:10,fontSize:12,paddingBottom:7,marginBottom:7,borderBottom:i===r.ingredients.length-1?"none":`1px solid ${th.divider}`}}>
               <span style={{color:C.chM,fontWeight:600}}>{ing.item}</span>
               <span style={{color:C.ol,fontFamily:"'JetBrains Mono',monospace",fontWeight:800,flexShrink:0}}>{ing.qty}</span>
             </div>
@@ -767,12 +790,12 @@ function RecipeCard({name}){
 
         {r.steps&&r.steps.length>0&&(
           <div style={{marginTop:12}}>
-            <button onClick={()=>setShowSteps(!showSteps)} style={{background:showSteps?"rgba(211,17,24,0.15)":"rgba(255,255,255,0.04)",border:"1px solid "+(showSteps?"rgba(211,17,24,0.3)":"rgba(255,255,255,0.07)"),padding:"8px 14px",borderRadius:8,fontSize:11,fontWeight:800,color:showSteps?C.ol:C.chL,cursor:"pointer",width:"100%",fontFamily:"inherit",transition:"all 0.2s"}}>
+            <button onClick={()=>setShowSteps(!showSteps)} style={{background:showSteps?"rgba(211,17,24,0.15)":th.subBg,border:"1px solid "+(showSteps?"rgba(211,17,24,0.3)":th.divider),padding:"8px 14px",borderRadius:8,fontSize:11,fontWeight:800,color:showSteps?C.ol:C.chL,cursor:"pointer",width:"100%",fontFamily:"inherit",transition:"all 0.2s"}}>
               {showSteps?"▲ Hide Steps":"▼ View Preparation Steps"}
             </button>
             <div className={`accordion-content ${showSteps?"open":""}`} style={{marginTop:showSteps?10:0,display:"flex",flexDirection:"column",gap:8}}>
               {r.steps.map(step=>(
-                <div key={step.step_no} style={{fontSize:12,color:C.chM,lineHeight:1.55,background:"rgba(255,255,255,0.03)",padding:"12px 14px",borderRadius:8,border:"1px solid rgba(255,255,255,0.06)"}}>
+                <div key={step.step_no} style={{fontSize:12,color:C.chM,lineHeight:1.55,background:th.cardBg,padding:"12px 14px",borderRadius:8,border:`1px solid ${th.divider}`}}>
                   <strong style={{color:C.ol,display:"block",marginBottom:4,fontSize:11,letterSpacing:"0.04em"}}>STEP {step.step_no}</strong>{step.instruction}
                 </div>
               ))}
@@ -860,6 +883,7 @@ function RecipeAutocomplete({ value, onChange, onSelect, placeholder = "Search o
 }
 
 function ExtraProductionModal({ onClose, onSave, dateStr }) {
+  const th=useTheme();
   const isMobile = useIsMobile();
   const [productText, setProductText] = useState("");
   const [selectedRecipe, setSelectedRecipe] = useState({ product:"", recipeName:null, recipeId:null });
@@ -895,13 +919,13 @@ function ExtraProductionModal({ onClose, onSave, dateStr }) {
     <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.88)", backdropFilter:"blur(10px)", WebkitBackdropFilter:"blur(10px)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
       <div className="animate-fade-up modal-sheet" style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:500, maxHeight:isMobile?"94vh":"auto", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", top:0, left:"15%", right:"15%", height:1, background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.35),transparent)", pointerEvents:"none" }}/>
-        <div style={{ padding:"20px 24px", borderBottom:"1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ padding:"20px 24px", borderBottom:`1px solid ${th.divider}` }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
               <div style={{ fontSize:18, fontWeight:900, color:C.ch }}>+ Log Unplanned Production</div>
               <div style={{ fontSize:12, color:C.chL, marginTop:4 }}>Record items made outside of today's plan.</div>
             </div>
-            <button onClick={onClose} style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:14, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+            <button onClick={onClose} style={{ background:th.closeBg, border:`1px solid ${th.closeBdr}`, borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:14, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
           </div>
         </div>
 
@@ -927,7 +951,7 @@ function ExtraProductionModal({ onClose, onSave, dateStr }) {
           {err && <div style={{ color:C.rd, fontSize:12, fontWeight:700, marginTop:12, background:"rgba(220,38,38,0.1)", padding:"8px 12px", borderRadius:8 }}>{err}</div>}
         </div>
 
-        <div style={{ padding:"16px 24px", borderTop:"1px solid rgba(255,255,255,0.06)", background:"rgba(4,6,14,0.8)", display:"flex", gap:10, borderRadius:isMobile?"0":"0 0 20px 20px" }}>
+        <div style={{ padding:"16px 24px", borderTop:`1px solid ${th.divider}`, background:th.footerBg, display:"flex", gap:10, borderRadius:isMobile?"0":"0 0 20px 20px" }}>
           <Btn full onClick={onClose}>Cancel</Btn>
           <Btn full variant="amber" onClick={handleSubmit}>Save Record</Btn>
         </div>
@@ -937,6 +961,7 @@ function ExtraProductionModal({ onClose, onSave, dateStr }) {
 }
 
 function DailyProductionModal({ dayInfo, onSave, onClose }) {
+  const th=useTheme();
   const existing = dayInfo.dp;
   const isMobile = useIsMobile();
   const [items, setItems] = useState(existing?.items || []);
@@ -974,13 +999,13 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
     <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.88)", backdropFilter:"blur(10px)", WebkitBackdropFilter:"blur(10px)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
       <div className="animate-fade-up modal-sheet" style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:640, maxHeight:isMobile?"94vh":"88vh", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", top:0, left:"15%", right:"15%", height:1, background:"linear-gradient(90deg,transparent,rgba(211,17,24,0.28),transparent)", pointerEvents:"none" }}/>
-        <div style={{ padding:"20px 30px", borderBottom:"1px solid rgba(255,255,255,0.06)", flexShrink:0 }}>
+        <div style={{ padding:"20px 30px", borderBottom:`1px solid ${th.divider}`, flexShrink:0 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
               <div style={{ fontSize:20, fontWeight:900, color:C.ch }}>{existing ? "Edit" : "Create"} — {dayInfo.dayOfWeek} {dayInfo.displayDate}</div>
               <div style={{ fontSize:12, color:C.chL, marginTop:4 }}>Add items with quantities and instructions</div>
             </div>
-            <button onClick={onClose} style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"50%", width:36, height:36, cursor:"pointer", fontSize:15, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+            <button onClick={onClose} style={{ background:th.closeBg, border:`1px solid ${th.closeBdr}`, borderRadius:"50%", width:36, height:36, cursor:"pointer", fontSize:15, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
           </div>
         </div>
 
@@ -1013,9 +1038,9 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
 
           <SectionLabel text={`Items Planned (${items.length})`} />
           {items.length === 0 ? (
-            <div style={{ textAlign:"center", padding:"32px", border:"2px dashed rgba(255,255,255,0.07)", borderRadius:12, color:C.chXL, fontWeight:600 }}>No items yet</div>
+            <div style={{ textAlign:"center", padding:"32px", border:`2px dashed ${th.divider}`, borderRadius:12, color:C.chXL, fontWeight:600 }}>No items yet</div>
           ) : items.map((item) => (
-            <div key={item.id} className="animate-fade-up" style={{ padding:"14px 18px", background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:12, marginBottom:8 }}>
+            <div key={item.id} className="animate-fade-up" style={{ padding:"14px 18px", background:th.cardBg, border:`1px solid ${th.divider}`, borderRadius:12, marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                 <div>
                   <div style={{ fontSize:14, fontWeight:800, color:C.ch, marginBottom:2 }}>{item.product}</div>
@@ -1031,7 +1056,7 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
           ))}
         </div>
 
-        <div style={{ padding:"18px 30px", borderTop:"1px solid rgba(255,255,255,0.06)", background:"rgba(4,6,14,0.8)", borderRadius:isMobile?"0":"0 0 20px 20px", display:"flex", gap:12, justifyContent:"flex-end" }}>
+        <div style={{ padding:"18px 30px", borderTop:`1px solid ${th.divider}`, background:th.footerBg, borderRadius:isMobile?"0":"0 0 20px 20px", display:"flex", gap:12, justifyContent:"flex-end" }}>
           <Btn onClick={onClose}>Cancel</Btn>
           <Btn onClick={handleSubmit} variant="primary">{existing ? "Update Plan" : "Save Day Plan"}</Btn>
         </div>
@@ -1104,6 +1129,7 @@ function DailyProductionDayBlock({ dp, isLast, onShowRecipe, onUpdateItem, role 
 }
 
 function DailyProductionItemRow({ item, dpId, onShowRecipe, onUpdateItem, role }) {
+  const th=useTheme();
   const hasRecipe = !!item.recipeName;
   const isDone = item.status === 'prod_done';
   const isExtra = item.isExtra;
@@ -1158,7 +1184,7 @@ function DailyProductionItemRow({ item, dpId, onShowRecipe, onUpdateItem, role }
         )}
 
         {isCompleting && (
-          <div className="animate-fade-in" style={{ display:"flex", gap:6, alignItems:"center", background: "#080C14", padding: "6px 8px", borderRadius: 8, border: "1px solid #1E2A44" }}>
+          <div className="animate-fade-in" style={{ display:"flex", gap:6, alignItems:"center", background: th.editBg, padding: "6px 8px", borderRadius: 8, border: `1px solid ${th.editBdr}` }}>
             <input type="number" value={actualKg} onChange={e=>setActualKg(e.target.value)} placeholder="Act. kg" style={{ width: 50, padding: "6px", fontSize: 11, borderRadius: 4, background: "#111828", border: "1px solid #1E2A44", color: "#fff", outline:"none" }} />
             <span style={{ fontSize: 10, color: C.chL }}>kg</span>
             <input type="number" value={actualPkts} onChange={e=>setActualPkts(e.target.value)} placeholder="Act. pkts" style={{ width: 50, padding: "6px", fontSize: 11, borderRadius: 4, background: "#111828", border: "1px solid #1E2A44", color: "#fff", outline:"none" }} />
@@ -1182,6 +1208,7 @@ function DailyProductionItemRow({ item, dpId, onShowRecipe, onUpdateItem, role }
    MODALS & SCREENS
 ═══════════════════════════════════════════════════════════════ */
 function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel }) {
+  const th=useTheme();
   const isMobile = useIsMobile();
   return (
     <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:9999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20}}>
@@ -1191,7 +1218,7 @@ function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel 
         <div style={{fontSize:13,color:C.chL,fontWeight:500,marginBottom:20}}>Choose how to send this item to the kitchen.</div>
 
         {/* Item preview */}
-        <div style={{background:"rgba(255,255,255,0.03)",padding:"14px 16px",borderRadius:12,border:"1px solid rgba(255,255,255,0.07)",marginBottom:18}}>
+        <div style={{background:th.cardBg,padding:"14px 16px",borderRadius:12,border:`1px solid ${th.divider}`,marginBottom:18}}>
           <div style={{fontSize:10,fontWeight:800,color:C.chL,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:4}}>YOUR ITEM</div>
           <div style={{fontWeight:900,color:C.ch,fontSize:15,display:"flex",alignItems:"center",gap:8}}>
             {pendingItem.product}
@@ -1218,7 +1245,7 @@ function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel 
           </>
         )}
 
-        <div style={{paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)"}}>
+        <div style={{paddingTop:14,borderTop:`1px solid ${th.divider}`}}>
           <Btn full onClick={onCancel}>Cancel</Btn>
         </div>
       </div>
@@ -1432,6 +1459,7 @@ function PendingScreen({ request, authUser, onSignOut }) {
 }
 
 function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemoveUser, onBack, authUser, onSignOut }) {
+  const th=useTheme();
   const [tab, setTab] = useState("requests");
   const isMobile = useIsMobile();
   const pendingRequests = requests.filter(r => r.status === "pending");
@@ -1439,7 +1467,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
   return (
     <div className="animate-fade-in grain" style={{ minHeight:"100vh", display:"flex", flexDirection:"column", fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif", position:"relative", overflow:"hidden" }}>
       <PremiumBg/>
-      <div style={{ position:"relative", zIndex:2, background:"rgba(6,8,16,0.85)", borderBottom:"1px solid rgba(255,255,255,0.07)", padding:"14px 24px", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", display:"flex", alignItems:"center", gap:16, flexShrink:0 }}>
+      <div style={{ position:"relative", zIndex:2, background:th.headerBg, borderBottom:`1px solid ${th.divider}`, padding:"14px 24px", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", display:"flex", alignItems:"center", gap:16, flexShrink:0 }}>
         <button onClick={onBack} style={{ background:C.off, border:"1px solid "+C.bdrL, color:C.chM, padding:"8px 14px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>← Back</button>
         <div style={{ flex:1 }}>
           <div style={{ fontSize:16, fontWeight:900, color:C.ch }}>Control Panel</div>
@@ -1448,7 +1476,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
         <button onClick={onSignOut} style={{ background:"none", border:"1px solid "+C.bdrL, color:C.chL, padding:"6px 12px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Sign Out</button>
       </div>
 
-      <div style={{ position:"relative", zIndex:2, display:"flex", background:"rgba(6,8,16,0.7)", borderBottom:"1px solid rgba(255,255,255,0.06)", flexShrink:0, backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)" }}>
+      <div style={{ position:"relative", zIndex:2, display:"flex", background:th.panelBg, borderBottom:`1px solid ${th.divider}`, flexShrink:0, backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)" }}>
         {[{ key:"requests", label:`Pending Requests ${pendingRequests.length > 0 ? "("+pendingRequests.length+")" : ""}` }, { key:"users", label:`Manage Users (${authorizedUsers.length})` }].map(t => (
           <button key={t.key} onClick={() => setTab(t.key)} style={{ flex:1, padding:"14px 16px", background:"none", border:"none", borderBottom:"3px solid "+(tab===t.key?C.ol:"transparent"), color:tab===t.key?C.ol:C.chL, fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit", transition:"all 0.2s" }}>{t.label}</button>
         ))}
@@ -1645,6 +1673,7 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
 
 
 function NewOrderModal({onClose,onSubmit,notify}){
+  const th=useTheme();
   const isMobile = useIsMobile(); const [rest,setRest]=useState("Vins"); const [poName, setPoName] = useState(""); const [poDate, setPoDate] = useState(fmtDate()); const [delDate, setDelDate] = useState(""); const [stagedItems, setStagedItems] = useState([]);
   const [prod, setProd] = useState(""); const [qty, setQty] = useState(""); const [unit, setUnit] = useState("kg"); const [err, setErr] = useState(""); const [inputMode, setInputMode] = useState("manual"); const [bulkText, setBulkText] = useState("");
   const [editId, setEditId] = useState(null); const [ep, setEp] = useState(""); const [eq, setEq] = useState(""); const [eu, setEu] = useState("");
@@ -1683,14 +1712,14 @@ function NewOrderModal({onClose,onSubmit,notify}){
         {ITEMS_DB.filter(i => {const u=i.name.trim().toUpperCase(); return !RECIPE_DB.some(r=>r.recipe_name&&r.recipe_name.toUpperCase().trim()===u);}).map(i => <option key={i.item_code+"_"+i.name} value={i.name} label={`${i.name} · ${i.item_code}`} />)}
       </datalist>
       <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column"}}>
-        <div style={{padding:"22px 30px",borderBottom:"1px solid rgba(255,255,255,0.06)",flexShrink:0,position:"relative"}}>
+        <div style={{padding:"22px 30px",borderBottom:`1px solid ${th.divider}`,flexShrink:0,position:"relative"}}>
           <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(211,17,24,0.28),transparent)",pointerEvents:"none"}}/>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div>
               <div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Draft Purchase Order</div>
               <div style={{fontSize:13,color:C.chL,marginTop:4,fontWeight:500}}>Configure details and build your item list below.</div>
             </div>
-            <button onClick={onClose} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:15,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
+            <button onClick={onClose} style={{background:th.closeBg,border:`1px solid ${th.closeBdr}`,borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:15,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
           </div>
         </div>
         <div className="custom-scrollbar" style={{overflowY:"auto",flex:1,padding:"24px 30px"}}>
@@ -1737,9 +1766,9 @@ function NewOrderModal({onClose,onSubmit,notify}){
             </div>
           )}
         </div>
-        <div style={{padding:"18px 30px",borderTop:"1px solid rgba(255,255,255,0.06)",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0,background:"rgba(4,6,14,0.8)",borderRadius:isMobile?"0":"0 0 20px 20px"}}>
+        <div style={{padding:"18px 30px",borderTop:`1px solid ${th.divider}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0,background:th.footerBg,borderRadius:isMobile?"0":"0 0 20px 20px"}}>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <div style={{background:stagedItems.length>0?"rgba(211,17,24,0.15)":"rgba(255,255,255,0.06)",border:"1px solid "+(stagedItems.length>0?"rgba(211,17,24,0.35)":"rgba(255,255,255,0.1)"),color:stagedItems.length>0?C.ol:C.chL,borderRadius:20,padding:"4px 12px",fontSize:12,fontWeight:800,transition:"all 0.3s"}}>
+            <div style={{background:stagedItems.length>0?"rgba(211,17,24,0.15)":th.chipBg,border:"1px solid "+(stagedItems.length>0?"rgba(211,17,24,0.35)":th.divider),color:stagedItems.length>0?C.ol:C.chL,borderRadius:20,padding:"4px 12px",fontSize:12,fontWeight:800,transition:"all 0.3s"}}>
               {stagedItems.length} item{stagedItems.length!==1?"s":""}
             </div>
             {stagedItems.length===0&&<span style={{fontSize:11,color:C.chL,fontWeight:600}}>Add items above</span>}
@@ -1752,6 +1781,7 @@ function NewOrderModal({onClose,onSubmit,notify}){
 }
 
 function EditOrderModal({order, onClose, onSave, notify}){
+  const th=useTheme();
   const isMobile = useIsMobile(); const [epName, setEpName] = useState(order.poName || ""); const [epDate, setEpDate] = useState(order.orderDate || ""); const [edDate, setEdDate] = useState(order.deliveryDate || ""); const [items, setItems] = useState([...order.items]); const [editId, setEditId] = useState(null); const [ep, setEp] = useState(""); const [eq, setEq] = useState(""); const [eu, setEu] = useState(""); const [np, setNp] = useState(""); const [nq, setNq] = useState(""); const [nu, setNu] = useState("kg");
   function handleSaveInline(){ if(!ep.trim()) return; setItems(prev => prev.map(i => i.id === editId ? {...i, product: ep.trim(), qty: eq, unit: eu} : i)); setEditId(null); } function handleAddNew(e){ e.preventDefault(); if(!np.trim()) { notify("Please enter a product name", "error"); return; } setItems(prev => [{id: "item_added_"+Date.now(), product: np.trim(), qty: nq, unit: nu, status: "pending", packedQty: "", notes: ""}, ...prev]); setNp(""); setNq(""); } function handleRemove(id){ setItems(prev => prev.filter(i => i.id !== id)); } function submit(){ if(items.length === 0){ notify("Order must have at least 1 item. Delete the order instead.", "error"); return; } onSave(order.id, items, {poName: epName, orderDate: epDate, deliveryDate: edDate}); }
 
@@ -1764,14 +1794,14 @@ function EditOrderModal({order, onClose, onSave, notify}){
         {ITEMS_DB.filter(i => {const u=i.name.trim().toUpperCase(); return !RECIPE_DB.some(r=>r.recipe_name&&r.recipe_name.toUpperCase().trim()===u);}).map(i => <option key={i.item_code+"_"+i.name} value={i.name} label={`${i.name} · ${i.item_code}`} />)}
       </datalist>
       <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column"}}>
-        <div style={{padding:"22px 30px 20px",borderBottom:"1px solid rgba(255,255,255,0.06)",flexShrink:0,position:"relative"}}>
+        <div style={{padding:"22px 30px 20px",borderBottom:`1px solid ${th.divider}`,flexShrink:0,position:"relative"}}>
           <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.28),transparent)",pointerEvents:"none"}}/>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div>
               <div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Edit Live Order</div>
               <div style={{fontSize:13,color:C.chL,marginTop:4,fontWeight:500}}>Modify quantities, dates, or remove items.</div>
             </div>
-            <button onClick={onClose} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:15,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
+            <button onClick={onClose} style={{background:th.closeBg,border:`1px solid ${th.closeBdr}`,borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:15,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
           </div>
         </div>
         <div className="custom-scrollbar" style={{overflowY:"auto",flex:1,padding:"24px 30px"}}>
@@ -1794,7 +1824,7 @@ function EditOrderModal({order, onClose, onSave, notify}){
             ))}
           </div>
         </div>
-        <div style={{padding:"18px 30px",borderTop:"1px solid rgba(255,255,255,0.06)",display:"flex",justifyContent:"flex-end",alignItems:"center",gap:10,flexShrink:0,background:"rgba(4,6,14,0.8)",borderRadius:isMobile?"0":"0 0 20px 20px"}}><Btn onClick={onClose}>Cancel</Btn><Btn onClick={submit} variant="primary">✓ Update Live Order</Btn></div>
+        <div style={{padding:"18px 30px",borderTop:`1px solid ${th.divider}`,display:"flex",justifyContent:"flex-end",alignItems:"center",gap:10,flexShrink:0,background:th.footerBg,borderRadius:isMobile?"0":"0 0 20px 20px"}}><Btn onClick={onClose}>Cancel</Btn><Btn onClick={submit} variant="primary">✓ Update Live Order</Btn></div>
       </div>
     </div>
   );
@@ -1871,6 +1901,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
 }
 
 function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
+  const th=useTheme();
   const [showEdit, setShowEdit] = useState(false);
   const [qty, setQty] = useState(item.packedQty || "");
   const [notes, setNotes] = useState(item.notes || "");
@@ -1928,16 +1959,16 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
 
           {/* ── Inline edit form ── */}
           {showEdit&&item.status!=='delivered'&&(
-            <div className="animate-fade-in" style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",background:"rgba(6,9,18,0.7)",padding:"12px",borderRadius:10,border:"1px solid rgba(255,255,255,0.06)"}}>
+            <div className="animate-fade-in" style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",background:th.panelBg,padding:"12px",borderRadius:10,border:`1px solid ${th.divider}`}}>
               <input value={qty} onChange={e=>setQty(e.target.value)} placeholder="Qty sent" style={{width:90,padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontFamily:"'JetBrains Mono',monospace",fontWeight:700,flexShrink:0}}/>
               <input value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Note (optional)" style={{flex:1,minWidth:100,padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontWeight:500}}/>
-              <button onClick={()=>setShowEdit(false)} style={{padding:"8px 14px",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:7,fontSize:11,fontWeight:800,color:"#B8C4E0",cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit"}}>Done</button>
+              <button onClick={()=>setShowEdit(false)} style={{padding:"8px 14px",background:th.chipBg,border:`1px solid ${th.closeBdr}`,borderRadius:7,fontSize:11,fontWeight:800,color:C.chM,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit"}}>Done</button>
             </div>
           )}
 
           {/* ── Action area ── */}
           {item.status==='delivered'?(
-            <div style={{display:"flex",gap:8,alignItems:"center",background:"rgba(6,9,18,0.5)",padding:"10px 14px",borderRadius:10,border:"1px solid rgba(255,255,255,0.05)"}}>
+            <div style={{display:"flex",gap:8,alignItems:"center",background:th.cardBg,padding:"10px 14px",borderRadius:10,border:`1px solid ${th.divider}`}}>
               <span style={{color:"#6A7A9A",fontWeight:800,fontSize:12,flex:1,letterSpacing:"0.02em"}}>🚀 Dispatched</span>
               <button onClick={()=>commit('packed')} className="pk-chip pk-chip-reset" style={{flex:"0 0 auto",padding:"6px 14px"}}>↩ Undo</button>
             </div>
@@ -1947,7 +1978,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
               <button onClick={()=>commit('pending')} className="pk-chip pk-chip-reset" style={{flexShrink:0,padding:"13px 14px"}}>↩</button>
             </div>
           ):item.status==='short'||item.status==='oos'?(
-            <button onClick={()=>commit('pending')} style={{width:"100%",padding:"12px",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:10,fontSize:12,fontWeight:800,color:"#8896B3",cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>↻ Reset to Pending</button>
+            <button onClick={()=>commit('pending')} style={{width:"100%",padding:"12px",background:th.subBg,border:`1px solid ${th.divider}`,borderRadius:10,fontSize:12,fontWeight:800,color:C.chL,cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>↻ Reset to Pending</button>
           ):item.status==='production'?(
             <div>
               <div className="pk-cooking-state">
@@ -2068,6 +2099,7 @@ function PackingView({order, onUpdate, orders, notify}){
 }
 
 function OrderBatchCard({ batch, idx, onBatchUpdate }) {
+  const th=useTheme();
   const totalQty = batch.items.reduce((sum, it) => sum + (parseFloat(it.qty) || 0), 0);
   const batchUnit = batch.items[0]?.unit || "kg";
   const isMerged = batch.items.length > 1;
@@ -2117,9 +2149,9 @@ function OrderBatchCard({ batch, idx, onBatchUpdate }) {
         <div style={{marginBottom:18}}><RecipeCard name={batch.displayProduct}/></div>
 
         {/* Action */}
-        <div style={{display:"flex",flexDirection:"column",gap:8,paddingTop:16,borderTop:"1px solid rgba(255,255,255,0.06)"}}>
+        <div style={{display:"flex",flexDirection:"column",gap:8,paddingTop:16,borderTop:`1px solid ${th.divider}`}}>
           <button className="batch-complete-btn" onClick={()=>onBatchUpdate(batch,"prod_done")}>✓ Batch Complete — Mark Ready to Pack</button>
-          <button onClick={()=>onBatchUpdate(batch,"pending")} style={{width:"100%",padding:"10px",background:"transparent",border:"1px solid rgba(255,255,255,0.07)",borderRadius:10,fontSize:12,fontWeight:700,color:C.chL,cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>↩ Undo Batch</button>
+          <button onClick={()=>onBatchUpdate(batch,"pending")} style={{width:"100%",padding:"10px",background:"transparent",border:`1px solid ${th.divider}`,borderRadius:10,fontSize:12,fontWeight:700,color:C.chL,cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>↩ Undo Batch</button>
         </div>
       </div>
     </div>
@@ -2312,6 +2344,7 @@ function AdminOrderView({order, onEditOrder}){
 }
 
 function AdminOrdersTab({ orders }) {
+  const th=useTheme();
   const totals={total:0,packed:0,delivered:0,short:0,oos:0,prod:0,prod_done:0,pending:0}; 
   orders.forEach(o=>{const s=oStats(o);Object.keys(totals).forEach(k=>{totals[k]+=(s[k]||0);});});
   
@@ -2351,7 +2384,7 @@ function AdminOrdersTab({ orders }) {
         const hasIssue=s.short+s.oos>0;
         return(
           <div key={o.id} className={`animate-fade-up glass-card hover-lift ${pct===100?"celebration-card":""}`}
-            style={{animationDelay:`${idx*0.05}s`,borderRadius:14,padding:"16px 20px",marginBottom:10,position:"relative",overflow:"hidden",border:`1px solid ${hasIssue?"rgba(220,38,38,0.2)":"rgba(255,255,255,0.06)"}`}}>
+            style={{animationDelay:`${idx*0.05}s`,borderRadius:14,padding:"16px 20px",marginBottom:10,position:"relative",overflow:"hidden",border:`1px solid ${hasIssue?"rgba(220,38,38,0.2)":th.divider}`}}>
             <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${rc}30,transparent)`}}/>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -2361,7 +2394,7 @@ function AdminOrdersTab({ orders }) {
               </div>
               <span style={{fontSize:16,fontWeight:900,color:pct===100?"#4ADE80":C.ch,letterSpacing:"-0.02em"}}>{pct}%</span>
             </div>
-            <div style={{height:5,background:"rgba(255,255,255,0.06)",borderRadius:99,overflow:"hidden"}}>
+            <div style={{height:5,background:th.trackBg,borderRadius:99,overflow:"hidden"}}>
               <div style={{height:5,width:pct+"%",background:pct===100?"linear-gradient(90deg,#16A34A,#4ADE80)":"linear-gradient(90deg,"+rc+","+rc+"BB)",borderRadius:99,transition:"width 1s cubic-bezier(0.16,1,0.3,1)",boxShadow:pct===100?"0 0 8px rgba(74,222,128,0.5)":"none"}}/>
             </div>
             <div style={{fontSize:10,color:C.chL,marginTop:6,fontWeight:600}}>{s.packed+s.delivered}/{s.total} items fulfilled</div>
@@ -2421,7 +2454,7 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
         return (
           <div key={day.date} className={`day-tile ${isActive?"day-tile-active":""}`} style={{border:isToday?"1px solid rgba(211,17,24,0.3)":""}}>
             {/* Day header */}
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,paddingBottom:10,borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${th.divider}`}}>
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <div>
                   <div style={{fontSize:11,fontWeight:900,color:isToday?C.ol:C.ch,textTransform:"uppercase",letterSpacing:"0.1em"}}>{day.dayOfWeek} · {day.displayDate}</div>
@@ -2438,7 +2471,7 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
 
             {/* Items */}
             {day.dp.items.map(item=>(
-              <div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.04)",fontSize:11}}>
+              <div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"8px 0",borderBottom:`1px solid ${th.divider}`,fontSize:11}}>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontWeight:800,color:item.status==="prod_done"?"#4ADE80":C.ch,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",marginBottom:2,textDecoration:item.status==="prod_done"?"line-through":"none",opacity:item.status==="prod_done"?0.7:1}}>
                     {item.product}
