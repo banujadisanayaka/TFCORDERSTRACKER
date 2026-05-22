@@ -2691,11 +2691,12 @@ function AdminDashboard({ orders, dailyProductions = [], onCreateDP, onUpdateDP,
   );
 }
 
-// Android Chrome blocks `fireNotif()` when a SW is active; fall back to showNotification().
+// Android Chrome blocks `new Notification()` when a SW is active; fall back to showNotification().
 function fireNotif(title, options) {
   if (!("Notification" in window) || Notification.permission !== "granted") return;
   try {
-    fireNotif(title, options);
+    // eslint-disable-next-line no-new
+    new Notification(title, options);
   } catch (_) {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options)).catch(() => {});
