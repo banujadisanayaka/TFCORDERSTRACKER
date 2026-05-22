@@ -2752,6 +2752,10 @@ function TFCOrderSystem(){
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
+  const [orders,setOrders]=useState([]);
+  const [dailyProductions, setDailyProductions] = useState([]);
+  const [loadingInitial, setLoadingInitial] = useState(true);
+
   // Role-based push notifications — fires when orders change after initial load
   useEffect(() => {
     if(!role || notifPermission !== "granted" || !("Notification" in window)) {
@@ -2805,10 +2809,6 @@ function TFCOrderSystem(){
 
     prevOrdersRef.current = orders;
   }, [orders, role, notifPermission]);
-
-  const [orders,setOrders]=useState([]);
-  const [dailyProductions, setDailyProductions] = useState([]);
-  const [loadingInitial, setLoadingInitial] = useState(true);
 
   const [activeId,setActiveId]=useState(null); const [showModal,setShowModal]=useState(false); const [editingOrder, setEditingOrder] = useState(null); const [toast,setToast] = useState(null); const [sidebarOpen, setSidebarOpen]=useState(false);
 
