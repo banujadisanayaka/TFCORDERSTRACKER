@@ -267,7 +267,7 @@ const GLOBAL_STYLES = `
   .pk-short      { background:linear-gradient(160deg,#100D06,#0A0906) !important; border:1px solid rgba(232,146,10,0.16) !important; box-shadow:-3px 0 0 0 #E8920A, 0 6px 28px rgba(0,0,0,0.55), 0 0 45px rgba(232,146,10,0.11) !important; }
 
   /* ── Modal sheet: noise texture ── */
-  .modal-sheet { background:rgba(7,9,20,0.97) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E") !important; background-size:auto,200px 200px !important; backdrop-filter:blur(28px) !important; -webkit-backdrop-filter:blur(28px) !important; border:1px solid rgba(255,255,255,0.08) !important; box-shadow:0 24px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.07) !important; }
+  .modal-sheet { background:rgba(7,9,20,0.97) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E") !important; background-size:200px 200px !important; backdrop-filter:blur(28px) !important; -webkit-backdrop-filter:blur(28px) !important; border:1px solid rgba(255,255,255,0.08) !important; box-shadow:0 24px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.07) !important; }
 
   /* ── Portal ambient orbs ── */
   .portal-orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
