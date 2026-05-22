@@ -726,21 +726,22 @@ function ExtraProductionModal({ onClose, onSave, dateStr }) {
   const inputStyle = { padding:"10px 14px", border:"1px solid "+C.amDk+"50", borderRadius:10, fontSize:13, color:C.ch, outline:"none", background:"#111828", width:"100%", boxSizing:"border-box", transition:"border-color 0.2s" };
 
   return (
-    <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(4px)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
-      <div className="animate-fade-up" style={{ background:"#0F1422", borderRadius:isMobile?"28px 28px 0 0":24, width:"100%", maxWidth:500, maxHeight:isMobile?"94vh":"auto", display:"flex", flexDirection:"column", boxShadow:C.shM, borderTop:"4px solid #E8920A" }}>
-        <div style={{ padding:"20px 24px", borderBottom:"1px solid #1A2640" }}>
+    <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.88)", backdropFilter:"blur(10px)", WebkitBackdropFilter:"blur(10px)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
+      <div className="animate-fade-up modal-sheet" style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:500, maxHeight:isMobile?"94vh":"auto", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
+        <div style={{ position:"absolute", top:0, left:"15%", right:"15%", height:1, background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.35),transparent)", pointerEvents:"none" }}/>
+        <div style={{ padding:"20px 24px", borderBottom:"1px solid rgba(255,255,255,0.06)" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
               <div style={{ fontSize:18, fontWeight:900, color:C.ch }}>+ Log Unplanned Production</div>
               <div style={{ fontSize:12, color:C.chL, marginTop:4 }}>Record items made outside of today's plan.</div>
             </div>
-            <button onClick={onClose} style={{ background:C.off, border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:14, color:C.chM }}>✕</button>
+            <button onClick={onClose} style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:14, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
           </div>
         </div>
 
         <div className="custom-scrollbar" style={{ overflowY:"auto", padding:"20px 24px" }}>
           <div style={{ marginBottom:14 }}>
-            <div style={{ fontSize:11, color:C.am, fontWeight:800, marginBottom:6, textTransform:"uppercase" }}>Product Made</div>
+            <div style={{ fontSize:11, color:C.amDk, fontWeight:800, marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Product Made</div>
             <RecipeAutocomplete value={selectedRecipe.product || productText} onChange={text => { setProductText(text); setSelectedRecipe({ product:text, recipeName:null, recipeId:null }); }} onSelect={sel => { setSelectedRecipe(sel); setProductText(sel.product); }} />
           </div>
           <div style={{ display:"flex", gap:10, marginBottom:14 }}>
@@ -757,10 +758,10 @@ function ExtraProductionModal({ onClose, onSave, dateStr }) {
             <div style={{ fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase" }}>Notes</div>
             <input value={itemNote} onChange={e=>setItemNote(e.target.value)} placeholder="Why was this made?" style={inputStyle} />
           </div>
-          {err && <div style={{ color:C.rd, fontSize:12, fontWeight:700, marginTop:12 }}>{err}</div>}
+          {err && <div style={{ color:C.rd, fontSize:12, fontWeight:700, marginTop:12, background:"rgba(220,38,38,0.1)", padding:"8px 12px", borderRadius:8 }}>{err}</div>}
         </div>
 
-        <div style={{ padding:"16px 24px", borderTop:"1px solid #1A2640", background:"#0A0E1A", display:"flex", gap:10, borderRadius:isMobile?"0":"0 0 24px 24px" }}>
+        <div style={{ padding:"16px 24px", borderTop:"1px solid rgba(255,255,255,0.06)", background:"rgba(4,6,14,0.8)", display:"flex", gap:10, borderRadius:isMobile?"0":"0 0 20px 20px" }}>
           <Btn full onClick={onClose}>Cancel</Btn>
           <Btn full variant="amber" onClick={handleSubmit}>Save Record</Btn>
         </div>
@@ -804,15 +805,16 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
   const inputStyle = { padding:"10px 14px", border:"1px solid "+C.bdr, borderRadius:10, fontSize:13, color:C.ch, outline:"none", background:"#111828", width:"100%", boxSizing:"border-box" };
 
   return (
-    <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(4px)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
-      <div className="animate-fade-up" style={{ background:"#0F1422", borderRadius:isMobile?"28px 28px 0 0":24, width:"100%", maxWidth:640, maxHeight:isMobile?"94vh":"88vh", display:"flex", flexDirection:"column", boxShadow:C.shM }}>
-        <div style={{ padding:"20px 30px", borderBottom:"1px solid #1A2640", flexShrink:0 }}>
+    <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.88)", backdropFilter:"blur(10px)", WebkitBackdropFilter:"blur(10px)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
+      <div className="animate-fade-up modal-sheet" style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:640, maxHeight:isMobile?"94vh":"88vh", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
+        <div style={{ position:"absolute", top:0, left:"15%", right:"15%", height:1, background:"linear-gradient(90deg,transparent,rgba(211,17,24,0.28),transparent)", pointerEvents:"none" }}/>
+        <div style={{ padding:"20px 30px", borderBottom:"1px solid rgba(255,255,255,0.06)", flexShrink:0 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
               <div style={{ fontSize:20, fontWeight:900, color:C.ch }}>{existing ? "Edit" : "Create"} — {dayInfo.dayOfWeek} {dayInfo.displayDate}</div>
               <div style={{ fontSize:12, color:C.chL, marginTop:4 }}>Add items with quantities and instructions</div>
             </div>
-            <button onClick={onClose} style={{ background:C.off, border:"none", borderRadius:"50%", width:36, height:36, cursor:"pointer", fontSize:16, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+            <button onClick={onClose} style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"50%", width:36, height:36, cursor:"pointer", fontSize:15, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
           </div>
         </div>
 
@@ -845,9 +847,9 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
 
           <SectionLabel text={`Items Planned (${items.length})`} />
           {items.length === 0 ? (
-            <div style={{ textAlign:"center", padding:"32px", border:"2px dashed "+C.bdrL, borderRadius:12, color:C.chXL, fontWeight:600 }}>No items yet</div>
+            <div style={{ textAlign:"center", padding:"32px", border:"2px dashed rgba(255,255,255,0.07)", borderRadius:12, color:C.chXL, fontWeight:600 }}>No items yet</div>
           ) : items.map((item) => (
-            <div key={item.id} className="animate-fade-up" style={{ padding:"14px 18px", background:C.w, border:"1px solid "+C.bdr, borderRadius:12, marginBottom:8, boxShadow:C.sh }}>
+            <div key={item.id} className="animate-fade-up" style={{ padding:"14px 18px", background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:12, marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                 <div>
                   <div style={{ fontSize:14, fontWeight:800, color:C.ch, marginBottom:2 }}>{item.product}</div>
@@ -863,7 +865,7 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
           ))}
         </div>
 
-        <div style={{ padding:"20px 30px", borderTop:"1px solid #1A2640", background:"#0A0E1A", borderRadius:isMobile?"0":"0 0 24px 24px", display:"flex", gap:12, justifyContent:"flex-end" }}>
+        <div style={{ padding:"18px 30px", borderTop:"1px solid rgba(255,255,255,0.06)", background:"rgba(4,6,14,0.8)", borderRadius:isMobile?"0":"0 0 20px 20px", display:"flex", gap:12, justifyContent:"flex-end" }}>
           <Btn onClick={onClose}>Cancel</Btn>
           <Btn onClick={handleSubmit} variant="primary">{existing ? "Update Plan" : "Save Day Plan"}</Btn>
         </div>
