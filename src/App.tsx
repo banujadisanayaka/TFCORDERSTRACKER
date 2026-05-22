@@ -296,88 +296,169 @@ const GLOBAL_STYLES = `
   .order-card-active-manja { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(232,146,10,0.18) !important; }
 
   /* ══════════════════════════════════════════════
-     LIGHT MODE OVERRIDES — [data-theme="light"]
+     LIGHT MODE — Clean Daylight Design System
   ══════════════════════════════════════════════ */
   [data-theme="light"] { color-scheme: light; }
 
+  /* Glass cards → solid white with real drop shadows */
   [data-theme="light"] .glass-card {
-    background: rgba(255,255,255,0.82) !important;
-    border: 1px solid rgba(0,0,0,0.08) !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 12px 32px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+    background: #FFFFFF !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(15,23,42,0.08) !important;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.07) !important;
   }
+  @media(hover:hover){ [data-theme="light"] .glass-card:hover { box-shadow: 0 2px 8px rgba(15,23,42,0.06), 0 8px 28px rgba(15,23,42,0.10) !important; } }
+
+  /* Modals → pure white sheet */
   [data-theme="light"] .modal-sheet {
-    background: rgba(255,255,255,0.97) !important;
-    border: 1px solid rgba(0,0,0,0.08) !important;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,1) !important;
+    background: #FFFFFF !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(15,23,42,0.10) !important;
+    box-shadow: 0 20px 60px rgba(15,23,42,0.14), 0 4px 16px rgba(15,23,42,0.07) !important;
   }
+
+  /* Sticky section headers */
   [data-theme="light"] .glass-header {
-    background: rgba(242,244,250,0.95) !important;
-    border-bottom: 1px solid rgba(0,0,0,0.07) !important;
-  }
-  [data-theme="light"] .pk-pending {
-    background: linear-gradient(160deg,#F8FAFF,#EFF2FA) !important;
-    border: 1px solid rgba(136,150,179,0.18) !important;
-    box-shadow: -3px 0 0 0 rgba(136,150,179,0.5), 0 4px 20px rgba(0,0,0,0.05) !important;
-  }
-  [data-theme="light"] .pk-production {
-    background: linear-gradient(160deg,#FFFBF0,#FEF6E0) !important;
-    border: 1px solid rgba(251,176,64,0.22) !important;
-    box-shadow: -3px 0 0 0 #FBB040, 0 4px 24px rgba(0,0,0,0.05), 0 0 30px rgba(251,176,64,0.07) !important;
-  }
-  [data-theme="light"] .pk-prod_done {
-    background: linear-gradient(160deg,#F0FAF5,#E8F5EF) !important;
-    border: 1px solid rgba(74,222,128,0.22) !important;
-    box-shadow: -3px 0 0 0 #4ADE80, 0 4px 24px rgba(0,0,0,0.05), 0 0 30px rgba(74,222,128,0.07) !important;
-  }
-  [data-theme="light"] .pk-packed {
-    background: linear-gradient(160deg,#FFF5F5,#FEF0F0) !important;
-    border: 1px solid rgba(211,17,24,0.15) !important;
-    box-shadow: -3px 0 0 0 rgba(211,17,24,0.7), 0 4px 24px rgba(0,0,0,0.05) !important;
-  }
-  [data-theme="light"] .pk-delivered {
-    background: linear-gradient(160deg,#F8FAFB,#F2F4F8) !important;
-    border: 1px solid rgba(0,0,0,0.05) !important;
+    background: rgba(255,255,255,0.97) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(15,23,42,0.08) !important;
     box-shadow: none !important;
   }
+
+  /* ── Packing cards: clean white base + pastel status accent ── */
+  [data-theme="light"] .pk-pending {
+    background: #FFFFFF !important;
+    border: 1px solid #E2E8F0 !important;
+    border-left: 4px solid #94A3B8 !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.05), 0 4px 12px rgba(15,23,42,0.04) !important;
+  }
+  [data-theme="light"] .pk-production {
+    background: linear-gradient(160deg,#FFFDF7,#FEF9EE) !important;
+    border: 1px solid #FDE68A !important;
+    border-left: 4px solid #F59E0B !important;
+    box-shadow: 0 1px 4px rgba(245,158,11,0.08), 0 4px 14px rgba(245,158,11,0.06) !important;
+  }
+  [data-theme="light"] .pk-prod_done {
+    background: linear-gradient(160deg,#F0FDF5,#DCFCE8) !important;
+    border: 1px solid #86EFAC !important;
+    border-left: 4px solid #22C55E !important;
+    box-shadow: 0 1px 4px rgba(22,197,94,0.08), 0 4px 14px rgba(22,197,94,0.06) !important;
+  }
+  [data-theme="light"] .pk-packed {
+    background: linear-gradient(160deg,#FFF5F5,#FEE2E2) !important;
+    border: 1px solid #FCA5A5 !important;
+    border-left: 4px solid #EF4444 !important;
+    box-shadow: 0 1px 4px rgba(239,68,68,0.08), 0 4px 14px rgba(239,68,68,0.06) !important;
+  }
+  [data-theme="light"] .pk-delivered {
+    background: #F8FAFC !important;
+    border: 1px solid #E2E8F0 !important;
+    border-left: 4px solid #CBD5E1 !important;
+    box-shadow: none !important;
+    opacity: 0.72 !important;
+  }
   [data-theme="light"] .pk-short {
-    background: linear-gradient(160deg,#FFFBF0,#FEF6E0) !important;
-    border: 1px solid rgba(232,146,10,0.18) !important;
-    box-shadow: -3px 0 0 0 #E8920A, 0 4px 20px rgba(0,0,0,0.05) !important;
+    background: linear-gradient(160deg,#FFFBEB,#FEF3C7) !important;
+    border: 1px solid #FCD34D !important;
+    border-left: 4px solid #F59E0B !important;
+    box-shadow: 0 1px 4px rgba(245,158,11,0.08), 0 4px 14px rgba(245,158,11,0.05) !important;
   }
   [data-theme="light"] .pk-oos {
-    background: linear-gradient(160deg,#FFF5F5,#FEF0F0) !important;
-    border: 1px solid rgba(252,165,165,0.18) !important;
-    box-shadow: -3px 0 0 0 rgba(252,165,165,0.8), 0 4px 20px rgba(0,0,0,0.05) !important;
+    background: linear-gradient(160deg,#FFF1F2,#FFE4E6) !important;
+    border: 1px solid #FDA4AF !important;
+    border-left: 4px solid #FB7185 !important;
+    box-shadow: 0 1px 4px rgba(251,113,133,0.08), 0 4px 14px rgba(251,113,133,0.06) !important;
   }
+
+  /* Dot grid — subtle on white */
   [data-theme="light"] .dot-grid-fixed {
-    background-image: radial-gradient(circle, rgba(0,0,0,0.055) 1px, transparent 1px) !important;
+    background-image: radial-gradient(circle, rgba(15,23,42,0.055) 1px, transparent 1px) !important;
   }
+
+  /* Cursor spotlight — faint brand tint */
   [data-theme="light"] .cursor-spotlight {
-    background-image: radial-gradient(600px circle at var(--cx,-9999px) var(--cy,-9999px), rgba(211,17,24,0.055), transparent 75%) !important;
+    background-image: radial-gradient(600px circle at var(--cx,-9999px) var(--cy,-9999px), rgba(196,17,25,0.04), transparent 75%) !important;
   }
-  [data-theme="light"] .portal-orb-1 { background:radial-gradient(circle,rgba(211,17,24,0.04) 0%,transparent 70%) !important; }
-  [data-theme="light"] .portal-orb-2 { background:radial-gradient(circle,rgba(232,146,10,0.035) 0%,transparent 70%) !important; }
-  [data-theme="light"] .portal-orb-3 { background:radial-gradient(circle,rgba(211,17,24,0.03) 0%,transparent 70%) !important; }
-  [data-theme="light"] .batch-v2 { background:linear-gradient(160deg,#FFFBF0,#FEF6E0) !important; border-color:rgba(232,146,10,0.25) !important; }
-  [data-theme="light"] .day-tile { background:linear-gradient(160deg,#F8FAFB,#F2F4F8) !important; border-color:rgba(0,0,0,0.07) !important; }
-  [data-theme="light"] .day-tile-empty { border-color:rgba(0,0,0,0.12) !important; }
-  [data-theme="light"] .recipe-terminal { background:#FAFBFF !important; border-color:rgba(211,17,24,0.15) !important; }
-  [data-theme="light"] .recipe-terminal-bar { background:rgba(211,17,24,0.04) !important; border-color:rgba(211,17,24,0.10) !important; }
-  [data-theme="light"] .skeleton-box { background:linear-gradient(90deg,#E2E8F0 0%,#F0F4FA 50%,#E2E8F0 100%) !important; background-size:200% 100% !important; }
+
+  /* Portal orbs — barely visible on light bg */
+  [data-theme="light"] .portal-orb-1 { background:radial-gradient(circle,rgba(196,17,25,0.035) 0%,transparent 70%) !important; filter:blur(80px) !important; }
+  [data-theme="light"] .portal-orb-2 { background:radial-gradient(circle,rgba(180,83,9,0.028) 0%,transparent 70%) !important; filter:blur(80px) !important; }
+  [data-theme="light"] .portal-orb-3 { background:radial-gradient(circle,rgba(196,17,25,0.022) 0%,transparent 70%) !important; filter:blur(80px) !important; }
+
+  /* Batch v2 — warm amber card */
+  [data-theme="light"] .batch-v2 {
+    background: linear-gradient(160deg,#FFFDF7,#FEF9EE) !important;
+    border: 1px solid #FDE68A !important;
+    border-left: 4px solid #F59E0B !important;
+    box-shadow: 0 2px 10px rgba(245,158,11,0.08), 0 4px 20px rgba(15,23,42,0.04) !important;
+  }
+
+  /* Day tile — clean white card */
+  [data-theme="light"] .day-tile {
+    background: #FFFFFF !important;
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.04), 0 2px 8px rgba(15,23,42,0.03) !important;
+  }
+  [data-theme="light"] .day-tile-empty { background:transparent !important; border:2px dashed #CBD5E1 !important; box-shadow:none !important; }
+  [data-theme="light"] .day-tile-active { border-color:rgba(196,17,25,0.28) !important; }
+
+  /* Production queue card */
+  [data-theme="light"] .queue-card {
+    background: linear-gradient(160deg,#FFFDF7,#FEF9EE) !important;
+    border: 1px solid #FDE68A !important;
+    border-left: 4px solid #F59E0B !important;
+    box-shadow: 0 2px 10px rgba(245,158,11,0.07), 0 4px 20px rgba(15,23,42,0.04) !important;
+  }
+
+  /* Recipe terminal */
+  [data-theme="light"] .recipe-terminal { background:#F8FAFC !important; border-color:rgba(196,17,25,0.14) !important; }
+  [data-theme="light"] .recipe-terminal-bar { background:rgba(196,17,25,0.04) !important; border-color:rgba(196,17,25,0.09) !important; }
+
+  /* Skeleton shimmer */
+  [data-theme="light"] .skeleton-box { background:linear-gradient(90deg,#E2E8F0 0%,#F1F5F9 50%,#E2E8F0 100%) !important; background-size:200% 100% !important; }
+
+  /* Scrollbar */
   [data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb { background:#CBD5E1; }
-  [data-theme="light"] .order-card-active-vins { box-shadow:0 8px 32px rgba(0,0,0,0.12), 0 0 24px rgba(211,17,24,0.12) !important; }
-  [data-theme="light"] .order-card-active-manja { box-shadow:0 8px 32px rgba(0,0,0,0.12), 0 0 24px rgba(217,119,6,0.12) !important; }
-  [data-theme="light"] .hover-lift:hover { box-shadow:0 8px 24px rgba(0,0,0,0.12) !important; }
-  [data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select { color:#0F172A !important; background:#F8FAFC !important; }
+
+  /* Cooking shimmer — warm light */
+  [data-theme="light"] .pk-cooking-state { background:linear-gradient(90deg,#FFFDF7 0%,#FEF3C7 50%,#FFFDF7 100%) !important; background-size:200% 100% !important; border-color:rgba(245,158,11,0.2) !important; }
+
+  /* Order card active states */
+  [data-theme="light"] .order-card-active-vins { box-shadow:0 4px 24px rgba(196,17,25,0.12), 0 1px 4px rgba(15,23,42,0.06) !important; }
+  [data-theme="light"] .order-card-active-manja { box-shadow:0 4px 24px rgba(180,83,9,0.12), 0 1px 4px rgba(15,23,42,0.06) !important; }
+  [data-theme="light"] .hover-lift:hover { box-shadow:0 6px 20px rgba(15,23,42,0.10) !important; }
+
+  /* Form controls */
+  [data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select {
+    color: #0F172A !important;
+    background: #F8FAFC !important;
+    border-color: #CBD5E1 !important;
+  }
   [data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder { color:#94A3B8; }
-  [data-theme="light"] input:focus, [data-theme="light"] textarea:focus, [data-theme="light"] select:focus { background:#FFFFFF !important; box-shadow:0 0 0 3px rgba(211,17,24,0.15) !important; }
-  [data-theme="light"] .day-tile { background:linear-gradient(160deg,#FFFFFF,#F5F7FC) !important; border:1px solid rgba(0,0,0,0.07) !important; box-shadow:0 2px 10px rgba(0,0,0,0.04) !important; }
-  [data-theme="light"] .day-tile-empty { background:transparent !important; border:2px dashed rgba(0,0,0,0.14) !important; }
-  [data-theme="light"] .day-tile-active { border-color:rgba(211,17,24,0.22) !important; }
-  [data-theme="light"] .batch-v2 { background:linear-gradient(160deg,#FFFBF2,#FEF7E8) !important; border:1px solid rgba(232,146,10,0.15) !important; border-left:4px solid #E8920A !important; box-shadow:0 4px 20px rgba(0,0,0,0.05) !important; }
-  [data-theme="light"] .queue-card { background:linear-gradient(145deg,#FFFBF0,#FEF7E0) !important; border:1px solid rgba(232,146,10,0.18) !important; border-left:4px solid #E8920A !important; box-shadow:0 4px 20px rgba(0,0,0,0.05) !important; }
-  [data-theme="light"] .pk-progress-track { background:rgba(0,0,0,0.08) !important; }
-  [data-theme="light"] .glass-header { border-bottom:1px solid rgba(0,0,0,0.07) !important; }
+  [data-theme="light"] input:focus, [data-theme="light"] textarea:focus, [data-theme="light"] select:focus {
+    background: #FFFFFF !important;
+    border-color: #C41119 !important;
+    box-shadow: 0 0 0 3px rgba(196,17,25,0.12) !important;
+  }
+
+  /* Section labels */
+  [data-theme="light"] .section-label-v2 { color: #64748B; }
+
+  /* Progress track */
+  [data-theme="light"] .pk-progress-track { background:rgba(15,23,42,0.08) !important; }
+
+  /* Chip overrides for contrast */
+  [data-theme="light"] .pk-chip-prod  { color:#92400E; background:rgba(146,64,14,0.07); border-color:rgba(146,64,14,0.24); }
+  [data-theme="light"] .pk-chip-short { color:#92400E; background:rgba(146,64,14,0.07); border-color:rgba(146,64,14,0.24); }
+  [data-theme="light"] .pk-chip-oos   { color:#9F1239; background:rgba(159,18,57,0.07); border-color:rgba(159,18,57,0.24); }
+  [data-theme="light"] .pk-chip-edit  { color:#334155; background:rgba(51,65,85,0.06); border-color:rgba(51,65,85,0.20); }
+  [data-theme="light"] .pk-chip-reset { color:#334155; background:rgba(51,65,85,0.06); border-color:rgba(51,65,85,0.20); }
+
+  /* DP done item strikethrough */
+  [data-theme="light"] .dp-item-done .dp-item-name { color:#94A3B8 !important; }
 
   /* ── Bento card system (Tier 2) ── */
   .bento-hero { border-radius:16px; overflow:hidden; position:relative; transition:transform 0.22s cubic-bezier(0.16,1,0.3,1),box-shadow 0.22s ease; }
@@ -572,21 +653,21 @@ function useTheme(){
   const isDark=React.useContext(ThemeCtx);
   return {
     isDark,
-    divider:  isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)",
-    subBg:    isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.04)",
-    cardBg:   isDark?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.025)",
-    chipBg:   isDark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.06)",
-    footerBg: isDark?"rgba(4,6,14,0.8)":"rgba(240,242,250,0.97)",
-    headerBg: isDark?"rgba(6,8,16,0.85)":"rgba(245,247,251,0.97)",
-    panelBg:  isDark?"rgba(6,9,18,0.7)":"rgba(240,244,252,0.92)",
-    editBg:   isDark?"#080C14":"#EEF2FC",
+    divider:  isDark?"rgba(255,255,255,0.07)":"rgba(15,23,42,0.10)",
+    subBg:    isDark?"rgba(255,255,255,0.04)":"rgba(15,23,42,0.03)",
+    cardBg:   isDark?"rgba(255,255,255,0.03)":"#FFFFFF",
+    chipBg:   isDark?"rgba(255,255,255,0.06)":"rgba(15,23,42,0.05)",
+    footerBg: isDark?"rgba(4,6,14,0.8)":"rgba(248,250,252,0.98)",
+    headerBg: isDark?"rgba(6,8,16,0.85)":"rgba(255,255,255,0.98)",
+    panelBg:  isDark?"rgba(6,9,18,0.7)":"rgba(248,250,252,0.96)",
+    editBg:   isDark?"#080C14":"#FFFFFF",
     editBdr:  isDark?"#1E2A44":"#CBD5E1",
-    closeBg:  isDark?"rgba(255,255,255,0.05)":"rgba(0,0,0,0.06)",
-    closeBdr: isDark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.09)",
-    trackBg:  isDark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.08)",
-    svgTrack: isDark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.10)",
-    noteBg:   isDark?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)",
-    noteBdr:  isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)",
+    closeBg:  isDark?"rgba(255,255,255,0.05)":"rgba(15,23,42,0.05)",
+    closeBdr: isDark?"rgba(255,255,255,0.08)":"rgba(15,23,42,0.10)",
+    trackBg:  isDark?"rgba(255,255,255,0.06)":"rgba(15,23,42,0.08)",
+    svgTrack: isDark?"rgba(255,255,255,0.06)":"rgba(15,23,42,0.10)",
+    noteBg:   isDark?"rgba(255,255,255,0.03)":"rgba(15,23,42,0.025)",
+    noteBdr:  isDark?"rgba(255,255,255,0.07)":"rgba(15,23,42,0.09)",
   };
 }
 
@@ -600,15 +681,15 @@ const DC={ // dark palette (default)
   rd: "#DC2626", rdBg: "rgba(220,38,38,0.12)",
   sh: "0 2px 10px rgba(0,0,0,0.4)", shM: "0 8px 32px rgba(0,0,0,0.6)"
 };
-const LC={ // light palette
-  w: "#FFFFFF", off: "#F2F4FA", beige: "#F2F4FA", beigeD: "#E4EAF4",
-  ch: "#0F172A", chM: "#1E293B", chL: "#334155", chXL: "#4A5568",
-  bdr: "#CBD5E1", bdrL: "#E2E8F4",
-  ol: "#D31118", olDk: "#A50D12", olBg: "rgba(211,17,24,0.09)", olBgD: "rgba(211,17,24,0.18)",
-  am: "#D97706", amDk: "#92400E", amBg: "rgba(217,119,6,0.09)", amBgD: "rgba(217,119,6,0.18)",
-  gn: "#16A34A", gnBg: "rgba(22,163,74,0.09)",
-  rd: "#DC2626", rdBg: "rgba(220,38,38,0.09)",
-  sh: "0 2px 10px rgba(0,0,0,0.06)", shM: "0 8px 32px rgba(0,0,0,0.12)"
+const LC={ // light palette — clean daylight design
+  w: "#FFFFFF", off: "#F0F4FC", beige: "#F0F4FC", beigeD: "#E2E8F4",
+  ch: "#0F172A", chM: "#1E293B", chL: "#334155", chXL: "#475569",
+  bdr: "#CBD5E1", bdrL: "#E2E8F0",
+  ol: "#C41119", olDk: "#9A0D13", olBg: "rgba(196,17,25,0.08)", olBgD: "rgba(196,17,25,0.15)",
+  am: "#B45309", amDk: "#92400E", amBg: "rgba(180,83,9,0.08)", amBgD: "rgba(180,83,9,0.15)",
+  gn: "#15803D", gnBg: "rgba(21,128,61,0.08)",
+  rd: "#DC2626", rdBg: "rgba(220,38,38,0.08)",
+  sh: "0 1px 3px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.06)", shM: "0 4px 20px rgba(15,23,42,0.10)"
 };
 // Mutable palette — swapped atomically before each re-render
 const _initDark=(()=>{try{return localStorage.getItem("tfc_theme")!=="light";}catch{return true;}})();
@@ -3026,13 +3107,13 @@ function TFCOrderSystem(){
       }
     };
 
-    const topBarBg   = isDark ? "linear-gradient(180deg,rgba(8,10,22,0.97) 0%,rgba(6,8,16,0.93) 100%)" : "linear-gradient(180deg,rgba(248,250,252,0.97) 0%,rgba(242,244,250,0.95) 100%)";
-    const topBarBdr  = isDark ? "1px solid rgba(211,17,24,0.12)" : "1px solid rgba(211,17,24,0.10)";
-    const topBarShd  = isDark ? "0 4px 30px rgba(0,0,0,0.6)" : "0 4px 20px rgba(0,0,0,0.08)";
-    const sidebarBg  = isDark ? "rgba(6,8,16,0.97)" : "rgba(255,255,255,0.97)";
-    const sidebarBdr = isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(0,0,0,0.07)";
-    const mainBg     = isDark ? "radial-gradient(ellipse 80% 45% at 50% -10%,rgba(211,17,24,0.055) 0%,transparent 55%), #07090F" : "radial-gradient(ellipse 80% 45% at 50% -10%,rgba(211,17,24,0.04) 0%,transparent 55%), #F2F4FA";
-    const orderCount = isDark ? "#2A3A54" : C.chL;
+    const topBarBg   = isDark ? "linear-gradient(180deg,rgba(8,10,22,0.97) 0%,rgba(6,8,16,0.93) 100%)" : "#FFFFFF";
+    const topBarBdr  = isDark ? "1px solid rgba(211,17,24,0.12)" : "1px solid rgba(15,23,42,0.08)";
+    const topBarShd  = isDark ? "0 4px 30px rgba(0,0,0,0.6)" : "0 1px 0 rgba(15,23,42,0.06), 0 4px 16px rgba(15,23,42,0.05)";
+    const sidebarBg  = isDark ? "rgba(6,8,16,0.97)" : "#F8FAFC";
+    const sidebarBdr = isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(15,23,42,0.08)";
+    const mainBg     = isDark ? "radial-gradient(ellipse 80% 45% at 50% -10%,rgba(211,17,24,0.055) 0%,transparent 55%), #07090F" : "#F0F4FC";
+    const orderCount = isDark ? "#2A3A54" : C.chXL;
     const copyright  = isDark ? "#1A2030" : C.chXL;
 
     AppContent = (
