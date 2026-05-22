@@ -145,7 +145,7 @@ const GLOBAL_STYLES = `
 
   /* ── Cursor spotlight (portal) ── */
   .cursor-spotlight {
-    background-image: radial-gradient(700px circle at var(--cx,-9999px) var(--cy,-9999px), rgba(211,17,24,0.065), transparent 80%);
+    background-image: radial-gradient(600px circle at var(--cx,-9999px) var(--cy,-9999px), rgba(211,17,24,0.10), transparent 75%);
   }
 
   /* ── Dot grid overlay ── */
@@ -241,6 +241,27 @@ const GLOBAL_STYLES = `
   /* ── Empty state ── */
   .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 24px; text-align:center; }
   .empty-icon { font-size:52px; margin-bottom:18px; filter:grayscale(0.3) opacity(0.7); }
+
+  /* ── Portal ambient orbs ── */
+  .portal-orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
+  .portal-orb-1 { width:min(700px,80vw); height:min(700px,80vw); background:radial-gradient(circle,rgba(211,17,24,0.07) 0%,transparent 70%); top:-15%; left:-10%; animation:orbFloat1 28s ease-in-out infinite; filter:blur(60px); }
+  .portal-orb-2 { width:min(550px,70vw); height:min(550px,70vw); background:radial-gradient(circle,rgba(232,146,10,0.05) 0%,transparent 70%); bottom:-15%; right:-8%; animation:orbFloat2 34s ease-in-out infinite; filter:blur(60px); }
+  .portal-orb-3 { width:min(380px,55vw); height:min(380px,55vw); background:radial-gradient(circle,rgba(211,17,24,0.04) 0%,transparent 70%); top:45%; left:55%; animation:orbFloat3 22s ease-in-out infinite; filter:blur(70px); }
+
+  /* ── Create Order button shimmer sweep ── */
+  @keyframes shimmerBtn { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+  .create-order-btn { position:relative; overflow:hidden; }
+  .create-order-btn::after { content:''; position:absolute; inset:0; background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.18) 50%,transparent 60%); background-size:200% 100%; animation:shimmerBtn 2.8s ease-in-out infinite; pointer-events:none; border-radius:inherit; }
+
+  /* ── Enhanced hover-lift ── */
+  .hover-lift:hover { transform:translateY(-4px) !important; box-shadow:0 12px 32px rgba(0,0,0,0.7) !important; }
+
+  /* ── Glass card hover ── */
+  @media(hover:hover) { .glass-card:hover { border-color:rgba(255,255,255,0.11) !important; } }
+
+  /* ── OrderCard active glow state ── */
+  .order-card-active-vins { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(211,17,24,0.18) !important; }
+  .order-card-active-manja { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(232,146,10,0.18) !important; }
 `;
 
 /* ═══════════════════════════════════════════════════════════════
@@ -535,10 +556,11 @@ function StatCard({label,val,color}){
   const isNum = typeof val === "number";
   const displayed = useCountUp(isNum ? val : 0);
   return(
-    <div className="hover-lift animate-fade-up glass-card" style={{borderRadius:14,padding:"18px 8px",textAlign:"center",position:"relative",overflow:"hidden",border:"1px solid rgba(255,255,255,0.07)",boxShadow:`0 2px 8px rgba(0,0,0,0.4), 0 0 20px ${color}15`}}>
-      <div style={{position:"absolute",top:0,left:"20%",right:"20%",height:1,background:`linear-gradient(90deg,transparent,${color}40,transparent)`,pointerEvents:"none"}}/>
-      <div className="count-pop" style={{fontSize:30,fontWeight:900,color,lineHeight:1,letterSpacing:"-0.04em"}}>{isNum ? displayed : val}</div>
-      <div style={{fontSize:9,color:C.chL,marginTop:7,textTransform:"uppercase",letterSpacing:"0.12em",fontWeight:700}}>{label}</div>
+    <div className="hover-lift animate-fade-up glass-card" style={{borderRadius:16,padding:"24px 8px",textAlign:"center",position:"relative",overflow:"hidden",border:"1px solid rgba(255,255,255,0.07)",boxShadow:`0 2px 8px rgba(0,0,0,0.4), 0 0 32px ${color}20`}}>
+      <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${color}50,transparent)`,pointerEvents:"none"}}/>
+      <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:90,height:90,borderRadius:"50%",background:`radial-gradient(circle,${color}16 0%,transparent 70%)`,pointerEvents:"none"}}/>
+      <div className="count-pop" style={{fontSize:44,fontWeight:900,color,lineHeight:1,letterSpacing:"-0.05em",position:"relative"}}>{isNum ? displayed : val}</div>
+      <div style={{fontSize:9,color:C.chL,marginTop:9,textTransform:"uppercase",letterSpacing:"0.14em",fontWeight:800,position:"relative"}}>{label}</div>
     </div>
   );
 }
@@ -1649,24 +1671,23 @@ function OrderCard({order, active, onClick, onDelete, index}){
   return(
     <div
       onClick={onClick}
-      className={`animate-fade-up hover-lift ${isComplete&&!active?'celebration-card':''}`}
+      className={`animate-fade-up hover-lift ${isComplete&&!active?'celebration-card':''} ${active?(order.restaurant==="Vins"?"order-card-active-vins":"order-card-active-manja"):""}`}
       style={{
         animationDelay:`${index*0.05}s`,
         padding:"14px 16px",borderRadius:14,marginBottom:8,cursor:"pointer",
-        background:active?"#141928":"#090C16",
-        border:`1.5px solid ${active?rc:C.bdrL}`,
+        background:active?`linear-gradient(160deg,#111E36,#0B1228)`:"#090C16",
+        border:`1.5px solid ${active?rc+"60":C.bdrL}`,
         borderLeft:`4px solid ${active?rc:C.bdrL}`,
-        boxShadow:active?"0 8px 28px rgba(0,0,0,0.6),"+rc+"20 -2px 0 0 inset":C.sh,
-        transition:"all 0.2s cubic-bezier(0.16,1,0.3,1)"
+        transition:"all 0.25s cubic-bezier(0.16,1,0.3,1)"
       }}
     >
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8,position:"relative"}}>
-        <div style={{fontWeight:800,color:C.ch,fontSize:13,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",letterSpacing:"-0.01em"}}>
+        <div style={{fontWeight:800,color:active?C.ch:"#9AABB8",fontSize:14,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",letterSpacing:"-0.02em"}}>
           {order.poName||order.restaurant+" Order"}
         </div>
         <div style={{display:"flex",alignItems:"center",gap:6,flexShrink:0,marginLeft:8}}>
           {hasIssue&&<span style={{width:7,height:7,borderRadius:"50%",background:"#D31118",animation:"pulseSoft 2s infinite",display:"inline-block"}}/>}
-          <span style={{fontSize:13,fontWeight:900,color:pct===100?"#097353":rc}}>{pct}%</span>
+          <span style={{fontSize:active?19:14,fontWeight:900,color:pct===100?"#4ADE80":rc,lineHeight:1,letterSpacing:"-0.03em",textShadow:active?`0 0 14px ${rc}80`:"none"}}>{pct}%</span>
         </div>
       </div>
 
@@ -1674,8 +1695,8 @@ function OrderCard({order, active, onClick, onDelete, index}){
         <span style={{fontSize:10,fontWeight:900,color:rc,background:rc+"18",borderRadius:6,padding:"3px 9px",letterSpacing:"0.04em"}}>{order.restaurant}</span>
       </div>
 
-      <div style={{height:4,background:"rgba(255,255,255,0.06)",borderRadius:4,marginBottom:6,overflow:"hidden"}}>
-        <div style={{height:4,width:pct+"%",background:pct===100?"#097353":rc,borderRadius:4,transition:"width 0.7s cubic-bezier(0.16,1,0.3,1)",boxShadow:pct===100?"0 0 8px rgba(9,115,83,0.5)":"none"}}/>
+      <div style={{height:5,background:"rgba(255,255,255,0.07)",borderRadius:99,marginBottom:6,overflow:"hidden"}}>
+        <div style={{height:5,width:pct+"%",background:pct===100?"linear-gradient(90deg,#097353,#16A34A)":`linear-gradient(90deg,${rc},${rc}CC)`,borderRadius:99,transition:"width 0.8s cubic-bezier(0.16,1,0.3,1)",boxShadow:active?(pct===100?"0 0 10px rgba(9,115,83,0.6)":`0 0 10px ${rc}80`):"none"}}/>
       </div>
       <div style={{fontSize:9,color:C.chL,marginBottom:10,fontWeight:600}}>{s.packed+s.delivered}/{s.total} items done</div>
 
@@ -2747,6 +2768,10 @@ function TFCOrderSystem(){
       >
         {/* Dot grid — fixed behind all content */}
         <div className="dot-grid-fixed"/>
+        {/* Ambient orbs — subtle floating glows matching auth screens */}
+        <div className="portal-orb portal-orb-1"/>
+        <div className="portal-orb portal-orb-2"/>
+        <div className="portal-orb portal-orb-3"/>
 
         {toast&&<Toast msg={toast.msg} type={toast.type}/>}
         {showModal&&<NewOrderModal onClose={()=>setShowModal(false)} onSubmit={handleNewOrder} notify={notify}/>}
@@ -2789,7 +2814,7 @@ function TFCOrderSystem(){
 
           {/* Sidebar */}
           <div className="custom-scrollbar" style={{width:280,borderRight:"1px solid rgba(255,255,255,0.06)",background:"rgba(6,8,16,0.96)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",padding:16,overflowY:"auto",flexShrink:0,display:"flex",flexDirection:"column",gap:6,position:isMobile?"absolute":"relative",zIndex:50,height:"100%",left:0,top:0,transform:isMobile?(sidebarOpen?"translateX(0)":"translateX(-100%)"):"none",transition:"transform 0.3s cubic-bezier(0.16,1,0.3,1)",boxShadow:isMobile&&sidebarOpen?"0 0 60px rgba(0,0,0,0.8)":"none"}}>
-            {role==="admin"&&(<div style={{marginBottom:10}}><button className="btn-3d" onClick={()=>{setShowModal(true);if(isMobile)setSidebarOpen(false);}} style={{width:"100%",padding:"13px 0",border:"none",borderRadius:12,background:"linear-gradient(135deg,#D31118,#8A0B10)",color:"#FFFFFF",fontSize:14,cursor:"pointer",fontWeight:800,letterSpacing:"0.02em",boxShadow:"0 4px 18px rgba(211,17,24,0.45),inset 0 1px 0 rgba(255,255,255,0.10)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>+</span> Create Order</button></div>)}
+            {role==="admin"&&(<div style={{marginBottom:10}}><button className="btn-3d create-order-btn" onClick={()=>{setShowModal(true);if(isMobile)setSidebarOpen(false);}} style={{width:"100%",padding:"14px 0",border:"none",borderRadius:12,background:"linear-gradient(135deg,#D31118,#8A0B10)",color:"#FFFFFF",fontSize:14,cursor:"pointer",fontWeight:900,letterSpacing:"0.03em",boxShadow:"0 4px 22px rgba(211,17,24,0.55),0 0 40px rgba(211,17,24,0.12),inset 0 1px 0 rgba(255,255,255,0.12)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>+</span> Create Order</button></div>)}
             {role==="production"&&(<div style={{padding:"12px 14px",background:"rgba(232,146,10,0.08)",borderRadius:10,border:"1px solid rgba(232,146,10,0.2)",marginBottom:10}}><div style={{fontSize:11,fontWeight:900,color:C.amDk,textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:3}}>Production Mode</div><div style={{fontSize:11,color:C.chL,lineHeight:1.4,fontWeight:500}}>All items flagged for production.</div></div>)}
             <div style={{fontSize:9,fontWeight:900,color:"#1E2A40",textTransform:"uppercase",letterSpacing:"0.16em",padding:"10px 4px 6px"}}>Orders {viewOrders.length>0?`(${viewOrders.length})`:""}</div>
             {loadingInitial?(<div style={{padding:"10px 0"}}><div className="skeleton-box" style={{height:80,marginBottom:10}}></div><div className="skeleton-box" style={{height:80}}></div></div>):viewOrders.length===0?<div style={{fontSize:13,color:C.chXL,textAlign:"center",padding:"32px 0",fontWeight:600}}>No orders found</div>:viewOrders.map((o,i)=>(<OrderCard key={o.id} index={i} order={o} active={activeId===o.id} onClick={()=>{setActiveId(o.id);if(isMobile)setSidebarOpen(false);}} onDelete={role==="admin"?deleteOrder:null}/>))}
