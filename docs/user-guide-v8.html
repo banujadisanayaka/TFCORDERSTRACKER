@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TFC Order Tracker V8 — User Guide & Proposal</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #D31118; --red-dim: rgba(211,17,24,0.12); --red-glow: rgba(211,17,24,0.3);
+    --amber: #E8920A; --amber-dim: rgba(232,146,10,0.12);
+    --green: #097353; --green-dim: rgba(9,115,83,0.12);
+    --navy: #090B10; --navy2: #0D1120; --navy3: #111828; --navy4: #141928;
+    --border: #1E2A44; --border-dim: #172036;
+    --text: #EEF2FF; --text-mid: #B8C4E0; --text-low: #8896B3; --text-ghost: #2A3450;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Instrument Serif', serif;
+    --sans: 'Plus Jakarta Sans', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--navy); color: var(--text); font-family: var(--sans); overflow-x: hidden; cursor: default; }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--navy2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+  /* ── NAVIGATION ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(9,11,16,0.92); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 60px;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
+  .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: pulse 2s infinite; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-low); text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: all 0.2s; }
+  .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .nav-badge { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-glow); padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; }
+
+  /* ── HERO ── */
+  .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 100px 40px 60px; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(211,17,24,0.08) 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 80% 80%, rgba(232,146,10,0.05) 0%, transparent 60%); }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(30,42,68,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(30,42,68,0.3) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  }
+  .hero-content { position: relative; z-index: 1; text-align: center; max-width: 760px; }
+  .hero-kicker { display: inline-flex; align-items: center; gap: 8px; background: rgba(211,17,24,0.1); border: 1px solid rgba(211,17,24,0.25); padding: 6px 16px; border-radius: 20px; margin-bottom: 32px; font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: var(--red); text-transform: uppercase; animation: fadeUp 0.6s ease both; }
+  .hero-title { font-family: var(--serif); font-size: clamp(48px, 8vw, 96px); line-height: 0.95; letter-spacing: -0.03em; color: var(--text); margin-bottom: 24px; animation: fadeUp 0.6s ease 0.1s both; }
+  .hero-title em { color: var(--red); font-style: italic; }
+  .hero-sub { font-size: 17px; font-weight: 500; color: var(--text-mid); line-height: 1.6; max-width: 520px; margin: 0 auto 48px; animation: fadeUp 0.6s ease 0.2s both; }
+  .hero-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; animation: fadeUp 0.6s ease 0.3s both; }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-size: 36px; font-weight: 900; color: var(--text); letter-spacing: -0.04em; font-family: var(--serif); }
+  .hero-stat-label { font-size: 11px; font-weight: 700; color: var(--text-low); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+  .hero-divider { width: 1px; height: 50px; background: var(--border); }
+
+  /* ── SECTIONS ── */
+  section { padding: 100px 40px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+  .section-kicker { font-size: 10px; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .section-kicker::before { content: ''; width: 20px; height: 2px; background: var(--red); display: inline-block; }
+  .section-title { font-family: var(--serif); font-size: clamp(36px, 5vw, 60px); line-height: 1; letter-spacing: -0.02em; color: var(--text); margin-bottom: 20px; }
+  .section-title em { font-style: italic; color: var(--text-mid); }
+  .section-lead { font-size: 16px; color: var(--text-mid); line-height: 1.7; max-width: 600px; }
+  hr.divider { border: none; height: 1px; background: linear-gradient(90deg, var(--border), transparent); margin: 60px 0; }
+
+  /* ── PROPOSAL CARDS ── */
+  .proposal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 48px; }
+  .proposal-card { background: linear-gradient(145deg, var(--navy3), var(--navy2)); border: 1px solid var(--border); border-radius: 20px; padding: 32px; position: relative; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s; opacity: 0; transform: translateY(20px); }
+  .proposal-card.visible { animation: cardIn 0.5s ease forwards; }
+  .proposal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent, var(--red)); }
+  .proposal-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.6); border-color: var(--accent, var(--red)); }
+  .card-icon { font-size: 32px; margin-bottom: 16px; }
+  .card-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 8px; letter-spacing: -0.01em; }
+  .card-body { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+  .card-stat { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; align-items: baseline; gap: 8px; }
+  .card-stat-num { font-size: 28px; font-weight: 900; color: var(--accent, var(--red)); font-family: var(--serif); }
+  .card-stat-label { font-size: 12px; color: var(--text-low); font-weight: 600; }
+
+  /* ── IMPACT GRID ── */
+  .impact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 48px; }
+  .impact-card { background: var(--navy3); border: 1px solid var(--border); border-radius: 16px; padding: 28px 24px; text-align: center; opacity: 0; transform: translateY(16px); }
+  .impact-card.visible { animation: cardIn 0.45s ease forwards; }
+  .impact-num { font-size: 48px; font-weight: 900; font-family: var(--serif); letter-spacing: -0.04em; margin-bottom: 8px; }
+  .impact-label { font-size: 13px; font-weight: 700; color: var(--text-mid); line-height: 1.4; }
+  .impact-sub { font-size: 11px; color: var(--text-low); margin-top: 6px; line-height: 1.5; }
+
+  /* ── ROLES ── */
+  .roles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 48px; }
+  .role-card { background: var(--navy3); border: 1px solid var(--border); border-radius: 16px; padding: 24px 20px; text-align: center; transition: all 0.3s; cursor: default; opacity: 0; transform: translateY(16px); }
+  .role-card.visible { animation: cardIn 0.4s ease forwards; }
+  .role-card:hover { transform: translateY(-3px); background: var(--navy4); }
+  .role-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 14px; font-weight: 900; font-family: var(--mono); }
+  .role-name { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+  .role-desc { font-size: 12px; color: var(--text-low); line-height: 1.5; }
+  .role-access { margin-top: 12px; font-size: 10px; font-weight: 700; color: var(--text-ghost); display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+  /* ── AUTH FLOW ── */
+  .auth-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 40px; }
+  .auth-step { background: var(--navy3); border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; opacity: 0; transform: translateY(14px); }
+  .auth-step.visible { animation: cardIn 0.4s ease forwards; }
+  .auth-step-num { width: 28px; height: 28px; border-radius: 8px; background: var(--red-dim); border: 1px solid rgba(211,17,24,0.3); color: var(--red); font-size: 13px; font-weight: 900; font-family: var(--mono); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+  .auth-step-title { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+  .auth-step-body { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+  .auth-arrow { display: flex; align-items: center; justify-content: center; color: var(--text-ghost); font-size: 20px; padding-top: 24px; }
+
+  /* ── FLOW STEPS ── */
+  .flow { margin-top: 48px; }
+  .flow-step { display: flex; gap: 24px; align-items: flex-start; margin-bottom: 32px; opacity: 0; transform: translateX(-20px); }
+  .flow-step.visible { animation: slideIn 0.4s ease forwards; }
+  .flow-num { width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; font-family: var(--mono); background: var(--red-dim); color: var(--red); border: 1px solid rgba(211,17,24,0.3); }
+  .flow-content { flex: 1; padding-top: 8px; }
+  .flow-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+  .flow-body { font-size: 14px; color: var(--text-mid); line-height: 1.6; }
+  .flow-connector { width: 2px; height: 24px; background: var(--border); margin-left: 19px; margin-bottom: 8px; }
+
+  /* ── BENTO GRID DEMO ── */
+  .bento-demo { display: grid; grid-template-columns: 1.7fr 1fr 1fr; grid-template-rows: auto auto; gap: 12px; margin: 32px 0; max-width: 640px; }
+  .bento-tile { background: var(--navy3); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+  .bento-tile.hero { grid-row: span 2; background: linear-gradient(160deg, #091410, #060E0A); border-color: rgba(74,222,128,0.14); }
+  .bento-tile.issues { background: linear-gradient(160deg, #130808, #0E0606); border-color: rgba(211,17,24,0.14); }
+  .bento-tile.in-prod { grid-column: span 2; background: linear-gradient(160deg, #0F130A, #0A0E07); border-color: rgba(251,176,64,0.14); }
+  .bento-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 6px; }
+  .bento-num { font-size: 42px; font-weight: 900; font-family: var(--serif); letter-spacing: -0.05em; line-height: 1; }
+  .bento-sub { font-size: 11px; margin-top: 6px; }
+
+  /* ── BUTTON GUIDE ── */
+  .btn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; margin-top: 48px; }
+  .btn-card { background: var(--navy2); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; gap: 20px; align-items: flex-start; opacity: 0; transform: translateY(12px); transition: border-color 0.3s; }
+  .btn-card.visible { animation: cardIn 0.4s ease forwards; }
+  .btn-card:hover { border-color: var(--text-ghost); }
+  .btn-preview { flex-shrink: 0; }
+  .btn-info .btn-name { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .btn-info .btn-where { font-size: 10px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .btn-info .btn-desc { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+  .btn-tag { display: inline-block; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 6px; margin-top: 8px; }
+
+  /* ── APP BUTTONS ── */
+  .app-btn { display: inline-flex; align-items: center; justify-content: center; font-family: var(--sans); font-weight: 900; cursor: pointer; border: none; border-radius: 10px; letter-spacing: 0.02em; transition: all 0.2s ease; font-size: 13px; padding: 11px 20px; white-space: nowrap; }
+  .app-btn:hover { transform: translateY(-2px); }
+  .app-btn.red { background: linear-gradient(135deg, #D31118, #8A0B10); color: #fff; box-shadow: 0 4px 14px rgba(211,17,24,0.35); }
+  .app-btn.red:hover { box-shadow: 0 6px 20px rgba(211,17,24,0.5); }
+  .app-btn.green { background: linear-gradient(135deg, #097353, #065A40); color: #fff; box-shadow: 0 4px 14px rgba(9,115,83,0.3); }
+  .app-btn.amber { background: linear-gradient(135deg, #E8920A, #B86F06); color: #fff; box-shadow: 0 4px 14px rgba(232,146,10,0.3); }
+  .app-btn.white { background: linear-gradient(135deg, #EEF2FF, #C0CCE8); color: #090B10; }
+  .app-btn.ghost { background: transparent; color: #8896B3; border: 1px solid #1E2A44; }
+  .app-btn.ghost:hover { background: #111828; }
+  .app-btn.danger { background: rgba(220,38,38,0.1); color: #DC2626; border: 1px solid rgba(220,38,38,0.4); }
+  .app-btn.small { font-size: 10px; padding: 6px 12px; border-radius: 7px; }
+  .app-btn.swipe-prod { background: rgba(184,111,6,0.95); color: #fff; font-size: 9px; border-radius: 6px; padding: 8px 12px; letter-spacing: 0.08em; }
+  .app-btn.swipe-short { background: rgba(204,130,0,0.95); color: #fff; font-size: 9px; border-radius: 6px; padding: 8px 12px; letter-spacing: 0.08em; }
+  .app-btn.swipe-oos { background: rgba(220,38,38,0.95); color: #fff; font-size: 9px; border-radius: 6px; padding: 8px 12px; letter-spacing: 0.08em; }
+  .app-btn.pulse-red { animation: btnPulse 2s infinite; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.04em; white-space: nowrap; }
+  .badge.cooking { background: rgba(232,146,10,0.12); color: #FBB040; border: 1px solid rgba(232,146,10,0.3); }
+  .badge.pending { background: rgba(136,150,179,0.1); color: #8896B3; border: 1px solid rgba(136,150,179,0.22); }
+  .badge.packed { background: rgba(211,17,24,0.12); color: #F87171; border: 1px solid rgba(211,17,24,0.28); }
+  .badge.ready { background: rgba(22,163,74,0.12); color: #4ADE80; border: 1px solid rgba(22,163,74,0.3); }
+  .badge.delivered { background: rgba(238,242,255,0.07); color: #EEF2FF; border: 1px solid rgba(238,242,255,0.14); }
+  .badge.short { background: rgba(232,146,10,0.12); color: #FBB040; border: 1px solid rgba(232,146,10,0.3); }
+  .badge.oos { background: rgba(220,38,38,0.12); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.28); }
+
+  /* ── STATUS GUIDE ── */
+  .status-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 32px 0; }
+  .status-arrow { color: var(--text-ghost); font-size: 18px; }
+  .status-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .status-num { font-size: 10px; font-weight: 800; color: var(--text-ghost); font-family: var(--mono); }
+
+  /* ── FEATURE TABLE ── */
+  .feature-table { width: 100%; border-collapse: collapse; margin-top: 32px; }
+  .feature-table th { text-align: left; font-size: 11px; font-weight: 800; color: var(--text-low); text-transform: uppercase; letter-spacing: 0.1em; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .feature-table td { padding: 14px 16px; font-size: 14px; color: var(--text-mid); border-bottom: 1px solid rgba(30,42,68,0.4); vertical-align: top; }
+  .feature-table td:first-child { font-weight: 700; color: var(--text); }
+  .feature-table tr:last-child td { border-bottom: none; }
+  .feature-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ── SWIPE DEMO ── */
+  .swipe-demo { background: var(--navy2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; max-width: 420px; position: relative; margin: 32px 0; }
+  .swipe-main { padding: 14px 16px; background: linear-gradient(160deg, #141A12, #0E1810); border-left: 4px solid rgba(232,146,10,0.8); position: relative; z-index: 2; animation: swipeDemo 4s infinite ease-in-out; }
+  .swipe-actions { position: absolute; right: 0; top: 0; bottom: 0; display: flex; align-items: stretch; z-index: 1; }
+  .swipe-hint-bar { background: #080C14; border-top: 1px solid #0E1828; text-align: center; font-size: 10px; color: #2A3A5A; padding: 6px; font-weight: 700; letter-spacing: 0.06em; }
+
+  /* ── TIP BOX ── */
+  .tip { background: var(--amber-dim); border: 1px solid rgba(232,146,10,0.25); border-radius: 12px; padding: 16px 20px; display: flex; gap: 12px; align-items: flex-start; margin: 20px 0; }
+  .tip-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .tip-text { font-size: 14px; color: var(--text-mid); line-height: 1.6; }
+  .tip-text strong { color: var(--amber); }
+  .info { background: rgba(9,115,83,0.1); border: 1px solid rgba(9,115,83,0.25); }
+  .info .tip-text strong { color: #4ADE80; }
+  .note { background: rgba(211,17,24,0.07); border: 1px solid rgba(211,17,24,0.2); }
+  .note .tip-text strong { color: var(--red); }
+
+  /* ── COMPARISON ── */
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px; }
+  .comp-col { border-radius: 16px; padding: 28px; }
+  .comp-col.before { background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.2); }
+  .comp-col.after { background: rgba(9,115,83,0.06); border: 1px solid rgba(9,115,83,0.2); }
+  .comp-title { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 16px; }
+  .comp-col.before .comp-title { color: #F87171; }
+  .comp-col.after .comp-title { color: #4ADE80; }
+  .comp-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-size: 14px; color: var(--text-mid); line-height: 1.5; }
+  .comp-item .icon { flex-shrink: 0; font-size: 13px; margin-top: 2px; }
+
+  /* ── PROPOSAL HERO ── */
+  .proposal-hero { background: linear-gradient(135deg, rgba(211,17,24,0.08), rgba(9,115,83,0.05)); border: 1px solid var(--border); border-radius: 24px; padding: 48px; margin-bottom: 48px; text-align: center; }
+  .proposal-hero h2 { font-family: var(--serif); font-size: clamp(28px, 4vw, 48px); color: var(--text); margin-bottom: 16px; }
+  .proposal-hero p { font-size: 16px; color: var(--text-mid); max-width: 560px; margin: 0 auto; line-height: 1.7; }
+
+  /* ── HIGHLIGHT BAR ── */
+  .highlight { background: linear-gradient(90deg, var(--navy3) 0%, rgba(211,17,24,0.06) 50%, var(--navy3) 100%); border: 1px solid rgba(211,17,24,0.15); border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: center; }
+  .highlight .hl-icon { font-size: 24px; }
+  .highlight .hl-text { font-size: 15px; font-weight: 700; color: var(--text); }
+  .highlight .hl-sub { font-size: 13px; color: var(--text-mid); margin-top: 2px; }
+
+  /* ── VERSION BADGE ── */
+  .v-badge { display: inline-flex; background: var(--navy3); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; font-size: 11px; font-weight: 800; }
+  .v-badge span:first-child { background: var(--red); color: #fff; padding: 4px 10px; }
+  .v-badge span:last-child { color: var(--text-low); padding: 4px 10px; }
+
+  /* ── FOOTER ── */
+  footer { border-top: 1px solid var(--border); padding: 48px 40px; text-align: center; position: relative; z-index: 1; }
+  footer p { font-size: 13px; color: var(--text-ghost); }
+  footer strong { color: var(--text-low); }
+  .footer-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--red-dim); border: 1px solid var(--red-glow); padding: 8px 16px; border-radius: 20px; margin-top: 16px; font-size: 11px; font-weight: 800; color: var(--red); letter-spacing: 0.06em; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(211,17,24,0.5); } 50% { box-shadow: 0 0 0 6px rgba(211,17,24,0); } }
+  @keyframes btnPulse { 0%,100% { box-shadow: 0 4px 14px rgba(211,17,24,0.35); } 50% { box-shadow: 0 4px 24px rgba(211,17,24,0.6); } }
+  @keyframes swipeDemo { 0%,30% { transform: translateX(0); } 50%,80% { transform: translateX(-130px); } 95%,100% { transform: translateX(0); } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .floating { animation: float 3s ease-in-out infinite; }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 20px; } nav .nav-links { display: none; }
+    section { padding: 60px 20px; }
+    .hero { padding: 80px 20px 40px; }
+    .comparison { grid-template-columns: 1fr; }
+    .hero-stats { gap: 20px; } .hero-divider { display: none; }
+    .bento-demo { grid-template-columns: 1fr 1fr; }
+    .bento-tile.hero { grid-row: span 1; grid-column: span 2; }
+    .bento-tile.in-prod { grid-column: span 2; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-dot"></div>
+    TFC Order Tracker
+    <div class="v-badge"><span>V8</span><span>FINAL</span></div>
+  </div>
+  <div class="nav-links">
+    <a href="#proposal" class="nav-link">Proposal</a>
+    <a href="#helpful" class="nav-link">Why It Helps</a>
+    <a href="#access" class="nav-link">Access</a>
+    <a href="#roles" class="nav-link">Roles</a>
+    <a href="#workflow" class="nav-link">Workflow</a>
+    <a href="#dashboard" class="nav-link">Dashboard</a>
+    <a href="#buttons" class="nav-link">Button Guide</a>
+    <a href="#status" class="nav-link">Status</a>
+  </div>
+  <span class="nav-badge">LIVE SYSTEM</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-kicker">
+      <span>🍽️</span> The Food Company · Ocean Flair Group
+    </div>
+    <h1 class="hero-title">Order<br>Tracker <em>V8</em></h1>
+    <p class="hero-sub">The complete operations intelligence system for TFC TTDI — managing every order, production plan, and kitchen dispatch in real time.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">5</div>
+        <div class="hero-stat-label">User Roles</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">2</div>
+        <div class="hero-stat-label">Kitchens</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">Live</div>
+        <div class="hero-stat-label">Firebase Sync</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">V8</div>
+        <div class="hero-stat-label">Latest Build</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PROPOSAL ═══ -->
+<section id="proposal">
+  <div class="section-kicker">Company Proposal</div>
+  <h2 class="section-title">Why TFC <em>needs</em> this</h2>
+  <p class="section-lead">A formal case for the TFC Order Tracking System — built for Ocean Flair Group, designed for the operational complexity of a professional F&B facility.</p>
+
+  <hr class="divider">
+
+  <div class="proposal-hero">
+    <h2>From WhatsApp chaos<br>to operational clarity</h2>
+    <p>Before this system, TFC operated on manual WhatsApp messages, verbal handoffs, and memory — creating errors, delays, and zero visibility across kitchens and the packing team.</p>
+  </div>
+
+  <div class="comparison">
+    <div class="comp-col before">
+      <div class="comp-title">❌ Before — Old Way</div>
+      <div class="comp-item"><span class="icon">😤</span> Orders communicated verbally or via WhatsApp — easily missed or forgotten</div>
+      <div class="comp-item"><span class="icon">🤷</span> No visibility into what's cooking, what's packed, or what's delayed</div>
+      <div class="comp-item"><span class="icon">📋</span> Production team had no central plan — guessing what to cook daily</div>
+      <div class="comp-item"><span class="icon">⚠️</span> Short-stock and OOS issues discovered only at dispatch time</div>
+      <div class="comp-item"><span class="icon">🔁</span> Duplicate calls and confirmations between admin, packing, and kitchens</div>
+      <div class="comp-item"><span class="icon">😰</span> Admin had no real-time view of overall fulfillment health</div>
+    </div>
+    <div class="comp-col after">
+      <div class="comp-title">✅ After — With TFC Tracker V8</div>
+      <div class="comp-item"><span class="icon">📱</span> All orders created digitally — instantly visible to all relevant roles</div>
+      <div class="comp-item"><span class="icon">🔴</span> Live status updates — everyone sees Cooking → Ready → Packed → Dispatched</div>
+      <div class="comp-item"><span class="icon">📋</span> Admin plans daily facility production with recipes attached — production sees it instantly</div>
+      <div class="comp-item"><span class="icon">🚨</span> Issues flagged immediately — Short and OOS with full tracking and WhatsApp export</div>
+      <div class="comp-item"><span class="icon">⚡</span> Zero duplicate communication — each role sees only what they need</div>
+      <div class="comp-item"><span class="icon">📊</span> Admin dashboard with bento stat tiles, fulfillment percentage, and health chart</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="proposal-grid">
+    <div class="proposal-card" style="--accent:#D31118">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">Real-Time Firebase Sync</div>
+      <div class="card-body">Every status change — Pack, Cook, Dispatch — propagates instantly to all connected devices. No refresh needed. Vins Kitchen sees their order update the moment Packing marks an item ready.</div>
+      <div class="card-stat"><span class="card-stat-num">0s</span><span class="card-stat-label">delay on status updates</span></div>
+    </div>
+    <div class="proposal-card" style="--accent:#E8920A; animation-delay: 0.1s">
+      <div class="card-icon">👨‍🍳</div>
+      <div class="card-title">Production Kitchen Intelligence</div>
+      <div class="card-body">Admin builds the daily facility production plan with exact kg quantities, packet counts, and linked recipes. The production team sees what to cook — with ingredient lists and step-by-step preparation instructions — from any device.</div>
+      <div class="card-stat"><span class="card-stat-num">100%</span><span class="card-stat-label">recipe visibility for production</span></div>
+    </div>
+    <div class="proposal-card" style="--accent:#097353; animation-delay: 0.2s">
+      <div class="card-icon">📲</div>
+      <div class="card-title">One-Tap WhatsApp Export</div>
+      <div class="card-body">Packing and Admin can export a perfectly formatted order status message direct to WhatsApp in one tap — covering what's been sent, what's cooking, and all issues with exact quantities. Professional client communication in seconds.</div>
+      <div class="card-stat"><span class="card-stat-num">1</span><span class="card-stat-label">tap to generate status report</span></div>
+    </div>
+    <div class="proposal-card" style="--accent:#B8C4E0; animation-delay: 0.3s">
+      <div class="card-icon">🔒</div>
+      <div class="card-title">Google-Secured Access Control</div>
+      <div class="card-body">V8 uses Google account sign-in — no passwords to remember or share. Users request access by selecting their role; the system owner approves or rejects from the Control Panel. Five distinct operational interfaces, each locked to what that role needs.</div>
+      <div class="card-stat"><span class="card-stat-num">5</span><span class="card-stat-label">role-specific interfaces</span></div>
+    </div>
+    <div class="proposal-card" style="--accent:#D31118; animation-delay: 0.4s">
+      <div class="card-icon">📦</div>
+      <div class="card-title">Master Batch Production</div>
+      <div class="card-body">When multiple orders need the same product, Packing can merge them into a single production batch. The production team cooks one unified batch and marks it complete — updating all linked orders simultaneously.</div>
+      <div class="card-stat"><span class="card-stat-num">∞</span><span class="card-stat-label">orders merged per batch</span></div>
+    </div>
+    <div class="proposal-card" style="--accent:#E8920A; animation-delay: 0.5s">
+      <div class="card-icon">📱</div>
+      <div class="card-title">Mobile-First Dark Design</div>
+      <div class="card-body">Built for kitchen workers using phones. Swipe-left actions on mobile for fast status updates. Responsive sidebar navigation. Premium dark glassmorphism design with animated orbs, depth-glow status cards, and cooking shimmer animations for reduced eye strain.</div>
+      <div class="card-stat"><span class="card-stat-num">100%</span><span class="card-stat-label">mobile optimized</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHY IT HELPS ═══ -->
+<section id="helpful">
+  <div class="section-kicker">Why It's Helpful</div>
+  <h2 class="section-title">Real impact, <em>measurable</em></h2>
+  <p class="section-lead">Every feature was built to solve a specific pain point in TFC's daily operations. Here's how the system delivers value across every team.</p>
+
+  <hr class="divider">
+
+  <div class="impact-grid">
+    <div class="impact-card" style="border-color: rgba(211,17,24,0.2)">
+      <div class="impact-num" style="color: var(--red)">0s</div>
+      <div class="impact-label">Status Sync Delay</div>
+      <div class="impact-sub">Firebase real-time listeners push every change instantly — no polling, no refresh</div>
+    </div>
+    <div class="impact-card" style="border-color: rgba(232,146,10,0.2)">
+      <div class="impact-num" style="color: var(--amber)">100%</div>
+      <div class="impact-label">Recipe Visibility</div>
+      <div class="impact-sub">Every production item has the full recipe available — ingredients + step-by-step prep</div>
+    </div>
+    <div class="impact-card" style="border-color: rgba(9,115,83,0.2)">
+      <div class="impact-num" style="color: #4ADE80">1</div>
+      <div class="impact-label">Tap to WhatsApp</div>
+      <div class="impact-sub">Full professionally-formatted order status reports sent to clients in a single tap</div>
+    </div>
+    <div class="impact-card" style="border-color: rgba(74,222,128,0.2)">
+      <div class="impact-num" style="color: #4ADE80">5</div>
+      <div class="impact-label">Dedicated Role Interfaces</div>
+      <div class="impact-sub">Each team sees only what they need — no clutter, no accidental changes by the wrong person</div>
+    </div>
+    <div class="impact-card" style="border-color: rgba(184,196,224,0.15)">
+      <div class="impact-num" style="color: var(--text-mid)">∞</div>
+      <div class="impact-label">Batch Merging</div>
+      <div class="impact-sub">Multiple orders for the same product are cooked in one batch — saving time and reducing waste</div>
+    </div>
+    <div class="impact-card" style="border-color: rgba(211,17,24,0.2)">
+      <div class="impact-num" style="color: var(--red)">Live</div>
+      <div class="impact-label">Admin Dashboard</div>
+      <div class="impact-sub">Bento grid shows Fulfilled count, active issues, total items, and production progress at a glance</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="highlight">
+    <div class="hl-icon">💡</div>
+    <div>
+      <div class="hl-text">Built for the reality of a kitchen environment</div>
+      <div class="hl-sub">Workers use phones with wet hands, under time pressure. Every interaction is designed to be one or two taps — large buttons, swipe actions, real-time feedback, and no unnecessary screens.</div>
+    </div>
+  </div>
+
+  <div class="highlight" style="border-color: rgba(9,115,83,0.2); background: linear-gradient(90deg, var(--navy3) 0%, rgba(9,115,83,0.05) 50%, var(--navy3) 100%);">
+    <div class="hl-icon">🔥</div>
+    <div>
+      <div class="hl-text">Eliminated the need for any verbal coordination between teams</div>
+      <div class="hl-sub">Before: Admin called Packing. Packing called Production. Production called Admin back. Now every update flows automatically through the app — all teams stay in sync without a single phone call.</div>
+    </div>
+  </div>
+
+  <div class="highlight" style="border-color: rgba(232,146,10,0.2); background: linear-gradient(90deg, var(--navy3) 0%, rgba(232,146,10,0.05) 50%, var(--navy3) 100%);">
+    <div class="hl-icon">📊</div>
+    <div>
+      <div class="hl-text">Admin has full operational visibility at all times</div>
+      <div class="hl-sub">The dashboard bento grid shows exactly how many items are fulfilled, how many are in production, and how many have issues — without opening a single order. The donut chart shows overall fulfillment health as a percentage.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ACCESS & SIGN-IN ═══ -->
+<section id="access">
+  <div class="section-kicker">Access & Sign-In</div>
+  <h2 class="section-title">How to <em>get in</em></h2>
+  <p class="section-lead">V8 uses Google account authentication — no passwords. Every user signs in with their Google account and requests access. The system owner approves who gets in and which roles they can use.</p>
+
+  <hr class="divider">
+
+  <div class="auth-steps">
+    <div class="auth-step">
+      <div class="auth-step-num">01</div>
+      <div class="auth-step-title">Sign in with Google</div>
+      <div class="auth-step-body">Open the app and tap "Sign in with Google". A popup opens asking you to choose or confirm your Google account. No password needed — Google handles the security.</div>
+    </div>
+    <div class="auth-step">
+      <div class="auth-step-num">02</div>
+      <div class="auth-step-title">Request Your Role</div>
+      <div class="auth-step-body">First-time users see a role selection screen. Tap the role(s) you need — Admin, Packing, Production, Vins, or Manja. Then tap "Request Access". Your request goes to the system owner.</div>
+    </div>
+    <div class="auth-step">
+      <div class="auth-step-num">03</div>
+      <div class="auth-step-title">Awaiting Approval</div>
+      <div class="auth-step-body">You'll see a "Pending Review" screen. The system owner (Banuja) will approve or reject your request. Once approved, refresh the app and you're in.</div>
+    </div>
+    <div class="auth-step">
+      <div class="auth-step-num">04</div>
+      <div class="auth-step-title">Select Your Role</div>
+      <div class="auth-step-body">After approval, you can choose from the roles you were granted. Each role opens a different interface. You can switch roles at any time using the "Roles" button in the top bar.</div>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:32px">
+    <div class="tip-icon">💡</div>
+    <div class="tip-text"><strong>Owner bypass:</strong> The system owner (Banuja Disanayaka) has automatic full access to all roles without needing approval — they are identified by their Google account email.</div>
+  </div>
+
+  <div class="tip note" style="margin-top:12px">
+    <div class="tip-icon">🔒</div>
+    <div class="tip-text"><strong>No passwords in V8:</strong> The old role passwords (TFC@123, tfc@123) from V6 are gone. All access is now managed through Google sign-in and the owner approval flow — more secure and easier to manage.</div>
+  </div>
+</section>
+
+<!-- ═══ ROLES ═══ -->
+<section id="roles">
+  <div class="section-kicker">User Roles</div>
+  <h2 class="section-title">Who uses <em>what</em></h2>
+  <p class="section-lead">Five purpose-built interfaces. Each role sees only the tools they need — reducing confusion and preventing accidental changes.</p>
+
+  <div class="roles-grid">
+    <div class="role-card" style="border-color: rgba(238,242,255,0.15)">
+      <div class="role-icon" style="background:rgba(238,242,255,0.06); color:#EEF2FF;">⚙</div>
+      <div class="role-name">Admin</div>
+      <div class="role-desc">Full control. Create orders, plan daily productions, monitor fulfillment health, edit everything. Access to the Control Panel for managing users.</div>
+      <div class="role-access">🔐 Google sign-in + owner approval</div>
+    </div>
+    <div class="role-card" style="border-color: rgba(211,17,24,0.2)">
+      <div class="role-icon" style="background:rgba(211,17,24,0.1); color:#D31118;">◻</div>
+      <div class="role-name">Packing</div>
+      <div class="role-desc">Manage item statuses. Pack, dispatch, send to production, flag short stock and OOS issues. Export WhatsApp status reports.</div>
+      <div class="role-access">🔐 Google sign-in + owner approval</div>
+    </div>
+    <div class="role-card" style="border-color: rgba(232,146,10,0.2)">
+      <div class="role-icon" style="background:rgba(232,146,10,0.1); color:#E8920A;">◈</div>
+      <div class="role-name">Production</div>
+      <div class="role-desc">See the daily cook plan with recipes. Mark items complete. View and complete order batches. Log extra productions.</div>
+      <div class="role-access">🔐 Google sign-in + owner approval</div>
+    </div>
+    <div class="role-card" style="border-color: rgba(184,196,224,0.2)">
+      <div class="role-icon" style="background:rgba(184,196,224,0.06); color:#B8C4E0; font-size:18px;">V</div>
+      <div class="role-name">Vins Kitchen</div>
+      <div class="role-desc">Live view of Vins orders only. See what's cooking, ready, or dispatched. Read-only live tracking — no internal data visible.</div>
+      <div class="role-access">🔐 Google sign-in + owner approval</div>
+    </div>
+    <div class="role-card" style="border-color: rgba(184,111,6,0.2)">
+      <div class="role-icon" style="background:rgba(184,111,6,0.1); color:#B86F06; font-size:18px;">M</div>
+      <div class="role-name">Manja Kitchen</div>
+      <div class="role-desc">Live view of Manja orders only. See what's cooking, ready, or dispatched. Read-only live tracking — no internal data visible.</div>
+      <div class="role-access">🔐 Google sign-in + owner approval</div>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:32px">
+    <div class="tip-icon">💡</div>
+    <div class="tip-text"><strong>Multi-role users:</strong> A user can be approved for multiple roles at once (e.g. Admin + Packing). On the role selection screen, only their approved roles will be available to choose from.</div>
+  </div>
+</section>
+
+<!-- ═══ CONTROL PANEL ═══ -->
+<section id="control">
+  <div class="section-kicker">Admin — Control Panel</div>
+  <h2 class="section-title">Managing <em>users</em></h2>
+  <p class="section-lead">The system owner has a dedicated Control Panel to approve access requests and manage who can use the system. Accessed from the top navigation bar when signed in as the owner.</p>
+
+  <hr class="divider">
+
+  <div class="btn-grid" style="margin-top:0">
+    <div class="btn-card visible">
+      <div class="btn-preview">
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="app-btn ghost small" style="border-color:rgba(211,17,24,0.3);color:var(--red)">⚡ Control Panel</button>
+          <span style="background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center">3</span>
+        </div>
+      </div>
+      <div class="btn-info">
+        <div class="btn-where">Top Navigation Bar — Owner Only</div>
+        <div class="btn-name">Open Control Panel</div>
+        <div class="btn-desc">Only visible to the system owner. A red badge shows how many access requests are pending. Opens the Control Panel modal with two tabs: Pending Requests and Manage Users.</div>
+        <span class="btn-tag" style="background:var(--red-dim);color:var(--red);">OWNER ONLY</span>
+      </div>
+    </div>
+    <div class="btn-card visible">
+      <div class="btn-preview"><button class="app-btn green small">✓ Approve</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Control Panel → Pending Requests Tab</div>
+        <div class="btn-name">Approve Access Request</div>
+        <div class="btn-desc">Grants the user access with the roles they requested. They appear in the Manage Users tab immediately. The user can now sign in and use the app. Approvals take effect without any delay — the user sees their roles on next load.</div>
+        <span class="btn-tag" style="background:var(--green-dim);color:#4ADE80;">APPROVE</span>
+      </div>
+    </div>
+    <div class="btn-card visible">
+      <div class="btn-preview"><button class="app-btn danger small">✕ Reject</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Control Panel → Pending Requests Tab</div>
+        <div class="btn-name">Reject Access Request</div>
+        <div class="btn-desc">Denies the user's request. They will see a "request rejected" message in the app. A rejected user can request access again by signing in. Use this for unknown or unauthorized Google accounts.</div>
+        <span class="btn-tag" style="background:rgba(220,38,38,0.1);color:#DC2626;">REJECT</span>
+      </div>
+    </div>
+    <div class="btn-card visible">
+      <div class="btn-preview"><button class="app-btn danger small">Remove User</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Control Panel → Manage Users Tab</div>
+        <div class="btn-name">Remove Authorized User</div>
+        <div class="btn-desc">Revokes a user's access entirely. They are removed from the authorized users list. The next time they open the app they will be sent to the request access screen again. Does not delete their Google account.</div>
+        <span class="btn-tag" style="background:rgba(220,38,38,0.1);color:#DC2626;">DESTRUCTIVE</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WORKFLOW ═══ -->
+<section id="workflow">
+  <div class="section-kicker">Daily Workflow</div>
+  <h2 class="section-title">How a day <em>runs</em></h2>
+  <p class="section-lead">A standard operational day at TFC TTDI, from morning setup to final dispatch — every step tracked in the system.</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-num">01</div>
+      <div class="flow-content">
+        <div class="flow-title">Admin creates the daily production plan</div>
+        <div class="flow-body">Admin logs in with Google, selects Admin role. Goes to Dashboard → 📋 Productions tab, navigates to the current week, and creates plans for each day — adding products with kg quantities, packet counts, and linked recipes. Plans go live to the Production team instantly.</div>
+      </div>
+    </div>
+    <div class="flow-connector"></div>
+    <div class="flow-step">
+      <div class="flow-num">02</div>
+      <div class="flow-content">
+        <div class="flow-title">Admin creates Purchase Orders</div>
+        <div class="flow-body">Admin clicks "+ Create Order" in the sidebar. Selects Vins or Manja kitchen, fills in the PO name and date, adds items manually or by pasting a WhatsApp list for bulk parsing. Submits — order is now live for all roles.</div>
+      </div>
+    </div>
+    <div class="flow-connector"></div>
+    <div class="flow-step">
+      <div class="flow-num">03</div>
+      <div class="flow-content">
+        <div class="flow-title">Production team cooks the daily plan</div>
+        <div class="flow-body">Production logs in with their Google account, selects Production role. Sees the daily plan at the top of their queue with all items. Taps 📖 Recipe to view ingredients and preparation steps. Marks each item ✓ Complete when done. Can also tap + Log Extra to record any additional items cooked outside the plan.</div>
+      </div>
+    </div>
+    <div class="flow-connector"></div>
+    <div class="flow-step">
+      <div class="flow-num">04</div>
+      <div class="flow-content">
+        <div class="flow-title">Packing team processes each order item</div>
+        <div class="flow-body">Packing selects an order from the sidebar, sees all items with their quantities. Uses ✓ Mark as Packed for items ready to go. Sends items to production using → Prod (or swipe on mobile). Flags issues with ⚠ Short or ✕ OOS. Uses inline edit (✎) to record exact quantities and notes.</div>
+      </div>
+    </div>
+    <div class="flow-connector"></div>
+    <div class="flow-step">
+      <div class="flow-num">05</div>
+      <div class="flow-content">
+        <div class="flow-title">Production handles order batches</div>
+        <div class="flow-body">Production sees all items in "Cooking" status under their kitchen section. Multiple orders for the same product are merged into a Master Batch. When done, hits ✓ Batch Complete — Mark Ready to Pack — all linked order items update to Ready to Pack simultaneously. Packing team sees the update instantly.</div>
+      </div>
+    </div>
+    <div class="flow-connector"></div>
+    <div class="flow-step">
+      <div class="flow-num">06</div>
+      <div class="flow-content">
+        <div class="flow-title">Packing dispatches and sends WhatsApp update</div>
+        <div class="flow-body">Once items are packed, Packing hits 🚀 Confirm Dispatch. When the order is fully done, taps 📲 WhatsApp to auto-generate a formatted status message covering everything sent, in production, and any issues — ready to send to the client in one tap.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ADMIN DASHBOARD ═══ -->
+<section id="dashboard">
+  <div class="section-kicker">Admin Dashboard</div>
+  <h2 class="section-title">The <em>overview</em></h2>
+  <p class="section-lead">The admin dashboard gives a full operational snapshot — fulfillment health, issue count, production progress, and a list of active orders. All updated in real time.</p>
+
+  <hr class="divider">
+
+  <h3 style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:20px;">📊 Orders Tab — Bento Stat Tiles</h3>
+  <p style="font-size:14px;color:var(--text-mid);margin-bottom:24px;line-height:1.6">The top of the Orders tab shows a 2×2 bento grid of live stat tiles. Each tile is color-coded and updates automatically as items are packed and dispatched.</p>
+
+  <div class="bento-demo">
+    <!-- Hero: Fulfilled -->
+    <div class="bento-tile hero">
+      <div class="bento-label" style="color:#4ADE80">Fulfilled</div>
+      <div class="bento-num" style="color:#4ADE80">24</div>
+      <div class="bento-sub" style="color:rgba(74,222,128,0.6)">items packed + delivered</div>
+      <div style="height:4px;background:rgba(74,222,128,0.12);border-radius:99px;margin-top:14px;overflow:hidden">
+        <div style="width:75%;height:100%;background:linear-gradient(90deg,#16A34A,#4ADE80);border-radius:99px"></div>
+      </div>
+    </div>
+    <!-- Issues -->
+    <div class="bento-tile issues">
+      <div class="bento-label" style="color:#F87171">Issues</div>
+      <div class="bento-num" style="color:#F87171;font-size:28px">3</div>
+      <div class="bento-sub" style="color:rgba(248,113,113,0.6)">short + OOS</div>
+    </div>
+    <!-- Total -->
+    <div class="bento-tile">
+      <div class="bento-label" style="color:var(--text-low)">Total Items</div>
+      <div class="bento-num" style="color:var(--text);font-size:28px">32</div>
+      <div class="bento-sub" style="color:var(--text-low)">across all orders</div>
+    </div>
+    <!-- In Production -->
+    <div class="bento-tile in-prod">
+      <div class="bento-label" style="color:#FBB040">In Production</div>
+      <div class="bento-num" style="color:#FBB040;font-size:28px">5</div>
+      <div class="bento-sub" style="color:rgba(251,176,64,0.6)">cooking · 2 ready to pack</div>
+    </div>
+  </div>
+
+  <table class="feature-table" style="margin-top:0">
+    <thead>
+      <tr><th>Tile</th><th>What it shows</th><th>Color</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Fulfilled (hero, left)</td>
+        <td>Total packed + delivered items across all orders. Large number with a progress bar showing % of total items fulfilled. Spans full height of the grid.</td>
+        <td style="color:#4ADE80">Green</td>
+      </tr>
+      <tr>
+        <td>Issues</td>
+        <td>Count of all Short and OOS items across all orders. Pulses red if any issues exist — draws immediate attention to problems.</td>
+        <td style="color:#F87171">Red</td>
+      </tr>
+      <tr>
+        <td>Total Items</td>
+        <td>Total number of line items across all active orders. Gives a sense of today's workload at a glance.</td>
+        <td style="color:var(--text-low)">Gray</td>
+      </tr>
+      <tr>
+        <td>In Production</td>
+        <td>Items currently cooking + items ready to pack. Spans 2 columns. Has an animated pulsing dot when there are active cooking items. Shows "active + ready" breakdown.</td>
+        <td style="color:#FBB040">Amber</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <h3 style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:16px;">Fulfillment Health Donut Chart</h3>
+  <p style="font-size:14px;color:var(--text-mid);line-height:1.6;margin-bottom:20px">Below the bento tiles is a donut chart showing overall fulfillment as a percentage. The chart segments cover packed, delivered, and remaining items. A center percentage shows the overall completion rate across all orders.</p>
+
+  <hr class="divider">
+
+  <h3 style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:16px;">📋 Productions Tab</h3>
+  <p style="font-size:14px;color:var(--text-mid);line-height:1.6;margin-bottom:20px">The Productions tab shows the weekly production planner. Navigate between weeks using the arrow buttons. Each day shows either an existing plan or a "+ Create" button. Plans are immediately visible to the Production team when saved.</p>
+
+  <div class="tip">
+    <div class="tip-icon">💡</div>
+    <div class="tip-text"><strong>Tab switcher:</strong> The "📊 Orders" and "📋 Productions" tabs at the top of the dashboard use a pill-style switcher. The active tab highlights in red — the inactive one is transparent ghost style.</div>
+  </div>
+</section>
+
+<!-- ═══ BUTTON GUIDE ═══ -->
+<section id="buttons">
+  <div class="section-kicker">Button Guide</div>
+  <h2 class="section-title">Every button <em>explained</em></h2>
+  <p class="section-lead">Every interactive element in TFC Order Tracker V8 — what it does, where to find it, and when to use it.</p>
+
+  <hr class="divider">
+
+  <!-- ADMIN BUTTONS -->
+  <h3 style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:24px;padding-top:8px;display:flex;align-items:center;gap:10px;">
+    <span style="background:rgba(238,242,255,0.08);border:1px solid var(--border);padding:4px 10px;border-radius:8px;font-size:12px;color:var(--text-mid)">⚙ Admin Role</span>
+  </h3>
+  <div class="btn-grid">
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn red pulse-red">+ Create Order</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Admin Sidebar</div>
+        <div class="btn-name">Create Order</div>
+        <div class="btn-desc">Opens the new Purchase Order modal. Pulsing animation indicates it's the primary action. Select kitchen (Vins or Manja), add a PO name, date, delivery deadline, and build your item list manually or via bulk paste.</div>
+        <span class="btn-tag" style="background:var(--red-dim);color:var(--red);">PRIMARY ACTION</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn amber">✏️ Edit</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Admin → Order View</div>
+        <div class="btn-name">Edit Order</div>
+        <div class="btn-desc">Opens the Edit Live Order modal. Add missed items, change quantities, update PO reference name or dates. Cannot go below 1 item — delete the order instead.</div>
+        <span class="btn-tag" style="background:var(--amber-dim);color:var(--amber);">EDIT</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn green">📲 WhatsApp</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Admin + Packing → Order View</div>
+        <div class="btn-name">WhatsApp Export</div>
+        <div class="btn-desc">Auto-generates a formatted order status message and opens WhatsApp. The message includes all packed/delivered items with quantities, items in production, and all Short/OOS issues. One-tap client communication.</div>
+        <span class="btn-tag" style="background:var(--green-dim);color:#4ADE80;">EXPORT</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview" style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="app-btn ghost small">📊 Orders</button>
+        <button class="app-btn small" style="background:var(--red-dim);color:var(--red);border:none;">📋 Productions</button>
+      </div>
+      <div class="btn-info">
+        <div class="btn-where">Admin Dashboard</div>
+        <div class="btn-name">Dashboard Tab Switcher</div>
+        <div class="btn-desc">"📊 Orders" shows the bento stat tiles, fulfillment health chart, and order list. "📋 Productions" switches to the weekly daily production planner where admin creates cook plans per day.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">NAVIGATION</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview" style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="app-btn ghost small">◀ Prev</button>
+        <button class="app-btn small" style="background:var(--red-dim);color:var(--red);border:none;">Next ▶</button>
+      </div>
+      <div class="btn-info">
+        <div class="btn-where">Admin → Productions Tab</div>
+        <div class="btn-name">Week Navigation</div>
+        <div class="btn-desc">Navigate between weeks to plan production in advance or review past plans. Shows Mon–Sun for the selected week. Each day can have its own production plan created independently.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">NAVIGATION</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small">+ Create</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Admin → Productions → Day Row</div>
+        <div class="btn-name">Create Day Plan</div>
+        <div class="btn-desc">Appears on any day that has no production plan. Opens the Daily Production Modal to build the cook plan for that specific day — add products, quantities, and link recipes from the TFC recipe database.</div>
+        <span class="btn-tag" style="background:var(--red-dim);color:var(--red);">CREATE</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn amber small">✎ Edit Day</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Admin → Productions → Existing Day</div>
+        <div class="btn-name">Edit Day Plan</div>
+        <div class="btn-desc">Re-opens the Daily Production Modal for a day that already has a plan. Existing items are pre-loaded — add more, remove some, adjust quantities. The plan updates live for the production team immediately.</div>
+        <span class="btn-tag" style="background:var(--amber-dim);color:var(--amber);">EDIT</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn danger small">🗑 Remove</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Admin → Productions → Existing Day</div>
+        <div class="btn-name">Remove Day Plan</div>
+        <div class="btn-desc">Permanently deletes the day's production plan from Firebase after a confirmation dialog. Cannot be undone. The production team will no longer see this plan.</div>
+        <span class="btn-tag" style="background:rgba(220,38,38,0.1);color:#DC2626;">DESTRUCTIVE</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn red" style="font-size:11px;padding:10px 16px;">⚡ Activate Drafts → Send to Kitchen</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Admin → Productions Bottom</div>
+        <div class="btn-name">Activate Drafts</div>
+        <div class="btn-desc">Batch-activates any remaining draft plans in the current week. Only appears when draft plans exist. Force-publishes them all to the production team in one tap.</div>
+        <span class="btn-tag" style="background:var(--red-dim);color:var(--red);">BATCH ACTION</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- DAILY PRODUCTION MODAL -->
+  <h3 style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:10px;">
+    <span style="background:rgba(238,242,255,0.08);border:1px solid var(--border);padding:4px 10px;border-radius:8px;font-size:12px;color:var(--text-mid)">📋 Production Plan Modal</span>
+  </h3>
+  <div class="btn-grid">
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn white" style="font-size:12px;padding:10px 18px;color:#090B10;">+ Add Item to Plan</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Daily Production Modal</div>
+        <div class="btn-name">Add Item to Plan</div>
+        <div class="btn-desc">Adds the currently typed product to the staging list. Type a product name — if it matches the recipe database, it auto-links. If not, it's added as a custom item. Fill in kg quantity and packet count before adding.</div>
+        <span class="btn-tag" style="background:rgba(238,242,255,0.08);color:var(--text-mid);">STAGE</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn red" style="font-size:12px;">Save Day Plan</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Daily Production Modal — Footer</div>
+        <div class="btn-name">Save Day Plan</div>
+        <div class="btn-desc">Saves all staged items to Firebase as an active production plan for that date. Plan becomes immediately visible to the production team. Requires at least 1 item. On edit, shows "Update Plan" instead.</div>
+        <span class="btn-tag" style="background:var(--red-dim);color:var(--red);">SAVE TO FIREBASE</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PACKING BUTTONS -->
+  <h3 style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:10px;">
+    <span style="background:rgba(211,17,24,0.08);border:1px solid rgba(211,17,24,0.2);padding:4px 10px;border-radius:8px;font-size:12px;color:var(--red)">◻ Packing Role</span>
+  </h3>
+  <div class="btn-grid">
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn red" style="padding:13px 24px;font-size:13px;letter-spacing:0.03em;">✓ Mark as Packed</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Packing → Each Order Item</div>
+        <div class="btn-name">Mark as Packed</div>
+        <div class="btn-desc">The primary action. Marks the item as Packed ✓. If no quantity was entered in the edit field, defaults to the original order quantity. Card turns to red-tinted background with red left border glow. Shows green "Ready to Pack" style when item is in prod_done status.</div>
+        <span class="btn-tag" style="background:var(--red-dim);color:var(--red);">PRIMARY</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn green" style="padding:11px 20px;font-size:12px;width:auto;">🚀 Confirm Dispatch</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Packing → Packed Items</div>
+        <div class="btn-name">Confirm Dispatch</div>
+        <div class="btn-desc">Appears after an item is Packed. Pressing this marks it as Delivered 🚀 — the final state. The card fades to reduced opacity. Vins/Manja clients see this update instantly on their live tracker.</div>
+        <span class="btn-tag" style="background:var(--green-dim);color:#4ADE80;">FINAL STATE</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview" style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="app-btn ghost small" style="border-color:rgba(184,111,6,0.3);color:#B86F06;background:rgba(184,111,6,0.08);">→ Prod</button>
+        <button class="app-btn ghost small" style="border-color:rgba(232,146,10,0.3);color:#E8920A;background:rgba(232,146,10,0.07);">⚠ Short</button>
+        <button class="app-btn ghost small" style="border-color:rgba(220,38,38,0.3);color:#DC2626;background:rgba(220,38,38,0.07);">✕ OOS</button>
+      </div>
+      <div class="btn-info">
+        <div class="btn-where">Packing → Pending Items (Desktop)</div>
+        <div class="btn-name">Prod / Short / OOS Chips</div>
+        <div class="btn-desc"><strong style="color:var(--amber)">→ Prod</strong> sends item to production — opens batch merge dialog. Only shows if not already cooking.<br><strong style="color:#E8920A">⚠ Short</strong> marks item as partially sent — requires entering actual sent quantity first.<br><strong style="color:#DC2626">✕ OOS</strong> marks as completely out of stock.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">ISSUE FLAGS</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview" style="display:flex;gap:6px;">
+        <button class="app-btn swipe-prod">PROD</button>
+        <button class="app-btn swipe-short">SHORT</button>
+        <button class="app-btn swipe-oos">OOS</button>
+      </div>
+      <div class="btn-info">
+        <div class="btn-where">Packing → Mobile Swipe Actions</div>
+        <div class="btn-name">Swipe Quick Actions</div>
+        <div class="btn-desc">On mobile, swipe LEFT on any item card to reveal these action buttons. <strong style="color:#B86F06">PROD</strong> only shows on pending items. <strong style="color:#D4A000">SHORT</strong> and <strong style="color:#DC2626">OOS</strong> always available. PROD is hidden for items already in Cooking or Ready to Pack status.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">MOBILE ONLY</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small">✎ Edit</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Packing → Each Order Item</div>
+        <div class="btn-name">Edit Item</div>
+        <div class="btn-desc">Opens an inline edit row directly on the item card — no modal. Enter the actual sent quantity and an optional note. Hit Done to close. This data appears in the WhatsApp export for Short items.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">INLINE EDIT</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small">↻ Reset to Pending</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Packing → Short / OOS Items</div>
+        <div class="btn-name">Reset to Pending</div>
+        <div class="btn-desc">Clears a Short or OOS flag and returns the item to Pending status. Use if an issue was flagged by mistake, or if stock arrives after being marked OOS.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">UNDO</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small">↩ Undo</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Packing → Dispatched Items</div>
+        <div class="btn-name">Undo Dispatch</div>
+        <div class="btn-desc">Returns a Delivered item back to Packed status. Use if an item was accidentally dispatched before it was actually sent. Only visible after the Delivered state is set.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">UNDO</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PRODUCTION BUTTONS -->
+  <h3 style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:10px;">
+    <span style="background:rgba(232,146,10,0.08);border:1px solid rgba(232,146,10,0.2);padding:4px 10px;border-radius:8px;font-size:12px;color:var(--amber)">◈ Production Role</span>
+  </h3>
+  <div class="btn-grid">
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn" style="background:#097353;color:#fff;box-shadow:0 4px 12px rgba(9,115,83,0.3);">✓ Complete</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Production → Daily Plan Items</div>
+        <div class="btn-name">Mark Item Complete</div>
+        <div class="btn-desc">Marks a daily production plan item as done. The item gets a strikethrough and fades. Only affects the facility production plan — not order items. Used to track daily cook progress.</div>
+        <span class="btn-tag" style="background:var(--green-dim);color:#4ADE80;">COMPLETE</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small" style="border-color:rgba(211,17,24,0.2);color:var(--red);">📖 Recipe</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Production → Daily Plan Items</div>
+        <div class="btn-name">View Recipe</div>
+        <div class="btn-desc">Opens a full-screen recipe modal showing all ingredients with quantities and expandable step-by-step preparation instructions. Only appears if the item was linked to a recipe when the plan was created.</div>
+        <span class="btn-tag" style="background:var(--red-dim);color:var(--red);">RECIPE DATABASE</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn" style="background:#097353;color:#fff;padding:13px 20px;font-size:12px;">✓ Batch Complete — Mark Ready to Pack</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Production → Order Batch Cards</div>
+        <div class="btn-name">Batch Complete</div>
+        <div class="btn-desc">Marks an entire master batch as done — updating ALL linked order items across ALL orders to Ready to Pack simultaneously. Packing team sees the update instantly without any refresh.</div>
+        <span class="btn-tag" style="background:var(--green-dim);color:#4ADE80;">BATCH UPDATE</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small">↩ Undo Batch</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Production → Order Batch Cards</div>
+        <div class="btn-name">Undo Batch</div>
+        <div class="btn-desc">Returns all items in a batch from prod_done back to production status. Use if "Batch Complete" was pressed too early and the batch needs more cooking time.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">UNDO</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn amber small">+ Log Extra</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Production → View</div>
+        <div class="btn-name">Log Extra Production</div>
+        <div class="btn-desc">Records extra items produced outside the daily plan — for example, a batch made for stock or on short notice. The entry is saved for admin visibility. Does not affect any orders but provides a record of all production activity.</div>
+        <span class="btn-tag" style="background:var(--amber-dim);color:var(--amber);">NEW IN V8</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small">View Preparation Steps</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Production → Recipe Card</div>
+        <div class="btn-name">Toggle Prep Steps</div>
+        <div class="btn-desc">Expands or collapses the step-by-step preparation instructions accordion. Steps are hidden by default to keep the recipe card compact. Each step is numbered for easy reference during cooking.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">ACCORDION</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MERGE MODAL -->
+  <h3 style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:10px;">
+    <span style="background:rgba(232,146,10,0.08);border:1px solid rgba(232,146,10,0.2);padding:4px 10px;border-radius:8px;font-size:12px;color:var(--amber)">📦 Batch Merge Modal</span>
+  </h3>
+  <div class="btn-grid">
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn red" style="font-size:12px;padding:10px 16px;">+ Send as NEW Independent Batch</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Merge Modal</div>
+        <div class="btn-name">New Batch</div>
+        <div class="btn-desc">Creates a completely separate production batch for this item. Production will see it as its own cook job. Use when this product variant or quantity needs different treatment from anything currently cooking.</div>
+        <span class="btn-tag" style="background:var(--red-dim);color:var(--red);">CREATE BATCH</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small" style="border-color:rgba(232,146,10,0.3);background:rgba(232,146,10,0.1);color:var(--amber);">🔗 Merge with Active Batch</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Merge Modal — Active Batches List</div>
+        <div class="btn-name">Merge with Batch</div>
+        <div class="btn-desc">Adds this item to an existing cooking batch. Production sees the combined quantity. When the batch is marked complete, ALL merged items update together across all linked orders simultaneously.</div>
+        <span class="btn-tag" style="background:var(--amber-dim);color:var(--amber);">MERGE</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- GLOBAL BUTTONS -->
+  <h3 style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:10px;">
+    <span style="background:rgba(238,242,255,0.06);border:1px solid var(--border);padding:4px 10px;border-radius:8px;font-size:12px;color:var(--text-low)">🌐 All Roles</span>
+  </h3>
+  <div class="btn-grid">
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small">Roles</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Top Navigation Bar</div>
+        <div class="btn-name">Switch Role</div>
+        <div class="btn-desc">Returns to the role selection screen from any view. Useful when multiple people share one device — each can select their role without affecting others. Active role badge shows current role at all times in the top bar.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">GLOBAL</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small">☰</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Top Navigation Bar (Mobile Only)</div>
+        <div class="btn-name">Open Sidebar</div>
+        <div class="btn-desc">Only visible on mobile screens. Opens the orders sidebar with a smooth slide-in animation. A dark overlay appears behind it — tap anywhere outside to close. Desktop always shows the sidebar without this button.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">MOBILE ONLY</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn danger small">Remove Order</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Admin → Order Cards in Sidebar</div>
+        <div class="btn-name">Remove Order</div>
+        <div class="btn-desc">Shows a confirmation inline. Must click "Yes" to confirm deletion. Permanently removes the order from Firebase. If it's the currently selected order, the main view resets to the dashboard. Only Admin sees this.</div>
+        <span class="btn-tag" style="background:rgba(220,38,38,0.1);color:#DC2626;">DESTRUCTIVE</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small">👁️</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Password Screen (Legacy)</div>
+        <div class="btn-name">Show / Hide Password</div>
+        <div class="btn-desc">Toggles the password field between hidden (•••) and visible text. V8 uses Google sign-in for all roles, so this only appears in legacy fallback screens if applicable.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">UTILITY</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small">⚡ Run Instant Bulk Parse</button></div>
+      <div class="btn-info">
+        <div class="btn-where">New Order Modal → Paste WhatsApp List</div>
+        <div class="btn-name">Bulk Parse</div>
+        <div class="btn-desc">Processes a pasted text list and extracts products, quantities, and units intelligently. Matches against the recipe database with 75%+ fuzzy matching. Unmatched items are still added with the raw text. Results are added to the staged items list instantly.</div>
+        <span class="btn-tag" style="background:var(--red-dim);color:var(--red);">SMART PARSE</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn white small" style="color:#090B10;">Sign in with Google</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Login Screen</div>
+        <div class="btn-name">Google Sign-In</div>
+        <div class="btn-desc">Opens a Google OAuth popup. Choose or confirm your Google account — no password needed. Once signed in, the app checks if you're an authorized user. New users are sent to the role request screen. Returns users go directly to role selection.</div>
+        <span class="btn-tag" style="background:rgba(238,242,255,0.08);color:var(--text-mid);">AUTH</span>
+      </div>
+    </div>
+    <div class="btn-card">
+      <div class="btn-preview"><button class="app-btn ghost small" style="color:#8896B3">Sign Out</button></div>
+      <div class="btn-info">
+        <div class="btn-where">Sidebar (Desktop) / Top Bar</div>
+        <div class="btn-name">Sign Out</div>
+        <div class="btn-desc">Signs out of the Google session and returns to the login screen. The next sign-in will go through the normal authorization check. Use this when sharing a device or handing over to another user.</div>
+        <span class="btn-tag" style="background:rgba(136,150,179,0.1);color:var(--text-low);">GLOBAL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATUS GUIDE ═══ -->
+<section id="status">
+  <div class="section-kicker">Status Guide</div>
+  <h2 class="section-title">The item <em>lifecycle</em></h2>
+  <p class="section-lead">Every order item moves through a defined status pipeline. Each status has a distinct color, badge, and card style — making the current state instantly recognizable at a glance.</p>
+
+  <div class="status-flow">
+    <div class="status-item">
+      <div class="status-num">01</div>
+      <span class="badge pending">Pending</span>
+    </div>
+    <div class="status-arrow">→</div>
+    <div class="status-item">
+      <div class="status-num">02</div>
+      <span class="badge cooking">Cooking</span>
+    </div>
+    <div class="status-arrow">→</div>
+    <div class="status-item">
+      <div class="status-num">03</div>
+      <span class="badge ready">Ready to Pack</span>
+    </div>
+    <div class="status-arrow">→</div>
+    <div class="status-item">
+      <div class="status-num">04</div>
+      <span class="badge packed">Packed ✓</span>
+    </div>
+    <div class="status-arrow">→</div>
+    <div class="status-item">
+      <div class="status-num">05</div>
+      <span class="badge delivered">Delivered 🚀</span>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:16px">
+    <div class="tip-icon">⚠️</div>
+    <div class="tip-text">Items can also be flagged as <span class="badge short" style="font-size:10px">Short ⚠</span> (partially sent) or <span class="badge oos" style="font-size:10px">Out of Stock</span> at any point. Both can be reset to Pending if the issue is resolved.</div>
+  </div>
+
+  <hr class="divider">
+
+  <table class="feature-table">
+    <thead>
+      <tr><th>Status</th><th>What it means</th><th>Who sets it</th><th>Card Style (V8)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge pending">Pending</span></td>
+        <td>Item received in the order, awaiting action</td>
+        <td>Auto on order creation</td>
+        <td>Dark navy, gray left border glow</td>
+      </tr>
+      <tr>
+        <td><span class="badge cooking">Cooking</span></td>
+        <td>Item is in production — cooking in progress</td>
+        <td>Packing → → Prod</td>
+        <td>Dark green-tinted background, amber left border glow, shimmer animation</td>
+      </tr>
+      <tr>
+        <td><span class="badge ready">Ready to Pack</span></td>
+        <td>Cooking done, waiting to be packed</td>
+        <td>Production → ✓ Batch Complete</td>
+        <td>Dark green background, bright green left border, green depth glow</td>
+      </tr>
+      <tr>
+        <td><span class="badge packed">Packed ✓</span></td>
+        <td>Item packed and ready for dispatch</td>
+        <td>Packing → ✓ Mark as Packed</td>
+        <td>Red-tinted background, red left border, red depth glow</td>
+      </tr>
+      <tr>
+        <td><span class="badge delivered">Delivered 🚀</span></td>
+        <td>Item dispatched and delivered</td>
+        <td>Packing → 🚀 Confirm Dispatch</td>
+        <td>Faded opacity, no border glow</td>
+      </tr>
+      <tr>
+        <td><span class="badge short">Short ⚠</span></td>
+        <td>Partially sent — less than ordered quantity</td>
+        <td>Packing → ⚠ Short</td>
+        <td>Amber left border, shows sent vs required qty</td>
+      </tr>
+      <tr>
+        <td><span class="badge oos">Out of Stock</span></td>
+        <td>Cannot be fulfilled — no stock available</td>
+        <td>Packing → ✕ OOS</td>
+        <td>Rose-tinted background, pink left border glow</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <h3 style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:20px;font-family:var(--serif)">Mobile Swipe — <em>Animated Demo</em></h3>
+  <p style="font-size:14px;color:var(--text-mid);margin-bottom:24px;line-height:1.6">On mobile, swipe LEFT on any item card to reveal quick action buttons. The card slides left showing PROD, SHORT, and OOS buttons on the right. Swipe right or tap elsewhere to close. A hint bar appears on the first pending item.</p>
+
+  <div class="swipe-demo">
+    <div class="swipe-actions">
+      <button class="app-btn swipe-short" style="border-radius:0;height:100%;">SHORT</button>
+      <button class="app-btn swipe-oos" style="border-radius:0;height:100%;">OOS</button>
+    </div>
+    <div class="swipe-main">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div>
+          <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px;">BARRAMUNDI FISH (170GM+)</div>
+          <div style="font-size:11px;color:#5A6A8A;font-family:var(--mono)">30 nos</div>
+        </div>
+        <span class="badge pending">Pending</span>
+      </div>
+      <button class="app-btn red" style="width:100%;padding:12px;font-size:13px;letter-spacing:0.03em;">✓ Mark as Packed</button>
+    </div>
+    <div class="swipe-hint-bar">← swipe to reveal quick actions</div>
+  </div>
+
+  <div class="tip info">
+    <div class="tip-icon">ℹ️</div>
+    <div class="tip-text"><strong>V8 note:</strong> The PROD swipe button is hidden for items already in <span class="badge cooking" style="font-size:10px">Cooking</span> or <span class="badge ready" style="font-size:10px">Ready to Pack</span> status — preventing duplicate production requests.</div>
+  </div>
+</section>
+
+<!-- ═══ FIREBASE ARCHITECTURE ═══ -->
+<section>
+  <div class="section-kicker">Technical</div>
+  <h2 class="section-title">Firebase <em>Architecture</em></h2>
+  <p class="section-lead">The system uses four Firestore collections with real-time listeners — all updates sync instantly across all connected devices without any page refresh.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:32px;">
+    <div style="background:var(--navy3);border:1px solid var(--border);border-radius:16px;padding:24px;">
+      <div style="font-size:12px;font-weight:900;color:var(--text-low);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;font-family:var(--mono)">orders</div>
+      <div style="font-size:13px;color:var(--text-mid);line-height:1.8;font-family:var(--mono)">
+        id · restaurant<br>poName · orderDate<br>deliveryDate · createdAt<br>items[] {<br>&nbsp;&nbsp;id · product · qty<br>&nbsp;&nbsp;unit · status<br>&nbsp;&nbsp;packedQty · notes<br>&nbsp;&nbsp;batchId · updatedAt<br>}
+      </div>
+    </div>
+    <div style="background:var(--navy3);border:1px solid var(--border);border-radius:16px;padding:24px;">
+      <div style="font-size:12px;font-weight:900;color:var(--text-low);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;font-family:var(--mono)">daily_productions</div>
+      <div style="font-size:13px;color:var(--text-mid);line-height:1.8;font-family:var(--mono)">
+        id · date · dayOfWeek<br>weekOf · status · notes<br>createdAt · updatedAt<br>items[] {<br>&nbsp;&nbsp;id · product · kgQty<br>&nbsp;&nbsp;packetQty · recipeName<br>&nbsp;&nbsp;recipeId · notes · status<br>}
+      </div>
+    </div>
+    <div style="background:var(--navy3);border:1px solid var(--border);border-radius:16px;padding:24px;">
+      <div style="font-size:12px;font-weight:900;color:var(--text-low);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;font-family:var(--mono)">access_requests</div>
+      <div style="font-size:13px;color:var(--text-mid);line-height:1.8;font-family:var(--mono)">
+        id · email · displayName<br>photoURL · requestedRoles[]<br>status ("pending" | "approved"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"rejected")<br>createdAt · updatedAt
+      </div>
+    </div>
+    <div style="background:var(--navy3);border:1px solid var(--border);border-radius:16px;padding:24px;">
+      <div style="font-size:12px;font-weight:900;color:var(--text-low);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;font-family:var(--mono)">authorized_users</div>
+      <div style="font-size:13px;color:var(--text-mid);line-height:1.8;font-family:var(--mono)">
+        id · email · displayName<br>photoURL · roles[]<br>approvedAt · approvedBy<br>createdAt
+      </div>
+    </div>
+  </div>
+
+  <div class="tip info" style="margin-top:24px">
+    <div class="tip-icon">🔥</div>
+    <div class="tip-text"><strong>Real-time listeners:</strong> Every Firestore collection uses <code style="background:rgba(9,115,83,0.1);padding:2px 6px;border-radius:4px;color:#4ADE80;font-family:var(--mono)">onSnapshot()</code> — meaning all connected devices receive updates the instant any change is written. No polling, no manual refresh.</div>
+  </div>
+
+  <div class="tip" style="margin-top:12px">
+    <div class="tip-icon">🔐</div>
+    <div class="tip-text"><strong>V8 auth change:</strong> <code style="background:rgba(232,146,10,0.1);padding:2px 6px;border-radius:4px;color:#E8920A;font-family:var(--mono)">access_requests</code> and <code style="background:rgba(232,146,10,0.1);padding:2px 6px;border-radius:4px;color:#E8920A;font-family:var(--mono)">authorized_users</code> are new in V8. The old password-based role system is fully replaced by Google OAuth + admin-controlled access.</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="highlight">
+    <div class="hl-icon">🌐</div>
+    <div>
+      <div class="hl-text">Live at: tfcordertracker.netlify.app</div>
+      <div class="hl-sub">Deployed via Netlify · Firebase project: tfc-orders-tracker · Region: TTDI, Kuala Lumpur</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="display:flex;justify-content:center;gap:24px;margin-bottom:20px;flex-wrap:wrap;">
+    <span style="font-size:12px;color:var(--text-low);">🍽️ The Food Company</span>
+    <span style="font-size:12px;color:var(--text-ghost);">·</span>
+    <span style="font-size:12px;color:var(--text-low);">Ocean Flair Group Sdn Bhd</span>
+    <span style="font-size:12px;color:var(--text-ghost);">·</span>
+    <span style="font-size:12px;color:var(--text-low);">TTDI, Kuala Lumpur</span>
+  </div>
+  <p>User Guide & Proposal — <strong>TFC Order Tracker V8 Final</strong></p>
+  <div class="footer-badge">
+    <span>©</span> 2026 Developed by Banuja Disanayaka
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => { entry.target.classList.add('visible'); }, entry.target.dataset.delay || 0);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.proposal-card, .role-card, .flow-step, .btn-card, .auth-step, .impact-card').forEach((el, i) => {
+  el.dataset.delay = (i % 4) * 80;
+  observer.observe(el);
+});
+
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  navLinks.forEach(l => {
+    l.style.color = l.getAttribute('href') === '#' + current ? 'var(--text)' : '';
+    l.style.background = l.getAttribute('href') === '#' + current ? 'rgba(255,255,255,0.05)' : '';
+  });
+});
+
+document.addEventListener('mousemove', (e) => {
+  const grid = document.querySelector('.hero-grid');
+  if (grid) {
+    const x = (e.clientX / window.innerWidth - 0.5) * 10;
+    const y = (e.clientY / window.innerHeight - 0.5) * 10;
+    grid.style.transform = `translate(${x}px, ${y}px)`;
+  }
+});
+</script>
+</body>
+</html>
