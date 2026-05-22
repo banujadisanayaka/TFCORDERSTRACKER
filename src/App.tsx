@@ -1902,6 +1902,9 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
   const [qty, setQty] = useState(item.packedQty || "");
   const [notes, setNotes] = useState(item.notes || "");
   const [showMergeModal, setShowMergeModal] = useState(false);
+  const [showShortModal, setShowShortModal] = useState(false);
+  const [shortQty, setShortQty] = useState("");
+  const [shortNote, setShortNote] = useState("");
 
   function commit(status, extra={}){
     let dQty=qty;
@@ -1911,8 +1914,18 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
   }
   function handleSendToProduction(){ setShowMergeModal(true); }
   function handleShort(){
-    if(!qty&&item.qty){setShowEdit(true);notify("Enter the SENT quantity first, then mark as Short.","error");return;}
-    commit('short');
+    setShortQty(qty || "");
+    setShortNote(notes || "");
+    setShowShortModal(true);
+  }
+  function confirmShort(){
+    const sq=parseFloat(shortQty);
+    const rq=parseFloat(item.qty);
+    if(!shortQty||isNaN(sq)||sq<0){notify("Please enter a valid sent quantity.","error");return;}
+    if(rq&&sq>=rq){notify("Sent qty ≥ requested — mark as Packed instead?","error");return;}
+    onUpdate(orderId,item.id,{status:'short',packedQty:shortQty,notes:shortNote,updatedAt:Date.now()});
+    setQty(shortQty); setNotes(shortNote);
+    setShowShortModal(false);
   }
   const getActiveBatches=()=>{
     const b={};
@@ -1935,6 +1948,47 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
   return(
     <>
       {showMergeModal&&<MergeModal pendingItem={item} activeBatches={getActiveBatches()} onMerge={bId=>{commit('production',{batchId:bId});setShowMergeModal(false);}} onNewBatch={()=>{commit('production',{batchId:"b_"+Date.now()+Math.random()});setShowMergeModal(false);}} onCancel={()=>setShowMergeModal(false)}/>}
+
+      {showShortModal&&(
+        <div className="animate-fade-in" onClick={()=>setShowShortModal(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:0}}>
+          <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,padding:"28px 28px 32px",display:"flex",flexDirection:"column",gap:16,position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.45),transparent)",pointerEvents:"none"}}/>
+            <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto -4px"}}/>
+            <div style={{fontSize:19,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.02em"}}>Short Shipment</div>
+            <div style={{background:th.cardBg,padding:"14px 16px",borderRadius:12,border:`1px solid rgba(232,146,10,0.25)`}}>
+              <div style={{fontSize:10,fontWeight:800,color:C.chL,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6}}>ITEM</div>
+              <div style={{fontWeight:900,color:"#EEF2FF",fontSize:15,marginBottom:4}}>{item.product}</div>
+              <div style={{fontSize:12,color:"#E8920A",fontFamily:"'JetBrains Mono',monospace",fontWeight:800}}>Requested: {item.qty} {item.unit||""}</div>
+            </div>
+            <div>
+              <div style={{fontSize:11,fontWeight:800,color:C.chL,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.08em"}}>How much are you actually sending?</div>
+              <input
+                autoFocus
+                value={shortQty}
+                onChange={e=>setShortQty(e.target.value)}
+                onKeyDown={e=>{if(e.key==="Enter")confirmShort();}}
+                placeholder={`Sent qty (max ${item.qty} ${item.unit||""})`}
+                type="number"
+                min="0"
+                style={{width:"100%",padding:"13px 16px",background:"rgba(232,146,10,0.06)",border:"1.5px solid rgba(232,146,10,0.35)",borderRadius:10,fontSize:15,fontWeight:800,color:"#EEF2FF",outline:"none",fontFamily:"'JetBrains Mono',monospace",boxSizing:"border-box"}}
+              />
+            </div>
+            <div>
+              <div style={{fontSize:11,fontWeight:800,color:C.chL,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.08em"}}>Reason / Note <span style={{fontWeight:500,textTransform:"none",letterSpacing:0}}>(optional)</span></div>
+              <input
+                value={shortNote}
+                onChange={e=>setShortNote(e.target.value)}
+                placeholder="e.g. ran out of stock at 2pm"
+                style={{width:"100%",padding:"11px 14px",background:th.panelBg,border:`1px solid ${th.divider}`,borderRadius:10,fontSize:13,fontWeight:500,color:"#EEF2FF",outline:"none",boxSizing:"border-box"}}
+              />
+            </div>
+            <div style={{display:"flex",gap:10,paddingTop:4}}>
+              <button onClick={()=>setShowShortModal(false)} style={{flex:1,padding:"13px",background:th.chipBg,border:`1px solid ${th.divider}`,borderRadius:12,fontSize:13,fontWeight:800,color:C.chL,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+              <button onClick={confirmShort} style={{flex:2,padding:"13px",background:"linear-gradient(135deg,rgba(232,146,10,0.25),rgba(232,146,10,0.12))",border:"1.5px solid rgba(232,146,10,0.45)",borderRadius:12,fontSize:13,fontWeight:900,color:"#E8920A",cursor:"pointer",fontFamily:"inherit",letterSpacing:"0.02em"}}>⚠ Confirm Short</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className={`animate-fade-up pk-card ${cur.cls}`}>
         <div style={{padding:"16px 18px"}}>
@@ -2681,6 +2735,8 @@ function TFCOrderSystem(){
   const [isOnline, setIsOnline] = useState(() => navigator.onLine);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [notifPermission, setNotifPermission] = useState(() => ("Notification" in window ? Notification.permission : "denied"));
+  const prevOrdersRef = useRef(null);
 
   useEffect(() => {
     const goOnline = () => setIsOnline(true);
@@ -2695,6 +2751,60 @@ function TFCOrderSystem(){
     window.addEventListener("beforeinstallprompt", handler);
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
+
+  // Role-based push notifications — fires when orders change after initial load
+  useEffect(() => {
+    if(!role || notifPermission !== "granted" || !("Notification" in window)) {
+      prevOrdersRef.current = orders;
+      return;
+    }
+    const prev = prevOrdersRef.current;
+    if(prev === null){ prevOrdersRef.current = orders; return; } // skip initial snapshot
+
+    const prevMap = {};
+    prev.forEach(o => o.items.forEach(it => { prevMap[it.id] = it; }));
+
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        const was = prevMap[item.id];
+        if(!was || was.status === item.status) return; // no change
+        const changed = item.status;
+
+        if(role === "admin"){
+          if(changed === "short") new Notification("⚠ Short Shipment", {body:`${item.product} (${order.poName||order.restaurant}): Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`short-${item.id}`});
+          if(changed === "oos")   new Notification("✕ Out of Stock", {body:`${item.product} in ${order.poName||order.restaurant}`,icon:"/icon-192.png",tag:`oos-${item.id}`});
+        }
+        if(role === "packing"){
+          if(changed === "prod_done") new Notification("✓ Ready to Pack", {body:`${item.product} — ${item.qty} ${item.unit||""} (${order.restaurant})`,icon:"/icon-192.png",tag:`pack-${item.id}`});
+        }
+        if(role === "production"){
+          if(changed === "production") new Notification("🍳 New Batch", {body:`${item.product} — ${item.qty} ${item.unit||""} needed`,icon:"/icon-192.png",tag:`prod-${item.id}`});
+        }
+        if(role === "vins" && order.restaurant === "Vins"){
+          if(changed === "short") new Notification("⚠ Short — Vins", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`vins-short-${item.id}`});
+          if(changed === "oos")   new Notification("✕ OOS — Vins", {body:`${item.product} is out of stock`,icon:"/icon-192.png",tag:`vins-oos-${item.id}`});
+        }
+        if(role === "manja" && order.restaurant === "Manja"){
+          if(changed === "short") new Notification("⚠ Short — Manja", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`manja-short-${item.id}`});
+          if(changed === "oos")   new Notification("✕ OOS — Manja", {body:`${item.product} is out of stock`,icon:"/icon-192.png",tag:`manja-oos-${item.id}`});
+        }
+      });
+
+      // Notify restaurant roles when their order is fully dispatched
+      if((role === "vins" && order.restaurant === "Vins") || (role === "manja" && order.restaurant === "Manja")){
+        const prevOrder = prev.find(o => o.id === order.id);
+        if(prevOrder){
+          const wasAllDone = prevOrder.items.every(i => i.status === "delivered" || i.status === "packed");
+          const nowAllDone = order.items.every(i => i.status === "delivered" || i.status === "packed");
+          if(!wasAllDone && nowAllDone){
+            new Notification("🚀 Order Ready", {body:`${order.poName||order.restaurant} order is fully packed and ready!`,icon:"/icon-192.png",tag:`done-${order.id}`});
+          }
+        }
+      }
+    });
+
+    prevOrdersRef.current = orders;
+  }, [orders, role, notifPermission]);
 
   const [orders,setOrders]=useState([]);
   const [dailyProductions, setDailyProductions] = useState([]);
@@ -2930,7 +3040,13 @@ function TFCOrderSystem(){
     } catch (e) { console.error("updateDailyProdItem failed:", e); notify("Update failed", "error"); }
   }
 
-  function selectRole(r){ setScreenExiting(true); setTimeout(()=>{ setRole(r); setPhase("app"); setScreenExiting(false); }, 320); }
+  function selectRole(r){
+    if("Notification" in window && Notification.permission === "default"){
+      Notification.requestPermission().then(p => setNotifPermission(p));
+    }
+    setScreenExiting(true);
+    setTimeout(()=>{ setRole(r); setPhase("app"); setScreenExiting(false); }, 320);
+  }
 
   if (splashState === "visible" || splashState === "fading") return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{ opacity: splashState === "fading" ? 0 : 1, transition: "opacity 0.5s ease" }}><SplashScreen /></div></ThemeCtx.Provider> );
 
@@ -3102,6 +3218,24 @@ function TFCOrderSystem(){
               </span>
               {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#D31118",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #04060E",animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
             </div>
+            {"Notification" in window && (
+              <button
+                onClick={()=>{
+                  if(notifPermission==="default"){
+                    Notification.requestPermission().then(p=>{setNotifPermission(p); if(p==="granted") notify("Notifications enabled!","success"); else if(p==="denied") notify("Notifications blocked. Allow them in browser settings.","error");});
+                  } else if(notifPermission==="denied"){
+                    notify("Notifications are blocked. Go to browser Settings → Site settings to allow them.","error");
+                  } else {
+                    notify("Notifications are enabled ✓","success");
+                  }
+                }}
+                title={notifPermission==="granted"?"Notifications on":notifPermission==="denied"?"Notifications blocked":"Enable notifications"}
+                style={{background:notifPermission==="granted"?"rgba(74,222,128,0.08)":notifPermission==="denied"?"rgba(248,113,113,0.08)":"rgba(255,255,255,0.04)",border:`1px solid ${notifPermission==="granted"?"rgba(74,222,128,0.25)":notifPermission==="denied"?"rgba(248,113,113,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:8,minWidth:36,minHeight:36,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,position:"relative",flexShrink:0,transition:"all 0.2s"}}
+              >
+                {notifPermission==="granted"?"🔔":notifPermission==="denied"?"🔕":"🔔"}
+                {notifPermission==="default"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #04060E"}}/>}
+              </button>
+            )}
             {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:`2px solid ${isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)"}`,flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
             <button onClick={()=>{ setScreenExiting(true); setTimeout(()=>{ setPhase("select");setRole(null);setActiveId(null);setScreenExiting(false); }, 320); }} style={{background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`,color:C.chL,padding:"6px 12px",borderRadius:8,minHeight:36,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
           </div>
