@@ -113,8 +113,8 @@ const GLOBAL_STYLES = `
   }
   .shake { animation: shake 0.4s ease; }
   
-  .animate-fade-up { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-  .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+  .animate-fade-up { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; will-change: transform, opacity; }
+  .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; will-change: opacity; }
   .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
   .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
   
@@ -134,9 +134,10 @@ const GLOBAL_STYLES = `
   .dot:nth-child(1) { animation-delay: -0.32s; }
   .dot:nth-child(2) { animation-delay: -0.16s; }
 
-  .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+  .custom-scrollbar { -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-  .custom-scrollbar::-webkit-scrollbar-thumb { background: #1A3558; border-radius: 10px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(26,53,88,0.6); border-radius: 10px; }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #224070; }
 
   input:focus, textarea:focus, select:focus { border-color: #00D4FF !important; box-shadow: 0 0 0 3px rgba(0,212,255,0.15) !important; background: #07101C !important; }
@@ -228,8 +229,8 @@ const GLOBAL_STYLES = `
   .pk-dispatch-btn:hover { box-shadow:0 6px 26px rgba(9,115,83,0.56), 0 0 0 1px rgba(9,115,83,0.22); transform:translateY(-1px); }
   .pk-dispatch-btn:active { transform:translateY(1px); }
 
-  /* Secondary action chips */
-  .pk-chip { flex:1; padding:9px 6px; border-radius:9px; font-size:11px; font-weight:800; cursor:pointer; font-family:inherit; transition:all 0.15s ease; border:1px solid; text-align:center; white-space:nowrap; }
+  /* Secondary action chips — 44px touch target */
+  .pk-chip { flex:1; min-height:44px; padding:9px 6px; border-radius:9px; font-size:11px; font-weight:800; cursor:pointer; font-family:inherit; transition:all 0.15s ease; border:1px solid; text-align:center; white-space:nowrap; display:flex; align-items:center; justify-content:center; }
   .pk-chip:active { transform:scale(0.96); }
   .pk-chip-prod   { color:#B86F06; background:rgba(184,111,6,0.09); border-color:rgba(184,111,6,0.28); }
   .pk-chip-short  { color:#E8920A; background:rgba(232,146,10,0.08); border-color:rgba(232,146,10,0.28); }
@@ -344,6 +345,26 @@ const GLOBAL_STYLES = `
 
   /* ── Batch complete button ── */
   .batch-complete-btn:hover { box-shadow:0 6px 28px rgba(9,115,83,0.58) !important; }
+
+  /* ── View-swap entrance animation (content transitions) ── */
+  @keyframes viewEnter { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  .view-enter { animation: viewEnter 0.32s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+  /* ── Screen exit fade (role/back transitions) ── */
+  .screen-exiting { opacity:0 !important; transition: opacity 0.3s ease !important; }
+  .screen-idle { opacity:1; transition: opacity 0.3s ease; }
+
+  /* ── Touch targets: enforce 44px on key tappable elements ── */
+  .touch-44 { min-width:44px; min-height:44px; display:flex !important; align-items:center; justify-content:center; }
+
+  /* ── Mobile: hide scrollbar on small screens for cleaner look ── */
+  @media(max-width:768px) { .custom-scrollbar::-webkit-scrollbar { width:0; height:0; } }
+
+  /* ── Mobile font scaling for large display numbers ── */
+  @media(max-width:480px) {
+    .mobile-stat-num { font-size:28px !important; }
+    .mobile-title { font-size:20px !important; letter-spacing:-0.02em !important; }
+  }
 
 `;
 
@@ -2013,7 +2034,7 @@ function PackingView({order, onUpdate, orders, notify}){
         {/* Name + WhatsApp */}
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12,marginBottom:10}}>
           <div style={{flex:1,minWidth:0}}>
-            <div style={{fontSize:28,fontWeight:900,letterSpacing:"-0.04em",lineHeight:1.1,marginBottom:8}}><span className={`gradient-text-${order.restaurant==="Vins"?"red":"amber"}`}>{order.poName||"Packing View"}</span></div>
+            <div className="mobile-title" style={{fontSize:26,fontWeight:900,letterSpacing:"-0.04em",lineHeight:1.1,marginBottom:8}}><span className={`gradient-text-${order.restaurant==="Vins"?"red":"amber"}`}>{order.poName||"Packing View"}</span></div>
             <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
               <span style={{fontSize:11,fontWeight:900,color:rc,background:rc+"18",borderRadius:6,padding:"4px 10px"}}>{order.restaurant}</span>
               {order.orderDate&&<span style={{fontSize:11,color:C.chL,fontWeight:600}}>{order.orderDate}</span>}
@@ -2259,7 +2280,7 @@ function OrderingView({order}){
         <ProgressRing radius={ringRadius} stroke={isMobile?10:8} progress={pct} color={pct===100?"#4ADE80":C.ol} />
         <div>
           <div style={{fontSize:10,color:C.chL,textTransform:"uppercase",letterSpacing:"0.12em",fontWeight:800,marginBottom:4}}>Fulfillment</div>
-          <div style={{fontSize:isMobile?40:32,color:pct===100?"#4ADE80":C.ch,fontWeight:900,lineHeight:1,letterSpacing:"-0.03em"}}>{pct}%</div>
+          <div className="mobile-stat-num" style={{fontSize:isMobile?36:32,color:pct===100?"#4ADE80":C.ch,fontWeight:900,lineHeight:1,letterSpacing:"-0.03em"}}>{pct}%</div>
           <div style={{fontSize:11,color:C.chL,marginTop:6,fontWeight:600}}>{s.packed+s.delivered} of {s.total} items</div>
         </div>
       </div>
@@ -2645,7 +2666,7 @@ class ErrorBoundary extends React.Component {
 function TFCOrderSystem(){
   const isMobile = useIsMobile();
   const [splashState, setSplashState] = useState("visible");
-  const [phase,setPhase]=useState("select"); const [role,setRole]=useState(null);
+  const [phase,setPhase]=useState("select"); const [role,setRole]=useState(null); const [screenExiting,setScreenExiting]=useState(false);
 
   const [orders,setOrders]=useState([]);
   const [dailyProductions, setDailyProductions] = useState([]);
@@ -2871,7 +2892,7 @@ function TFCOrderSystem(){
     } catch (e) { console.error("updateDailyProdItem failed:", e); notify("Update failed", "error"); }
   }
 
-  function selectRole(r){ setRole(r); setPhase("app"); }
+  function selectRole(r){ setScreenExiting(true); setTimeout(()=>{ setRole(r); setPhase("app"); setScreenExiting(false); }, 320); }
 
   if (splashState === "visible" || splashState === "fading") return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{ opacity: splashState === "fading" ? 0 : 1, transition: "opacity 0.5s ease" }}><SplashScreen /></div></ThemeCtx.Provider> );
 
@@ -2986,7 +3007,7 @@ function TFCOrderSystem(){
     AppContent = (
       <div
         className="animate-fade-in cursor-spotlight"
-        style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:"#04060E",fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",overflow:"hidden",position:"relative",transition:"background-color 0.4s ease"}}
+        style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:"#04060E",fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",overflow:"hidden",position:"relative",transition:"background-color 0.4s ease, opacity 0.32s ease",opacity:screenExiting?0:1}}
         onMouseMove={e=>{const el=e.currentTarget;const r=el.getBoundingClientRect();el.style.setProperty("--cx",(e.clientX-r.left)+"px");el.style.setProperty("--cy",(e.clientY-r.top)+"px");}}
         onMouseLeave={e=>{e.currentTarget.style.setProperty("--cx","-9999px");e.currentTarget.style.setProperty("--cy","-9999px");}}
       >
@@ -3006,7 +3027,7 @@ function TFCOrderSystem(){
           <div className="portal-bar-shine"/>
           {/* Left */}
           <div style={{display:"flex",alignItems:"center",gap:12}}>
-            {isMobile&&<button onClick={()=>setSidebarOpen(true)} style={{background:isDark?"rgba(255,255,255,0.05)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.08)"}`,borderRadius:8,width:34,height:34,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.ch,fontSize:15,flexShrink:0}}>☰</button>}
+            {isMobile&&<button onClick={()=>setSidebarOpen(true)} style={{background:isDark?"rgba(255,255,255,0.05)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.08)"}`,borderRadius:8,minWidth:44,minHeight:44,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.ch,fontSize:17,flexShrink:0}}>☰</button>}
             <div style={{position:"relative",width:34,height:34,flexShrink:0}}>
               <div style={{width:34,height:34,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,boxShadow:"0 0 0 1px rgba(211,17,24,0.3),0 2px 10px rgba(211,17,24,0.2)"}}>🍽️</div>
               <div style={{position:"absolute",inset:-4,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
@@ -3029,12 +3050,12 @@ function TFCOrderSystem(){
               {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#D31118",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #04060E",animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
             </div>
             {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:`2px solid ${isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)"}`,flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
-            <button onClick={()=>{setPhase("select");setRole(null);setActiveId(null);}} style={{background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`,color:C.chL,padding:"6px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
+            <button onClick={()=>{ setScreenExiting(true); setTimeout(()=>{ setPhase("select");setRole(null);setActiveId(null);setScreenExiting(false); }, 320); }} style={{background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`,color:C.chL,padding:"6px 12px",borderRadius:8,minHeight:36,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
           </div>
         </div>
 
         <div style={{display:"flex",flex:1,overflow:"hidden",position:"relative",zIndex:2}}>
-          {isMobile&&sidebarOpen&&<div className="animate-fade-in" onClick={()=>setSidebarOpen(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.65)",backdropFilter:"blur(3px)",zIndex:40}}/>}
+          {isMobile&&sidebarOpen&&<div onClick={()=>setSidebarOpen(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.65)",backdropFilter:"blur(3px)",zIndex:40,animation:"fadeIn 0.3s ease-out forwards"}}/>}
 
           {/* Sidebar */}
           <div className="custom-scrollbar" style={{width:240,borderRight:sidebarBdr,background:sidebarBg,backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",padding:"14px 12px",overflowY:"auto",flexShrink:0,display:"flex",flexDirection:"column",gap:5,position:isMobile?"absolute":"relative",zIndex:50,height:"100%",left:0,top:0,transform:isMobile?(sidebarOpen?"translateX(0)":"translateX(-100%)"):"none",transition:"transform 0.3s cubic-bezier(0.16,1,0.3,1), background 0.4s ease",boxShadow:isMobile&&sidebarOpen?(isDark?"0 0 60px rgba(0,0,0,0.8)":"0 0 40px rgba(0,0,0,0.15)"):"none"}}>
@@ -3046,13 +3067,17 @@ function TFCOrderSystem(){
           </div>
 
           {/* Main content */}
-          <div className="custom-scrollbar" style={{flex:1,overflowY:"auto",padding:isMobile?"20px":"32px 40px",background:mainBg,width:"100%",position:"relative",transition:"background 0.4s ease"}}>{renderMain()}</div>
+          <div className="custom-scrollbar" style={{flex:1,overflowY:"auto",padding:isMobile?"16px":"32px 40px",background:mainBg,width:"100%",position:"relative",transition:"background 0.4s ease"}}>
+            <div key={`${role}-${activeId||"none"}`} className="view-enter" style={{minHeight:"100%"}}>
+              {renderMain()}
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
-  return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{minHeight:"100vh"}}>{AppContent}</div></ThemeCtx.Provider> );
+  return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{minHeight:"100vh",opacity:screenExiting?0:1,transition:"opacity 0.32s ease"}}>{AppContent}</div></ThemeCtx.Provider> );
 }
 
 export default function App() {
