@@ -366,6 +366,22 @@ const GLOBAL_STYLES = `
   [data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select { color:#0F172A !important; background:#F8FAFC !important; }
   [data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder { color:#94A3B8; }
   [data-theme="light"] input:focus, [data-theme="light"] textarea:focus, [data-theme="light"] select:focus { background:#FFFFFF !important; box-shadow:0 0 0 3px rgba(211,17,24,0.15) !important; }
+  [data-theme="light"] .day-tile { background:linear-gradient(160deg,#FFFFFF,#F5F7FC) !important; border:1px solid rgba(0,0,0,0.07) !important; box-shadow:0 2px 10px rgba(0,0,0,0.04) !important; }
+  [data-theme="light"] .day-tile-empty { background:transparent !important; border:2px dashed rgba(0,0,0,0.14) !important; }
+  [data-theme="light"] .day-tile-active { border-color:rgba(211,17,24,0.22) !important; }
+  [data-theme="light"] .batch-v2 { background:linear-gradient(160deg,#FFFBF2,#FEF7E8) !important; border:1px solid rgba(232,146,10,0.15) !important; border-left:4px solid #E8920A !important; box-shadow:0 4px 20px rgba(0,0,0,0.05) !important; }
+  [data-theme="light"] .queue-card { background:linear-gradient(145deg,#FFFBF0,#FEF7E0) !important; border:1px solid rgba(232,146,10,0.18) !important; border-left:4px solid #E8920A !important; box-shadow:0 4px 20px rgba(0,0,0,0.05) !important; }
+  [data-theme="light"] .pk-progress-track { background:rgba(0,0,0,0.08) !important; }
+  [data-theme="light"] .glass-header { border-bottom:1px solid rgba(0,0,0,0.07) !important; }
+
+  /* ── Bento card system (Tier 2) ── */
+  .bento-hero { border-radius:16px; overflow:hidden; position:relative; transition:transform 0.22s cubic-bezier(0.16,1,0.3,1),box-shadow 0.22s ease; }
+  @media(hover:hover){ .bento-hero:hover { transform:translateY(-3px); } }
+  .bento-hero:active { transform:translateY(0) !important; }
+
+  /* ── Admin dashboard tab switcher pill ── */
+  .admin-tab-bar { display:flex; padding:4px; border-radius:12px; }
+  .admin-tab-btn { padding:8px 18px; border:none; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); white-space:nowrap; }
 
   /* ── Theme toggle button ── */
   .theme-toggle { display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:10px; cursor:pointer; transition:all 0.22s cubic-bezier(0.16,1,0.3,1); font-size:16px; border:none; flex-shrink:0; }
@@ -719,10 +735,11 @@ function AdminDonutChart({ packed, pending, issues }) {
 }
 
 function StatCard({label,val,color}){
+  const th=useTheme();
   const isNum = typeof val === "number";
   const displayed = useCountUp(isNum ? val : 0);
   return(
-    <div className="hover-lift animate-fade-up glass-card" style={{borderRadius:16,padding:"24px 8px",textAlign:"center",position:"relative",overflow:"hidden",border:"1px solid rgba(255,255,255,0.07)",boxShadow:`0 2px 8px rgba(0,0,0,0.4), 0 0 32px ${color}20`}}>
+    <div className="hover-lift animate-fade-up glass-card" style={{borderRadius:16,padding:"24px 8px",textAlign:"center",position:"relative",overflow:"hidden",border:`1px solid ${th.divider}`,boxShadow:th.isDark?`0 2px 8px rgba(0,0,0,0.4), 0 0 32px ${color}20`:`0 2px 8px rgba(0,0,0,0.06), 0 0 20px ${color}15`}}>
       <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${color}50,transparent)`,pointerEvents:"none"}}/>
       <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:90,height:90,borderRadius:"50%",background:`radial-gradient(circle,${color}16 0%,transparent 70%)`,pointerEvents:"none"}}/>
       <div className="count-pop" style={{fontSize:44,fontWeight:900,color,lineHeight:1,letterSpacing:"-0.05em",position:"relative"}}>{isNum ? displayed : val}</div>
@@ -1834,6 +1851,7 @@ function EditOrderModal({order, onClose, onSave, notify}){
    ORDER CARD & VIEWS 
 ═══════════════════════════════════════════════════════════════ */
 function OrderCard({order, active, onClick, onDelete, index}){
+  const th=useTheme();
   const s=oStats(order);
   const rc=order.restaurant==="Vins"?C.ol:C.am;
   const totalCompleted=s.packed+s.delivered;
@@ -1849,7 +1867,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
       style={{
         animationDelay:`${index*0.05}s`,
         padding:"14px 16px",borderRadius:16,marginBottom:8,cursor:"pointer",
-        background:active?`linear-gradient(160deg,#111E36,#0B1228)`:C.off,
+        background:active?(th.isDark?`linear-gradient(160deg,#111E36,#0B1228)`:`linear-gradient(160deg,#EFF4FF,#E8F0FF)`):C.off,
         border:`1.5px solid ${active?rc+"60":C.bdrL}`,
         borderLeft:`4px solid ${active?rc:C.bdrL}`,
         transition:"all 0.25s cubic-bezier(0.16,1,0.3,1)"
@@ -1891,7 +1909,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
             <div className="animate-fade-in" style={{display:"flex",gap:10,alignItems:"center"}}>
               <span style={{fontSize:11,color:C.rd,fontWeight:700}}>Delete this order?</span>
               <button onClick={()=>{onDelete(order.id);setShowDel(false);}} style={{fontSize:11,color:"#fff",background:C.rd,border:"none",cursor:"pointer",fontWeight:800,padding:"4px 10px",borderRadius:6,fontFamily:"inherit"}}>Yes</button>
-              <button onClick={()=>setShowDel(false)} style={{fontSize:11,color:C.chM,background:"#1A2A44",border:"none",cursor:"pointer",fontWeight:700,padding:"4px 10px",borderRadius:6,fontFamily:"inherit"}}>No</button>
+              <button onClick={()=>setShowDel(false)} style={{fontSize:11,color:C.chM,background:C.beigeD,border:"none",cursor:"pointer",fontWeight:700,padding:"4px 10px",borderRadius:6,fontFamily:"inherit"}}>No</button>
             </div>
           )}
         </div>
@@ -2361,20 +2379,62 @@ function AdminOrdersTab({ orders }) {
     <div className="animate-fade-in">
       <div style={{marginBottom:20}}><AdminDonutChart packed={totals.packed + totals.delivered} pending={totals.prod + totals.prod_done + totals.pending} issues={totals.short + totals.oos} /></div>
 
-      {/* Global stat grid */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:22}}>
-        {[
-          {label:"Total Items",val:totals.total,color:"#8896B3"},
-          {label:"Packed",     val:totals.packed+totals.delivered, color:"#4ADE80"},
-          {label:"Cooking",    val:totals.prod+totals.prod_done, color:C.am},
-          {label:"Issues",     val:totals.short+totals.oos, color:C.rd},
-        ].map(s=>(
-          <div key={s.label} className="glass-card animate-fade-up" style={{borderRadius:12,padding:"14px 8px",textAlign:"center",border:"1px solid rgba(255,255,255,0.06)",position:"relative",overflow:"hidden"}}>
-            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${s.color}35,transparent)`}}/>
-            <div style={{fontSize:24,fontWeight:900,color:s.color,lineHeight:1,letterSpacing:"-0.04em"}}>{s.val}</div>
-            <div style={{fontSize:9,color:C.chL,marginTop:5,textTransform:"uppercase",letterSpacing:"0.1em",fontWeight:700}}>{s.label}</div>
+      {/* ── Bento stat grid ── */}
+      <div style={{display:"grid",gridTemplateColumns:"1.7fr 1fr 1fr",gridTemplateRows:"auto auto",gap:10,marginBottom:22}}>
+
+        {/* Hero: Fulfilled (spans 2 rows) */}
+        <div className="bento-hero glass-card animate-fade-up" style={{gridRow:"span 2",padding:"24px 22px",display:"flex",flexDirection:"column",justifyContent:"space-between",minHeight:148}}>
+          <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.16em",color:"#4ADE80",opacity:0.85}}>Fulfilled</div>
+          <div>
+            <div style={{fontSize:54,fontWeight:900,color:"#4ADE80",letterSpacing:"-0.05em",lineHeight:1,textShadow:th.isDark?"0 0 40px rgba(74,222,128,0.35)":"none"}}>{totals.packed+totals.delivered}</div>
+            <div style={{fontSize:11,color:C.chL,marginTop:6,fontWeight:600}}>of <strong style={{color:C.chM}}>{totals.total}</strong> total items</div>
           </div>
-        ))}
+          <div>
+            <div style={{height:4,background:th.trackBg,borderRadius:99,overflow:"hidden",marginBottom:5}}>
+              <div style={{height:4,width:totals.total?((totals.packed+totals.delivered)/totals.total*100)+"%":"0%",background:"linear-gradient(90deg,#16A34A,#4ADE80)",borderRadius:99,transition:"width 1.2s cubic-bezier(0.16,1,0.3,1)",boxShadow:"0 0 8px rgba(74,222,128,0.4)"}}/>
+            </div>
+            <div style={{fontSize:9,color:C.chL,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.10em"}}>
+              {totals.total?Math.round(((totals.packed+totals.delivered)/totals.total)*100):0}% complete
+            </div>
+          </div>
+        </div>
+
+        {/* Issues */}
+        {(()=>{const hasIssues=(totals.short+totals.oos)>0; return(
+          <div className="bento-hero animate-fade-up" style={{animationDelay:"0.05s",padding:"18px 16px",borderRadius:16,
+            background:hasIssues?(th.isDark?"linear-gradient(135deg,rgba(220,38,38,0.14),rgba(220,38,38,0.05))":"linear-gradient(135deg,rgba(220,38,38,0.08),rgba(220,38,38,0.03))"):C.off,
+            border:"1px solid "+(hasIssues?"rgba(220,38,38,0.25)":C.bdrL)}}>
+            <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.14em",color:hasIssues?C.rd:C.chL,marginBottom:8,opacity:0.85}}>Issues</div>
+            <div style={{fontSize:38,fontWeight:900,color:hasIssues?C.rd:C.chL,letterSpacing:"-0.04em",lineHeight:1}}>{totals.short+totals.oos}</div>
+            {hasIssues&&<div style={{fontSize:9,color:C.rd,marginTop:7,fontWeight:800,display:"flex",alignItems:"center",gap:4}}><span style={{width:5,height:5,borderRadius:"50%",background:C.rd,animation:"pulseSoft 1.5s infinite",display:"inline-block"}}/> Needs attention</div>}
+            {!hasIssues&&<div style={{fontSize:9,color:C.chL,marginTop:7,fontWeight:600}}>All clear ✓</div>}
+          </div>
+        );})()}
+
+        {/* Total Items */}
+        <div className="bento-hero animate-fade-up" style={{animationDelay:"0.08s",padding:"18px 16px",borderRadius:16,background:C.off,border:"1px solid "+C.bdrL}}>
+          <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.14em",color:C.chL,marginBottom:8,opacity:0.85}}>Total Items</div>
+          <div style={{fontSize:38,fontWeight:900,color:C.chM,letterSpacing:"-0.04em",lineHeight:1}}>{totals.total}</div>
+          <div style={{fontSize:9,color:C.chXL,marginTop:7,fontWeight:600}}>across all orders</div>
+        </div>
+
+        {/* In Production — spans 2 cols */}
+        <div className="bento-hero animate-fade-up" style={{animationDelay:"0.12s",gridColumn:"span 2",padding:"18px 20px",borderRadius:16,
+          background:th.isDark?"linear-gradient(135deg,rgba(232,146,10,0.10),rgba(232,146,10,0.03))":"linear-gradient(135deg,rgba(232,146,10,0.07),rgba(232,146,10,0.02))",
+          border:"1px solid rgba(232,146,10,0.2)",
+          display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div>
+            <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.14em",color:C.amDk,marginBottom:8,opacity:0.9}}>In Production</div>
+            <div style={{fontSize:38,fontWeight:900,color:C.am,letterSpacing:"-0.04em",lineHeight:1}}>{totals.prod+totals.prod_done}</div>
+          </div>
+          {totals.prod>0&&(
+            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4}}>
+              <div style={{display:"flex",alignItems:"center",gap:6,fontSize:11,fontWeight:800,color:C.amDk}}><span className="prod-dot"/>Active now</div>
+              <div style={{fontSize:28,fontWeight:900,color:C.am,letterSpacing:"-0.03em"}}>{totals.prod}</div>
+            </div>
+          )}
+          {totals.prod===0&&totals.prod_done>0&&<div style={{fontSize:11,fontWeight:700,color:C.amDk}}>✓ All ready to pack</div>}
+        </div>
       </div>
 
       <SectionLabel text="Active Orders"/>
@@ -2406,7 +2466,8 @@ function AdminOrdersTab({ orders }) {
 }
 
 function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShiftWeek, onCreateDP, onUpdateDP, onDeleteDP, onActivateWeek }) {
-  const [editingDay, setEditingDay] = useState(null); 
+  const th=useTheme();
+  const [editingDay, setEditingDay] = useState(null);
 
   return (
     <div className="animate-fade-in">
@@ -2424,7 +2485,7 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
         <div style={{fontSize:11,fontWeight:900,color:C.chL,textTransform:"uppercase",letterSpacing:"1px"}}>Week of {new Date(selectedWeek).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}</div>
         <div style={{display:"flex",gap:6}}>
-          <button onClick={() => onShiftWeek(-1)} className="hover-lift" style={{padding:"6px 12px",background:"#111828",border:"1px solid #1E2A44",borderRadius:7,fontSize:11,color:C.chL,fontWeight:700,cursor:"pointer"}}>◀ Prev</button>
+          <button onClick={() => onShiftWeek(-1)} className="hover-lift" style={{padding:"6px 12px",background:C.off,border:"1px solid "+C.bdrL,borderRadius:7,fontSize:11,color:C.chL,fontWeight:700,cursor:"pointer"}}>◀ Prev</button>
           <button onClick={() => onShiftWeek(1)} className="hover-lift" style={{padding:"6px 12px",background:C.olBg,border:"1px solid "+C.olBgD,borderRadius:7,fontSize:11,color:C.ol,fontWeight:800,cursor:"pointer"}}>Next ▶</button>
         </div>
       </div>
@@ -2497,8 +2558,8 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
       })}
 
       {weekDPs.length > 0 && (
-        <div style={{display:"flex",gap:10,marginTop:16,paddingTop:16,borderTop:"1px solid #1E2A44"}}>
-          <div style={{flex:1,padding:12,background:"#111828",border:"1px solid #1E2A44",borderRadius:9,fontSize:12,fontWeight:800,color:hasDrafts ? C.chL : "#097353",textAlign:"center"}}>
+        <div style={{display:"flex",gap:10,marginTop:16,paddingTop:16,borderTop:"1px solid "+C.bdrL}}>
+          <div style={{flex:1,padding:12,background:C.off,border:"1px solid "+C.bdrL,borderRadius:9,fontSize:12,fontWeight:800,color:hasDrafts ? C.chL : "#097353",textAlign:"center"}}>
             {hasDrafts ? "You have unpublished drafts" : "✓ All plans active for production"}
           </div>
           {hasDrafts && (
@@ -2511,6 +2572,7 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
 }
 
 function AdminDashboard({ orders, dailyProductions = [], onCreateDP, onUpdateDP, onDeleteDP, onActivateWeek }) {
+  const th=useTheme();
   const [adminTab, setAdminTab] = useState("orders");
   
   function getCurrentSunday() {
@@ -2541,21 +2603,31 @@ function AdminDashboard({ orders, dailyProductions = [], onCreateDP, onUpdateDP,
       <div className="glass-header">
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
           <div>
-            <div style={{ fontSize:26, fontWeight:900, color:C.ch, letterSpacing:"-0.03em", marginBottom:4 }}>
-              {adminTab === "orders" ? "Dashboard" : "Daily Productions"}
+            <div className="gradient-text-brand" style={{ fontSize:26, fontWeight:900, letterSpacing:"-0.03em", marginBottom:4 }}>
+              {adminTab === "orders" ? "Dashboard" : "Productions"}
             </div>
-            <div style={{ fontSize:13, color:C.chL, fontWeight:500 }}>
-              {adminTab === "orders" ? `${orders.length} active orders` : `Planning week`}
+            <div style={{ display:"flex", alignItems:"center", gap:8, fontSize:13, color:C.chL, fontWeight:500 }}>
+              {adminTab === "orders"
+                ? <><span style={{width:6,height:6,borderRadius:"50%",background:C.ol,animation:"pulseSoft 2s infinite",display:"inline-block",flexShrink:0}}/>{orders.length} active order{orders.length!==1?"s":""}</>
+                : <><span style={{width:6,height:6,borderRadius:"50%",background:C.am,display:"inline-block",flexShrink:0}}/>Weekly plan</>}
             </div>
           </div>
-          <div style={{ display:"flex", background:"#0C1020", borderRadius:10, border:"1px solid "+C.bdrL, padding:4 }}>
-            {[{key:"orders",label:"Orders"},{key:"daily",label:"📋 Productions"}].map(tab => (
-              <button key={tab.key} onClick={() => setAdminTab(tab.key)}
-                style={{ padding:"8px 16px", border:"none",
-                  background: adminTab===tab.key ? (tab.key==="daily" ? C.olBg : C.w) : "transparent",
-                  borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer",
-                  color: adminTab===tab.key ? (tab.key==="daily" ? C.olDk : C.ch) : C.chL,
-                  boxShadow: adminTab===tab.key ? C.sh : "none", transition:"all 0.2s"
+          <div className="admin-tab-bar" style={{ background:th.isDark?"rgba(4,6,16,0.7)":C.beigeD, border:"1px solid "+C.bdrL }}>
+            {[{key:"orders",label:"📊 Orders"},{key:"daily",label:"📋 Productions"}].map(tab => (
+              <button key={tab.key} onClick={() => setAdminTab(tab.key)} className="admin-tab-btn"
+                style={{
+                  background: adminTab===tab.key
+                    ? (tab.key==="daily" ? C.olBg : th.isDark ? "rgba(255,255,255,0.08)" : "#FFFFFF")
+                    : "transparent",
+                  color: adminTab===tab.key
+                    ? (tab.key==="daily" ? C.olDk : C.ch)
+                    : C.chL,
+                  boxShadow: adminTab===tab.key
+                    ? (th.isDark ? "0 2px 12px rgba(0,0,0,0.5)" : "0 2px 8px rgba(0,0,0,0.08)")
+                    : "none",
+                  border: adminTab===tab.key && tab.key!=="daily"
+                    ? `1px solid ${th.isDark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.06)"}`
+                    : "1px solid transparent",
                 }}>{tab.label}</button>
             ))}
           </div>
