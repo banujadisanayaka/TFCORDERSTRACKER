@@ -36,11 +36,13 @@ const GLOBAL_STYLES = `
 
   /* ── Glass card system ── */
   .glass-card {
-    background: rgba(12,18,34,0.65);
+    background-color: rgba(12,18,34,0.65);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255,255,255,0.07);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.6), 0 32px 80px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.09);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.6), 0 32px 80px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
   }
 
   /* ── Grain texture overlay ── */
@@ -88,7 +90,7 @@ const GLOBAL_STYLES = `
   .skeleton-box { background: linear-gradient(90deg, #111828 0%, #1B2640 50%, #111828 100%); background-size: 200% 100%; animation: shimmerLoad 2s infinite; border-radius: 12px; }
   .celebration-card { border: 2px solid #097353 !important; animation: celebrateGlow 2s infinite ease-in-out; }
   
-  .glass-header { position: sticky; top: -20px; z-index: 40; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background: rgba(9, 11, 16, 0.90); padding: 20px 20px 16px 20px; margin: -20px -20px 16px -20px; border-bottom: 1px solid rgba(30, 42, 68, 0.8); transition: all 0.3s ease; }
+  .glass-header { position: sticky; top: -20px; z-index: 40; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(7,9,18,0.93); padding: 20px 20px 16px 20px; margin: -20px -20px 16px -20px; border-bottom: 1px solid rgba(211,17,24,0.14); transition: all 0.3s ease; }
   @media (min-width: 768px) { .glass-header { top: -32px; padding: 32px 40px 16px 40px; margin: -32px -40px 16px -40px; } }
 
   .accordion-content { overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; max-height: 0; opacity: 0; }
@@ -211,9 +213,11 @@ const GLOBAL_STYLES = `
   /* Cooking shimmer for production state */
   .pk-cooking-state { display:flex; align-items:center; gap:10; padding:11px 14px; border-radius:10px; background:linear-gradient(90deg,#121A08 0%,#1A2410 50%,#121A08 100%); background-size:200% 100%; animation:shimmerPulse 2.5s infinite; border:1px solid rgba(251,176,64,0.15); }
 
-  /* ── Toast: bottom-centre slide-up ── */
+  /* ── Toast: bottom-right slide-in ── */
   @keyframes toastSlideUp { from{opacity:0;transform:translateX(-50%) translateY(24px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
   .toast-slide { animation: toastSlideUp 0.38s cubic-bezier(0.16,1,0.3,1) forwards; }
+  @keyframes toastSlideRight { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+  .toast-slide-right { animation:toastSlideRight 0.35s cubic-bezier(0.16,1,0.3,1) forwards; }
 
   /* ── Packing view progress bar ── */
   .pk-progress-track { height:5px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,0.07); margin-top:4px; }
@@ -241,6 +245,29 @@ const GLOBAL_STYLES = `
   /* ── Empty state ── */
   .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 24px; text-align:center; }
   .empty-icon { font-size:52px; margin-bottom:18px; filter:grayscale(0.3) opacity(0.7); }
+
+  /* ── Gradient text ── */
+  .gradient-text-red { background:linear-gradient(135deg,#FFFFFF 0%,#FFAAAD 40%,#FF2830 75%,#B80D13 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .gradient-text-amber { background:linear-gradient(135deg,#FFFFFF 0%,#FFD98A 40%,#F59E0B 75%,#C97A05 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .gradient-text-brand { background:linear-gradient(135deg,#EEF2FF 0%,#C8D0F0 30%,#FF9499 65%,#C8000A 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .gradient-text-white { background:linear-gradient(135deg,#FFFFFF 0%,#C8D4F8 50%,#8896B3 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+
+  /* ── Sidebar section label v2 ── */
+  .section-label-v2 { display:flex; align-items:center; gap:8px; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.18em; color:#2A3A54; padding:10px 4px 6px; position:relative; }
+  .section-label-v2::before { content:''; width:3px; height:12px; border-radius:2px; background:linear-gradient(180deg,#D31118,#8A0B10); flex-shrink:0; box-shadow:0 0 6px rgba(211,17,24,0.5); }
+
+  /* ── Production cooking indicator dot ── */
+  @keyframes prodPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
+  .prod-dot { width:6px; height:6px; border-radius:50%; background:#FBB040; animation:prodPulse 1.6s ease-in-out infinite; display:inline-block; flex-shrink:0; box-shadow:0 0 7px rgba(251,176,64,0.65); }
+
+  /* ── Upgraded pk-card glow system v2 ── */
+  .pk-production { background:linear-gradient(160deg,#0F130A,#0A0E07) !important; border:1px solid rgba(251,176,64,0.14) !important; box-shadow:-3px 0 0 0 #FBB040, 0 6px 32px rgba(0,0,0,0.6), 0 0 55px rgba(251,176,64,0.11) !important; }
+  .pk-prod_done  { background:linear-gradient(160deg,#091410,#060E0A) !important; border:1px solid rgba(74,222,128,0.16) !important; box-shadow:-3px 0 0 0 #4ADE80, 0 6px 32px rgba(0,0,0,0.6), 0 0 55px rgba(74,222,128,0.13) !important; }
+  .pk-packed     { background:linear-gradient(160deg,#130808,#0E0606) !important; border:1px solid rgba(211,17,24,0.16) !important; box-shadow:-3px 0 0 0 rgba(211,17,24,0.9), 0 6px 32px rgba(0,0,0,0.6), 0 0 50px rgba(211,17,24,0.10) !important; }
+  .pk-short      { background:linear-gradient(160deg,#100D06,#0A0906) !important; border:1px solid rgba(232,146,10,0.16) !important; box-shadow:-3px 0 0 0 #E8920A, 0 6px 28px rgba(0,0,0,0.55), 0 0 45px rgba(232,146,10,0.11) !important; }
+
+  /* ── Modal sheet: noise texture ── */
+  .modal-sheet { background:rgba(7,9,20,0.97) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E") !important; background-size:auto,200px 200px !important; backdrop-filter:blur(28px) !important; -webkit-backdrop-filter:blur(28px) !important; border:1px solid rgba(255,255,255,0.08) !important; box-shadow:0 24px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.07) !important; }
 
   /* ── Portal ambient orbs ── */
   .portal-orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
@@ -478,29 +505,45 @@ function Pill({count,label,color}){
 
 function Toast({msg,type}){
   const isErr=type==="error";
+  const accentColor=isErr?"#DC2626":"#22C55E";
   return(
-    <div className="toast-slide" style={{
-      position:"fixed",bottom:28,left:"50%",transform:"translateX(-50%)",
-      zIndex:9999,maxWidth:380,width:"calc(100vw - 48px)",
-      background:isErr?"rgba(28,6,6,0.97)":"rgba(4,14,10,0.97)",
-      border:"1px solid "+(isErr?"rgba(220,38,38,0.35)":"rgba(22,163,74,0.35)"),
-      borderRadius:14,padding:"13px 16px",
-      boxShadow:"0 8px 40px rgba(0,0,0,0.9), 0 0 0 1px "+(isErr?"rgba(220,38,38,0.08)":"rgba(22,163,74,0.08)"),
-      display:"flex",alignItems:"center",gap:12,fontFamily:"'Plus Jakarta Sans',sans-serif"
+    <div className="toast-slide-right" style={{
+      position:"fixed",bottom:28,right:24,
+      zIndex:9999,maxWidth:360,minWidth:260,
+      background:isErr?"rgba(14,4,4,0.97)":"rgba(4,12,8,0.97)",
+      backgroundImage:"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E\")",
+      backgroundSize:"200px 200px",
+      border:"1px solid "+(isErr?"rgba(220,38,38,0.3)":"rgba(22,163,74,0.3)"),
+      borderLeft:"3px solid "+accentColor,
+      borderRadius:14,padding:"14px 18px",
+      boxShadow:"0 16px 60px rgba(0,0,0,0.9), 0 0 0 1px "+(isErr?"rgba(220,38,38,0.06)":"rgba(22,163,74,0.06)"),
+      backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",
+      display:"flex",alignItems:"center",gap:13,fontFamily:"'Plus Jakarta Sans',sans-serif"
     }}>
       <div style={{
-        width:30,height:30,borderRadius:"50%",flexShrink:0,
-        background:isErr?"rgba(220,38,38,0.18)":"rgba(22,163,74,0.18)",
-        border:"1px solid "+(isErr?"rgba(220,38,38,0.4)":"rgba(22,163,74,0.4)"),
+        width:34,height:34,borderRadius:"50%",flexShrink:0,
+        background:isErr?"rgba(220,38,38,0.14)":"rgba(22,163,74,0.14)",
+        border:"1.5px solid "+(isErr?"rgba(220,38,38,0.45)":"rgba(22,163,74,0.45)"),
         display:"flex",alignItems:"center",justifyContent:"center",
-        fontSize:14,fontWeight:900,color:isErr?"#F87171":"#4ADE80"
+        fontSize:15,fontWeight:900,color:accentColor,
+        boxShadow:"0 0 12px "+(isErr?"rgba(220,38,38,0.22)":"rgba(22,163,74,0.22)")
       }}>{isErr?"✕":"✓"}</div>
-      <span style={{flex:1,fontSize:13,fontWeight:700,color:"#EEF2FF",lineHeight:1.4}}>{msg}</span>
+      <div style={{flex:1,minWidth:0}}>
+        <div style={{fontSize:10,fontWeight:800,color:isErr?"rgba(248,113,113,0.65)":"rgba(74,222,128,0.65)",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:3}}>{isErr?"Error":"Done"}</div>
+        <span style={{fontSize:13,fontWeight:700,color:"#EEF2FF",lineHeight:1.35}}>{msg}</span>
+      </div>
     </div>
   );
 }
 
-function SectionLabel({text}){ return <div style={{fontSize:10,fontWeight:800,color:C.chL,textTransform:"uppercase",letterSpacing:"0.14em",marginBottom:12}}>{text}</div>; }
+function SectionLabel({text}){
+  return(
+    <div style={{display:"flex",alignItems:"center",gap:9,fontSize:9,fontWeight:900,color:"#3A4E6A",textTransform:"uppercase",letterSpacing:"0.16em",marginBottom:14,marginTop:4}}>
+      <div style={{width:3,height:13,borderRadius:2,background:"linear-gradient(180deg,#D31118,#8A0B10)",flexShrink:0,boxShadow:"0 0 6px rgba(211,17,24,0.45)"}}/>
+      {text}
+    </div>
+  );
+}
 
 function ProgressRing({ radius, stroke, progress, color }) {
   const normalizedRadius = radius - stroke * 2;
@@ -1691,8 +1734,9 @@ function OrderCard({order, active, onClick, onDelete, index}){
         </div>
       </div>
 
-      <div style={{marginBottom:8}}>
+      <div style={{marginBottom:8,display:"flex",alignItems:"center",gap:7,flexWrap:"wrap"}}>
         <span style={{fontSize:10,fontWeight:900,color:rc,background:rc+"18",borderRadius:6,padding:"3px 9px",letterSpacing:"0.04em"}}>{order.restaurant}</span>
+        {(s.prod+s.prod_done)>0&&<span style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#FBB040",fontWeight:800,background:"rgba(251,176,64,0.08)",border:"1px solid rgba(251,176,64,0.18)",borderRadius:20,padding:"2px 8px"}}><span className="prod-dot"/>{s.prod+s.prod_done} cooking</span>}
       </div>
 
       <div style={{height:5,background:"rgba(255,255,255,0.07)",borderRadius:99,marginBottom:6,overflow:"hidden"}}>
@@ -1872,7 +1916,7 @@ function PackingView({order, onUpdate, orders, notify}){
         {/* Name + WhatsApp */}
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12,marginBottom:10}}>
           <div style={{flex:1,minWidth:0}}>
-            <div style={{fontSize:28,fontWeight:900,color:C.ch,letterSpacing:"-0.04em",lineHeight:1.1,marginBottom:8}}>{order.poName||"Packing View"}</div>
+            <div style={{fontSize:28,fontWeight:900,letterSpacing:"-0.04em",lineHeight:1.1,marginBottom:8}}><span className={`gradient-text-${order.restaurant==="Vins"?"red":"amber"}`}>{order.poName||"Packing View"}</span></div>
             <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
               <span style={{fontSize:11,fontWeight:900,color:rc,background:rc+"18",borderRadius:6,padding:"4px 10px"}}>{order.restaurant}</span>
               {order.orderDate&&<span style={{fontSize:11,color:C.chL,fontWeight:600}}>{order.orderDate}</span>}
@@ -2100,7 +2144,7 @@ function OrderingView({order}){
   return(
     <div className="animate-fade-in custom-scrollbar">
       <div className="glass-header">
-        <div style={{fontSize:26,fontWeight:900,color:C.ch,letterSpacing:"-0.03em",marginBottom:6}}>{order.poName || "Live Order Tracker"}</div>
+        <div style={{fontSize:26,fontWeight:900,letterSpacing:"-0.03em",marginBottom:6}}><span className="gradient-text-white">{order.poName || "Live Order Tracker"}</span></div>
         <div style={{fontSize:13,color:C.chL, fontWeight:500}}>PO Date: {order.orderDate} {order.deliveryDate ? `· Deliver By: ${order.deliveryDate}` : ""}</div>
       </div>
       
@@ -2778,7 +2822,7 @@ function TFCOrderSystem(){
         {editingOrder&&<EditOrderModal order={editingOrder} onClose={()=>setEditingOrder(null)} onSave={saveOrderEdit} notify={notify}/>}
 
         {/* ── Premium Portal Top Bar ── */}
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",height:58,background:"rgba(6,8,16,0.92)",borderBottom:"1px solid rgba(255,255,255,0.07)",backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:"0 4px 24px rgba(0,0,0,0.5)"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",height:58,background:"linear-gradient(180deg,rgba(8,10,22,0.97) 0%,rgba(6,8,16,0.93) 100%)",borderBottom:"1px solid rgba(211,17,24,0.12)",backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:"0 4px 30px rgba(0,0,0,0.6)"}}>
           <div className="portal-bar-shine"/>
           {/* Left */}
           <div style={{display:"flex",alignItems:"center",gap:12}}>
@@ -2788,7 +2832,7 @@ function TFCOrderSystem(){
               <div style={{position:"absolute",inset:-4,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
             </div>
             <div>
-              <div style={{fontSize:14,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.02em",lineHeight:1}}>Order Tracker</div>
+              <div className="gradient-text-brand" style={{fontSize:15,fontWeight:900,letterSpacing:"-0.02em",lineHeight:1}}>Order Tracker</div>
               <div style={{display:"flex",alignItems:"center",gap:5,marginTop:3}}>
                 <span style={{width:5,height:5,background:C.ol,borderRadius:"50%",animation:"pulseSoft 2s infinite",display:"inline-block",flexShrink:0}}/>
                 <span style={{fontSize:9,color:C.ol,letterSpacing:"0.1em",textTransform:"uppercase",fontWeight:800}}>Live</span>
@@ -2816,13 +2860,13 @@ function TFCOrderSystem(){
           <div className="custom-scrollbar" style={{width:280,borderRight:"1px solid rgba(255,255,255,0.06)",background:"rgba(6,8,16,0.96)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",padding:16,overflowY:"auto",flexShrink:0,display:"flex",flexDirection:"column",gap:6,position:isMobile?"absolute":"relative",zIndex:50,height:"100%",left:0,top:0,transform:isMobile?(sidebarOpen?"translateX(0)":"translateX(-100%)"):"none",transition:"transform 0.3s cubic-bezier(0.16,1,0.3,1)",boxShadow:isMobile&&sidebarOpen?"0 0 60px rgba(0,0,0,0.8)":"none"}}>
             {role==="admin"&&(<div style={{marginBottom:10}}><button className="btn-3d create-order-btn" onClick={()=>{setShowModal(true);if(isMobile)setSidebarOpen(false);}} style={{width:"100%",padding:"14px 0",border:"none",borderRadius:12,background:"linear-gradient(135deg,#D31118,#8A0B10)",color:"#FFFFFF",fontSize:14,cursor:"pointer",fontWeight:900,letterSpacing:"0.03em",boxShadow:"0 4px 22px rgba(211,17,24,0.55),0 0 40px rgba(211,17,24,0.12),inset 0 1px 0 rgba(255,255,255,0.12)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>+</span> Create Order</button></div>)}
             {role==="production"&&(<div style={{padding:"12px 14px",background:"rgba(232,146,10,0.08)",borderRadius:10,border:"1px solid rgba(232,146,10,0.2)",marginBottom:10}}><div style={{fontSize:11,fontWeight:900,color:C.amDk,textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:3}}>Production Mode</div><div style={{fontSize:11,color:C.chL,lineHeight:1.4,fontWeight:500}}>All items flagged for production.</div></div>)}
-            <div style={{fontSize:9,fontWeight:900,color:"#1E2A40",textTransform:"uppercase",letterSpacing:"0.16em",padding:"10px 4px 6px"}}>Orders {viewOrders.length>0?`(${viewOrders.length})`:""}</div>
+            <div className="section-label-v2">Orders {viewOrders.length>0&&<span style={{color:"#3D5070",fontWeight:700,marginLeft:3}}>({viewOrders.length})</span>}</div>
             {loadingInitial?(<div style={{padding:"10px 0"}}><div className="skeleton-box" style={{height:80,marginBottom:10}}></div><div className="skeleton-box" style={{height:80}}></div></div>):viewOrders.length===0?<div style={{fontSize:13,color:C.chXL,textAlign:"center",padding:"32px 0",fontWeight:600}}>No orders found</div>:viewOrders.map((o,i)=>(<OrderCard key={o.id} index={i} order={o} active={activeId===o.id} onClick={()=>{setActiveId(o.id);if(isMobile)setSidebarOpen(false);}} onDelete={role==="admin"?deleteOrder:null}/>))}
             <div style={{marginTop:"auto",paddingTop:20,textAlign:"center",fontSize:9,color:"#1A2030",fontWeight:500}}>© 2026 Made by Banuja Disanayaka</div>
           </div>
 
           {/* Main content */}
-          <div className="custom-scrollbar" style={{flex:1,overflowY:"auto",padding:isMobile?"20px":"32px 40px",backgroundColor:"#07090F",width:"100%",position:"relative"}}>{renderMain()}</div>
+          <div className="custom-scrollbar" style={{flex:1,overflowY:"auto",padding:isMobile?"20px":"32px 40px",background:"radial-gradient(ellipse 80% 45% at 50% -10%,rgba(211,17,24,0.055) 0%,transparent 55%), #07090F",width:"100%",position:"relative"}}>{renderMain()}</div>
         </div>
       </div>
     );
