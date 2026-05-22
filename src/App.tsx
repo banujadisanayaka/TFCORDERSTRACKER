@@ -29,20 +29,20 @@ const GLOBAL_STYLES = `
   @keyframes orbFloat1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(60px,-40px) scale(1.08)} 66%{transform:translate(-30px,55px) scale(0.96)} }
   @keyframes orbFloat2 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-80px,55px) scale(1.06)} 66%{transform:translate(80px,-30px) scale(1.10)} }
   @keyframes orbFloat3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(35px,45px) scale(1.14)} }
-  @keyframes logoGlow { 0%,100%{box-shadow:0 0 0 1px rgba(211,17,24,0.25),0 6px 28px rgba(211,17,24,0.22),0 0 70px rgba(211,17,24,0.07)} 50%{box-shadow:0 0 0 1px rgba(211,17,24,0.50),0 8px 40px rgba(211,17,24,0.42),0 0 100px rgba(211,17,24,0.15)} }
+  @keyframes logoGlow { 0%,100%{box-shadow:0 0 0 1px rgba(211,17,24,0.30),0 6px 28px rgba(211,17,24,0.28),0 0 80px rgba(211,17,24,0.10)} 50%{box-shadow:0 0 0 1px rgba(0,212,255,0.35),0 8px 40px rgba(0,212,255,0.28),0 0 110px rgba(0,212,255,0.12)} }
   @keyframes spinSlow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
   @keyframes loadBar { 0%{transform:translateX(-100%)} 100%{transform:translateX(250%)} }
   @keyframes statusPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0.5} }
 
   /* ── Glass card system ── */
   .glass-card {
-    background-color: rgba(12,18,34,0.65);
+    background-color: rgba(8,12,28,0.72);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
     background-size: 200px 200px;
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255,255,255,0.09);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.6), 0 32px 80px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid rgba(255,255,255,0.11);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.6), 0 12px 40px rgba(0,0,0,0.7), 0 40px 100px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 0 0 1px rgba(0,212,255,0.025);
   }
 
   /* ── Grain texture overlay ── */
@@ -105,12 +105,12 @@ const GLOBAL_STYLES = `
 
   .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-  .custom-scrollbar::-webkit-scrollbar-thumb { background: #1E2A44; border-radius: 10px; }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #2A3860; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #1A3558; border-radius: 10px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #224070; }
 
-  input:focus, textarea:focus, select:focus { border-color: #D31118 !important; box-shadow: 0 0 0 3px rgba(211, 17, 24, 0.2) !important; background: #0E1420 !important; }
+  input:focus, textarea:focus, select:focus { border-color: #00D4FF !important; box-shadow: 0 0 0 3px rgba(0,212,255,0.15) !important; background: #07101C !important; }
   input::placeholder, textarea::placeholder { color: #2A3A58; }
-  input, textarea, select { color: #EEF2FF !important; background: #111828 !important; }
+  input, textarea, select { color: #EEF2FF !important; background: #0A1020 !important; }
 
   /* ── Premium card depth system (V6) ── */
   .packing-card { background: linear-gradient(160deg, #111828 0%, #0D1520 100%); transition: all 0.25s ease; }
@@ -145,11 +145,6 @@ const GLOBAL_STYLES = `
   .dp-item-done-admin { opacity: 0.8; }
   .dp-item-done .dp-item-name { text-decoration: line-through; color: #4A5A7A !important; }
   [data-theme="light"] .dp-item-done .dp-item-name { color: #64748B !important; }
-
-  /* ── Cursor spotlight (portal) ── */
-  .cursor-spotlight {
-    background-image: radial-gradient(600px circle at var(--cx,-9999px) var(--cy,-9999px), rgba(211,17,24,0.10), transparent 75%);
-  }
 
   /* ── Dot grid overlay ── */
   .dot-grid-fixed {
@@ -192,14 +187,14 @@ const GLOBAL_STYLES = `
   .pk-oos       { background:linear-gradient(160deg,#130A0A,#0E0808); border:1px solid rgba(252,165,165,0.12); box-shadow:-3px 0 0 0 rgba(252,165,165,0.55), 0 4px 20px rgba(0,0,0,0.5); }
 
   /* Primary pack/dispatch action buttons */
-  .pk-pack-btn { width:100%; padding:14px; background:linear-gradient(135deg,#D31118,#8A0B10); color:#fff; border:none; border-radius:12px; font-weight:900; font-size:14px; cursor:pointer; letter-spacing:0.02em; box-shadow:0 4px 18px rgba(211,17,24,0.42), inset 0 1px 0 rgba(255,255,255,0.10); transition:all 0.15s ease; font-family:inherit; }
-  .pk-pack-btn:hover { box-shadow:0 6px 26px rgba(211,17,24,0.58); transform:translateY(-1px); }
+  .pk-pack-btn { width:100%; padding:14px; background:linear-gradient(135deg,#D31118,#8A0B10); color:#fff; border:none; border-radius:12px; font-weight:900; font-size:14px; cursor:pointer; letter-spacing:0.02em; box-shadow:0 4px 20px rgba(211,17,24,0.45), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.15s ease; font-family:inherit; }
+  .pk-pack-btn:hover { box-shadow:0 6px 28px rgba(211,17,24,0.62), 0 0 0 1px rgba(211,17,24,0.28); transform:translateY(-1px); }
   .pk-pack-btn:active { transform:translateY(1px); box-shadow:0 2px 8px rgba(211,17,24,0.3); }
-  .pk-ready-btn { background:linear-gradient(135deg,#16803C,#0F5C2C) !important; box-shadow:0 4px 18px rgba(22,128,60,0.42), inset 0 1px 0 rgba(255,255,255,0.10) !important; }
-  .pk-ready-btn:hover { box-shadow:0 6px 26px rgba(22,128,60,0.58) !important; }
+  .pk-ready-btn { background:linear-gradient(135deg,#16803C,#0F5C2C) !important; box-shadow:0 4px 20px rgba(22,128,60,0.45), inset 0 1px 0 rgba(255,255,255,0.12) !important; }
+  .pk-ready-btn:hover { box-shadow:0 6px 28px rgba(22,128,60,0.60), 0 0 0 1px rgba(22,128,60,0.25) !important; }
 
-  .pk-dispatch-btn { width:100%; padding:13px; background:linear-gradient(135deg,#097353,#065A40); color:#fff; border:none; border-radius:12px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:0 4px 16px rgba(9,115,83,0.38), inset 0 1px 0 rgba(255,255,255,0.08); transition:all 0.15s ease; font-family:inherit; }
-  .pk-dispatch-btn:hover { box-shadow:0 6px 22px rgba(9,115,83,0.52); transform:translateY(-1px); }
+  .pk-dispatch-btn { width:100%; padding:13px; background:linear-gradient(135deg,#097353,#065A40); color:#fff; border:none; border-radius:12px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:0 4px 18px rgba(9,115,83,0.42), inset 0 1px 0 rgba(255,255,255,0.10); transition:all 0.15s ease; font-family:inherit; }
+  .pk-dispatch-btn:hover { box-shadow:0 6px 26px rgba(9,115,83,0.56), 0 0 0 1px rgba(9,115,83,0.22); transform:translateY(-1px); }
   .pk-dispatch-btn:active { transform:translateY(1px); }
 
   /* Secondary action chips */
@@ -256,6 +251,7 @@ const GLOBAL_STYLES = `
   .gradient-text-amber { background:linear-gradient(135deg,#FFFFFF 0%,#FFD98A 40%,#F59E0B 75%,#C97A05 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
   .gradient-text-brand { background:linear-gradient(135deg,#EEF2FF 0%,#C8D0F0 30%,#FF9499 65%,#C8000A 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
   .gradient-text-white { background:linear-gradient(135deg,#FFFFFF 0%,#C8D4F8 50%,#8896B3 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .gradient-text-cyan { background:linear-gradient(135deg,#FFFFFF 0%,#A0F0FF 35%,#00D4FF 70%,#0090B8 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 
   /* ── Sidebar section label v2 ── */
   .section-label-v2 { display:flex; align-items:center; gap:8px; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.18em; color:#2A3A54; padding:10px 4px 6px; position:relative; }
@@ -265,20 +261,22 @@ const GLOBAL_STYLES = `
   @keyframes prodPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
   .prod-dot { width:6px; height:6px; border-radius:50%; background:#FBB040; animation:prodPulse 1.6s ease-in-out infinite; display:inline-block; flex-shrink:0; box-shadow:0 0 7px rgba(251,176,64,0.65); }
 
-  /* ── Upgraded pk-card glow system v2 ── */
-  .pk-production { background:linear-gradient(160deg,#0F130A,#0A0E07) !important; border:1px solid rgba(251,176,64,0.14) !important; box-shadow:-3px 0 0 0 #FBB040, 0 6px 32px rgba(0,0,0,0.6), 0 0 55px rgba(251,176,64,0.11) !important; }
-  .pk-prod_done  { background:linear-gradient(160deg,#091410,#060E0A) !important; border:1px solid rgba(74,222,128,0.16) !important; box-shadow:-3px 0 0 0 #4ADE80, 0 6px 32px rgba(0,0,0,0.6), 0 0 55px rgba(74,222,128,0.13) !important; }
-  .pk-packed     { background:linear-gradient(160deg,#130808,#0E0606) !important; border:1px solid rgba(211,17,24,0.16) !important; box-shadow:-3px 0 0 0 rgba(211,17,24,0.9), 0 6px 32px rgba(0,0,0,0.6), 0 0 50px rgba(211,17,24,0.10) !important; }
-  .pk-short      { background:linear-gradient(160deg,#100D06,#0A0906) !important; border:1px solid rgba(232,146,10,0.16) !important; box-shadow:-3px 0 0 0 #E8920A, 0 6px 28px rgba(0,0,0,0.55), 0 0 45px rgba(232,146,10,0.11) !important; }
+  /* ── Upgraded pk-card glow system v3 ── */
+  .pk-production { background:linear-gradient(160deg,#0F130A,#0A0E07) !important; border:1px solid rgba(251,176,64,0.18) !important; box-shadow:-3px 0 0 0 #FBB040, 0 6px 36px rgba(0,0,0,0.65), 0 0 60px rgba(251,176,64,0.14), 0 0 0 1px rgba(251,176,64,0.06) !important; }
+  .pk-prod_done  { background:linear-gradient(160deg,#091410,#060E0A) !important; border:1px solid rgba(74,222,128,0.20) !important; box-shadow:-3px 0 0 0 #4ADE80, 0 6px 36px rgba(0,0,0,0.65), 0 0 65px rgba(74,222,128,0.16), 0 0 0 1px rgba(74,222,128,0.06) !important; }
+  .pk-packed     { background:linear-gradient(160deg,#130808,#0E0606) !important; border:1px solid rgba(211,17,24,0.20) !important; box-shadow:-3px 0 0 0 rgba(211,17,24,0.95), 0 6px 36px rgba(0,0,0,0.65), 0 0 60px rgba(211,17,24,0.13), 0 0 0 1px rgba(211,17,24,0.06) !important; }
+  .pk-short      { background:linear-gradient(160deg,#100D06,#0A0906) !important; border:1px solid rgba(232,146,10,0.20) !important; box-shadow:-3px 0 0 0 #E8920A, 0 6px 32px rgba(0,0,0,0.6), 0 0 55px rgba(232,146,10,0.13), 0 0 0 1px rgba(232,146,10,0.06) !important; }
 
   /* ── Modal sheet: noise texture ── */
-  .modal-sheet { background:rgba(7,9,20,0.97) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E") !important; background-size:200px 200px !important; backdrop-filter:blur(28px) !important; -webkit-backdrop-filter:blur(28px) !important; border:1px solid rgba(255,255,255,0.08) !important; box-shadow:0 24px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.07) !important; }
+  .modal-sheet { background:rgba(5,7,18,0.97) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E") !important; background-size:200px 200px !important; backdrop-filter:blur(36px) !important; -webkit-backdrop-filter:blur(36px) !important; border:1px solid rgba(255,255,255,0.09) !important; box-shadow:0 32px 100px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.09) !important; }
 
   /* ── Portal ambient orbs ── */
   .portal-orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
-  .portal-orb-1 { width:min(700px,80vw); height:min(700px,80vw); background:radial-gradient(circle,rgba(211,17,24,0.07) 0%,transparent 70%); top:-15%; left:-10%; animation:orbFloat1 28s ease-in-out infinite; filter:blur(60px); }
-  .portal-orb-2 { width:min(550px,70vw); height:min(550px,70vw); background:radial-gradient(circle,rgba(232,146,10,0.05) 0%,transparent 70%); bottom:-15%; right:-8%; animation:orbFloat2 34s ease-in-out infinite; filter:blur(60px); }
-  .portal-orb-3 { width:min(380px,55vw); height:min(380px,55vw); background:radial-gradient(circle,rgba(211,17,24,0.04) 0%,transparent 70%); top:45%; left:55%; animation:orbFloat3 22s ease-in-out infinite; filter:blur(70px); }
+  .portal-orb-1 { width:min(750px,85vw); height:min(750px,85vw); background:radial-gradient(circle,rgba(211,17,24,0.09) 0%,transparent 70%); top:-18%; left:-12%; animation:orbFloat1 28s ease-in-out infinite; filter:blur(65px); }
+  .portal-orb-2 { width:min(580px,72vw); height:min(580px,72vw); background:radial-gradient(circle,rgba(232,146,10,0.06) 0%,transparent 70%); bottom:-15%; right:-8%; animation:orbFloat2 34s ease-in-out infinite; filter:blur(60px); }
+  .portal-orb-3 { width:min(380px,55vw); height:min(380px,55vw); background:radial-gradient(circle,rgba(211,17,24,0.05) 0%,transparent 70%); top:45%; left:55%; animation:orbFloat3 22s ease-in-out infinite; filter:blur(70px); }
+  .portal-orb-4 { width:min(520px,68vw); height:min(520px,68vw); background:radial-gradient(circle,rgba(0,212,255,0.07) 0%,transparent 70%); top:20%; right:-10%; animation:orbFloat2 40s ease-in-out infinite; filter:blur(65px); }
+  .portal-orb-5 { width:min(420px,60vw); height:min(420px,60vw); background:radial-gradient(circle,rgba(63,70,200,0.07) 0%,transparent 70%); bottom:10%; left:5%; animation:orbFloat1 45s ease-in-out infinite; filter:blur(70px); }
 
   /* ── Create Order button shimmer sweep ── */
   @keyframes shimmerBtn { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
@@ -287,9 +285,6 @@ const GLOBAL_STYLES = `
 
   /* ── Enhanced hover-lift ── */
   .hover-lift:hover { transform:translateY(-4px) !important; box-shadow:0 12px 32px rgba(0,0,0,0.7) !important; }
-
-  /* ── Glass card hover ── */
-  @media(hover:hover) { .glass-card:hover { border-color:rgba(255,255,255,0.11) !important; } }
 
   /* ── OrderCard active glow state ── */
   .order-card-active-vins { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(211,17,24,0.18) !important; }
@@ -303,6 +298,18 @@ const GLOBAL_STYLES = `
   /* ── Admin dashboard tab switcher pill ── */
   .admin-tab-bar { display:flex; padding:4px; border-radius:12px; }
   .admin-tab-btn { padding:8px 18px; border:none; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); white-space:nowrap; }
+
+  /* ── Bento tile top shimmer edge ── */
+  .bento-hero::before { content:''; position:absolute; top:0; left:10%; right:10%; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.14),transparent); pointer-events:none; z-index:1; }
+
+  /* ── Cursor spotlight — cyan tint ── */
+  .cursor-spotlight { background-image: radial-gradient(600px circle at var(--cx,-9999px) var(--cy,-9999px), rgba(0,212,255,0.06), transparent 75%); }
+
+  /* ── Glass card hover ── */
+  @media(hover:hover) { .glass-card:hover { border-color:rgba(255,255,255,0.14) !important; box-shadow: 0 2px 4px rgba(0,0,0,0.6), 0 16px 48px rgba(0,0,0,0.75), 0 40px 100px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(0,212,255,0.04) !important; } }
+
+  /* ── Batch complete button ── */
+  .batch-complete-btn:hover { box-shadow:0 6px 28px rgba(9,115,83,0.58) !important; }
 
 `;
 
@@ -358,17 +365,13 @@ function useCountUp(target) {
 
 /* Animated ambient orb background — used by all auth screens */
 function PremiumBg() {
-  const isDark = React.useContext(ThemeCtx);
-  const bg = isDark ? "#060810" : "#F0F2FA";
-  const orb1 = isDark ? "rgba(211,17,24,0.14)" : "rgba(211,17,24,0.08)";
-  const orb2 = isDark ? "rgba(20,50,160,0.10)" : "rgba(100,130,220,0.07)";
-  const orb3 = isDark ? "rgba(211,17,24,0.07)" : "rgba(211,17,24,0.05)";
   return (
     <>
-      <div style={{position:"fixed",inset:0,background:bg,zIndex:0,pointerEvents:"none",transition:"background 0.4s ease"}}/>
-      <div style={{position:"fixed",width:"min(640px,90vw)",height:"min(640px,90vw)",borderRadius:"50%",background:`radial-gradient(circle,${orb1} 0%,transparent 70%)`,top:"-22%",left:"-12%",animation:"orbFloat1 22s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(50px)"}}/>
-      <div style={{position:"fixed",width:"min(860px,110vw)",height:"min(860px,110vw)",borderRadius:"50%",background:`radial-gradient(circle,${orb2} 0%,transparent 70%)`,bottom:"-32%",right:"-22%",animation:"orbFloat2 28s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(60px)"}}/>
-      <div style={{position:"fixed",width:"min(420px,65vw)",height:"min(420px,65vw)",borderRadius:"50%",background:`radial-gradient(circle,${orb3} 0%,transparent 70%)`,top:"42%",right:"8%",animation:"orbFloat3 19s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(45px)"}}/>
+      <div style={{position:"fixed",inset:0,background:"#04060E",zIndex:0,pointerEvents:"none"}}/>
+      <div style={{position:"fixed",width:"min(680px,90vw)",height:"min(680px,90vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(211,17,24,0.16) 0%,transparent 70%)",top:"-22%",left:"-12%",animation:"orbFloat1 22s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(55px)"}}/>
+      <div style={{position:"fixed",width:"min(900px,110vw)",height:"min(900px,110vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(20,50,160,0.11) 0%,transparent 70%)",bottom:"-32%",right:"-22%",animation:"orbFloat2 28s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(65px)"}}/>
+      <div style={{position:"fixed",width:"min(460px,70vw)",height:"min(460px,70vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(211,17,24,0.08) 0%,transparent 70%)",top:"42%",right:"8%",animation:"orbFloat3 19s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(50px)"}}/>
+      <div style={{position:"fixed",width:"min(520px,72vw)",height:"min(520px,72vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(0,212,255,0.08) 0%,transparent 70%)",top:"15%",right:"-15%",animation:"orbFloat2 36s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(60px)"}}/>
     </>
   );
 }
@@ -483,33 +486,35 @@ const ThemeCtx = React.createContext(true); // true = dark
 function useTheme(){
   return {
     isDark: true,
-    divider:  "rgba(255,255,255,0.07)",
+    divider:  "rgba(255,255,255,0.08)",
     subBg:    "rgba(255,255,255,0.04)",
-    cardBg:   "rgba(255,255,255,0.03)",
+    cardBg:   "rgba(255,255,255,0.04)",
     chipBg:   "rgba(255,255,255,0.06)",
-    footerBg: "rgba(4,6,14,0.8)",
-    headerBg: "rgba(6,8,16,0.85)",
-    panelBg:  "rgba(6,9,18,0.7)",
-    editBg:   "#080C14",
-    editBdr:  "#1E2A44",
+    footerBg: "rgba(4,6,14,0.85)",
+    headerBg: "rgba(4,6,14,0.92)",
+    panelBg:  "rgba(4,7,16,0.82)",
+    editBg:   "#060A12",
+    editBdr:  "#1A2640",
     closeBg:  "rgba(255,255,255,0.05)",
-    closeBdr: "rgba(255,255,255,0.08)",
-    trackBg:  "rgba(255,255,255,0.06)",
-    svgTrack: "rgba(255,255,255,0.06)",
+    closeBdr: "rgba(255,255,255,0.09)",
+    trackBg:  "rgba(255,255,255,0.07)",
+    svgTrack: "rgba(255,255,255,0.07)",
     noteBg:   "rgba(255,255,255,0.03)",
-    noteBdr:  "rgba(255,255,255,0.07)",
+    noteBdr:  "rgba(255,255,255,0.08)",
+    cyGlow:   "rgba(0,212,255,0.12)",
   };
 }
 
 const DC={ // dark palette (default)
-  w: "#141928", off: "#0E1018", beige: "#0E1018", beigeD: "#1B2238",
-  ch: "#EEF2FF", chM: "#B8C4E0", chL: "#8896B3", chXL: "#2A3450",
-  bdr: "#1E2A44", bdrL: "#172036",
+  w: "#0D1424", off: "#080C18", beige: "#080C18", beigeD: "#111A30",
+  ch: "#EEF2FF", chM: "#B8C4E0", chL: "#8896B3", chXL: "#1E2D4A",
+  bdr: "#1A2640", bdrL: "#111C32",
   ol: "#D31118", olDk: "#A50D12", olBg: "rgba(211,17,24,0.14)", olBgD: "rgba(211,17,24,0.26)",
   am: "#E8920A", amDk: "#B86F06", amBg: "rgba(232,146,10,0.13)", amBgD: "rgba(232,146,10,0.24)",
   gn: "#16A34A", gnBg: "rgba(22,163,74,0.13)",
   rd: "#DC2626", rdBg: "rgba(220,38,38,0.12)",
-  sh: "0 2px 10px rgba(0,0,0,0.4)", shM: "0 8px 32px rgba(0,0,0,0.6)"
+  cy: "#00D4FF", cyBg: "rgba(0,212,255,0.10)", cyBgD: "rgba(0,212,255,0.18)",
+  sh: "0 2px 12px rgba(0,0,0,0.5)", shM: "0 8px 40px rgba(0,0,0,0.7)"
 };
 // Mutable palette — always dark
 const C={...DC};
@@ -1528,7 +1533,7 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
             {isOwner && (
               <button onClick={onControlPanel} style={{background:"rgba(211,17,24,0.12)",border:"1px solid rgba(211,17,24,0.3)",color:C.ol,padding:"7px 13px",borderRadius:9,fontSize:11,fontWeight:800,cursor:"pointer",flexShrink:0,fontFamily:"inherit",position:"relative",transition:"all 0.2s"}}>
                 Control Panel
-                {pendingCount > 0 && <span style={{position:"absolute",top:-7,right:-7,background:C.rd,color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #060810"}}>{pendingCount}</span>}
+                {pendingCount > 0 && <span style={{position:"absolute",top:-7,right:-7,background:C.rd,color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #04060E"}}>{pendingCount}</span>}
               </button>
             )}
             <button onClick={onSignOut} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",color:C.chL,padding:"6px 10px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,fontFamily:"inherit"}}>Sign Out</button>
@@ -2289,14 +2294,14 @@ function AdminOrdersTab({ orders }) {
 
         {/* Hero: Fulfilled (spans 2 rows) */}
         <div className="bento-hero glass-card animate-fade-up" style={{gridRow:"span 2",padding:"24px 22px",display:"flex",flexDirection:"column",justifyContent:"space-between",minHeight:148}}>
-          <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.16em",color:"#4ADE80",opacity:0.85}}>Fulfilled</div>
+          <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.16em",color:"#00D4FF",opacity:0.9}}>Fulfilled</div>
           <div>
-            <div style={{fontSize:54,fontWeight:900,color:"#4ADE80",letterSpacing:"-0.05em",lineHeight:1,textShadow:th.isDark?"0 0 40px rgba(74,222,128,0.35)":"none"}}>{totals.packed+totals.delivered}</div>
+            <div className="gradient-text-cyan count-pop" style={{fontSize:54,fontWeight:900,letterSpacing:"-0.05em",lineHeight:1}}>{totals.packed+totals.delivered}</div>
             <div style={{fontSize:11,color:C.chL,marginTop:6,fontWeight:600}}>of <strong style={{color:C.chM}}>{totals.total}</strong> total items</div>
           </div>
           <div>
             <div style={{height:4,background:th.trackBg,borderRadius:99,overflow:"hidden",marginBottom:5}}>
-              <div style={{height:4,width:totals.total?((totals.packed+totals.delivered)/totals.total*100)+"%":"0%",background:"linear-gradient(90deg,#16A34A,#4ADE80)",borderRadius:99,transition:"width 1.2s cubic-bezier(0.16,1,0.3,1)",boxShadow:"0 0 8px rgba(74,222,128,0.4)"}}/>
+              <div style={{height:4,width:totals.total?((totals.packed+totals.delivered)/totals.total*100)+"%":"0%",background:"linear-gradient(90deg,#0090B8,#00D4FF)",borderRadius:99,transition:"width 1.2s cubic-bezier(0.16,1,0.3,1)",boxShadow:"0 0 10px rgba(0,212,255,0.45)"}}/>
             </div>
             <div style={{fontSize:9,color:C.chL,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.10em"}}>
               {totals.total?Math.round(((totals.packed+totals.delivered)/totals.total)*100):0}% complete
@@ -2916,19 +2921,19 @@ function TFCOrderSystem(){
       }
     };
 
-    const topBarBg   = "linear-gradient(180deg,rgba(8,10,22,0.97) 0%,rgba(6,8,16,0.93) 100%)";
-    const topBarBdr  = "1px solid rgba(211,17,24,0.12)";
-    const topBarShd  = "0 4px 30px rgba(0,0,0,0.6)";
-    const sidebarBg  = "rgba(6,8,16,0.97)";
+    const topBarBg   = "linear-gradient(180deg,rgba(4,6,14,0.98) 0%,rgba(4,6,14,0.94) 100%)";
+    const topBarBdr  = "1px solid rgba(0,212,255,0.09)";
+    const topBarShd  = "0 4px 40px rgba(0,0,0,0.7), 0 1px 0 rgba(0,212,255,0.06)";
+    const sidebarBg  = "rgba(4,6,14,0.97)";
     const sidebarBdr = "1px solid rgba(255,255,255,0.07)";
-    const mainBg     = "radial-gradient(ellipse 80% 45% at 50% -10%,rgba(211,17,24,0.055) 0%,transparent 55%), #07090F";
-    const orderCount = "#2A3A54";
-    const copyright  = "#1A2030";
+    const mainBg     = "radial-gradient(ellipse 90% 50% at 50% -5%,rgba(211,17,24,0.07) 0%,transparent 55%), radial-gradient(ellipse 60% 40% at 85% 20%,rgba(0,212,255,0.05) 0%,transparent 50%), radial-gradient(ellipse 50% 35% at 15% 70%,rgba(63,70,200,0.06) 0%,transparent 50%), #04060E";
+    const orderCount = "#1E2D4A";
+    const copyright  = "#142030";
 
     AppContent = (
       <div
         className="animate-fade-in cursor-spotlight"
-        style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:isDark?"#07090F":"#F2F4FA",fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",overflow:"hidden",position:"relative",transition:"background-color 0.4s ease"}}
+        style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:"#04060E",fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",overflow:"hidden",position:"relative",transition:"background-color 0.4s ease"}}
         onMouseMove={e=>{const el=e.currentTarget;const r=el.getBoundingClientRect();el.style.setProperty("--cx",(e.clientX-r.left)+"px");el.style.setProperty("--cy",(e.clientY-r.top)+"px");}}
         onMouseLeave={e=>{e.currentTarget.style.setProperty("--cx","-9999px");e.currentTarget.style.setProperty("--cy","-9999px");}}
       >
@@ -2936,6 +2941,8 @@ function TFCOrderSystem(){
         <div className="portal-orb portal-orb-1"/>
         <div className="portal-orb portal-orb-2"/>
         <div className="portal-orb portal-orb-3"/>
+        <div className="portal-orb portal-orb-4"/>
+        <div className="portal-orb portal-orb-5"/>
 
         {toast&&<Toast msg={toast.msg} type={toast.type}/>}
         {showModal&&<NewOrderModal onClose={()=>setShowModal(false)} onSubmit={handleNewOrder} notify={notify}/>}
@@ -2966,7 +2973,7 @@ function TFCOrderSystem(){
               <span style={{fontSize:11,fontWeight:800,color:roleConfig.color,background:roleConfig.color+"14",border:"1px solid "+roleConfig.color+"35",borderRadius:20,padding:isMobile?"6px 10px":"6px 14px",letterSpacing:"0.02em",whiteSpace:"nowrap",boxShadow:"0 0 14px "+roleConfig.color+"25",display:"flex",alignItems:"center",gap:6}}>
                 <span style={{fontSize:10}}>{roleConfig.icon}</span>{!isMobile&&roleConfig.label}
               </span>
-              {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#D31118",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:`2px solid ${isDark?"#060810":"#F2F4FA"}`,animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
+              {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#D31118",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #04060E",animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
             </div>
             {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:`2px solid ${isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)"}`,flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
             <button onClick={()=>{setPhase("select");setRole(null);setActiveId(null);}} style={{background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`,color:C.chL,padding:"6px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
