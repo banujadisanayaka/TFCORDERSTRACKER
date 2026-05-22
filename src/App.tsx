@@ -2919,16 +2919,17 @@ function TFCOrderSystem(){
 
   function selectRole(r){ setRole(r); setPhase("app"); }
 
-  if (splashState === "visible" || splashState === "fading") return ( <><style>{GLOBAL_STYLES}</style><div style={{ opacity: splashState === "fading" ? 0 : 1, transition: "opacity 0.5s ease" }}><SplashScreen /></div></> );
+  const themeAttr = isDark ? "dark" : "light";
+  if (splashState === "visible" || splashState === "fading") return ( <ThemeCtx.Provider value={isDark}><style>{GLOBAL_STYLES}</style><div data-theme={themeAttr} style={{ opacity: splashState === "fading" ? 0 : 1, transition: "opacity 0.5s ease" }}><SplashScreen /></div></ThemeCtx.Provider> );
 
   // Auth loading
-  if (authLoading) return (<><style>{GLOBAL_STYLES}</style><SplashScreen /></>);
+  if (authLoading) return (<ThemeCtx.Provider value={isDark}><style>{GLOBAL_STYLES}</style><div data-theme={themeAttr}><SplashScreen /></div></ThemeCtx.Provider>);
 
   // Not logged in
-  if (!authUser) return (<><style>{GLOBAL_STYLES}</style><LoginScreen onSignIn={handleGoogleSignIn} /></>);
+  if (!authUser) return (<ThemeCtx.Provider value={isDark}><style>{GLOBAL_STYLES}</style><div data-theme={themeAttr}><LoginScreen onSignIn={handleGoogleSignIn} /></div></ThemeCtx.Provider>);
 
   // Loading user's Firestore record
-  if (userRecordLoading) return (<><style>{GLOBAL_STYLES}</style><SplashScreen /></>);
+  if (userRecordLoading) return (<ThemeCtx.Provider value={isDark}><style>{GLOBAL_STYLES}</style><div data-theme={themeAttr}><SplashScreen /></div></ThemeCtx.Provider>);
 
   let AppContent;
   const isOwner = authUser.email === OWNER_EMAIL;
