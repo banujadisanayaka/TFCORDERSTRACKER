@@ -24,6 +24,11 @@ const GLOBAL_STYLES = `
   html, body { margin: 0; padding: 0; overflow-x: hidden; background: #04060E; -webkit-tap-highlight-color: transparent; }
   #root { overflow-x: hidden; }
 
+  /* ── Safe-area / notch support ── */
+  .safe-area-top { padding-top: env(safe-area-inset-top); }
+  .offline-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; background: #7C1010; color: #FCA5A5; text-align: center; font-size: 12px; font-weight: 700; padding: calc(4px + env(safe-area-inset-top)) 16px 4px; letter-spacing: 0.04em; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .install-banner { position: fixed; bottom: env(safe-area-inset-bottom, 0px); left: 0; right: 0; z-index: 9990; background: rgba(4,6,14,0.97); border-top: 1px solid rgba(0,212,255,0.18); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 12px 20px; display: flex; align-items: center; gap: 12px; animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+
   @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes pulseSoft { 0% { box-shadow: 0 0 0 0 rgba(211, 17, 24, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(211, 17, 24, 0); } 100% { box-shadow: 0 0 0 0 rgba(211, 17, 24, 0); } }
@@ -2668,6 +2673,24 @@ function TFCOrderSystem(){
   const [splashState, setSplashState] = useState("visible");
   const [phase,setPhase]=useState("select"); const [role,setRole]=useState(null); const [screenExiting,setScreenExiting]=useState(false);
 
+  const [isOnline, setIsOnline] = useState(() => navigator.onLine);
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
+
+  useEffect(() => {
+    const goOnline = () => setIsOnline(true);
+    const goOffline = () => setIsOnline(false);
+    window.addEventListener("online", goOnline);
+    window.addEventListener("offline", goOffline);
+    return () => { window.removeEventListener("online", goOnline); window.removeEventListener("offline", goOffline); };
+  }, []);
+
+  useEffect(() => {
+    const handler = (e) => { e.preventDefault(); setInstallPrompt(e); setShowInstallBanner(true); };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
   const [orders,setOrders]=useState([]);
   const [dailyProductions, setDailyProductions] = useState([]);
   const [loadingInitial, setLoadingInitial] = useState(true);
@@ -3022,8 +3045,22 @@ function TFCOrderSystem(){
         {showModal&&<NewOrderModal onClose={()=>setShowModal(false)} onSubmit={handleNewOrder} notify={notify}/>}
         {editingOrder&&<EditOrderModal order={editingOrder} onClose={()=>setEditingOrder(null)} onSave={saveOrderEdit} notify={notify}/>}
 
+        {/* ── Offline Bar ── */}
+        {!isOnline&&<div className="offline-bar"><span>⚡</span>You're offline — changes will sync when reconnected</div>}
+
+        {/* ── Install Banner ── */}
+        {showInstallBanner&&<div className="install-banner">
+          <div style={{width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0,boxShadow:"0 4px 14px rgba(211,17,24,0.45)"}}>🍽️</div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:13,fontWeight:800,color:"#EEF2FF",lineHeight:1.2}}>Add to Home Screen</div>
+            <div style={{fontSize:11,color:"#8896B3",marginTop:2,fontWeight:500}}>Install TFC Order Tracker for quick access</div>
+          </div>
+          <button onClick={async()=>{ if(installPrompt){await installPrompt.prompt();setInstallPrompt(null);} setShowInstallBanner(false); }} style={{background:"linear-gradient(135deg,#D31118,#8A0B10)",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:800,padding:"8px 14px",cursor:"pointer",flexShrink:0,boxShadow:"0 2px 10px rgba(211,17,24,0.4)"}}>Install</button>
+          <button onClick={()=>setShowInstallBanner(false)} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,color:"#8896B3",fontSize:12,fontWeight:700,padding:"8px 12px",cursor:"pointer",flexShrink:0}}>Later</button>
+        </div>}
+
         {/* ── Portal Top Bar ── */}
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",height:58,background:topBarBg,borderBottom:topBarBdr,backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:topBarShd,transition:"all 0.4s ease"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",paddingTop:"env(safe-area-inset-top)",height:"calc(58px + env(safe-area-inset-top, 0px))",background:topBarBg,borderBottom:topBarBdr,backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:topBarShd,transition:"all 0.4s ease"}}>
           <div className="portal-bar-shine"/>
           {/* Left */}
           <div style={{display:"flex",alignItems:"center",gap:12}}>
