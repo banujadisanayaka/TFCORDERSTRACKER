@@ -295,171 +295,6 @@ const GLOBAL_STYLES = `
   .order-card-active-vins { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(211,17,24,0.18) !important; }
   .order-card-active-manja { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(232,146,10,0.18) !important; }
 
-  /* ══════════════════════════════════════════════
-     LIGHT MODE — Clean Daylight Design System
-  ══════════════════════════════════════════════ */
-  [data-theme="light"] { color-scheme: light; }
-
-  /* Glass cards → solid white with real drop shadows */
-  [data-theme="light"] .glass-card {
-    background: #FFFFFF !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border: 1px solid rgba(15,23,42,0.08) !important;
-    box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.07) !important;
-  }
-  @media(hover:hover){ [data-theme="light"] .glass-card:hover { box-shadow: 0 2px 8px rgba(15,23,42,0.06), 0 8px 28px rgba(15,23,42,0.10) !important; } }
-
-  /* Modals → pure white sheet */
-  [data-theme="light"] .modal-sheet {
-    background: #FFFFFF !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border: 1px solid rgba(15,23,42,0.10) !important;
-    box-shadow: 0 20px 60px rgba(15,23,42,0.14), 0 4px 16px rgba(15,23,42,0.07) !important;
-  }
-
-  /* Sticky section headers */
-  [data-theme="light"] .glass-header {
-    background: rgba(255,255,255,0.97) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    border-bottom: 1px solid rgba(15,23,42,0.08) !important;
-    box-shadow: none !important;
-  }
-
-  /* ── Packing cards: clean white base + pastel status accent ── */
-  [data-theme="light"] .pk-pending {
-    background: #FFFFFF !important;
-    border: 1px solid #E2E8F0 !important;
-    border-left: 4px solid #94A3B8 !important;
-    box-shadow: 0 1px 4px rgba(15,23,42,0.05), 0 4px 12px rgba(15,23,42,0.04) !important;
-  }
-  [data-theme="light"] .pk-production {
-    background: linear-gradient(160deg,#FFFDF7,#FEF9EE) !important;
-    border: 1px solid #FDE68A !important;
-    border-left: 4px solid #F59E0B !important;
-    box-shadow: 0 1px 4px rgba(245,158,11,0.08), 0 4px 14px rgba(245,158,11,0.06) !important;
-  }
-  [data-theme="light"] .pk-prod_done {
-    background: linear-gradient(160deg,#F0FDF5,#DCFCE8) !important;
-    border: 1px solid #86EFAC !important;
-    border-left: 4px solid #22C55E !important;
-    box-shadow: 0 1px 4px rgba(22,197,94,0.08), 0 4px 14px rgba(22,197,94,0.06) !important;
-  }
-  [data-theme="light"] .pk-packed {
-    background: linear-gradient(160deg,#FFF5F5,#FEE2E2) !important;
-    border: 1px solid #FCA5A5 !important;
-    border-left: 4px solid #EF4444 !important;
-    box-shadow: 0 1px 4px rgba(239,68,68,0.08), 0 4px 14px rgba(239,68,68,0.06) !important;
-  }
-  [data-theme="light"] .pk-delivered {
-    background: #F8FAFC !important;
-    border: 1px solid #E2E8F0 !important;
-    border-left: 4px solid #CBD5E1 !important;
-    box-shadow: none !important;
-    opacity: 0.72 !important;
-  }
-  [data-theme="light"] .pk-short {
-    background: linear-gradient(160deg,#FFFBEB,#FEF3C7) !important;
-    border: 1px solid #FCD34D !important;
-    border-left: 4px solid #F59E0B !important;
-    box-shadow: 0 1px 4px rgba(245,158,11,0.08), 0 4px 14px rgba(245,158,11,0.05) !important;
-  }
-  [data-theme="light"] .pk-oos {
-    background: linear-gradient(160deg,#FFF1F2,#FFE4E6) !important;
-    border: 1px solid #FDA4AF !important;
-    border-left: 4px solid #FB7185 !important;
-    box-shadow: 0 1px 4px rgba(251,113,133,0.08), 0 4px 14px rgba(251,113,133,0.06) !important;
-  }
-
-  /* Dot grid — subtle on white */
-  [data-theme="light"] .dot-grid-fixed {
-    background-image: radial-gradient(circle, rgba(15,23,42,0.055) 1px, transparent 1px) !important;
-  }
-
-  /* Cursor spotlight — faint brand tint */
-  [data-theme="light"] .cursor-spotlight {
-    background-image: radial-gradient(600px circle at var(--cx,-9999px) var(--cy,-9999px), rgba(196,17,25,0.04), transparent 75%) !important;
-  }
-
-  /* Portal orbs — barely visible on light bg */
-  [data-theme="light"] .portal-orb-1 { background:radial-gradient(circle,rgba(196,17,25,0.035) 0%,transparent 70%) !important; filter:blur(80px) !important; }
-  [data-theme="light"] .portal-orb-2 { background:radial-gradient(circle,rgba(180,83,9,0.028) 0%,transparent 70%) !important; filter:blur(80px) !important; }
-  [data-theme="light"] .portal-orb-3 { background:radial-gradient(circle,rgba(196,17,25,0.022) 0%,transparent 70%) !important; filter:blur(80px) !important; }
-
-  /* Batch v2 — warm amber card */
-  [data-theme="light"] .batch-v2 {
-    background: linear-gradient(160deg,#FFFDF7,#FEF9EE) !important;
-    border: 1px solid #FDE68A !important;
-    border-left: 4px solid #F59E0B !important;
-    box-shadow: 0 2px 10px rgba(245,158,11,0.08), 0 4px 20px rgba(15,23,42,0.04) !important;
-  }
-
-  /* Day tile — clean white card */
-  [data-theme="light"] .day-tile {
-    background: #FFFFFF !important;
-    border: 1px solid #E2E8F0 !important;
-    box-shadow: 0 1px 4px rgba(15,23,42,0.04), 0 2px 8px rgba(15,23,42,0.03) !important;
-  }
-  [data-theme="light"] .day-tile-empty { background:transparent !important; border:2px dashed #CBD5E1 !important; box-shadow:none !important; }
-  [data-theme="light"] .day-tile-active { border-color:rgba(196,17,25,0.28) !important; }
-
-  /* Production queue card */
-  [data-theme="light"] .queue-card {
-    background: linear-gradient(160deg,#FFFDF7,#FEF9EE) !important;
-    border: 1px solid #FDE68A !important;
-    border-left: 4px solid #F59E0B !important;
-    box-shadow: 0 2px 10px rgba(245,158,11,0.07), 0 4px 20px rgba(15,23,42,0.04) !important;
-  }
-
-  /* Recipe terminal */
-  [data-theme="light"] .recipe-terminal { background:#F8FAFC !important; border-color:rgba(196,17,25,0.14) !important; }
-  [data-theme="light"] .recipe-terminal-bar { background:rgba(196,17,25,0.04) !important; border-color:rgba(196,17,25,0.09) !important; }
-
-  /* Skeleton shimmer */
-  [data-theme="light"] .skeleton-box { background:linear-gradient(90deg,#E2E8F0 0%,#F1F5F9 50%,#E2E8F0 100%) !important; background-size:200% 100% !important; }
-
-  /* Scrollbar */
-  [data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb { background:#CBD5E1; }
-
-  /* Cooking shimmer — warm light */
-  [data-theme="light"] .pk-cooking-state { background:linear-gradient(90deg,#FFFDF7 0%,#FEF3C7 50%,#FFFDF7 100%) !important; background-size:200% 100% !important; border-color:rgba(245,158,11,0.2) !important; }
-
-  /* Order card active states */
-  [data-theme="light"] .order-card-active-vins { box-shadow:0 4px 24px rgba(196,17,25,0.12), 0 1px 4px rgba(15,23,42,0.06) !important; }
-  [data-theme="light"] .order-card-active-manja { box-shadow:0 4px 24px rgba(180,83,9,0.12), 0 1px 4px rgba(15,23,42,0.06) !important; }
-  [data-theme="light"] .hover-lift:hover { box-shadow:0 6px 20px rgba(15,23,42,0.10) !important; }
-
-  /* Form controls */
-  [data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select {
-    color: #0F172A !important;
-    background: #F8FAFC !important;
-    border-color: #CBD5E1 !important;
-  }
-  [data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder { color:#94A3B8; }
-  [data-theme="light"] input:focus, [data-theme="light"] textarea:focus, [data-theme="light"] select:focus {
-    background: #FFFFFF !important;
-    border-color: #C41119 !important;
-    box-shadow: 0 0 0 3px rgba(196,17,25,0.12) !important;
-  }
-
-  /* Section labels */
-  [data-theme="light"] .section-label-v2 { color: #64748B; }
-
-  /* Progress track */
-  [data-theme="light"] .pk-progress-track { background:rgba(15,23,42,0.08) !important; }
-
-  /* Chip overrides for contrast */
-  [data-theme="light"] .pk-chip-prod  { color:#92400E; background:rgba(146,64,14,0.07); border-color:rgba(146,64,14,0.24); }
-  [data-theme="light"] .pk-chip-short { color:#92400E; background:rgba(146,64,14,0.07); border-color:rgba(146,64,14,0.24); }
-  [data-theme="light"] .pk-chip-oos   { color:#9F1239; background:rgba(159,18,57,0.07); border-color:rgba(159,18,57,0.24); }
-  [data-theme="light"] .pk-chip-edit  { color:#334155; background:rgba(51,65,85,0.06); border-color:rgba(51,65,85,0.20); }
-  [data-theme="light"] .pk-chip-reset { color:#334155; background:rgba(51,65,85,0.06); border-color:rgba(51,65,85,0.20); }
-
-  /* DP done item strikethrough */
-  [data-theme="light"] .dp-item-done .dp-item-name { color:#94A3B8 !important; }
-
   /* ── Bento card system (Tier 2) ── */
   .bento-hero { border-radius:16px; overflow:hidden; position:relative; transition:transform 0.22s cubic-bezier(0.16,1,0.3,1),box-shadow 0.22s ease; }
   @media(hover:hover){ .bento-hero:hover { transform:translateY(-3px); } }
@@ -469,10 +304,6 @@ const GLOBAL_STYLES = `
   .admin-tab-bar { display:flex; padding:4px; border-radius:12px; }
   .admin-tab-btn { padding:8px 18px; border:none; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); white-space:nowrap; }
 
-  /* ── Theme toggle button ── */
-  .theme-toggle { display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:10px; cursor:pointer; transition:all 0.22s cubic-bezier(0.16,1,0.3,1); font-size:16px; border:none; flex-shrink:0; }
-  @keyframes themePop { 0%{transform:scale(0.85) rotate(-15deg)} 60%{transform:scale(1.12) rotate(5deg)} 100%{transform:scale(1) rotate(0deg)} }
-  .theme-pop { animation:themePop 0.35s cubic-bezier(0.16,1,0.3,1); }
 `;
 
 /* ═══════════════════════════════════════════════════════════════
@@ -650,24 +481,23 @@ function getLocalYMD(d = new Date()) {
 ═══════════════════════════════════════════════════════════════ */
 const ThemeCtx = React.createContext(true); // true = dark
 function useTheme(){
-  const isDark=React.useContext(ThemeCtx);
   return {
-    isDark,
-    divider:  isDark?"rgba(255,255,255,0.07)":"rgba(15,23,42,0.10)",
-    subBg:    isDark?"rgba(255,255,255,0.04)":"rgba(15,23,42,0.03)",
-    cardBg:   isDark?"rgba(255,255,255,0.03)":"#FFFFFF",
-    chipBg:   isDark?"rgba(255,255,255,0.06)":"rgba(15,23,42,0.05)",
-    footerBg: isDark?"rgba(4,6,14,0.8)":"rgba(248,250,252,0.98)",
-    headerBg: isDark?"rgba(6,8,16,0.85)":"rgba(255,255,255,0.98)",
-    panelBg:  isDark?"rgba(6,9,18,0.7)":"rgba(248,250,252,0.96)",
-    editBg:   isDark?"#080C14":"#FFFFFF",
-    editBdr:  isDark?"#1E2A44":"#CBD5E1",
-    closeBg:  isDark?"rgba(255,255,255,0.05)":"rgba(15,23,42,0.05)",
-    closeBdr: isDark?"rgba(255,255,255,0.08)":"rgba(15,23,42,0.10)",
-    trackBg:  isDark?"rgba(255,255,255,0.06)":"rgba(15,23,42,0.08)",
-    svgTrack: isDark?"rgba(255,255,255,0.06)":"rgba(15,23,42,0.10)",
-    noteBg:   isDark?"rgba(255,255,255,0.03)":"rgba(15,23,42,0.025)",
-    noteBdr:  isDark?"rgba(255,255,255,0.07)":"rgba(15,23,42,0.09)",
+    isDark: true,
+    divider:  "rgba(255,255,255,0.07)",
+    subBg:    "rgba(255,255,255,0.04)",
+    cardBg:   "rgba(255,255,255,0.03)",
+    chipBg:   "rgba(255,255,255,0.06)",
+    footerBg: "rgba(4,6,14,0.8)",
+    headerBg: "rgba(6,8,16,0.85)",
+    panelBg:  "rgba(6,9,18,0.7)",
+    editBg:   "#080C14",
+    editBdr:  "#1E2A44",
+    closeBg:  "rgba(255,255,255,0.05)",
+    closeBdr: "rgba(255,255,255,0.08)",
+    trackBg:  "rgba(255,255,255,0.06)",
+    svgTrack: "rgba(255,255,255,0.06)",
+    noteBg:   "rgba(255,255,255,0.03)",
+    noteBdr:  "rgba(255,255,255,0.07)",
   };
 }
 
@@ -681,19 +511,8 @@ const DC={ // dark palette (default)
   rd: "#DC2626", rdBg: "rgba(220,38,38,0.12)",
   sh: "0 2px 10px rgba(0,0,0,0.4)", shM: "0 8px 32px rgba(0,0,0,0.6)"
 };
-const LC={ // light palette — clean daylight design
-  w: "#FFFFFF", off: "#F0F4FC", beige: "#F0F4FC", beigeD: "#E2E8F4",
-  ch: "#0F172A", chM: "#1E293B", chL: "#334155", chXL: "#475569",
-  bdr: "#CBD5E1", bdrL: "#E2E8F0",
-  ol: "#C41119", olDk: "#9A0D13", olBg: "rgba(196,17,25,0.08)", olBgD: "rgba(196,17,25,0.15)",
-  am: "#B45309", amDk: "#92400E", amBg: "rgba(180,83,9,0.08)", amBgD: "rgba(180,83,9,0.15)",
-  gn: "#15803D", gnBg: "rgba(21,128,61,0.08)",
-  rd: "#DC2626", rdBg: "rgba(220,38,38,0.08)",
-  sh: "0 1px 3px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.06)", shM: "0 4px 20px rgba(15,23,42,0.10)"
-};
-// Mutable palette — swapped atomically before each re-render
-const _initDark=(()=>{try{return localStorage.getItem("tfc_theme")!=="light";}catch{return true;}})();
-const C=_initDark?{...DC}:{...LC};
+// Mutable palette — always dark
+const C={...DC};
 
 const ROLES={
   admin:{label:"Admin",icon:"⚙",color:C.ch,accent:C.ol,bg:C.beige,desc:"Create and manage all orders"},
@@ -2788,16 +2607,7 @@ function TFCOrderSystem(){
   useEffect(() => { const timer1 = setTimeout(() => setSplashState("fading"), 2000); const timer2 = setTimeout(() => setSplashState("hidden"), 2500); return () => { clearTimeout(timer1); clearTimeout(timer2); }; }, []);
   function notify(msg,type="success"){ setToast({msg,type}); setTimeout(()=>setToast(null),4000); }
 
-  // ── Theme toggle ──
-  const [isDark, setIsDark] = useState(_initDark);
-  const [themeBtnKey, setThemeBtnKey] = useState(0);
-  function toggleTheme(){
-    const next = !isDark;
-    Object.assign(C, next ? DC : LC);
-    setIsDark(next);
-    setThemeBtnKey(k => k+1);
-    try { localStorage.setItem("tfc_theme", next ? "dark" : "light"); } catch {}
-  }
+  const isDark = true;
 
   // Auth state listener
   useEffect(() => {
@@ -3005,17 +2815,16 @@ function TFCOrderSystem(){
 
   function selectRole(r){ setRole(r); setPhase("app"); }
 
-  const themeAttr = isDark ? "dark" : "light";
-  if (splashState === "visible" || splashState === "fading") return ( <ThemeCtx.Provider value={isDark}><style>{GLOBAL_STYLES}</style><div data-theme={themeAttr} style={{ opacity: splashState === "fading" ? 0 : 1, transition: "opacity 0.5s ease" }}><SplashScreen /></div></ThemeCtx.Provider> );
+  if (splashState === "visible" || splashState === "fading") return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{ opacity: splashState === "fading" ? 0 : 1, transition: "opacity 0.5s ease" }}><SplashScreen /></div></ThemeCtx.Provider> );
 
   // Auth loading
-  if (authLoading) return (<ThemeCtx.Provider value={isDark}><style>{GLOBAL_STYLES}</style><div data-theme={themeAttr}><SplashScreen /></div></ThemeCtx.Provider>);
+  if (authLoading) return (<ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark"><SplashScreen /></div></ThemeCtx.Provider>);
 
   // Not logged in
-  if (!authUser) return (<ThemeCtx.Provider value={isDark}><style>{GLOBAL_STYLES}</style><div data-theme={themeAttr}><LoginScreen onSignIn={handleGoogleSignIn} /></div></ThemeCtx.Provider>);
+  if (!authUser) return (<ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark"><LoginScreen onSignIn={handleGoogleSignIn} /></div></ThemeCtx.Provider>);
 
   // Loading user's Firestore record
-  if (userRecordLoading) return (<ThemeCtx.Provider value={isDark}><style>{GLOBAL_STYLES}</style><div data-theme={themeAttr}><SplashScreen /></div></ThemeCtx.Provider>);
+  if (userRecordLoading) return (<ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark"><SplashScreen /></div></ThemeCtx.Provider>);
 
   let AppContent;
   const isOwner = authUser.email === OWNER_EMAIL;
@@ -3107,14 +2916,14 @@ function TFCOrderSystem(){
       }
     };
 
-    const topBarBg   = isDark ? "linear-gradient(180deg,rgba(8,10,22,0.97) 0%,rgba(6,8,16,0.93) 100%)" : "#FFFFFF";
-    const topBarBdr  = isDark ? "1px solid rgba(211,17,24,0.12)" : "1px solid rgba(15,23,42,0.08)";
-    const topBarShd  = isDark ? "0 4px 30px rgba(0,0,0,0.6)" : "0 1px 0 rgba(15,23,42,0.06), 0 4px 16px rgba(15,23,42,0.05)";
-    const sidebarBg  = isDark ? "rgba(6,8,16,0.97)" : "#F8FAFC";
-    const sidebarBdr = isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(15,23,42,0.08)";
-    const mainBg     = isDark ? "radial-gradient(ellipse 80% 45% at 50% -10%,rgba(211,17,24,0.055) 0%,transparent 55%), #07090F" : "#F0F4FC";
-    const orderCount = isDark ? "#2A3A54" : C.chXL;
-    const copyright  = isDark ? "#1A2030" : C.chXL;
+    const topBarBg   = "linear-gradient(180deg,rgba(8,10,22,0.97) 0%,rgba(6,8,16,0.93) 100%)";
+    const topBarBdr  = "1px solid rgba(211,17,24,0.12)";
+    const topBarShd  = "0 4px 30px rgba(0,0,0,0.6)";
+    const sidebarBg  = "rgba(6,8,16,0.97)";
+    const sidebarBdr = "1px solid rgba(255,255,255,0.07)";
+    const mainBg     = "radial-gradient(ellipse 80% 45% at 50% -10%,rgba(211,17,24,0.055) 0%,transparent 55%), #07090F";
+    const orderCount = "#2A3A54";
+    const copyright  = "#1A2030";
 
     AppContent = (
       <div
@@ -3160,11 +2969,6 @@ function TFCOrderSystem(){
               {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#D31118",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:`2px solid ${isDark?"#060810":"#F2F4FA"}`,animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
             </div>
             {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:`2px solid ${isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)"}`,flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
-            {/* ── Theme Toggle ── */}
-            <button key={themeBtnKey} className="theme-toggle theme-pop" onClick={toggleTheme} title={isDark?"Switch to Light Mode":"Switch to Dark Mode"}
-              style={{background:isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.06)",border:`1px solid ${isDark?"rgba(255,255,255,0.12)":"rgba(0,0,0,0.10)"}`,color:C.ch}}>
-              {isDark?"☀️":"🌙"}
-            </button>
             <button onClick={()=>{setPhase("select");setRole(null);setActiveId(null);}} style={{background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`,color:C.chL,padding:"6px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
           </div>
         </div>
@@ -3188,7 +2992,7 @@ function TFCOrderSystem(){
     );
   }
 
-  return ( <ThemeCtx.Provider value={isDark}><style>{GLOBAL_STYLES}</style><div data-theme={isDark?"dark":"light"} style={{minHeight:"100vh"}}>{AppContent}</div></ThemeCtx.Provider> );
+  return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{minHeight:"100vh"}}>{AppContent}</div></ThemeCtx.Provider> );
 }
 
 export default function App() {
