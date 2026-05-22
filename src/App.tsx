@@ -289,6 +289,88 @@ const GLOBAL_STYLES = `
   /* ── OrderCard active glow state ── */
   .order-card-active-vins { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(211,17,24,0.18) !important; }
   .order-card-active-manja { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(232,146,10,0.18) !important; }
+
+  /* ══════════════════════════════════════════════
+     LIGHT MODE OVERRIDES — [data-theme="light"]
+  ══════════════════════════════════════════════ */
+  [data-theme="light"] { color-scheme: light; }
+
+  [data-theme="light"] .glass-card {
+    background: rgba(255,255,255,0.82) !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 12px 32px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+  }
+  [data-theme="light"] .modal-sheet {
+    background: rgba(255,255,255,0.97) !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,1) !important;
+  }
+  [data-theme="light"] .glass-header {
+    background: rgba(242,244,250,0.95) !important;
+    border-bottom: 1px solid rgba(0,0,0,0.07) !important;
+  }
+  [data-theme="light"] .pk-pending {
+    background: linear-gradient(160deg,#F8FAFF,#EFF2FA) !important;
+    border: 1px solid rgba(136,150,179,0.18) !important;
+    box-shadow: -3px 0 0 0 rgba(136,150,179,0.5), 0 4px 20px rgba(0,0,0,0.05) !important;
+  }
+  [data-theme="light"] .pk-production {
+    background: linear-gradient(160deg,#FFFBF0,#FEF6E0) !important;
+    border: 1px solid rgba(251,176,64,0.22) !important;
+    box-shadow: -3px 0 0 0 #FBB040, 0 4px 24px rgba(0,0,0,0.05), 0 0 30px rgba(251,176,64,0.07) !important;
+  }
+  [data-theme="light"] .pk-prod_done {
+    background: linear-gradient(160deg,#F0FAF5,#E8F5EF) !important;
+    border: 1px solid rgba(74,222,128,0.22) !important;
+    box-shadow: -3px 0 0 0 #4ADE80, 0 4px 24px rgba(0,0,0,0.05), 0 0 30px rgba(74,222,128,0.07) !important;
+  }
+  [data-theme="light"] .pk-packed {
+    background: linear-gradient(160deg,#FFF5F5,#FEF0F0) !important;
+    border: 1px solid rgba(211,17,24,0.15) !important;
+    box-shadow: -3px 0 0 0 rgba(211,17,24,0.7), 0 4px 24px rgba(0,0,0,0.05) !important;
+  }
+  [data-theme="light"] .pk-delivered {
+    background: linear-gradient(160deg,#F8FAFB,#F2F4F8) !important;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    box-shadow: none !important;
+  }
+  [data-theme="light"] .pk-short {
+    background: linear-gradient(160deg,#FFFBF0,#FEF6E0) !important;
+    border: 1px solid rgba(232,146,10,0.18) !important;
+    box-shadow: -3px 0 0 0 #E8920A, 0 4px 20px rgba(0,0,0,0.05) !important;
+  }
+  [data-theme="light"] .pk-oos {
+    background: linear-gradient(160deg,#FFF5F5,#FEF0F0) !important;
+    border: 1px solid rgba(252,165,165,0.18) !important;
+    box-shadow: -3px 0 0 0 rgba(252,165,165,0.8), 0 4px 20px rgba(0,0,0,0.05) !important;
+  }
+  [data-theme="light"] .dot-grid-fixed {
+    background-image: radial-gradient(circle, rgba(0,0,0,0.055) 1px, transparent 1px) !important;
+  }
+  [data-theme="light"] .cursor-spotlight {
+    background-image: radial-gradient(600px circle at var(--cx,-9999px) var(--cy,-9999px), rgba(211,17,24,0.055), transparent 75%) !important;
+  }
+  [data-theme="light"] .portal-orb-1 { background:radial-gradient(circle,rgba(211,17,24,0.04) 0%,transparent 70%) !important; }
+  [data-theme="light"] .portal-orb-2 { background:radial-gradient(circle,rgba(232,146,10,0.035) 0%,transparent 70%) !important; }
+  [data-theme="light"] .portal-orb-3 { background:radial-gradient(circle,rgba(211,17,24,0.03) 0%,transparent 70%) !important; }
+  [data-theme="light"] .batch-v2 { background:linear-gradient(160deg,#FFFBF0,#FEF6E0) !important; border-color:rgba(232,146,10,0.25) !important; }
+  [data-theme="light"] .day-tile { background:linear-gradient(160deg,#F8FAFB,#F2F4F8) !important; border-color:rgba(0,0,0,0.07) !important; }
+  [data-theme="light"] .day-tile-empty { border-color:rgba(0,0,0,0.12) !important; }
+  [data-theme="light"] .recipe-terminal { background:#FAFBFF !important; border-color:rgba(211,17,24,0.15) !important; }
+  [data-theme="light"] .recipe-terminal-bar { background:rgba(211,17,24,0.04) !important; border-color:rgba(211,17,24,0.10) !important; }
+  [data-theme="light"] .skeleton-box { background:linear-gradient(90deg,#E2E8F0 0%,#F0F4FA 50%,#E2E8F0 100%) !important; background-size:200% 100% !important; }
+  [data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb { background:#CBD5E1; }
+  [data-theme="light"] .order-card-active-vins { box-shadow:0 8px 32px rgba(0,0,0,0.12), 0 0 24px rgba(211,17,24,0.12) !important; }
+  [data-theme="light"] .order-card-active-manja { box-shadow:0 8px 32px rgba(0,0,0,0.12), 0 0 24px rgba(217,119,6,0.12) !important; }
+  [data-theme="light"] .hover-lift:hover { box-shadow:0 8px 24px rgba(0,0,0,0.12) !important; }
+  [data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select { color:#0F172A !important; background:#F8FAFC !important; }
+  [data-theme="light"] input::placeholder, [data-theme="light"] textarea::placeholder { color:#94A3B8; }
+  [data-theme="light"] input:focus, [data-theme="light"] textarea:focus, [data-theme="light"] select:focus { background:#FFFFFF !important; box-shadow:0 0 0 3px rgba(211,17,24,0.15) !important; }
+
+  /* ── Theme toggle button ── */
+  .theme-toggle { display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:10px; cursor:pointer; transition:all 0.22s cubic-bezier(0.16,1,0.3,1); font-size:16px; border:none; flex-shrink:0; }
+  @keyframes themePop { 0%{transform:scale(0.85) rotate(-15deg)} 60%{transform:scale(1.12) rotate(5deg)} 100%{transform:scale(1) rotate(0deg)} }
+  .theme-pop { animation:themePop 0.35s cubic-bezier(0.16,1,0.3,1); }
 `;
 
 /* ═══════════════════════════════════════════════════════════════
@@ -343,12 +425,17 @@ function useCountUp(target) {
 
 /* Animated ambient orb background — used by all auth screens */
 function PremiumBg() {
+  const isDark = React.useContext(ThemeCtx);
+  const bg = isDark ? "#060810" : "#F0F2FA";
+  const orb1 = isDark ? "rgba(211,17,24,0.14)" : "rgba(211,17,24,0.08)";
+  const orb2 = isDark ? "rgba(20,50,160,0.10)" : "rgba(100,130,220,0.07)";
+  const orb3 = isDark ? "rgba(211,17,24,0.07)" : "rgba(211,17,24,0.05)";
   return (
     <>
-      <div style={{position:"fixed",inset:0,background:"#060810",zIndex:0,pointerEvents:"none"}}/>
-      <div style={{position:"fixed",width:"min(640px,90vw)",height:"min(640px,90vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(211,17,24,0.14) 0%,transparent 70%)",top:"-22%",left:"-12%",animation:"orbFloat1 22s infinite ease-in-out",pointerEvents:"none",zIndex:0}}/>
-      <div style={{position:"fixed",width:"min(860px,110vw)",height:"min(860px,110vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(20,50,160,0.10) 0%,transparent 70%)",bottom:"-32%",right:"-22%",animation:"orbFloat2 28s infinite ease-in-out",pointerEvents:"none",zIndex:0}}/>
-      <div style={{position:"fixed",width:"min(420px,65vw)",height:"min(420px,65vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(211,17,24,0.07) 0%,transparent 70%)",top:"42%",right:"8%",animation:"orbFloat3 19s infinite ease-in-out",pointerEvents:"none",zIndex:0}}/>
+      <div style={{position:"fixed",inset:0,background:bg,zIndex:0,pointerEvents:"none",transition:"background 0.4s ease"}}/>
+      <div style={{position:"fixed",width:"min(640px,90vw)",height:"min(640px,90vw)",borderRadius:"50%",background:`radial-gradient(circle,${orb1} 0%,transparent 70%)`,top:"-22%",left:"-12%",animation:"orbFloat1 22s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(50px)"}}/>
+      <div style={{position:"fixed",width:"min(860px,110vw)",height:"min(860px,110vw)",borderRadius:"50%",background:`radial-gradient(circle,${orb2} 0%,transparent 70%)`,bottom:"-32%",right:"-22%",animation:"orbFloat2 28s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(60px)"}}/>
+      <div style={{position:"fixed",width:"min(420px,65vw)",height:"min(420px,65vw)",borderRadius:"50%",background:`radial-gradient(circle,${orb3} 0%,transparent 70%)`,top:"42%",right:"8%",animation:"orbFloat3 19s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(45px)"}}/>
     </>
   );
 }
@@ -457,19 +544,33 @@ function getLocalYMD(d = new Date()) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   CONFIG & PALETTE (DARK MODE PRO)
+   THEME SYSTEM — dark / light palettes + context
 ═══════════════════════════════════════════════════════════════ */
-const UNITS=["kg","g","pkt","nos","btl","ctn","ltr","tray","box","pc","reel","can","portion"];
-const C={ 
-  w: "#141928", off: "#0E1018", beige: "#0E1018", beigeD: "#1B2238",       
-  ch: "#EEF2FF", chM: "#B8C4E0", chL: "#8896B3", chXL: "#2A3450",       
-  bdr: "#1E2A44", bdrL: "#172036",       
+const ThemeCtx = React.createContext(true); // true = dark
+
+const DC={ // dark palette (default)
+  w: "#141928", off: "#0E1018", beige: "#0E1018", beigeD: "#1B2238",
+  ch: "#EEF2FF", chM: "#B8C4E0", chL: "#8896B3", chXL: "#2A3450",
+  bdr: "#1E2A44", bdrL: "#172036",
   ol: "#D31118", olDk: "#A50D12", olBg: "rgba(211,17,24,0.14)", olBgD: "rgba(211,17,24,0.26)",
   am: "#E8920A", amDk: "#B86F06", amBg: "rgba(232,146,10,0.13)", amBgD: "rgba(232,146,10,0.24)",
   gn: "#16A34A", gnBg: "rgba(22,163,74,0.13)",
   rd: "#DC2626", rdBg: "rgba(220,38,38,0.12)",
   sh: "0 2px 10px rgba(0,0,0,0.4)", shM: "0 8px 32px rgba(0,0,0,0.6)"
 };
+const LC={ // light palette
+  w: "#FFFFFF", off: "#F2F4FA", beige: "#F2F4FA", beigeD: "#E4EAF4",
+  ch: "#0F172A", chM: "#334155", chL: "#64748B", chXL: "#CBD5E1",
+  bdr: "#CBD5E1", bdrL: "#E2E8F4",
+  ol: "#D31118", olDk: "#A50D12", olBg: "rgba(211,17,24,0.09)", olBgD: "rgba(211,17,24,0.18)",
+  am: "#D97706", amDk: "#92400E", amBg: "rgba(217,119,6,0.09)", amBgD: "rgba(217,119,6,0.18)",
+  gn: "#16A34A", gnBg: "rgba(22,163,74,0.09)",
+  rd: "#DC2626", rdBg: "rgba(220,38,38,0.09)",
+  sh: "0 2px 10px rgba(0,0,0,0.06)", shM: "0 8px 32px rgba(0,0,0,0.12)"
+};
+// Mutable palette — swapped atomically before each re-render
+const _initDark=(()=>{try{return localStorage.getItem("tfc_theme")!=="light";}catch{return true;}})();
+const C=_initDark?{...DC}:{...LC};
 
 const ROLES={
   admin:{label:"Admin",icon:"⚙",color:C.ch,accent:C.ol,bg:C.beige,desc:"Create and manage all orders"},
@@ -1717,15 +1818,15 @@ function OrderCard({order, active, onClick, onDelete, index}){
       className={`animate-fade-up hover-lift ${isComplete&&!active?'celebration-card':''} ${active?(order.restaurant==="Vins"?"order-card-active-vins":"order-card-active-manja"):""}`}
       style={{
         animationDelay:`${index*0.05}s`,
-        padding:"14px 16px",borderRadius:14,marginBottom:8,cursor:"pointer",
-        background:active?`linear-gradient(160deg,#111E36,#0B1228)`:"#090C16",
+        padding:"14px 16px",borderRadius:16,marginBottom:8,cursor:"pointer",
+        background:active?`linear-gradient(160deg,#111E36,#0B1228)`:C.off,
         border:`1.5px solid ${active?rc+"60":C.bdrL}`,
         borderLeft:`4px solid ${active?rc:C.bdrL}`,
         transition:"all 0.25s cubic-bezier(0.16,1,0.3,1)"
       }}
     >
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8,position:"relative"}}>
-        <div style={{fontWeight:800,color:active?C.ch:"#9AABB8",fontSize:14,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",letterSpacing:"-0.02em"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:active?10:8,position:"relative"}}>
+        <div style={{fontWeight:800,color:active?C.ch:C.chM,fontSize:active?15:13,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",letterSpacing:"-0.02em",transition:"font-size 0.2s ease"}}>
           {order.poName||order.restaurant+" Order"}
         </div>
         <div style={{display:"flex",alignItems:"center",gap:6,flexShrink:0,marginLeft:8}}>
@@ -1734,12 +1835,12 @@ function OrderCard({order, active, onClick, onDelete, index}){
         </div>
       </div>
 
-      <div style={{marginBottom:8,display:"flex",alignItems:"center",gap:7,flexWrap:"wrap"}}>
-        <span style={{fontSize:10,fontWeight:900,color:rc,background:rc+"18",borderRadius:6,padding:"3px 9px",letterSpacing:"0.04em"}}>{order.restaurant}</span>
-        {(s.prod+s.prod_done)>0&&<span style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#FBB040",fontWeight:800,background:"rgba(251,176,64,0.08)",border:"1px solid rgba(251,176,64,0.18)",borderRadius:20,padding:"2px 8px"}}><span className="prod-dot"/>{s.prod+s.prod_done} cooking</span>}
+      <div style={{marginBottom:8,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+        <span style={{fontSize:10,fontWeight:900,color:rc,background:rc+"18",borderRadius:99,padding:"3px 11px",letterSpacing:"0.03em",border:`1px solid ${rc}30`}}>{order.restaurant}</span>
+        {(s.prod+s.prod_done)>0&&<span style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#FBB040",fontWeight:800,background:"rgba(251,176,64,0.08)",border:"1px solid rgba(251,176,64,0.18)",borderRadius:99,padding:"2px 9px"}}><span className="prod-dot"/>{s.prod+s.prod_done} cooking</span>}
       </div>
 
-      <div style={{height:5,background:"rgba(255,255,255,0.07)",borderRadius:99,marginBottom:6,overflow:"hidden"}}>
+      <div style={{height:5,background:C.bdrL,borderRadius:99,marginBottom:6,overflow:"hidden"}}>
         <div style={{height:5,width:pct+"%",background:pct===100?"linear-gradient(90deg,#097353,#16A34A)":`linear-gradient(90deg,${rc},${rc}CC)`,borderRadius:99,transition:"width 0.8s cubic-bezier(0.16,1,0.3,1)",boxShadow:active?(pct===100?"0 0 10px rgba(9,115,83,0.6)":`0 0 10px ${rc}80`):"none"}}/>
       </div>
       <div style={{fontSize:9,color:C.chL,marginBottom:10,fontWeight:600}}>{s.packed+s.delivered}/{s.total} items done</div>
@@ -1753,9 +1854,9 @@ function OrderCard({order, active, onClick, onDelete, index}){
       </div>
 
       {onDelete&&(
-        <div onClick={e=>{e.stopPropagation();}} style={{paddingTop:10,borderTop:"1px solid #0D1828"}}>
+        <div onClick={e=>{e.stopPropagation();}} style={{paddingTop:10,borderTop:`1px solid ${C.bdrL}`}}>
           {!showDel?(
-            <button onClick={()=>setShowDel(true)} style={{fontSize:11,color:"#2A3450",background:"none",border:"none",cursor:"pointer",padding:0,fontWeight:600,fontFamily:"inherit"}}>Remove order</button>
+            <button onClick={()=>setShowDel(true)} style={{fontSize:11,color:C.chXL,background:"none",border:"none",cursor:"pointer",padding:0,fontWeight:600,fontFamily:"inherit"}}>Remove order</button>
           ):(
             <div className="animate-fade-in" style={{display:"flex",gap:10,alignItems:"center"}}>
               <span style={{fontSize:11,color:C.rd,fontWeight:700}}>Delete this order?</span>
@@ -2496,6 +2597,17 @@ function TFCOrderSystem(){
   useEffect(() => { const timer1 = setTimeout(() => setSplashState("fading"), 2000); const timer2 = setTimeout(() => setSplashState("hidden"), 2500); return () => { clearTimeout(timer1); clearTimeout(timer2); }; }, []);
   function notify(msg,type="success"){ setToast({msg,type}); setTimeout(()=>setToast(null),4000); }
 
+  // ── Theme toggle ──
+  const [isDark, setIsDark] = useState(_initDark);
+  const [themeBtnKey, setThemeBtnKey] = useState(0);
+  function toggleTheme(){
+    const next = !isDark;
+    Object.assign(C, next ? DC : LC);
+    setIsDark(next);
+    setThemeBtnKey(k => k+1);
+    try { localStorage.setItem("tfc_theme", next ? "dark" : "light"); } catch {}
+  }
+
   // Auth state listener
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -2803,16 +2915,23 @@ function TFCOrderSystem(){
       }
     };
 
+    const topBarBg   = isDark ? "linear-gradient(180deg,rgba(8,10,22,0.97) 0%,rgba(6,8,16,0.93) 100%)" : "linear-gradient(180deg,rgba(248,250,252,0.97) 0%,rgba(242,244,250,0.95) 100%)";
+    const topBarBdr  = isDark ? "1px solid rgba(211,17,24,0.12)" : "1px solid rgba(211,17,24,0.10)";
+    const topBarShd  = isDark ? "0 4px 30px rgba(0,0,0,0.6)" : "0 4px 20px rgba(0,0,0,0.08)";
+    const sidebarBg  = isDark ? "rgba(6,8,16,0.97)" : "rgba(255,255,255,0.97)";
+    const sidebarBdr = isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(0,0,0,0.07)";
+    const mainBg     = isDark ? "radial-gradient(ellipse 80% 45% at 50% -10%,rgba(211,17,24,0.055) 0%,transparent 55%), #07090F" : "radial-gradient(ellipse 80% 45% at 50% -10%,rgba(211,17,24,0.04) 0%,transparent 55%), #F2F4FA";
+    const orderCount = isDark ? "#2A3A54" : C.chL;
+    const copyright  = isDark ? "#1A2030" : C.chXL;
+
     AppContent = (
       <div
         className="animate-fade-in cursor-spotlight"
-        style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:"#07090F",fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",overflow:"hidden",position:"relative"}}
+        style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:isDark?"#07090F":"#F2F4FA",fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",overflow:"hidden",position:"relative",transition:"background-color 0.4s ease"}}
         onMouseMove={e=>{const el=e.currentTarget;const r=el.getBoundingClientRect();el.style.setProperty("--cx",(e.clientX-r.left)+"px");el.style.setProperty("--cy",(e.clientY-r.top)+"px");}}
         onMouseLeave={e=>{e.currentTarget.style.setProperty("--cx","-9999px");e.currentTarget.style.setProperty("--cy","-9999px");}}
       >
-        {/* Dot grid — fixed behind all content */}
         <div className="dot-grid-fixed"/>
-        {/* Ambient orbs — subtle floating glows matching auth screens */}
         <div className="portal-orb portal-orb-1"/>
         <div className="portal-orb portal-orb-2"/>
         <div className="portal-orb portal-orb-3"/>
@@ -2821,12 +2940,12 @@ function TFCOrderSystem(){
         {showModal&&<NewOrderModal onClose={()=>setShowModal(false)} onSubmit={handleNewOrder} notify={notify}/>}
         {editingOrder&&<EditOrderModal order={editingOrder} onClose={()=>setEditingOrder(null)} onSave={saveOrderEdit} notify={notify}/>}
 
-        {/* ── Premium Portal Top Bar ── */}
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",height:58,background:"linear-gradient(180deg,rgba(8,10,22,0.97) 0%,rgba(6,8,16,0.93) 100%)",borderBottom:"1px solid rgba(211,17,24,0.12)",backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:"0 4px 30px rgba(0,0,0,0.6)"}}>
+        {/* ── Portal Top Bar ── */}
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",height:58,background:topBarBg,borderBottom:topBarBdr,backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:topBarShd,transition:"all 0.4s ease"}}>
           <div className="portal-bar-shine"/>
           {/* Left */}
           <div style={{display:"flex",alignItems:"center",gap:12}}>
-            {isMobile&&<button onClick={()=>setSidebarOpen(true)} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,width:34,height:34,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.ch,fontSize:15,flexShrink:0}}>☰</button>}
+            {isMobile&&<button onClick={()=>setSidebarOpen(true)} style={{background:isDark?"rgba(255,255,255,0.05)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.08)"}`,borderRadius:8,width:34,height:34,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.ch,fontSize:15,flexShrink:0}}>☰</button>}
             <div style={{position:"relative",width:34,height:34,flexShrink:0}}>
               <div style={{width:34,height:34,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,boxShadow:"0 0 0 1px rgba(211,17,24,0.3),0 2px 10px rgba(211,17,24,0.2)"}}>🍽️</div>
               <div style={{position:"absolute",inset:-4,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
@@ -2836,20 +2955,25 @@ function TFCOrderSystem(){
               <div style={{display:"flex",alignItems:"center",gap:5,marginTop:3}}>
                 <span style={{width:5,height:5,background:C.ol,borderRadius:"50%",animation:"pulseSoft 2s infinite",display:"inline-block",flexShrink:0}}/>
                 <span style={{fontSize:9,color:C.ol,letterSpacing:"0.1em",textTransform:"uppercase",fontWeight:800}}>Live</span>
-                {!isMobile&&<span style={{fontSize:9,color:"#2A3A54",fontWeight:600,marginLeft:4}}>{viewOrders.length} order{viewOrders.length!==1?"s":""}</span>}
+                {!isMobile&&<span style={{fontSize:9,color:orderCount,fontWeight:600,marginLeft:4}}>{viewOrders.length} order{viewOrders.length!==1?"s":""}</span>}
               </div>
             </div>
           </div>
           {/* Right */}
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
             <div style={{position:"relative"}}>
               <span style={{fontSize:11,fontWeight:800,color:roleConfig.color,background:roleConfig.color+"14",border:"1px solid "+roleConfig.color+"35",borderRadius:20,padding:isMobile?"6px 10px":"6px 14px",letterSpacing:"0.02em",whiteSpace:"nowrap",boxShadow:"0 0 14px "+roleConfig.color+"25",display:"flex",alignItems:"center",gap:6}}>
                 <span style={{fontSize:10}}>{roleConfig.icon}</span>{!isMobile&&roleConfig.label}
               </span>
-              {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#D31118",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #060810",animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
+              {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#D31118",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:`2px solid ${isDark?"#060810":"#F2F4FA"}`,animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
             </div>
-            {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:"2px solid rgba(255,255,255,0.10)",flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
-            <button onClick={()=>{setPhase("select");setRole(null);setActiveId(null);}} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",color:C.chL,padding:"6px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
+            {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:`2px solid ${isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)"}`,flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
+            {/* ── Theme Toggle ── */}
+            <button key={themeBtnKey} className="theme-toggle theme-pop" onClick={toggleTheme} title={isDark?"Switch to Light Mode":"Switch to Dark Mode"}
+              style={{background:isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.06)",border:`1px solid ${isDark?"rgba(255,255,255,0.12)":"rgba(0,0,0,0.10)"}`,color:C.ch}}>
+              {isDark?"☀️":"🌙"}
+            </button>
+            <button onClick={()=>{setPhase("select");setRole(null);setActiveId(null);}} style={{background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`,color:C.chL,padding:"6px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
           </div>
         </div>
 
@@ -2857,22 +2981,22 @@ function TFCOrderSystem(){
           {isMobile&&sidebarOpen&&<div className="animate-fade-in" onClick={()=>setSidebarOpen(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.65)",backdropFilter:"blur(3px)",zIndex:40}}/>}
 
           {/* Sidebar */}
-          <div className="custom-scrollbar" style={{width:280,borderRight:"1px solid rgba(255,255,255,0.06)",background:"rgba(6,8,16,0.96)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",padding:16,overflowY:"auto",flexShrink:0,display:"flex",flexDirection:"column",gap:6,position:isMobile?"absolute":"relative",zIndex:50,height:"100%",left:0,top:0,transform:isMobile?(sidebarOpen?"translateX(0)":"translateX(-100%)"):"none",transition:"transform 0.3s cubic-bezier(0.16,1,0.3,1)",boxShadow:isMobile&&sidebarOpen?"0 0 60px rgba(0,0,0,0.8)":"none"}}>
+          <div className="custom-scrollbar" style={{width:240,borderRight:sidebarBdr,background:sidebarBg,backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",padding:"14px 12px",overflowY:"auto",flexShrink:0,display:"flex",flexDirection:"column",gap:5,position:isMobile?"absolute":"relative",zIndex:50,height:"100%",left:0,top:0,transform:isMobile?(sidebarOpen?"translateX(0)":"translateX(-100%)"):"none",transition:"transform 0.3s cubic-bezier(0.16,1,0.3,1), background 0.4s ease",boxShadow:isMobile&&sidebarOpen?(isDark?"0 0 60px rgba(0,0,0,0.8)":"0 0 40px rgba(0,0,0,0.15)"):"none"}}>
             {role==="admin"&&(<div style={{marginBottom:10}}><button className="btn-3d create-order-btn" onClick={()=>{setShowModal(true);if(isMobile)setSidebarOpen(false);}} style={{width:"100%",padding:"14px 0",border:"none",borderRadius:12,background:"linear-gradient(135deg,#D31118,#8A0B10)",color:"#FFFFFF",fontSize:14,cursor:"pointer",fontWeight:900,letterSpacing:"0.03em",boxShadow:"0 4px 22px rgba(211,17,24,0.55),0 0 40px rgba(211,17,24,0.12),inset 0 1px 0 rgba(255,255,255,0.12)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>+</span> Create Order</button></div>)}
             {role==="production"&&(<div style={{padding:"12px 14px",background:"rgba(232,146,10,0.08)",borderRadius:10,border:"1px solid rgba(232,146,10,0.2)",marginBottom:10}}><div style={{fontSize:11,fontWeight:900,color:C.amDk,textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:3}}>Production Mode</div><div style={{fontSize:11,color:C.chL,lineHeight:1.4,fontWeight:500}}>All items flagged for production.</div></div>)}
-            <div className="section-label-v2">Orders {viewOrders.length>0&&<span style={{color:"#3D5070",fontWeight:700,marginLeft:3}}>({viewOrders.length})</span>}</div>
+            <div className="section-label-v2" style={{color:C.chL}}>Orders {viewOrders.length>0&&<span style={{fontWeight:700,marginLeft:3}}>({viewOrders.length})</span>}</div>
             {loadingInitial?(<div style={{padding:"10px 0"}}><div className="skeleton-box" style={{height:80,marginBottom:10}}></div><div className="skeleton-box" style={{height:80}}></div></div>):viewOrders.length===0?<div style={{fontSize:13,color:C.chXL,textAlign:"center",padding:"32px 0",fontWeight:600}}>No orders found</div>:viewOrders.map((o,i)=>(<OrderCard key={o.id} index={i} order={o} active={activeId===o.id} onClick={()=>{setActiveId(o.id);if(isMobile)setSidebarOpen(false);}} onDelete={role==="admin"?deleteOrder:null}/>))}
-            <div style={{marginTop:"auto",paddingTop:20,textAlign:"center",fontSize:9,color:"#1A2030",fontWeight:500}}>© 2026 Made by Banuja Disanayaka</div>
+            <div style={{marginTop:"auto",paddingTop:20,textAlign:"center",fontSize:9,color:copyright,fontWeight:500}}>© 2026 Made by Banuja Disanayaka</div>
           </div>
 
           {/* Main content */}
-          <div className="custom-scrollbar" style={{flex:1,overflowY:"auto",padding:isMobile?"20px":"32px 40px",background:"radial-gradient(ellipse 80% 45% at 50% -10%,rgba(211,17,24,0.055) 0%,transparent 55%), #07090F",width:"100%",position:"relative"}}>{renderMain()}</div>
+          <div className="custom-scrollbar" style={{flex:1,overflowY:"auto",padding:isMobile?"20px":"32px 40px",background:mainBg,width:"100%",position:"relative",transition:"background 0.4s ease"}}>{renderMain()}</div>
         </div>
       </div>
     );
   }
 
-  return ( <><style>{GLOBAL_STYLES}</style>{AppContent}</> );
+  return ( <ThemeCtx.Provider value={isDark}><style>{GLOBAL_STYLES}</style><div data-theme={isDark?"dark":"light"} style={{minHeight:"100vh"}}>{AppContent}</div></ThemeCtx.Provider> );
 }
 
 export default function App() {
