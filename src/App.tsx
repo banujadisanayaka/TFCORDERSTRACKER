@@ -1272,7 +1272,12 @@ function LoginScreen({ onSignIn }) {
 
   async function handleClick() {
     setLoading(true); setError("");
-    try { await onSignIn(); } catch (e) { setError("Sign-in failed. Please try again."); }
+    try { await onSignIn(); }
+    catch (e) {
+      if (e?.code === "auth/unauthorized-domain") setError("This domain is not authorized in Firebase. Add it in Firebase Console → Authentication → Authorized domains.");
+      else if (e?.code === "auth/popup-blocked") setError("Popup blocked — please allow popups for this site.");
+      else setError("Sign-in failed. Please try again.");
+    }
     setLoading(false);
   }
 
@@ -2757,7 +2762,14 @@ function TFCOrderSystem(){
 
   async function handleGoogleSignIn() {
     try { await signInWithPopup(auth, googleProvider); }
-    catch(e) { notify("Sign-in failed. Please try again.", "error"); }
+    catch(e) {
+      const msg = e?.code === "auth/unauthorized-domain"
+        ? "Domain not authorized in Firebase — add this site's URL to Firebase Console → Authentication → Authorized domains."
+        : e?.code === "auth/popup-blocked"
+        ? "Sign-in popup was blocked. Allow popups for this site and try again."
+        : "Sign-in failed. Please try again.";
+      notify(msg, "error");
+    }
   }
 
   async function handleSignOut() {
@@ -2809,7 +2821,10 @@ function TFCOrderSystem(){
       const liveOrders = snapshot.docs.map(doc => doc.data());
       liveOrders.sort((a, b) => b.createdAt - a.createdAt);
       setOrders(liveOrders);
-      setLoadingInitial(false); 
+      setLoadingInitial(false);
+    }, (err) => {
+      console.error("Orders snapshot error:", err);
+      setLoadingInitial(false);
     });
     return () => unsubscribeOrders();
   }, []);
@@ -3060,7 +3075,8 @@ function TFCOrderSystem(){
         </div>}
 
         {/* ── Portal Top Bar ── */}
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",paddingTop:"env(safe-area-inset-top)",height:"calc(58px + env(safe-area-inset-top, 0px))",background:topBarBg,borderBottom:topBarBdr,backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:topBarShd,transition:"all 0.4s ease"}}>
+        <div style={{background:topBarBg,borderBottom:topBarBdr,backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:topBarShd,transition:"all 0.4s ease",paddingTop:"env(safe-area-inset-top, 0px)"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",height:58}}>
           <div className="portal-bar-shine"/>
           {/* Left */}
           <div style={{display:"flex",alignItems:"center",gap:12}}>
@@ -3089,6 +3105,7 @@ function TFCOrderSystem(){
             {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:`2px solid ${isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)"}`,flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
             <button onClick={()=>{ setScreenExiting(true); setTimeout(()=>{ setPhase("select");setRole(null);setActiveId(null);setScreenExiting(false); }, 320); }} style={{background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`,color:C.chL,padding:"6px 12px",borderRadius:8,minHeight:36,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
           </div>
+        </div>
         </div>
 
         <div style={{display:"flex",flex:1,overflow:"hidden",position:"relative",zIndex:2}}>
