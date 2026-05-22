@@ -2691,6 +2691,18 @@ function AdminDashboard({ orders, dailyProductions = [], onCreateDP, onUpdateDP,
   );
 }
 
+// Android Chrome blocks `fireNotif()` when a SW is active; fall back to showNotification().
+function fireNotif(title, options) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  try {
+    fireNotif(title, options);
+  } catch (_) {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options)).catch(() => {});
+    }
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    MAIN APP ROUTER (WITH ERROR BOUNDARY)
 ═══════════════════════════════════════════════════════════════ */
@@ -2775,22 +2787,22 @@ function TFCOrderSystem(){
         const changed = item.status;
 
         if(role === "admin"){
-          if(changed === "short") new Notification("⚠ Short Shipment", {body:`${item.product} (${order.poName||order.restaurant}): Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`short-${item.id}`});
-          if(changed === "oos")   new Notification("✕ Out of Stock", {body:`${item.product} in ${order.poName||order.restaurant}`,icon:"/icon-192.png",tag:`oos-${item.id}`});
+          if(changed === "short") fireNotif("⚠ Short Shipment", {body:`${item.product} (${order.poName||order.restaurant}): Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`short-${item.id}`});
+          if(changed === "oos")   fireNotif("✕ Out of Stock", {body:`${item.product} in ${order.poName||order.restaurant}`,icon:"/icon-192.png",tag:`oos-${item.id}`});
         }
         if(role === "packing"){
-          if(changed === "prod_done") new Notification("✓ Ready to Pack", {body:`${item.product} — ${item.qty} ${item.unit||""} (${order.restaurant})`,icon:"/icon-192.png",tag:`pack-${item.id}`});
+          if(changed === "prod_done") fireNotif("✓ Ready to Pack", {body:`${item.product} — ${item.qty} ${item.unit||""} (${order.restaurant})`,icon:"/icon-192.png",tag:`pack-${item.id}`});
         }
         if(role === "production"){
-          if(changed === "production") new Notification("🍳 New Batch", {body:`${item.product} — ${item.qty} ${item.unit||""} needed`,icon:"/icon-192.png",tag:`prod-${item.id}`});
+          if(changed === "production") fireNotif("🍳 New Batch", {body:`${item.product} — ${item.qty} ${item.unit||""} needed`,icon:"/icon-192.png",tag:`prod-${item.id}`});
         }
         if(role === "vins" && order.restaurant === "Vins"){
-          if(changed === "short") new Notification("⚠ Short — Vins", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`vins-short-${item.id}`});
-          if(changed === "oos")   new Notification("✕ OOS — Vins", {body:`${item.product} is out of stock`,icon:"/icon-192.png",tag:`vins-oos-${item.id}`});
+          if(changed === "short") fireNotif("⚠ Short — Vins", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`vins-short-${item.id}`});
+          if(changed === "oos")   fireNotif("✕ OOS — Vins", {body:`${item.product} is out of stock`,icon:"/icon-192.png",tag:`vins-oos-${item.id}`});
         }
         if(role === "manja" && order.restaurant === "Manja"){
-          if(changed === "short") new Notification("⚠ Short — Manja", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`manja-short-${item.id}`});
-          if(changed === "oos")   new Notification("✕ OOS — Manja", {body:`${item.product} is out of stock`,icon:"/icon-192.png",tag:`manja-oos-${item.id}`});
+          if(changed === "short") fireNotif("⚠ Short — Manja", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`manja-short-${item.id}`});
+          if(changed === "oos")   fireNotif("✕ OOS — Manja", {body:`${item.product} is out of stock`,icon:"/icon-192.png",tag:`manja-oos-${item.id}`});
         }
       });
 
@@ -2801,7 +2813,7 @@ function TFCOrderSystem(){
           const wasAllDone = prevOrder.items.every(i => i.status === "delivered" || i.status === "packed");
           const nowAllDone = order.items.every(i => i.status === "delivered" || i.status === "packed");
           if(!wasAllDone && nowAllDone){
-            new Notification("🚀 Order Ready", {body:`${order.poName||order.restaurant} order is fully packed and ready!`,icon:"/icon-192.png",tag:`done-${order.id}`});
+            fireNotif("🚀 Order Ready", {body:`${order.poName||order.restaurant} order is fully packed and ready!`,icon:"/icon-192.png",tag:`done-${order.id}`});
           }
         }
       }
