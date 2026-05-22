@@ -20,6 +20,10 @@ const ITEMS_DB = itemsData || [];
 const GLOBAL_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=JetBrains+Mono:wght@500;600&display=swap');
 
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; background: #04060E; -webkit-tap-highlight-color: transparent; }
+  #root { overflow-x: hidden; }
+
   @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes pulseSoft { 0% { box-shadow: 0 0 0 0 rgba(211, 17, 24, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(211, 17, 24, 0); } 100% { box-shadow: 0 0 0 0 rgba(211, 17, 24, 0); } }
@@ -323,6 +327,7 @@ const GLOBAL_STYLES = `
   .bento-hero { border-radius:16px; overflow:hidden; position:relative; transition:transform 0.22s cubic-bezier(0.16,1,0.3,1),box-shadow 0.22s ease; }
   @media(hover:hover){ .bento-hero:hover { transform:translateY(-3px); } }
   .bento-hero:active { transform:translateY(0) !important; }
+  @media(max-width:400px) { .bento-stat-grid { grid-template-columns:1fr 1fr !important; } }
 
   /* ── Admin dashboard tab switcher pill ── */
   .admin-tab-bar { display:flex; padding:4px; border-radius:12px; }
@@ -2282,9 +2287,23 @@ function OrderingView({order}){
 
 function AdminOrderView({order, onEditOrder}){
   const s=oStats(order); const rc=order.restaurant==="Vins"?C.ol:C.am;
+  const isMobile=useIsMobile();
   return(
     <div className="animate-fade-in custom-scrollbar">
-      <div className="glass-header"><div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start"}}><div><div style={{fontSize:26,fontWeight:900,color:C.ch,letterSpacing:"-0.03em",marginBottom:6}}>{order.poName || "Order Overview"} — <span style={{color:rc}}>{order.restaurant}</span></div><div style={{fontSize:13,color:C.chL, fontWeight:500}}>PO Date: {order.orderDate} {order.deliveryDate ? `· Deliver By: ${order.deliveryDate}` : ""} · {order.items.length} line items</div></div><div style={{display:"flex", gap:10}}><Btn variant="success" onClick={() => window.open(`https://wa.me/?text=${generateWhatsAppMessage(order)}`, "_blank")}>📲 WhatsApp</Btn><Btn variant="amber" onClick={()=>onEditOrder(order)}>✏️ Edit</Btn></div></div></div>
+      <div className="glass-header">
+        <div style={{display:"flex",flexDirection:isMobile?"column":"row",justifyContent:"space-between",alignItems:isMobile?"flex-start":"flex-start",gap:isMobile?10:12}}>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:isMobile?20:26,fontWeight:900,color:C.ch,letterSpacing:"-0.03em",marginBottom:6,lineHeight:1.2}}>
+              {order.poName || "Order Overview"} — <span style={{color:rc}}>{order.restaurant}</span>
+            </div>
+            <div style={{fontSize:12,color:C.chL,fontWeight:500}}>PO Date: {order.orderDate} {order.deliveryDate ? `· Deliver By: ${order.deliveryDate}` : ""} · {order.items.length} line items</div>
+          </div>
+          <div style={{display:"flex",gap:8,flexShrink:0}}>
+            <Btn variant="success" onClick={() => window.open(`https://wa.me/?text=${generateWhatsAppMessage(order)}`, "_blank")}>📲 {isMobile?"WA":"WhatsApp"}</Btn>
+            <Btn variant="amber" onClick={()=>onEditOrder(order)}>✏️ Edit</Btn>
+          </div>
+        </div>
+      </div>
       <StatRow s={s}/>
       {order.items.map((item, idx)=>( 
         <div key={item.id} className="animate-fade-up" style={{animationDelay:`${idx*0.02}s`, display:"flex",alignItems:"center",justifyContent:"space-between",gap:14,padding:"14px 18px",background:C.w,borderRadius:12,marginBottom:8,border:"1px solid "+C.bdrL,borderLeft:"4px solid "+(SC[item.status]||SC.pending).c,boxShadow:C.sh}}>
@@ -2322,7 +2341,7 @@ function AdminOrdersTab({ orders }) {
       <div style={{marginBottom:20}}><AdminDonutChart packed={totals.packed + totals.delivered} pending={totals.prod + totals.prod_done + totals.pending} issues={totals.short + totals.oos} /></div>
 
       {/* ── Bento stat grid ── */}
-      <div style={{display:"grid",gridTemplateColumns:"1.7fr 1fr 1fr",gridTemplateRows:"auto auto",gap:10,marginBottom:22}}>
+      <div className="bento-stat-grid" style={{display:"grid",gridTemplateColumns:"1.7fr 1fr 1fr",gridTemplateRows:"auto auto",gap:10,marginBottom:22}}>
 
         {/* Hero: Fulfilled (spans 2 rows) */}
         <div className="bento-hero glass-card animate-fade-up" style={{gridRow:"span 2",padding:"24px 22px",display:"flex",flexDirection:"column",justifyContent:"space-between",minHeight:148}}>
