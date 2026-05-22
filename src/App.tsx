@@ -144,6 +144,7 @@ const GLOBAL_STYLES = `
   .dp-item-done { opacity: 0.45; }
   .dp-item-done-admin { opacity: 0.8; }
   .dp-item-done .dp-item-name { text-decoration: line-through; color: #4A5A7A !important; }
+  [data-theme="light"] .dp-item-done .dp-item-name { color: #64748B !important; }
 
   /* ── Cursor spotlight (portal) ── */
   .cursor-spotlight {
@@ -209,6 +210,10 @@ const GLOBAL_STYLES = `
   .pk-chip-oos    { color:#DC2626; background:rgba(220,38,38,0.08); border-color:rgba(220,38,38,0.28); }
   .pk-chip-edit   { color:#5A6A8A; background:rgba(90,106,138,0.08); border-color:rgba(90,106,138,0.2); }
   .pk-chip-reset  { color:#5A6A8A; background:rgba(90,106,138,0.08); border-color:rgba(90,106,138,0.2); }
+  [data-theme="light"] .pk-chip-prod  { color:#92400E; border-color:rgba(146,64,14,0.35); }
+  [data-theme="light"] .pk-chip-short { color:#92400E; border-color:rgba(146,64,14,0.35); }
+  [data-theme="light"] .pk-chip-edit  { color:#334155; border-color:rgba(51,65,85,0.25); }
+  [data-theme="light"] .pk-chip-reset { color:#334155; border-color:rgba(51,65,85,0.25); }
 
   /* Cooking shimmer for production state */
   .pk-cooking-state { display:flex; align-items:center; gap:10; padding:11px 14px; border-radius:10px; background:linear-gradient(90deg,#121A08 0%,#1A2410 50%,#121A08 100%); background-size:200% 100%; animation:shimmerPulse 2.5s infinite; border:1px solid rgba(251,176,64,0.15); }
@@ -597,7 +602,7 @@ const DC={ // dark palette (default)
 };
 const LC={ // light palette
   w: "#FFFFFF", off: "#F2F4FA", beige: "#F2F4FA", beigeD: "#E4EAF4",
-  ch: "#0F172A", chM: "#334155", chL: "#64748B", chXL: "#7A8BA8",
+  ch: "#0F172A", chM: "#1E293B", chL: "#334155", chXL: "#4A5568",
   bdr: "#CBD5E1", bdrL: "#E2E8F4",
   ol: "#D31118", olDk: "#A50D12", olBg: "rgba(211,17,24,0.09)", olBgD: "rgba(211,17,24,0.18)",
   am: "#D97706", amDk: "#92400E", amBg: "rgba(217,119,6,0.09)", amBgD: "rgba(217,119,6,0.18)",
