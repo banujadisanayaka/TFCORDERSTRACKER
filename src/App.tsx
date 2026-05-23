@@ -2918,6 +2918,10 @@ function TFCOrderSystem(){
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [notifPermission, setNotifPermission] = useState(() => ("Notification" in window ? Notification.permission : "denied"));
   const [notifStatus, setNotifStatus] = useState("idle"); // idle | active | error
+  // authUser must be declared before any useEffect that references it in deps,
+  // otherwise minified production builds hit a TDZ error on the deps array eval.
+  const [authUser, setAuthUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const prevOrdersRef = useRef(null);
   const currentFCMToken = useRef(null);
   // Tracks whether the orders observer has seen its first post-load snapshot.
@@ -3230,9 +3234,7 @@ function TFCOrderSystem(){
 
   const [activeId,setActiveId]=useState(null); const [showModal,setShowModal]=useState(false); const [editingOrder, setEditingOrder] = useState(null); const [toast,setToast] = useState(null); const [sidebarOpen, setSidebarOpen]=useState(false);
 
-  // Auth state
-  const [authUser, setAuthUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  // Auth state (authUser/authLoading hoisted above for TDZ safety in notification effects)
   const [userRecord, setUserRecord] = useState(null);
   const [userRecordLoading, setUserRecordLoading] = useState(false);
   const [accessRequest, setAccessRequest] = useState(null);
