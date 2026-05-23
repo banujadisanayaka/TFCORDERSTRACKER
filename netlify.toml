@@ -4,10 +4,13 @@
 
 [build.environment]
   CI = "false"
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
 
 [functions]
   directory = "netlify/functions"
   node_bundler = "zisi"
+  included_files = ["node_modules/firebase-admin/**"]
 
 [[redirects]]
   from = "/*"
