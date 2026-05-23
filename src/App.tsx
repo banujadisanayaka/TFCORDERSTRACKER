@@ -1,7 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { gsap } from "gsap";
 import "animate.css";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import {

@@ -40,8 +40,10 @@ self.addEventListener("notificationclick", function(e) {
 });
 
 // ─── Asset caching ───────────────────────────────────────────────────────────
-const CACHE = "tfc-v5";
-const PRECACHE = ["/icon-192.png", "/icon-512.png"];
+const CACHE = "tfc-v6";
+// Only precache the small icon — the 512px one is for WebAPK/homescreen only,
+// no need to download it in the SW install step.
+const PRECACHE = ["/icon-192.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(
