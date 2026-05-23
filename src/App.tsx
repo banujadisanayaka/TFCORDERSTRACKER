@@ -394,7 +394,7 @@ const googleProvider = new GoogleAuthProvider();
 const OWNER_EMAIL = "banuja2005@gmail.com";
 
 // FCM: get your VAPID key from Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
-const VAPID_KEY = "YOUR_VAPID_KEY_FROM_FIREBASE_CONSOLE";
+const VAPID_KEY = "BIN1-ss4iczuvtzmloazWkckRh4XELDk5g8ugpYi3CVlGMYEHukVUfA0K3VlJy0UpEKV67BTiPAQZHcSF5a3GRI";
 let _messaging = null;
 function getMsg() {
   if (!_messaging) { try { _messaging = getMessaging(app); } catch(_) {} }
