@@ -38,6 +38,8 @@ const GLOBAL_STYLES = `
     --input-focus-border: #00D4FF; --input-focus-shadow: rgba(0,212,255,0.18);
     --input-focus-bg: #07101C; --sidebar-bg: #0D1628;
     --header-bg: rgba(10,13,30,0.95); --paper-dot: rgba(255,255,255,0.04);
+    --border-faint: rgba(255,255,255,0.10);
+    --sub-bg: rgba(255,255,255,0.03);
   }
   [data-theme="light"] {
     --page-bg: #FAFAF0; --card-bg: #FFFFFF; --card-shadow: 2px 3px 0 rgba(0,0,0,0.08);
@@ -46,6 +48,8 @@ const GLOBAL_STYLES = `
     --input-focus-border: #C1121F; --input-focus-shadow: rgba(193,18,31,0.14);
     --input-focus-bg: #FFF8F8; --sidebar-bg: #F3F3E6;
     --header-bg: rgba(250,250,240,0.95); --paper-dot: rgba(0,0,0,0.05);
+    --border-faint: rgba(0,0,0,0.15);
+    --sub-bg: rgba(0,0,0,0.04);
   }
 
   /* Paper dot texture */
@@ -295,7 +299,8 @@ const GLOBAL_STYLES = `
   .pk-progress-fill  { height:5px; border-radius:99px; transition:width 1s cubic-bezier(0.16,1,0.3,1); }
 
   /* ── Modal glass ── */
-  .modal-sheet { background:rgba(7,9,20,0.97); backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px); border:1px solid rgba(255,255,255,0.07); box-shadow:0 24px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.06); }
+  .modal-sheet { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); box-shadow:0 24px 80px rgba(0,0,0,0.5), 2px 3px 0 rgba(0,0,0,0.12); }
+  [data-theme="light"] .modal-sheet { border-color:rgba(0,0,0,0.12); box-shadow:0 16px 60px rgba(0,0,0,0.20), 2px 3px 0 rgba(0,0,0,0.08); }
 
   /* ── Production batch card V2 ── */
   .batch-v2 { background:linear-gradient(160deg,#0D1420,#080E1A); border:1px solid rgba(232,146,10,0.18); border-left:4px solid #E8920A; border-radius:18px; margin-bottom:16px; overflow:hidden; box-shadow:0 6px 30px rgba(0,0,0,0.55), 0 0 40px rgba(232,146,10,0.06); }
@@ -317,15 +322,27 @@ const GLOBAL_STYLES = `
   .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 24px; text-align:center; }
   .empty-icon { font-size:52px; margin-bottom:18px; filter:grayscale(0.3) opacity(0.7); }
 
-  /* ── Gradient text ── */
+  /* ── Gradient text (dark mode — white-start gradients) ── */
   .gradient-text-red { background:linear-gradient(135deg,#FFFFFF 0%,#FFAAAD 40%,#FF2830 75%,#B80D13 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
   .gradient-text-amber { background:linear-gradient(135deg,#FFFFFF 0%,#FFD98A 40%,#F59E0B 75%,#C97A05 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
   .gradient-text-brand { background:linear-gradient(135deg,#EEF2FF 0%,#C8D0F0 30%,#FF9499 65%,#C8000A 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
   .gradient-text-white { background:linear-gradient(135deg,#FFFFFF 0%,#C8D4F8 50%,#8896B3 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
   .gradient-text-cyan { background:linear-gradient(135deg,#FFFFFF 0%,#A0F0FF 35%,#00D4FF 70%,#0090B8 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 
+  /* ── Gradient text light-mode overrides (dark-start so text is visible on cream) ── */
+  [data-theme="light"] .gradient-text-red { background:linear-gradient(135deg,#8B0D15 0%,#C1121F 55%,#E8000A 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  [data-theme="light"] .gradient-text-amber { background:linear-gradient(135deg,#7A3000 0%,#B45309 55%,#D97706 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  [data-theme="light"] .gradient-text-brand { background:linear-gradient(135deg,#1A0A0E 0%,#6B0A18 45%,#C1121F 80%,#900010 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  [data-theme="light"] .gradient-text-white { background:none; -webkit-text-fill-color:#1A1A2E; }
+  [data-theme="light"] .gradient-text-cyan { background:none; -webkit-text-fill-color:#0369A1; }
+
+  /* ── Modal dimmer overlay (adaptive) ── */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:999; }
+  [data-theme="light"] .modal-overlay { background:rgba(0,0,0,0.45); }
+  .modal-overlay-top { z-index:9999; }
+
   /* ── Sidebar section label v2 ── */
-  .section-label-v2 { display:flex; align-items:center; gap:8px; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.18em; color:#2A3A54; padding:10px 4px 6px; position:relative; }
+  .section-label-v2 { display:flex; align-items:center; gap:8px; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.18em; color:var(--text-sub); padding:10px 4px 6px; position:relative; }
   .section-label-v2::before { content:''; width:3px; height:12px; border-radius:2px; background:linear-gradient(180deg,#D31118,#8A0B10); flex-shrink:0; box-shadow:0 0 6px rgba(211,17,24,0.5); }
 
   /* ── Production cooking indicator dot ── */
@@ -716,7 +733,6 @@ function Toast({msg,type}){
       borderLeft:"3px solid "+accentColor,
       borderRadius:14,padding:"14px 18px",
       boxShadow:"0 16px 60px rgba(0,0,0,0.9), 0 0 0 1px "+(isErr?"rgba(220,38,38,0.06)":"rgba(22,163,74,0.06)"),
-      backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",
       display:"flex",alignItems:"center",gap:13,fontFamily:"'Plus Jakarta Sans',sans-serif"
     }}>
       <div style={{
@@ -729,7 +745,7 @@ function Toast({msg,type}){
       }}>{isErr?"✕":"✓"}</div>
       <div style={{flex:1,minWidth:0}}>
         <div style={{fontSize:10,fontWeight:800,color:isErr?"rgba(248,113,113,0.65)":"rgba(74,222,128,0.65)",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:3}}>{isErr?"Error":"Done"}</div>
-        <span style={{fontSize:13,fontWeight:700,color:"#EEF2FF",lineHeight:1.35}}>{msg}</span>
+        <span style={{fontSize:13,fontWeight:700,color:C.ch,lineHeight:1.35}}>{msg}</span>
       </div>
     </motion.div>
   );
@@ -945,7 +961,7 @@ function RecipeAutocomplete({ value, onChange, onSelect, placeholder = "Search o
 
   return (
     <div ref={wrapRef} style={{ position: "relative" }}>
-      <input value={value} onChange={e => handleInput(e.target.value)} onKeyDown={handleKey} onFocus={() => value.length >= 2 && matches.length > 0 && setOpen(true)} placeholder={placeholder} autoComplete="off" style={{ padding: "11px 14px", border: "1px solid " + C.bdr, borderRadius: 10, fontSize: 13, color: C.ch, outline: "none", background: "#111828", width: "100%", boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s" }} />
+      <input value={value} onChange={e => handleInput(e.target.value)} onKeyDown={handleKey} onFocus={() => value.length >= 2 && matches.length > 0 && setOpen(true)} placeholder={placeholder} autoComplete="off" style={{ padding: "11px 14px", border: "1px solid " + C.bdr, borderRadius: 10, fontSize: 13, color: C.ch, outline: "none", background: "var(--card-bg)", width: "100%", boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s" }} />
       {open && (
         <div className="custom-scrollbar animate-fade-in" style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#0F1422", border: "1px solid " + C.bdr, borderRadius: 10, zIndex: 200, maxHeight: 220, overflowY: "auto", boxShadow: C.shM }}>
           {matches.map((recipe, i) => (
@@ -991,10 +1007,10 @@ function ExtraProductionModal({ onClose, onSave, dateStr }) {
     onClose();
   }
 
-  const inputStyle = { padding:"10px 14px", border:"1px solid "+C.amDk+"50", borderRadius:10, fontSize:13, color:C.ch, outline:"none", background:"#111828", width:"100%", boxSizing:"border-box", transition:"border-color 0.2s" };
+  const inputStyle = { padding:"10px 14px", border:"1px solid "+C.amDk+"50", borderRadius:10, fontSize:16, color:C.ch, outline:"none", background:"var(--card-bg)", width:"100%", boxSizing:"border-box", transition:"border-color 0.2s" };
 
   return (
-    <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.88)", backdropFilter:"blur(10px)", WebkitBackdropFilter:"blur(10px)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
+    <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
       <div className="animate-fade-up modal-sheet" style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:500, maxHeight:isMobile?"94vh":"auto", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", top:0, left:"15%", right:"15%", height:1, background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.35),transparent)", pointerEvents:"none" }}/>
         <div style={{ padding:"20px 24px", borderBottom:`1px solid ${th.divider}` }}>
@@ -1071,10 +1087,10 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
     onClose();
   }
 
-  const inputStyle = { padding:"10px 14px", border:"1px solid "+C.bdr, borderRadius:10, fontSize:13, color:C.ch, outline:"none", background:"#111828", width:"100%", boxSizing:"border-box" };
+  const inputStyle = { padding:"10px 14px", border:"1px solid "+C.bdr, borderRadius:10, fontSize:16, color:C.ch, outline:"none", background:"var(--card-bg)", width:"100%", boxSizing:"border-box" };
 
   return (
-    <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.88)", backdropFilter:"blur(10px)", WebkitBackdropFilter:"blur(10px)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
+    <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
       <div className="animate-fade-up modal-sheet" style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:640, maxHeight:isMobile?"94vh":"88vh", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", top:0, left:"15%", right:"15%", height:1, background:"linear-gradient(90deg,transparent,rgba(211,17,24,0.28),transparent)", pointerEvents:"none" }}/>
         <div style={{ padding:"20px 30px", borderBottom:`1px solid ${th.divider}`, flexShrink:0 }}>
@@ -1089,7 +1105,7 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
 
         <div className="custom-scrollbar" style={{ overflowY:"auto", flex:1, padding:"24px 30px" }}>
           <SectionLabel text="Add Item" />
-          <div style={{ background:"#0C1020", padding:16, borderRadius:14, border:"1px solid "+C.bdrL, marginBottom:24 }}>
+          <div style={{ background:"var(--sub-bg)", padding:16, borderRadius:14, border:"1px solid "+C.bdrL, marginBottom:24 }}>
             <div style={{ marginBottom:10 }}>
               <div style={{ fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase" }}>Product (Search recipe or type custom)</div>
               <RecipeAutocomplete value={selectedRecipe.product || productText} onChange={text => { setProductText(text); setSelectedRecipe({ product:text, recipeName:null, recipeId:null }); }} onSelect={sel => { setSelectedRecipe(sel); setProductText(sel.product); }} />
@@ -2191,7 +2207,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
       {showMergeModal&&<MergeModal pendingItem={item} activeBatches={getActiveBatches()} onMerge={bId=>{commit('production',{batchId:bId});setShowMergeModal(false);}} onNewBatch={()=>{commit('production',{batchId:"b_"+Date.now()+Math.random()});setShowMergeModal(false);}} onCancel={()=>setShowMergeModal(false)}/>}
 
       {showShortModal&&(
-        <div className="animate-fade-in" onClick={()=>setShowShortModal(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:0}}>
+        <div className="animate-fade-in" onClick={()=>setShowShortModal(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:0}}>
           <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,padding:"28px 28px 32px",display:"flex",flexDirection:"column",gap:16,position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.45),transparent)",pointerEvents:"none"}}/>
             <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto -4px"}}/>
