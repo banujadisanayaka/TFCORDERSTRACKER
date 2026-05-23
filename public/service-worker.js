@@ -70,10 +70,10 @@ self.addEventListener("pushsubscriptionchange", function(event) {
 });
 
 // ─── Asset caching ───────────────────────────────────────────────────────────
-const CACHE = "tfc-v8";
-// Only precache the small icon — the 512px one is for WebAPK/homescreen only,
-// no need to download it in the SW install step.
-const PRECACHE = ["/icon-192.png"];
+const CACHE = "tfc-v9";
+// Precache both icons so Chrome has them ready when evaluating installability.
+// The 512px icon is required for the Android install badge/WebAPK prompt.
+const PRECACHE = ["/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(
