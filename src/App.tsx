@@ -398,6 +398,8 @@ const OWNER_EMAIL = "banuja2005@gmail.com";
 
 // FCM: get your VAPID key from Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
 const VAPID_KEY = "BIN1-ss4iczuvtzmloazWkckRh4XELDk5g8ugpYi3CVlGMYEHukVUfA0K3VlJy0UpEKV67BTiPAQZHcSF5a3GRI";
+const FCM_TTL_MS  = 6 * 24 * 60 * 60 * 1000; // re-register before FCM 7-day idle expiry
+const FCM_LS_KEY  = "tfc_fcm_reg"; // localStorage: {ts, role}
 let _messaging = null;
 function getMsg() {
   if (!_messaging) { try { _messaging = getMessaging(app); } catch(_) {} }
@@ -2886,12 +2888,18 @@ function TFCOrderSystem(){
   const currentFCMToken = useRef(null);
 
   useEffect(() => {
-    const goOnline = () => setIsOnline(true);
+    const goOnline = () => {
+      setIsOnline(true);
+      // Re-register FCM token as soon as network recovers — the previous attempt may have failed offline
+      if ("Notification" in window && Notification.permission === "granted" && role) {
+        registerFCMToken(role);
+      }
+    };
     const goOffline = () => setIsOnline(false);
     window.addEventListener("online", goOnline);
     window.addEventListener("offline", goOffline);
     return () => { window.removeEventListener("online", goOnline); window.removeEventListener("offline", goOffline); };
-  }, []);
+  }, [role]); // role in deps so goOnline closure sees current role
 
   useEffect(() => {
     const handler = (e) => { e.preventDefault(); setInstallPrompt(e); setShowInstallBanner(true); };
@@ -2899,13 +2907,31 @@ function TFCOrderSystem(){
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
-  // Keep notifPermission in sync if user changes it in browser settings then returns to the tab
+  // On every tab-focus: sync permission state AND heal a stale/broken FCM token
   useEffect(() => {
     if (!("Notification" in window)) return;
-    const sync = () => setNotifPermission(Notification.permission);
+    const sync = () => {
+      if (document.visibilityState !== "visible") return;
+      const perm = Notification.permission;
+      setNotifPermission(perm);
+      if (perm !== "granted" || !role) return;
+      // Re-register if token not active, or if last registration was > 6 days ago, or role changed
+      let needsRefresh = notifStatus !== "active";
+      if (!needsRefresh) {
+        try {
+          const d = JSON.parse(localStorage.getItem(FCM_LS_KEY) || "{}");
+          needsRefresh = !d.ts || Date.now() - d.ts > FCM_TTL_MS || d.role !== role;
+        } catch(_) { needsRefresh = true; }
+      }
+      if (needsRefresh) {
+        console.log("[FCM] tab-focus heal: re-registering (notifStatus=" + notifStatus + ")");
+        setNotifStatus("idle"); // reset to orange while re-registering
+        registerFCMToken(role);
+      }
+    };
     document.addEventListener("visibilitychange", sync);
     return () => document.removeEventListener("visibilitychange", sync);
-  }, []);
+  }, [role, notifStatus]); // re-run when role/status changes so closure has fresh values
 
   // FCM foreground message handler — fires when app tab is open but hidden (background tab)
   useEffect(() => {
@@ -2929,24 +2955,36 @@ function TFCOrderSystem(){
     } catch (_) {}
   }
 
-  async function registerFCMToken(r) {
-    console.log("[FCM] registerFCMToken called for role:", r);
-    if (!("Notification" in window)) { console.warn("[FCM] Notifications not supported"); return; }
-    if (Notification.permission !== "granted") { console.warn("[FCM] Permission not granted:", Notification.permission); return; }
-    if (!VAPID_KEY || VAPID_KEY.startsWith("YOUR_")) { console.warn("[FCM] VAPID key missing"); return; }
+  async function registerFCMToken(r, _attempt = 0) {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    if (!VAPID_KEY || VAPID_KEY.startsWith("YOUR_")) return;
+    console.log("[FCM] register attempt", _attempt + 1, "for role:", r);
     try {
       const msg = getMsg();
-      if (!msg) { console.warn("[FCM] getMessaging() returned null"); return; }
+      if (!msg) throw new Error("getMessaging() returned null");
       const reg = await navigator.serviceWorker.ready;
-      console.log("[FCM] SW ready, requesting token...");
+      // Nudge SW to pick up any pending update before requesting token
+      reg.update().catch(() => {});
       const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-      if (!token) { console.warn("[FCM] No token returned"); return; }
+      if (!token) throw new Error("empty token returned by FCM");
       currentFCMToken.current = token;
-      const email = authUser?.email || "anon";
-      await setDoc(doc(db, "fcm_tokens", token.slice(-28)), { token, email, activeRole: r, updatedAt: Date.now() });
-      console.log("[FCM] ✓ Token registered for", r, "—", token.slice(0,20)+"...");
+      await setDoc(doc(db, "fcm_tokens", token.slice(-28)), {
+        token, email: authUser?.email || "anon", activeRole: r, updatedAt: Date.now(),
+      });
+      // Persist registration timestamp so TTL health-check can detect stale tokens
+      try { localStorage.setItem(FCM_LS_KEY, JSON.stringify({ ts: Date.now(), role: r })); } catch(_) {}
       setNotifStatus("active");
-    } catch (e) { console.error("[FCM] register failed:", e); setNotifStatus("error"); }
+      console.log("[FCM] ✓ registered for", r, "token …" + token.slice(-8));
+    } catch (e) {
+      console.error("[FCM] attempt", _attempt + 1, "failed:", e.message);
+      // Retry with exponential back-off: 3 s, then 9 s, then give up
+      if (_attempt < 2) {
+        setTimeout(() => registerFCMToken(r, _attempt + 1), _attempt === 0 ? 3000 : 9000);
+      } else {
+        setNotifStatus("error");
+        console.warn("[FCM] all 3 attempts failed — bell icon is red, click it to retry");
+      }
+    }
   }
 
   const [orders,setOrders]=useState([]);
@@ -2962,6 +3000,8 @@ function TFCOrderSystem(){
     if(!role || notifPermission !== "granted" || !("Notification" in window)) return;
     // Skip on initial load (prev not yet set)
     if(prev === null || prev === orders) return;
+    // Fireground observer handles visible tab only — hidden/closed tabs receive FCM push from the Netlify function
+    if (document.visibilityState !== "visible") return;
 
     // Build a flat map of previous item states for O(1) lookup
     const prevMap = {};
