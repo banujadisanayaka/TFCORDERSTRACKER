@@ -58,6 +58,9 @@ const GLOBAL_STYLES = `
     --text-2xs: 10px; --ls-label: 0.12em;
     --text-xs: 11px; --text-sm: 13px; --text-base: 15px;
     --text-md: 17px; --text-lg: 20px; --text-xl: 24px; --text-2xl: 28px;
+    --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+    --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px;
+    --radius-sm:8px; --radius-md:12px;
   }
   :root, [data-theme="dark"] {
     --color-success: #16A34A; --color-warning: #E8920A; --color-danger: #C1121F; --color-info: #0EA5E9;
@@ -1212,8 +1215,9 @@ function DailyProductionSection({ dailyProductions, onShowRecipe, onUpdateItem, 
 }
 
 function DailyProductionDayBlock({ dp, isLast, onShowRecipe, onUpdateItem, role }) {
-  const [open, setOpen] = useState(true); 
+  const [open, setOpen] = useState(true);
   const isToday = dp.date === getLocalYMD();
+  const allItemsDone = dp.items.length > 0 && dp.items.every(i => i.status === "prod_done");
 
   return (
     <div style={{ borderBottom: isLast ? "none" : "1px solid "+C.bdrL }}>
@@ -1224,7 +1228,7 @@ function DailyProductionDayBlock({ dp, isLast, onShowRecipe, onUpdateItem, role 
             {isToday && <span style={{ marginLeft:8, background:C.olBg, color:C.ol, padding:"2px 8px", borderRadius:20, fontSize:9, fontWeight:900, border:"1px solid "+C.olBgD }}>TODAY</span>}
           </div>
           <div style={{ fontSize:11, color:C.chL, fontWeight:600 }}>{dp.date}</div>
-          <div style={{ fontSize:10, color:C.chL, background:C.off, padding:"2px 8px", borderRadius:20, fontWeight:700 }}>{dp.items.length} items</div>
+          <div style={{ fontSize:10, color:allItemsDone?"#4ADE80":C.chL, background:allItemsDone?"rgba(22,163,74,0.12)":C.off, padding:"2px 8px", borderRadius:20, fontWeight:700 }}>{allItemsDone ? "✓ All done" : dp.items.length+" items"}</div>
         </div>
         <span style={{ color:C.chL, fontSize:12 }}>{open ? "▲" : "▼"}</span>
       </button>
@@ -1233,6 +1237,12 @@ function DailyProductionDayBlock({ dp, isLast, onShowRecipe, onUpdateItem, role 
           {dp.items.map(item => (
             <DailyProductionItemRow key={item.id} item={item} dpId={dp.id} onShowRecipe={onShowRecipe} onUpdateItem={onUpdateItem} role={role} />
           ))}
+          {allItemsDone && (
+            <div className="animate-fade-up" style={{ marginTop:10, padding:"10px 14px", background:"linear-gradient(135deg,rgba(9,115,83,0.22),rgba(22,163,74,0.12))", borderRadius:10, border:"1px solid rgba(74,222,128,0.3)", display:"flex", alignItems:"center", gap:10 }}>
+              <span style={{fontSize:18}}>🎉</span>
+              <div style={{fontSize:12,fontWeight:800,color:"#4ADE80"}}>All {dp.items.length} items done for {dp.dayOfWeek}!</div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -1248,14 +1258,18 @@ function DailyProductionItemRow({ item, dpId, onShowRecipe, onUpdateItem, role }
   const [isCompleting, setIsCompleting] = useState(false);
   const [actualKg, setActualKg] = useState(item.kgQty || "");
   const [actualPkts, setActualPkts] = useState(item.packetQty || "");
+  const [kgError, setKgError] = useState(false);
 
   function handleConfirmComplete() {
+    const kg = parseFloat(actualKg);
+    if (isNaN(kg) || kg <= 0) { setKgError(true); return; }
     onUpdateItem(dpId, item.id, {
       status: "prod_done",
-      actualKgQty: parseFloat(actualKg) || 0,
+      actualKgQty: kg,
       actualPacketQty: parseFloat(actualPkts) || 0,
     });
     setIsCompleting(false);
+    setKgError(false);
   }
 
   const rowClass = isDone ? (role === 'admin' ? 'dp-item-done-admin animate-fade-up dp-item-row' : 'dp-item-done animate-fade-up dp-item-row') : 'animate-fade-up dp-item-row';
@@ -1296,7 +1310,7 @@ function DailyProductionItemRow({ item, dpId, onShowRecipe, onUpdateItem, role }
 
         {isCompleting && (
           <div className="animate-fade-in" style={{ display:"flex", gap:6, alignItems:"center", background: th.editBg, padding: "6px 8px", borderRadius: 8, border: `1px solid ${th.editBdr}` }}>
-            <input type="number" value={actualKg} onChange={e=>setActualKg(e.target.value)} placeholder="Act. kg" style={{ width: 50, padding: "6px", fontSize: 11, borderRadius: 4, background: "var(--card-bg)", border: "1px solid var(--border-faint)", color: "var(--text)", outline:"none" }} />
+            <input type="number" value={actualKg} onChange={e=>{setActualKg(e.target.value);setKgError(false);}} placeholder="Act. kg*" style={{ width: 52, padding: "6px", fontSize: 11, borderRadius: 4, background: "var(--card-bg)", border: kgError ? "1px solid var(--color-danger,#C1121F)" : "1px solid var(--border-faint)", color: "var(--text)", outline:"none", transition:"border-color 0.2s" }} />
             <span style={{ fontSize: 10, color: C.chL }}>kg</span>
             <input type="number" value={actualPkts} onChange={e=>setActualPkts(e.target.value)} placeholder="Act. pkts" style={{ width: 50, padding: "6px", fontSize: 11, borderRadius: 4, background: "var(--card-bg)", border: "1px solid var(--border-faint)", color: "var(--text)", outline:"none" }} />
             <span style={{ fontSize: 10, color: C.chL }}>pkts</span>
@@ -1686,21 +1700,24 @@ function PendingScreen({ request, authUser, onSignOut, installPrompt, onInstallD
   );
 }
 
-function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemoveUser, onBack, authUser, onSignOut }) {
+function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemoveUser, onBack, authUser, onSignOut, notify }) {
   const th=useTheme();
   const [tab, setTab] = useState("requests");
   const isMobile = useIsMobile();
   const pendingRequests = requests.filter(r => r.status === "pending");
   const [editingUser, setEditingUser] = useState(null);
   const [editRoles, setEditRoles] = useState([]);
+  const [confirmRejectId, setConfirmRejectId] = useState(null);
+  const [confirmRemoveEmail, setConfirmRemoveEmail] = useState(null);
 
   function startEdit(user) { setEditingUser(user.email); setEditRoles(user.roles || []); }
   function toggleEditRole(rk) { setEditRoles(prev => prev.includes(rk) ? prev.filter(r => r !== rk) : [...prev, rk]); }
   async function saveEditRoles() {
     try {
       await updateDoc(doc(db, "authorized_users", editingUser), { roles: editRoles });
+      if (notify) notify("Roles updated for " + editingUser.split("@")[0], "success");
       setEditingUser(null);
-    } catch(e) { alert("Failed to update roles"); }
+    } catch(e) { if (notify) notify("Failed to update roles", "error"); }
   }
 
   return (
@@ -1747,10 +1764,18 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
                     <div style={{ display:"flex", gap:5, flexWrap:"wrap", marginTop:6 }}>{(req.requestedRoles || [req.requestedRole]).map(r => <span key={r} style={{ fontSize:11, fontWeight:700, color:"var(--accent)", background:th.olBg, border:"1px solid var(--accent)", borderRadius:20, padding:"2px 8px" }}>{ROLES[r]?.label || r}</span>)}</div>
                   </div>
                 </div>
-                <div style={{ display:"flex", gap:10 }}>
-                  <button onClick={() => onApprove(req)} style={{ flex:1, padding:"11px", background:"linear-gradient(135deg,#097353,#065A40)", border:"none", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:44 }}>✓ Approve</button>
-                  <button onClick={() => onReject(req)} style={{ flex:1, padding:"11px", background:th.rdBg, border:"1.5px solid "+th.rd, borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:th.rd, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:44 }}>✕ Reject</button>
-                </div>
+                {confirmRejectId === req.id ? (
+                  <div style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(193,18,31,0.08)", border:"1px solid rgba(193,18,31,0.25)", borderRadius:10, padding:"10px 14px" }}>
+                    <span style={{ flex:1, fontSize:12, color:"var(--text-sub)" }}>Reject {req.name}?</span>
+                    <button onClick={() => { onReject(req); setConfirmRejectId(null); }} style={{ padding:"9px 14px", background:th.rdBg, border:"1.5px solid "+th.rd, borderRadius:8, color:th.rd, fontSize:12, fontWeight:800, cursor:"pointer", fontFamily:"inherit", minHeight:40 }}>Confirm</button>
+                    <button onClick={() => setConfirmRejectId(null)} style={{ padding:"9px 14px", background:"transparent", border:"1px solid var(--border-faint)", borderRadius:8, color:"var(--text-sub)", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:40 }}>Cancel</button>
+                  </div>
+                ) : (
+                  <div style={{ display:"flex", gap:10 }}>
+                    <button onClick={() => onApprove(req)} style={{ flex:1, padding:"11px", background:"linear-gradient(135deg,#097353,#065A40)", border:"none", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:44 }}>✓ Approve</button>
+                    <button onClick={() => setConfirmRejectId(req.id)} style={{ flex:1, padding:"11px", background:th.rdBg, border:"1.5px solid "+th.rd, borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:th.rd, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:44 }}>✕ Reject</button>
+                  </div>
+                )}
               </div>
             ))}
 
@@ -1793,10 +1818,18 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
                     )}
                   </div>
                   {editingUser !== user.email && (
-                    <div style={{ display:"flex", flexDirection:"column", gap:6, flexShrink:0 }}>
-                      <button onClick={() => startEdit(user)} style={{ background:th.chipBg, border:"1.5px solid var(--border)", color:"var(--text)", padding:"6px 10px", borderRadius:20, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:34 }}>✏ Edit</button>
-                      <button onClick={() => { if(window.confirm(`Remove ${user.name}?`)) onRemoveUser(user.email); }} style={{ background:th.rdBg, border:"1px solid "+th.rd, color:th.rd, padding:"6px 10px", borderRadius:20, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:34 }}>Remove</button>
-                    </div>
+                    confirmRemoveEmail === user.email ? (
+                      <div style={{ display:"flex", flexDirection:"column", gap:5, flexShrink:0 }}>
+                        <div style={{ fontSize:10, color:"var(--text-sub)", textAlign:"center", fontWeight:700 }}>Remove?</div>
+                        <button onClick={() => { onRemoveUser(user.email); setConfirmRemoveEmail(null); }} style={{ background:th.rdBg, border:"1px solid "+th.rd, color:th.rd, padding:"6px 10px", borderRadius:8, fontSize:11, fontWeight:800, cursor:"pointer", fontFamily:"inherit", minHeight:34 }}>Yes</button>
+                        <button onClick={() => setConfirmRemoveEmail(null)} style={{ background:"transparent", border:"1px solid var(--border-faint)", color:"var(--text-sub)", padding:"6px 10px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:34 }}>No</button>
+                      </div>
+                    ) : (
+                      <div style={{ display:"flex", flexDirection:"column", gap:6, flexShrink:0 }}>
+                        <button onClick={() => startEdit(user)} style={{ background:th.chipBg, border:"1.5px solid var(--border)", color:"var(--text)", padding:"6px 10px", borderRadius:20, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:34 }}>✏ Edit</button>
+                        <button onClick={() => setConfirmRemoveEmail(user.email)} style={{ background:th.rdBg, border:"1px solid "+th.rd, color:th.rd, padding:"6px 10px", borderRadius:20, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:34 }}>Remove</button>
+                      </div>
+                    )
                   )}
                 </div>
                 {/* Inline role editor */}
@@ -1890,10 +1923,13 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
                   fontFamily:"inherit",
                   letterSpacing:"0.02em",
                   transition:"all 0.15s ease",
-                  minHeight:44,
+                  minHeight:52,
+                  padding:"12px 18px",
+                  textAlign:"left",
                 }}
               >
-                {r.label}
+                <div style={{fontSize:13,fontWeight:800,lineHeight:1.2}}>{r.icon} {r.label}</div>
+                {r.desc && <div style={{fontSize:10,color:isActive?"rgba(255,255,255,0.75)":"var(--text-sub)",fontWeight:500,marginTop:3,lineHeight:1.3,letterSpacing:"0.01em"}}>{r.desc}</div>}
               </motion.button>
             );
           })}
@@ -2206,7 +2242,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
   function confirmShort(){
     const sq=parseFloat(shortQty);
     const rq=parseFloat(item.qty);
-    if(!shortQty||isNaN(sq)||sq<0){notify("Enter how much you're actually sending.","error");return;}
+    if(!shortQty||isNaN(sq)||sq<=0){notify("Enter the quantity you're sending — must be more than zero.","error");return;}
     // Bug fix: guard against NaN comparison when item.qty is missing
     if(!isNaN(rq)&&sq>=rq){notify("Sent qty ≥ requested — mark as Packed instead?","error");return;}
     onUpdate(orderId,item.id,{status:'short',packedQty:shortQty,notes:shortNote,updatedAt:Date.now()});
@@ -2256,7 +2292,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
                 onKeyDown={e=>{if(e.key==="Enter")confirmShort();if(e.key==="Escape")setShowShortModal(false);}}
                 placeholder={`Sent qty (max ${item.qty||"?"} ${item.unit||""})`}
                 type="number"
-                min="0"
+                min="0.001"
                 style={{width:"100%",padding:"13px 16px",border:"1.5px solid rgba(232,146,10,0.35)",borderRadius:10,fontSize:15,fontWeight:800,color:C.ch,outline:"none",fontFamily:"'JetBrains Mono',monospace",boxSizing:"border-box"}}
               />
             </div>
@@ -2340,7 +2376,8 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
               >
                 {item.status==='prod_done'?"✓ Pack Now — Ready!":"✓ Mark as Packed"}
               </button>
-              <div style={{display:"flex",gap:6,marginTop:8}}>
+              <div style={{fontSize:9,color:C.chXL,textAlign:"center",marginTop:6,letterSpacing:"0.06em",textTransform:"uppercase",fontWeight:700}}>or choose below</div>
+              <div style={{display:"flex",gap:6,marginTop:6}}>
                 {item.status!=='prod_done'&&<button onClick={handleSendToProduction} className="pk-chip pk-chip-prod">→ Prod</button>}
                 {/* Bug fix: prod_done items can now be reset to pending if marked done by mistake */}
                 {item.status==='prod_done'&&<button onClick={()=>commit('pending')} className="pk-chip pk-chip-reset">↩ Reset</button>}
@@ -2823,6 +2860,8 @@ function AdminOrdersTab({ orders }) {
 function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShiftWeek, onCreateDP, onUpdateDP, onDeleteDP, onActivateWeek }) {
   const th=useTheme();
   const [editingDay, setEditingDay] = useState(null);
+  const [confirmDeleteDpId, setConfirmDeleteDpId] = useState(null);
+  const [showActivateConfirm, setShowActivateConfirm] = useState(false);
 
   return (
     <div className="animate-fade-in">
@@ -2904,10 +2943,18 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
             ))}
 
             {/* Actions */}
-            <div style={{marginTop:10,paddingTop:10,display:"flex",gap:8}}>
-              <button onClick={()=>setEditingDay(day)} style={{flex:1,padding:"8px",background:"rgba(232,146,10,0.08)",border:"1px solid rgba(232,146,10,0.2)",borderRadius:8,fontSize:11,fontWeight:800,color:C.amDk,cursor:"pointer",fontFamily:"inherit"}}>✎ Edit</button>
-              <button onClick={()=>{if(window.confirm("Delete this day's plan?"))onDeleteDP(day.dp.id);}} style={{flex:1,padding:"8px",background:"rgba(220,38,38,0.07)",border:"1px solid rgba(220,38,38,0.18)",borderRadius:8,fontSize:11,fontWeight:800,color:C.rd,cursor:"pointer",fontFamily:"inherit"}}>🗑 Remove</button>
-            </div>
+            {confirmDeleteDpId === day.dp.id ? (
+              <div style={{marginTop:10,paddingTop:10,display:"flex",alignItems:"center",gap:8,background:"rgba(193,18,31,0.07)",border:"1px solid rgba(193,18,31,0.2)",borderRadius:8,padding:"10px 12px"}}>
+                <span style={{flex:1,fontSize:11,color:"var(--text-sub)",fontWeight:700}}>Delete {day.dayOfWeek}'s plan?</span>
+                <button onClick={()=>{onDeleteDP(day.dp.id);setConfirmDeleteDpId(null);}} style={{padding:"7px 12px",background:"rgba(220,38,38,0.12)",border:"1px solid rgba(220,38,38,0.35)",borderRadius:7,fontSize:11,fontWeight:800,color:C.rd,cursor:"pointer",fontFamily:"inherit",minHeight:36}}>Delete</button>
+                <button onClick={()=>setConfirmDeleteDpId(null)} style={{padding:"7px 12px",background:"transparent",border:"1px solid var(--border-faint)",borderRadius:7,fontSize:11,fontWeight:700,color:"var(--text-sub)",cursor:"pointer",fontFamily:"inherit",minHeight:36}}>Cancel</button>
+              </div>
+            ) : (
+              <div style={{marginTop:10,paddingTop:10,display:"flex",gap:8}}>
+                <button onClick={()=>setEditingDay(day)} style={{flex:1,padding:"8px",background:"rgba(232,146,10,0.08)",border:"1px solid rgba(232,146,10,0.2)",borderRadius:8,fontSize:11,fontWeight:800,color:C.amDk,cursor:"pointer",fontFamily:"inherit"}}>✎ Edit</button>
+                <button onClick={()=>setConfirmDeleteDpId(day.dp.id)} style={{flex:1,padding:"8px",background:"rgba(220,38,38,0.07)",border:"1px solid rgba(220,38,38,0.18)",borderRadius:8,fontSize:11,fontWeight:800,color:C.rd,cursor:"pointer",fontFamily:"inherit"}}>🗑 Remove</button>
+              </div>
+            )}
           </div>
         );
       })}
@@ -2918,8 +2965,24 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
             {hasDrafts ? "You have unpublished drafts" : "✓ All plans active for production"}
           </div>
           {hasDrafts && (
-            <button onClick={onActivateWeek} className="hover-lift" style={{flex:2,padding:12,background:"linear-gradient(135deg,#D31118,#8A0B10)",border:"none",borderRadius:9,fontSize:12,fontWeight:900,color:"#fff",cursor:"pointer",boxShadow:"0 4px 16px rgba(211,17,24,.4)"}}>⚡ Activate Drafts → Send to Kitchen</button>
+            <button onClick={() => setShowActivateConfirm(true)} className="hover-lift" style={{flex:2,padding:12,background:"linear-gradient(135deg,#D31118,#8A0B10)",border:"none",borderRadius:9,fontSize:12,fontWeight:900,color:"#fff",cursor:"pointer",boxShadow:"0 4px 16px rgba(211,17,24,.4)"}}>⚡ Activate Drafts → Send to Kitchen</button>
           )}
+        </div>
+      )}
+
+      {showActivateConfirm && (
+        <div className="animate-fade-in" onClick={()=>setShowActivateConfirm(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+          <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,padding:"28px 28px 36px",display:"flex",flexDirection:"column",gap:14}}>
+            <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto -2px"}}/>
+            <div style={{fontSize:19,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>⚡ Activate Week — Send to Kitchen?</div>
+            <div style={{fontSize:13,color:C.chL,lineHeight:1.6}}>
+              This will publish <strong style={{color:C.ch}}>{weekDPs.filter(d=>d.status!=="active").length} day plan{weekDPs.filter(d=>d.status!=="active").length!==1?"s":""}</strong> to the production team. <strong style={{color:C.rd}}>This cannot be undone.</strong>
+            </div>
+            <div style={{display:"flex",gap:10,marginTop:4}}>
+              <button onClick={()=>setShowActivateConfirm(false)} style={{flex:1,padding:"13px",background:th.chipBg,border:"1px solid "+th.divider,borderRadius:12,fontSize:13,fontWeight:800,color:C.chL,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+              <button onClick={()=>{onActivateWeek();setShowActivateConfirm(false);}} style={{flex:2,padding:"13px",background:"linear-gradient(135deg,#D31118,#8A0B10)",border:"none",borderRadius:12,fontSize:13,fontWeight:900,color:"#fff",cursor:"pointer",boxShadow:"0 4px 16px rgba(211,17,24,.4)",fontFamily:"inherit"}}>⚡ Yes, Activate</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -3083,7 +3146,7 @@ function BottomNav({ activeTab, onTab, unreadCount }) {
             <div style={{ position: "relative", background: active ? (C.isDark ? "rgba(245,222,141,0.12)" : "rgba(193,18,31,0.08)") : "transparent", borderRadius: 12, padding: "5px 8px", transition: "background 0.2s" }}>
               {tab.icon(active)}
               {tab.badge > 0 && (
-                <span style={{ position:"absolute", top:-4, right:-4, background:"#D31118", color:"#fff", borderRadius:"50%", width:15, height:15, fontSize:9, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", border:"1.5px solid var(--page-bg)" }}>
+                <span style={{ position:"absolute", top:-4, right:-4, background:"#D31118", color:"#fff", borderRadius:"50%", width:17, height:17, fontSize:9, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", border:"1.5px solid var(--page-bg)", animation:"pulseSoft 2s infinite" }}>
                   {tab.badge > 9 ? "9+" : tab.badge}
                 </span>
               )}
@@ -3162,7 +3225,7 @@ function NotificationsTab({ role, userJoinDate }) {
 }
 
 /* ── Profile Tab ── */
-function ProfileTab({ authUser, userRecord, onSignOut, installPrompt, onInstallDone }) {
+function ProfileTab({ authUser, userRecord, onSignOut, installPrompt, onInstallDone, orders }) {
   const C = useTheme();
   const { isDark, toggleTheme } = React.useContext(ThemeCtx);
   return (
@@ -3182,16 +3245,28 @@ function ProfileTab({ authUser, userRecord, onSignOut, installPrompt, onInstallD
       </div>
 
       {/* Stats row */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:12 }}>
-        <div style={{ background:"var(--sub-bg,rgba(245,222,141,0.04))", border:"1px solid var(--border-faint)", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
-          <div style={{ fontSize:"var(--text-xs,11px)", color:C.chL, textTransform:"uppercase", letterSpacing:"var(--ls-label,0.12em)", marginBottom:4 }}>Member since</div>
-          <div style={{ fontSize:"var(--text-md,17px)", fontWeight:800, color:C.ch }}>{userRecord?.approvedAt ? new Date(userRecord.approvedAt).toLocaleDateString("en-MY",{month:"short",year:"numeric"}) : "—"}</div>
-        </div>
-        <div style={{ background:"var(--sub-bg,rgba(245,222,141,0.04))", border:"1px solid var(--border-faint)", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
-          <div style={{ fontSize:"var(--text-xs,11px)", color:C.chL, textTransform:"uppercase", letterSpacing:"var(--ls-label,0.12em)", marginBottom:4 }}>Roles</div>
-          <div style={{ fontSize:"var(--text-md,17px)", fontWeight:800, color:C.ch }}>{userRecord?.roles?.length || 1}</div>
-        </div>
-      </div>
+      {(()=>{
+        const WEEK_MS_P = 7*24*60*60*1000;
+        const packedThisWeek = (orders||[]).filter(o =>
+          o.items?.some(i => (i.status==="packed"||i.status==="delivered") && i.updatedAt > Date.now()-WEEK_MS_P)
+        ).length;
+        return (
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:12 }}>
+            <div style={{ background:"var(--sub-bg,rgba(245,222,141,0.04))", border:"1px solid var(--border-faint)", borderRadius:12, padding:"12px 10px", textAlign:"center" }}>
+              <div style={{ fontSize:"var(--text-2xs,10px)", color:C.chL, textTransform:"uppercase", letterSpacing:"var(--ls-label,0.12em)", marginBottom:4 }}>Since</div>
+              <div style={{ fontSize:"var(--text-sm,13px)", fontWeight:800, color:C.ch }}>{userRecord?.approvedAt ? new Date(userRecord.approvedAt).toLocaleDateString("en-MY",{month:"short",year:"numeric"}) : "—"}</div>
+            </div>
+            <div style={{ background:"var(--sub-bg,rgba(245,222,141,0.04))", border:"1px solid var(--border-faint)", borderRadius:12, padding:"12px 10px", textAlign:"center" }}>
+              <div style={{ fontSize:"var(--text-2xs,10px)", color:C.chL, textTransform:"uppercase", letterSpacing:"var(--ls-label,0.12em)", marginBottom:4 }}>Roles</div>
+              <div style={{ fontSize:"var(--text-md,17px)", fontWeight:800, color:C.ch }}>{userRecord?.roles?.length || 1}</div>
+            </div>
+            <div style={{ background:"var(--sub-bg,rgba(245,222,141,0.04))", border:"1px solid var(--border-faint)", borderRadius:12, padding:"12px 10px", textAlign:"center" }}>
+              <div style={{ fontSize:"var(--text-2xs,10px)", color:C.chL, textTransform:"uppercase", letterSpacing:"var(--ls-label,0.12em)", marginBottom:4 }}>Packed/wk</div>
+              <div style={{ fontSize:"var(--text-md,17px)", fontWeight:800, color:packedThisWeek>0?"var(--color-success,#16A34A)":C.ch }}>{packedThisWeek}</div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Theme toggle */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 16px", background:C.off, border:"1.5px solid "+C.bdrL, borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", marginBottom:12, boxShadow:C.sh }}>
@@ -3238,8 +3313,9 @@ function RolesTab({ availableRoles, currentRole, onSelect }) {
               onClick={() => setSelected(rk)}
               whileTap={{ scale: 0.93 }}
               className={`sketch-pill ${active ? "selected" : ""}`}
-              style={{ border:"1.5px solid "+(active ? C.ol : C.bdrL), color: active ? "#fff" : C.chM, background: active ? C.ol : "transparent" }}>
-              {r.icon} {r.label}
+              style={{ border:"1.5px solid "+(active ? C.ol : C.bdrL), color: active ? "#fff" : C.chM, background: active ? C.ol : "transparent", minHeight:52, padding:"11px 18px", textAlign:"left" }}>
+              <div style={{fontSize:13,fontWeight:800,lineHeight:1.2}}>{r.icon} {r.label}</div>
+              {r.desc && <div style={{fontSize:10,color:active?"rgba(255,255,255,0.75)":C.chL,fontWeight:500,marginTop:3,lineHeight:1.3}}>{r.desc}</div>}
             </motion.button>
           );
         })}
@@ -3892,6 +3968,7 @@ function TFCOrderSystem(){
         );
         transaction.update(docRef, { items: freshItems, updatedAt: Date.now() });
       });
+      if (updates.status === "prod_done") notify("✓ Marked done", "success");
     } catch (e) { console.error("updateDailyProdItem failed:", e); notify("Update failed", "error"); }
   }
 
@@ -3930,7 +4007,7 @@ function TFCOrderSystem(){
     AppContent = <ControlPanel
       requests={accessRequests} authorizedUsers={authorizedUsers}
       onApprove={approveRequest} onReject={rejectRequest} onRemoveUser={removeUser}
-      onBack={() => setPhase("select")} authUser={authUser} onSignOut={handleSignOut}
+      onBack={() => setPhase("select")} authUser={authUser} onSignOut={handleSignOut} notify={notify}
     />;
   } else if(phase==="select") {
     const installProps = { installPrompt, onInstallDone: () => { setInstallPrompt(null); setShowInstallBanner(false); } };
@@ -4142,7 +4219,7 @@ function TFCOrderSystem(){
             <div className="custom-scrollbar has-bottom-nav" style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column"}}>
               {activeTab === "notifications" && <NotificationsTab role={role} userJoinDate={userJoinDate}/>}
               {activeTab === "roles" && <RolesTab availableRoles={availableRoles} currentRole={role} onSelect={r=>{ selectRole(r); setActiveTab("dashboard"); }}/>}
-              {activeTab === "profile" && <ProfileTab authUser={authUser} userRecord={userRecord} onSignOut={handleSignOut} {...installProps2}/>}
+              {activeTab === "profile" && <ProfileTab authUser={authUser} userRecord={userRecord} onSignOut={handleSignOut} orders={orders} {...installProps2}/>}
             </div>
           )}
         </div>
