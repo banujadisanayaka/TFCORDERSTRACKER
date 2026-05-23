@@ -336,7 +336,7 @@ const GLOBAL_STYLES = `
   .gradient-text-cyan { background:linear-gradient(135deg,#FFFFFF 0%,#A0F0FF 35%,#00D4FF 70%,#0090B8 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 
   /* ── Sidebar section label v2 ── */
-  .section-label-v2 { display:flex; align-items:center; gap:8px; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.18em; color:#2A3A54; padding:10px 4px 6px; position:relative; }
+  .section-label-v2 { display:flex; align-items:center; gap:8px; font-size:var(--text-2xs,10px); font-weight:900; text-transform:uppercase; letter-spacing:var(--ls-label,0.12em); color:var(--text-sub); padding:10px 4px 6px; position:relative; }
   .section-label-v2::before { content:''; width:3px; height:12px; border-radius:2px; background:linear-gradient(180deg,#D31118,#8A0B10); flex-shrink:0; box-shadow:0 0 6px rgba(211,17,24,0.5); }
 
   /* ── Production cooking indicator dot ── */
@@ -4081,7 +4081,7 @@ function TFCOrderSystem(){
                   }
                 }}
                 title={notifPermission==="granted"?(notifStatus==="active"?"Notifications active ✓":notifStatus==="error"?"Notification error — click to retry":"Registering…"):notifPermission==="denied"?"Notifications blocked":"Enable notifications"}
-                style={{background:notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.08)":notifStatus==="error"?"rgba(248,113,113,0.08)":"rgba(232,146,10,0.08)"):"rgba(255,255,255,0.04)",border:`1px solid ${notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.25)":notifStatus==="error"?"rgba(248,113,113,0.25)":"rgba(232,146,10,0.25)"):notifPermission==="denied"?"rgba(248,113,113,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:8,minWidth:36,minHeight:36,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,position:"relative",flexShrink:0,transition:"all 0.2s"}}
+                style={{background:notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.08)":notifStatus==="error"?"rgba(248,113,113,0.08)":"rgba(232,146,10,0.08)"):"rgba(255,255,255,0.04)",border:`1px solid ${notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.25)":notifStatus==="error"?"rgba(248,113,113,0.25)":"rgba(232,146,10,0.25)"):notifPermission==="denied"?"rgba(248,113,113,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:10,width:40,height:40,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,position:"relative",flexShrink:0,transition:"all 0.2s"}}
               >
                 {notifPermission==="denied"?"🔕":"🔔"}
                 {notifPermission==="default"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #04060E"}}/>}
@@ -4091,7 +4091,7 @@ function TFCOrderSystem(){
               </button>
             )}
             {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:`2px solid ${isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)"}`,flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
-            <button onClick={()=>{ setScreenExiting(true); setTimeout(()=>{ setPhase("select");setRole(null);setActiveId(null);setScreenExiting(false); }, 320); }} style={{background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`,color:C.chL,padding:"6px 12px",borderRadius:8,minHeight:36,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
+            <button onClick={()=>{ setScreenExiting(true); setTimeout(()=>{ setPhase("select");setRole(null);setActiveId(null);setScreenExiting(false); }, 320); }} style={{background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`,color:C.chL,padding:"6px 12px",borderRadius:10,minHeight:40,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
           </div>
         </div>
         </div>
