@@ -1320,9 +1320,16 @@ function LoginScreen({ onSignIn }) {
 
 function InstallAppButton({ installPrompt, onInstallDone }) {
   const [showGuide, setShowGuide] = useState(false);
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const ua = navigator.userAgent;
+  // iPad on iOS 13+ reports as Macintosh — detect via touch points
+  const isIOS = /iphone|ipad|ipod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+  const isAndroid = /android/i.test(ua);
   const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-  if (isStandalone || (!installPrompt && !isIOS)) return null;
+
+  // Already installed — hide
+  if (isStandalone) return null;
+  // Desktop browser with no prompt — hide (they can use browser menu themselves)
+  if (!installPrompt && !isIOS && !isAndroid) return null;
 
   async function handleClick() {
     if (installPrompt) {
@@ -1332,6 +1339,19 @@ function InstallAppButton({ installPrompt, onInstallDone }) {
       setShowGuide(true);
     }
   }
+
+  const iosSteps = [
+    { icon:"1️⃣", title:"Tap the Share button", desc:'Tap the Share icon (📤) at the bottom of Safari — looks like a box with an arrow pointing up.' },
+    { icon:"2️⃣", title:'Tap "Add to Home Screen"', desc:'Scroll down in the share sheet and tap "Add to Home Screen".' },
+    { icon:"3️⃣", title:'Tap "Add" to confirm', desc:'The app icon will appear on your home screen.' },
+  ];
+  const androidSteps = [
+    { icon:"1️⃣", title:"Tap the menu  ⋮", desc:'Tap the three-dot menu at the top-right of Chrome.' },
+    { icon:"2️⃣", title:'Tap "Add to Home screen"', desc:'Scroll down and tap "Add to Home screen" in the menu.' },
+    { icon:"3️⃣", title:'Tap "Add" to confirm', desc:'The app icon will appear on your home screen.' },
+  ];
+  const steps = isIOS ? iosSteps : androidSteps;
+  const guideLabel = isIOS ? "iOS Guide" : "Android Guide";
 
   return (
     <>
@@ -1343,7 +1363,7 @@ function InstallAppButton({ installPrompt, onInstallDone }) {
       >
         <span style={{fontSize:17}}>📲</span>
         Add to Home Screen
-        {isIOS && <span style={{fontSize:10,fontWeight:600,color:"rgba(0,212,255,0.6)",marginLeft:2}}>(iOS Guide)</span>}
+        {!installPrompt && <span style={{fontSize:10,fontWeight:600,color:"rgba(0,212,255,0.6)",marginLeft:2}}>({guideLabel})</span>}
       </button>
 
       {showGuide && (
@@ -1352,12 +1372,10 @@ function InstallAppButton({ installPrompt, onInstallDone }) {
             <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(0,212,255,0.35),transparent)",pointerEvents:"none"}}/>
             <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto 20px"}}/>
             <div style={{fontSize:19,fontWeight:900,color:"#EEF2FF",marginBottom:6}}>Add to Home Screen</div>
-            <div style={{fontSize:13,color:"#4A6080",marginBottom:24,fontWeight:500}}>Follow these steps in Safari to install the app:</div>
-            {[
-              { icon:"1️⃣", title:"Tap the Share button", desc:'Tap the Share icon (📤) at the bottom of Safari — it looks like a box with an arrow pointing up.' },
-              { icon:"2️⃣", title:'Tap "Add to Home Screen"', desc:'Scroll down in the share sheet and tap "Add to Home Screen".' },
-              { icon:"3️⃣", title:'Tap "Add" to confirm', desc:'The app will appear on your home screen and work like a native app.' },
-            ].map(step => (
+            <div style={{fontSize:13,color:"#4A6080",marginBottom:24,fontWeight:500}}>
+              {isIOS ? "Follow these steps in Safari:" : "Follow these steps in Chrome:"}
+            </div>
+            {steps.map(step => (
               <div key={step.icon} style={{display:"flex",gap:14,alignItems:"flex-start",marginBottom:18}}>
                 <span style={{fontSize:22,flexShrink:0,marginTop:1}}>{step.icon}</span>
                 <div>
