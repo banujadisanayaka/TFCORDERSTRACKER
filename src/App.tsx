@@ -6,6 +6,7 @@ import {
   updateDoc, writeBatch, query, where, getDocs
 } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 // ⚠️ Force-load the JSON database bypassing strict compilers
 const recipeData = require("./TFC_Recipes_Database.json");
@@ -391,6 +392,14 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const OWNER_EMAIL = "banuja2005@gmail.com";
+
+// FCM: get your VAPID key from Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
+const VAPID_KEY = "YOUR_VAPID_KEY_FROM_FIREBASE_CONSOLE";
+let _messaging = null;
+function getMsg() {
+  if (!_messaging) { try { _messaging = getMessaging(app); } catch(_) {} }
+  return _messaging;
+}
 
 /* ═══════════════════════════════════════════════════════════════
    HELPERS & HOOKS
@@ -2831,6 +2840,7 @@ function TFCOrderSystem(){
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [notifPermission, setNotifPermission] = useState(() => ("Notification" in window ? Notification.permission : "denied"));
   const prevOrdersRef = useRef(null);
+  const currentFCMToken = useRef(null);
 
   useEffect(() => {
     const goOnline = () => setIsOnline(true);
@@ -2853,6 +2863,43 @@ function TFCOrderSystem(){
     document.addEventListener("visibilitychange", sync);
     return () => document.removeEventListener("visibilitychange", sync);
   }, []);
+
+  // FCM foreground message handler — fires when app tab is open but hidden (background tab)
+  useEffect(() => {
+    const msg = getMsg();
+    if (!msg) return;
+    return onMessage(msg, payload => {
+      if (document.visibilityState === "visible") return; // observer handles visible tab
+      const n = payload.notification;
+      if (n?.title) fireNotif(n.title, { body: n.body || "", tag: payload.data?.tag });
+    });
+  }, []);
+
+  async function sendPush(roles, title, body, tag) {
+    if (!roles?.length) return;
+    try {
+      await fetch("/.netlify/functions/push", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetRoles: roles, payload: { title, body, tag }, senderToken: currentFCMToken.current }),
+      });
+    } catch (_) {}
+  }
+
+  async function registerFCMToken(r) {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    if (!VAPID_KEY || VAPID_KEY.startsWith("YOUR_")) return;
+    try {
+      const msg = getMsg();
+      if (!msg) return;
+      const reg = await navigator.serviceWorker.ready;
+      const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+      if (!token) return;
+      currentFCMToken.current = token;
+      const email = authUser?.email || "anon";
+      await setDoc(doc(db, "fcm_tokens", token.slice(-28)), { token, email, activeRole: r, updatedAt: Date.now() });
+    } catch (e) { console.error("FCM register:", e); }
+  }
 
   const [orders,setOrders]=useState([]);
   const [dailyProductions, setDailyProductions] = useState([]);
@@ -2877,6 +2924,7 @@ function TFCOrderSystem(){
       order.items.forEach(item => {
         const was = prevMap[item.id];
         if(!was || was.status === item.status) return; // no change
+        if(item.updatedBy && item.updatedBy === authUser?.email) return; // skip own changes — FCM handles other devices
         const to = item.status;
 
         if(role === "admin"){
@@ -3053,11 +3101,56 @@ function TFCOrderSystem(){
     return () => unsubscribeDP();
   }, []);
 
-  async function updateItem(orderId, itemId, updates){ try { const orderToUpdate = orders.find(o => o.id === orderId); if(!orderToUpdate) return; const updatedItems = orderToUpdate.items.map(i => i.id === itemId ? {...i, ...updates} : i); await setDoc(doc(db, "orders", orderId), {...orderToUpdate, items: updatedItems}); } catch (e) { console.error("Update item failed:", e); notify("Failed to update", "error"); } }
-  async function handleBatchUpdate(batch, status) { try { const updatesPromises = []; const affectedOrderIds = [...new Set(batch.items.map(it => it.orderId))]; affectedOrderIds.forEach(oId => { const orderToUpdate = orders.find(o => o.id === oId); if(!orderToUpdate) return; const updatedItems = orderToUpdate.items.map(i => { if(batch.items.some(batchIt => batchIt.id === i.id)) { return {...i, status: status, updatedAt: Date.now()}; } return i; }); updatesPromises.push(setDoc(doc(db, "orders", oId), {...orderToUpdate, items: updatedItems})); }); await Promise.all(updatesPromises); notify("Master Batch updated!", "success"); } catch (e) { console.error("Batch update failed:", e); notify("Failed to update batch", "error"); } }
-  async function saveOrderEdit(orderId, newItems, metaData) { try { const orderToUpdate = orders.find(o => o.id === orderId); if(!orderToUpdate) return; await setDoc(doc(db, "orders", orderId), { ...orderToUpdate, items: newItems, ...metaData, updatedAt: Date.now() }); setEditingOrder(null); notify("Order updated!", "success"); } catch (e) { console.error("Save order edit failed:", e); notify("Failed to update", "error"); } }
+  async function updateItem(orderId, itemId, updates){
+    try {
+      const orderToUpdate = orders.find(o => o.id === orderId); if(!orderToUpdate) return;
+      const item = orderToUpdate.items.find(i => i.id === itemId);
+      const updatedItems = orderToUpdate.items.map(i => i.id === itemId ? {...i, ...updates, updatedBy: authUser?.email} : i);
+      await setDoc(doc(db, "orders", orderId), {...orderToUpdate, items: updatedItems});
+      // Push to other devices
+      if(updates.status && item && updates.status !== item.status){
+        const rr = orderToUpdate.restaurant?.toLowerCase();
+        const pn = item.product;
+        const on = orderToUpdate.poName || orderToUpdate.restaurant;
+        if(updates.status==="production")  sendPush(["production"], "🍳 New Batch", `${pn} · ${item.qty} ${item.unit||""}`, `prod-${itemId}`);
+        else if(updates.status==="prod_done") sendPush(["packing"], "✓ Ready to Pack", `${pn} · ${item.qty} ${item.unit||""} · ${orderToUpdate.restaurant}`, `ready-${itemId}`);
+        else if(updates.status==="short")  sendPush(["admin",rr], "⚠ Short Shipment", `${pn} (${on}): Sent ${updates.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`, `short-${itemId}`);
+        else if(updates.status==="oos")    sendPush(["admin",rr], "✕ Out of Stock", `${pn} — ${on}`, `oos-${itemId}`);
+        else if(updates.status==="delivered") sendPush(["admin",rr], "🚀 Delivered", `${pn} · ${on}`, `del-${itemId}`);
+      }
+    } catch (e) { console.error("Update item failed:", e); notify("Failed to update", "error"); }
+  }
+  async function handleBatchUpdate(batch, status) {
+    try {
+      const updatesPromises = []; const affectedOrderIds = [...new Set(batch.items.map(it => it.orderId))];
+      affectedOrderIds.forEach(oId => {
+        const orderToUpdate = orders.find(o => o.id === oId); if(!orderToUpdate) return;
+        const updatedItems = orderToUpdate.items.map(i => batch.items.some(b => b.id === i.id) ? {...i, status, updatedAt: Date.now(), updatedBy: authUser?.email} : i);
+        updatesPromises.push(setDoc(doc(db, "orders", oId), {...orderToUpdate, items: updatedItems}));
+      });
+      await Promise.all(updatesPromises);
+      notify("Master Batch updated!", "success");
+      if(status==="prod_done") sendPush(["packing"], "✓ Batch Ready to Pack", `${batch.items.length} item${batch.items.length!==1?"s":""} ready`, `batch-${Date.now()}`);
+      if(status==="production") sendPush(["production"], "🍳 Batch Production", `${batch.items.length} item${batch.items.length!==1?"s":""} to produce`, `bprod-${Date.now()}`);
+    } catch (e) { console.error("Batch update failed:", e); notify("Failed to update batch", "error"); }
+  }
+  async function saveOrderEdit(orderId, newItems, metaData) {
+    try {
+      const orderToUpdate = orders.find(o => o.id === orderId); if(!orderToUpdate) return;
+      await setDoc(doc(db, "orders", orderId), { ...orderToUpdate, items: newItems, ...metaData, updatedAt: Date.now() });
+      setEditingOrder(null); notify("Order updated!", "success");
+      sendPush(["packing"], "✏ PO Updated", `${orderToUpdate.poName||orderToUpdate.restaurant} has been edited`, `edit-${orderId}`);
+    } catch (e) { console.error("Save order edit failed:", e); notify("Failed to update", "error"); }
+  }
   async function deleteOrder(orderId){ try { await deleteDoc(doc(db, "orders", orderId)); if(activeId === orderId) setActiveId(null); notify("Order removed", "success"); } catch (e) { console.error("Delete order failed:", e); notify("Failed to delete", "error"); } }
-  async function handleNewOrder(restaurant, poName, poDate, delDate, rows){ try { const newOrder = { id: "ord_" + Date.now(), restaurant, poName: poName.trim() || `${restaurant} Order`, orderDate: poDate, deliveryDate: delDate.trim(), createdAt: Date.now(), items: rows.map((r,i) => ({ id: "item_" + i + "_" + Date.now(), product: r.product.trim(), qty: r.qty, unit: r.unit, status: "pending", packedQty: "", notes: "" })) }; await setDoc(doc(db, "orders", newOrder.id), newOrder); setActiveId(newOrder.id); setShowModal(false); notify(`${rows.length} items added`, "success"); } catch (e) { console.error("Create order failed:", e); notify("Failed to save", "error"); } }
+  async function handleNewOrder(restaurant, poName, poDate, delDate, rows){
+    try {
+      const newOrder = { id: "ord_" + Date.now(), restaurant, poName: poName.trim() || `${restaurant} Order`, orderDate: poDate, deliveryDate: delDate.trim(), createdAt: Date.now(), items: rows.map((r,i) => ({ id: "item_" + i + "_" + Date.now(), product: r.product.trim(), qty: r.qty, unit: r.unit, status: "pending", packedQty: "", notes: "" })) };
+      await setDoc(doc(db, "orders", newOrder.id), newOrder);
+      setActiveId(newOrder.id); setShowModal(false); notify(`${rows.length} items added`, "success");
+      sendPush(["packing"], "📋 New PO Received", `${restaurant}: ${newOrder.poName}`, `new-${newOrder.id}`);
+    } catch (e) { console.error("Create order failed:", e); notify("Failed to save", "error"); }
+  }
 
   async function createDailyProduction(dateStr, items, notes = "") {
     try {
@@ -3146,7 +3239,12 @@ function TFCOrderSystem(){
 
   function selectRole(r){
     if("Notification" in window && Notification.permission === "default"){
-      Notification.requestPermission().then(p => setNotifPermission(p));
+      Notification.requestPermission().then(p => {
+        setNotifPermission(p);
+        if(p === "granted") registerFCMToken(r);
+      });
+    } else if("Notification" in window && Notification.permission === "granted"){
+      registerFCMToken(r);
     }
     setScreenExiting(true);
     setTimeout(()=>{ setRole(r); setPhase("app"); setScreenExiting(false); }, 320);
@@ -3328,11 +3426,11 @@ function TFCOrderSystem(){
               <button
                 onClick={()=>{
                   if(notifPermission==="default"){
-                    Notification.requestPermission().then(p=>{setNotifPermission(p); if(p==="granted") notify("Notifications enabled!","success"); else if(p==="denied") notify("Notifications blocked. Allow them in browser settings.","error");});
+                    Notification.requestPermission().then(p=>{setNotifPermission(p); if(p==="granted"){registerFCMToken(role);notify("Notifications enabled!","success");}else if(p==="denied")notify("Notifications blocked. Allow in browser settings.","error");});
                   } else if(notifPermission==="denied"){
-                    notify("Notifications are blocked. Go to browser Settings → Site settings to allow them.","error");
+                    notify("Notifications blocked. Go to browser Settings → Site settings to allow them.","error");
                   } else {
-                    notify("Notifications are enabled ✓","success");
+                    notify("Notifications are active ✓","success");
                   }
                 }}
                 title={notifPermission==="granted"?"Notifications on":notifPermission==="denied"?"Notifications blocked":"Enable notifications"}
