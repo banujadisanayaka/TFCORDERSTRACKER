@@ -3184,7 +3184,7 @@ function ProfileTab({ authUser, userRecord, onSignOut, installPrompt, onInstallD
           </div>
           <div style={{ background:"var(--sub-bg)", border:"1px solid var(--border-faint)", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
             <div style={{ fontSize:"var(--text-xs,11px)", color:C.chL, textTransform:"uppercase", letterSpacing:"var(--ls-label,0.12em)", marginBottom:4 }}>Roles</div>
-            <div style={{ fontSize:"var(--text-md,17px)", fontWeight:800, color:C.ch }}>{userRecord.roles?.length ?? 1}</div>
+            <div style={{ fontSize:"var(--text-md,17px)", fontWeight:800, color:C.ch }}>{userRecord.roles?.length || 1}</div>
           </div>
         </div>
       )}
