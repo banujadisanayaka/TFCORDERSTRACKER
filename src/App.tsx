@@ -351,10 +351,6 @@ const GLOBAL_STYLES = `
 
   /* (pk-card states defined above — no duplicates) */
 
-  /* ── Modal sheet (solid, no blur) ── */
-  .modal-sheet { background: var(--modal-bg) !important; border: 1.5px solid var(--border) !important; box-shadow: 0 24px 80px rgba(0,0,0,0.70) !important; position: relative !important; overflow: hidden !important; }
-  .modal-sheet::before, .modal-sheet::after { display: none !important; }
-
   /* ── Portal ambient orbs ── */
   .portal-orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
   .portal-orb-1 { width:min(750px,85vw); height:min(750px,85vw); background:radial-gradient(circle,rgba(211,17,24,0.09) 0%,transparent 70%); top:-18%; left:-12%; animation:orbFloat1 28s ease-in-out infinite; filter:blur(65px); }
@@ -1279,9 +1275,9 @@ function DailyProductionItemRow({ item, dpId, onShowRecipe, onUpdateItem, role }
 
         {isCompleting && (
           <div className="animate-fade-in" style={{ display:"flex", gap:6, alignItems:"center", background: th.editBg, padding: "6px 8px", borderRadius: 8, border: `1px solid ${th.editBdr}` }}>
-            <input type="number" value={actualKg} onChange={e=>setActualKg(e.target.value)} placeholder="Act. kg" style={{ width: 50, padding: "6px", fontSize: 11, borderRadius: 4, background: "#111828", border: "1px solid #1E2A44", color: "#fff", outline:"none" }} />
+            <input type="number" value={actualKg} onChange={e=>setActualKg(e.target.value)} placeholder="Act. kg" style={{ width: 50, padding: "6px", fontSize: 11, borderRadius: 4, background: "var(--card-bg)", border: "1px solid var(--border-faint)", color: "var(--text)", outline:"none" }} />
             <span style={{ fontSize: 10, color: C.chL }}>kg</span>
-            <input type="number" value={actualPkts} onChange={e=>setActualPkts(e.target.value)} placeholder="Act. pkts" style={{ width: 50, padding: "6px", fontSize: 11, borderRadius: 4, background: "#111828", border: "1px solid #1E2A44", color: "#fff", outline:"none" }} />
+            <input type="number" value={actualPkts} onChange={e=>setActualPkts(e.target.value)} placeholder="Act. pkts" style={{ width: 50, padding: "6px", fontSize: 11, borderRadius: 4, background: "var(--card-bg)", border: "1px solid var(--border-faint)", color: "var(--text)", outline:"none" }} />
             <span style={{ fontSize: 10, color: C.chL }}>pkts</span>
             <button onClick={handleConfirmComplete} style={{ background: "#097353", color: "#fff", border: "none", padding: "6px 10px", borderRadius: 4, fontSize: 11, fontWeight: 800, cursor: "pointer", marginLeft:4 }}>Save</button>
             <button onClick={() => setIsCompleting(false)} style={{ background: "transparent", color: C.chL, border: "none", fontSize: 11, cursor: "pointer", fontWeight: 800 }}>✕</button>
@@ -1305,7 +1301,7 @@ function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel 
   const th=useTheme();
   const isMobile = useIsMobile();
   return (
-    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:9999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20}}>
+    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:9999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20}}>
       <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:480,padding:"26px 28px",display:"flex",flexDirection:"column",maxHeight:isMobile?"90vh":"auto",position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(211,17,24,0.3),transparent)",pointerEvents:"none"}}/>
         <div style={{fontSize:19,fontWeight:900,color:C.ch,letterSpacing:"-0.02em",marginBottom:6}}>Send to Production</div>
@@ -1362,7 +1358,7 @@ function SplashScreen() {
           <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
           <div style={{position:"absolute",inset:-18,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.08)",animation:"spinSlow 35s linear infinite reverse",pointerEvents:"none"}}/>
         </div>
-        <div style={{fontSize:26,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.04em",marginBottom:6}}>The Food Company</div>
+        <div style={{fontSize:26,fontWeight:900,color:"var(--text)",letterSpacing:"-0.04em",marginBottom:6}}>The Food Company</div>
         <div style={{fontSize:11,color:"#3A5070",letterSpacing:"0.22em",textTransform:"uppercase",fontWeight:700,marginBottom:48}}>Operations Hub</div>
         <div style={{width:180,height:3,background:"rgba(255,255,255,0.05)",borderRadius:4,overflow:"hidden",position:"relative"}}>
           <div style={{position:"absolute",top:0,left:0,width:"45%",height:"100%",background:"linear-gradient(90deg,transparent,#D31118,transparent)",animation:"loadBar 1.6s ease-in-out infinite"}}/>
@@ -1405,7 +1401,7 @@ function LoginScreen({ onSignIn }) {
             <div style={{width:90,height:90,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:38,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
             <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.2)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
           </div>
-          <div style={{fontSize:30,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.05em",lineHeight:1,marginBottom:10}}>The Food Company</div>
+          <div style={{fontSize:30,fontWeight:900,color:"var(--text)",letterSpacing:"-0.05em",lineHeight:1,marginBottom:10}}>The Food Company</div>
           <div style={{fontSize:11,color:"#2A4060",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.18em"}}>Operations Hub</div>
         </motion.div>
 
@@ -1493,11 +1489,11 @@ function InstallAppButton({ installPrompt, onInstallDone }) {
       </button>
 
       {showGuide && (
-        <div className="animate-fade-in" onClick={()=>setShowGuide(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+        <div className="animate-fade-in" onClick={()=>setShowGuide(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
           <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,padding:"28px 28px 40px",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(0,212,255,0.35),transparent)",pointerEvents:"none"}}/>
             <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto 20px"}}/>
-            <div style={{fontSize:19,fontWeight:900,color:"#EEF2FF",marginBottom:6}}>Add to Home Screen</div>
+            <div style={{fontSize:19,fontWeight:900,color:"var(--text)",marginBottom:6}}>Add to Home Screen</div>
             <div style={{fontSize:13,color:"#4A6080",marginBottom:24,fontWeight:500}}>
               {isIOS ? "Follow these steps in Safari:" : "Follow these steps in Chrome:"}
             </div>
@@ -1505,7 +1501,7 @@ function InstallAppButton({ installPrompt, onInstallDone }) {
               <div key={step.icon} style={{display:"flex",gap:14,alignItems:"flex-start",marginBottom:18}}>
                 <span style={{fontSize:22,flexShrink:0,marginTop:1}}>{step.icon}</span>
                 <div>
-                  <div style={{fontSize:13,fontWeight:800,color:"#EEF2FF",marginBottom:3}}>{step.title}</div>
+                  <div style={{fontSize:13,fontWeight:800,color:"var(--text)",marginBottom:3}}>{step.title}</div>
                   <div style={{fontSize:12,color:"#4A6080",lineHeight:1.55,fontWeight:500}}>{step.desc}</div>
                 </div>
               </div>
@@ -1651,7 +1647,7 @@ function PendingScreen({ request, authUser, onSignOut, installPrompt, onInstallD
           {/* Amber glow orb behind icon */}
           <div style={{position:"absolute",top:-60,left:"50%",transform:"translateX(-50%)",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(232,146,10,0.12) 0%,transparent 70%)",pointerEvents:"none"}}/>
           <div style={{position:"relative",fontSize:52,marginBottom:22,filter:"drop-shadow(0 0 16px rgba(232,146,10,0.4))"}}>⏳</div>
-          <div style={{fontSize:22,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.02em",marginBottom:12}}>Awaiting Approval</div>
+          <div style={{fontSize:22,fontWeight:900,color:"var(--text)",letterSpacing:"-0.02em",marginBottom:12}}>Awaiting Approval</div>
           <div style={{fontSize:13,color:C.chM,fontWeight:500,lineHeight:1.65,marginBottom:28}}>
             Your request for <strong style={{color:C.am}}>{(request.requestedRoles||[request.requestedRole]).map(r=>ROLES[r]?.label||r).join(", ")}</strong> access has been submitted. The owner will review and approve your request.
           </div>
@@ -1690,7 +1686,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
       <div style={{ background:"var(--header-bg)", borderBottom:"1.5px solid var(--border)", padding:"14px 20px", display:"flex", alignItems:"center", gap:14, flexShrink:0 }}>
         <button onClick={onBack} style={{ background:"var(--card-bg)", border:"1.5px solid var(--border)", color:"var(--text)", padding:"8px 14px", borderRadius:20, fontSize:12, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit", minHeight:36 }}>← Back</button>
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:16, fontWeight:700, color:"var(--text)", fontFamily:"'Caveat',cursive" }}>Control Panel</div>
+          <div style={{ fontSize:16, fontWeight:700, color:"var(--text)" }}>Control Panel</div>
           <div style={{ fontSize:11, color:"var(--text-sub)" }}>{authUser.email}</div>
         </div>
         <button onClick={onSignOut} style={{ background:"none", border:"1.5px solid var(--border)", color:"var(--text-sub)", padding:"6px 12px", borderRadius:20, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit", minHeight:36 }}>Sign Out</button>
@@ -1708,7 +1704,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
             {pendingRequests.length === 0 ? (
               <div style={{ textAlign:"center", padding:"60px 20px", color:"var(--text-sub)" }}>
                 <div style={{ fontSize:40, marginBottom:12 }}>✓</div>
-                <div style={{ fontSize:16, fontWeight:700, fontFamily:"'Caveat',cursive" }}>No pending requests</div>
+                <div style={{ fontSize:16, fontWeight:700 }}>No pending requests</div>
               </div>
             ) : pendingRequests.map((req, i) => (
               <div key={req.id} className="animate-fade-up sketch-card" style={{ animationDelay:`${i*0.05}s`, padding:"18px 20px", marginBottom:12 }}>
@@ -1722,8 +1718,8 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
                   </div>
                 </div>
                 <div style={{ display:"flex", gap:10 }}>
-                  <button onClick={() => onApprove(req)} style={{ flex:1, padding:"11px", background:"linear-gradient(135deg,#097353,#065A40)", border:"none", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'Caveat',cursive", minHeight:44 }}>✓ Approve</button>
-                  <button onClick={() => onReject(req)} style={{ flex:1, padding:"11px", background:th.rdBg, border:"1.5px solid "+th.rd, borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:th.rd, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'Caveat',cursive", minHeight:44 }}>✕ Reject</button>
+                  <button onClick={() => onApprove(req)} style={{ flex:1, padding:"11px", background:"linear-gradient(135deg,#097353,#065A40)", border:"none", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:44 }}>✓ Approve</button>
+                  <button onClick={() => onReject(req)} style={{ flex:1, padding:"11px", background:th.rdBg, border:"1.5px solid "+th.rd, borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:th.rd, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:44 }}>✕ Reject</button>
                 </div>
               </div>
             ))}
@@ -1749,7 +1745,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
           <div>
             {authorizedUsers.length === 0 ? (
               <div style={{ textAlign:"center", padding:"60px 20px", color:"var(--text-sub)" }}>
-                <div style={{ fontSize:16, fontWeight:700, fontFamily:"'Caveat',cursive" }}>No authorized users yet</div>
+                <div style={{ fontSize:16, fontWeight:700 }}>No authorized users yet</div>
               </div>
             ) : authorizedUsers.map((user, i) => (
               <div key={user.email} className="animate-fade-up sketch-card" style={{ animationDelay:`${i*0.05}s`, padding:"16px 18px", marginBottom:12 }}>
@@ -1785,15 +1781,15 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
                               background:has?"var(--accent)":"transparent",
                               border:`1.5px solid ${has?"var(--accent)":"var(--border)"}`,
                               color:has?"#fff":"var(--text)", fontWeight:700, cursor:"pointer",
-                              fontFamily:"'Caveat',cursive", minHeight:40, transition:"all 0.15s" }}>
+                              fontFamily:"inherit", minHeight:40, transition:"all 0.15s" }}>
                             {ROLES[rk].label}
                           </button>
                         );
                       })}
                     </div>
                     <div style={{ display:"flex", gap:10 }}>
-                      <button onClick={saveEditRoles} style={{ flex:1, padding:"10px", background:"var(--accent)", border:"none", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'Caveat',cursive", minHeight:44 }}>Save</button>
-                      <button onClick={() => setEditingUser(null)} style={{ flex:1, padding:"10px", background:th.chipBg, border:"1.5px solid var(--border)", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"var(--text-sub)", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'Caveat',cursive", minHeight:44 }}>Cancel</button>
+                      <button onClick={saveEditRoles} style={{ flex:1, padding:"10px", background:"var(--accent)", border:"none", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:44 }}>Save</button>
+                      <button onClick={() => setEditingUser(null)} style={{ flex:1, padding:"10px", background:th.chipBg, border:"1.5px solid var(--border)", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"var(--text-sub)", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:44 }}>Cancel</button>
                     </div>
                   </div>
                 )}
@@ -1935,10 +1931,10 @@ function NewOrderModal({onClose,onSubmit,notify}){
     if (newItems.length > 0) { setStagedItems(prev => [...newItems, ...prev]); setBulkText(""); setInputMode("manual"); notify(`✓ Processed ${addedCount} items!`); } else { setErr("Could not process layout structure."); }
   }
 
-  const inputStyle = {padding:"10px 14px",border:"1px solid #1E2A44",borderRadius:10,fontSize:13,color:"#EEF2FF",outline:"none",background:"#111828",width:"100%",boxSizing:"border-box",transition: "border-color 0.2s, box-shadow 0.2s"};
+  const inputStyle = {padding:"10px 14px",border:"1px solid var(--border-faint)",borderRadius:10,fontSize:16,color:"var(--text)",outline:"none",background:"var(--card-bg)",width:"100%",boxSizing:"border-box",transition: "border-color 0.2s, box-shadow 0.2s"};
 
   return(
-    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
+    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
       <datalist id="recipe-database">
         {RECIPE_DB.map(r => <option key={r.recipe_id} value={r.recipe_name} label={r.item_code ? `${r.recipe_name} · ${r.item_code}` : r.recipe_name} />)}
         {ITEMS_DB.filter(i => {const u=i.name.trim().toUpperCase(); return !RECIPE_DB.some(r=>r.recipe_name&&r.recipe_name.toUpperCase().trim()===u);}).map(i => <option key={i.item_code+"_"+i.name} value={i.name} label={`${i.name} · ${i.item_code}`} />)}
@@ -1967,9 +1963,9 @@ function NewOrderModal({onClose,onSubmit,notify}){
           </div>
           <div style={{display:"flex", flexDirection: isMobile ? "column" : "row", justifyContent:"space-between", alignItems: isMobile ? "flex-start" : "center", gap: 12, marginBottom:16}}>
             <div style={{display:"flex", alignItems:"center", gap:12}}><div style={{width:28, height:28, borderRadius:"50%", background:C.ch, color:C.w, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, flexShrink:0}}>2</div><div style={{fontSize:13, fontWeight:800, color:C.ch}}>Add Items to Order</div></div>
-            <div style={{display:"flex", background:"#0C1020", borderRadius:10, border:"1px solid "+C.bdrL, padding:4}}><button onClick={() => setInputMode("manual")} style={{padding:"8px 16px", border:"none", background: inputMode==="manual"?C.w:"transparent", borderRadius:8, fontSize:12, fontWeight:700, color:inputMode==="manual"?C.ch:C.chL, cursor:"pointer", boxShadow:inputMode==="manual"?C.sh:"none"}}>Manual Addition</button><button onClick={() => setInputMode("bulk")} style={{padding:"8px 16px", border:"none", background: inputMode==="bulk"?C.w:"transparent", borderRadius:8, fontSize:12, fontWeight:700, color:inputMode==="bulk"?C.olDk:C.chL, cursor:"pointer", boxShadow:inputMode==="bulk"?C.sh:"none"}}>Paste WhatsApp List</button></div>
+            <div style={{display:"flex", background:"var(--sub-bg)", borderRadius:10, border:"1px solid "+C.bdrL, padding:4}}><button onClick={() => setInputMode("manual")} style={{padding:"8px 16px", border:"none", background: inputMode==="manual"?C.w:"transparent", borderRadius:8, fontSize:12, fontWeight:700, color:inputMode==="manual"?C.ch:C.chL, cursor:"pointer", boxShadow:inputMode==="manual"?C.sh:"none"}}>Manual Addition</button><button onClick={() => setInputMode("bulk")} style={{padding:"8px 16px", border:"none", background: inputMode==="bulk"?C.w:"transparent", borderRadius:8, fontSize:12, fontWeight:700, color:inputMode==="bulk"?C.olDk:C.chL, cursor:"pointer", boxShadow:inputMode==="bulk"?C.sh:"none"}}>Paste WhatsApp List</button></div>
           </div>
-          {inputMode === "manual" && (<form className="animate-fade-in" onSubmit={handleAddItem} style={{background:"#0C1020", padding:20, borderRadius:16, border:"1px solid "+C.bdrL, marginBottom:28}}><div style={{display:"flex", flexDirection: isMobile ? "column" : "row", gap: 12, alignItems:"flex-start"}}><div style={{flex:1, width:"100%"}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Product (Type to search)</div><input list="recipe-database" value={prod} onChange={e => {setProd(e.target.value); setErr("");}} placeholder="e.g. Madras Spiced" style={{padding:"12px 16px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",boxSizing:"border-box", boxShadow:C.sh}}/></div><div style={{display:"flex", gap:12, width: isMobile ? "100%" : "auto"}}><div style={{width: 80}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Qty</div><input value={qty} onChange={e => setQty(e.target.value)} placeholder="—" style={{padding:"12px 8px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",boxSizing:"border-box",textAlign:"center", boxShadow:C.sh}}/></div><div style={{width: 90}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Unit</div><select value={unit} onChange={e => setUnit(e.target.value)} style={{padding:"12px 10px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",cursor:"pointer", height:46, boxShadow:C.sh}}>{UNITS.map(u=><option key={u} value={u}>{u}</option>)}</select></div></div></div><button type="submit" className="hover-lift" style={{marginTop:16,width:"100%",padding:"14px",background:C.ch,color:C.w,border:"none",borderRadius:10,fontWeight:800,cursor:"pointer", fontSize:14}}>+ Add Item to List</button></form>)}
+          {inputMode === "manual" && (<form className="animate-fade-in" onSubmit={handleAddItem} style={{background:"var(--sub-bg)", padding:20, borderRadius:16, border:"1px solid "+C.bdrL, marginBottom:28}}><div style={{display:"flex", flexDirection: isMobile ? "column" : "row", gap: 12, alignItems:"flex-start"}}><div style={{flex:1, width:"100%"}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Product (Type to search)</div><input list="recipe-database" value={prod} onChange={e => {setProd(e.target.value); setErr("");}} placeholder="e.g. Madras Spiced" style={{padding:"12px 16px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",boxSizing:"border-box", boxShadow:C.sh}}/></div><div style={{display:"flex", gap:12, width: isMobile ? "100%" : "auto"}}><div style={{width: 80}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Qty</div><input value={qty} onChange={e => setQty(e.target.value)} placeholder="—" style={{padding:"12px 8px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",boxSizing:"border-box",textAlign:"center", boxShadow:C.sh}}/></div><div style={{width: 90}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Unit</div><select value={unit} onChange={e => setUnit(e.target.value)} style={{padding:"12px 10px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",cursor:"pointer", height:46, boxShadow:C.sh}}>{UNITS.map(u=><option key={u} value={u}>{u}</option>)}</select></div></div></div><button type="submit" className="hover-lift" style={{marginTop:16,width:"100%",padding:"14px",background:C.ch,color:C.w,border:"none",borderRadius:10,fontWeight:800,cursor:"pointer", fontSize:14}}>+ Add Item to List</button></form>)}
           {inputMode === "bulk" && (<div className="animate-fade-in" style={{background:C.olBg, padding:20, borderRadius:16, border:"1px solid "+C.olBgD, marginBottom:28}}><div style={{fontSize:13, color:C.olDk, fontWeight:700, marginBottom:12}}>Paste your structural text list cleanly. Unmatched items will be added exactly as typed.</div><textarea value={bulkText} onChange={e=>setBulkText(e.target.value)} placeholder="Whole chicken - 10kg&#10;Feta Cheese - 10pkts" style={{width:"100%", boxSizing:"border-box", height:140, padding:16, borderRadius:10, border:"2px solid "+C.olBgD, outline:"none", fontSize:14, resize:"none", marginBottom:12, fontFamily:"monospace"}}/><button onClick={handleBulkTextParse} className="hover-lift" style={{width:"100%", padding:"14px", background:C.ol, color:C.w, border:"none", borderRadius:10, fontWeight:800, cursor:"pointer", fontSize:14, boxShadow:C.sh}}>⚡ Run Instant Bulk Parse</button></div>)}
           {err&&<div className="animate-fade-in" style={{marginBottom:16,fontSize:13,color:C.rd,fontWeight:700, background:C.rdBg, padding:"10px 14px", borderRadius:8}}>{err}</div>}
           
@@ -2017,10 +2013,10 @@ function EditOrderModal({order, onClose, onSave, notify}){
   const isMobile = useIsMobile(); const [epName, setEpName] = useState(order.poName || ""); const [epDate, setEpDate] = useState(order.orderDate || ""); const [edDate, setEdDate] = useState(order.deliveryDate || ""); const [items, setItems] = useState([...order.items]); const [editId, setEditId] = useState(null); const [ep, setEp] = useState(""); const [eq, setEq] = useState(""); const [eu, setEu] = useState(""); const [np, setNp] = useState(""); const [nq, setNq] = useState(""); const [nu, setNu] = useState("kg");
   function handleSaveInline(){ if(!ep.trim()) return; setItems(prev => prev.map(i => i.id === editId ? {...i, product: ep.trim(), qty: eq, unit: eu} : i)); setEditId(null); } function handleAddNew(e){ e.preventDefault(); if(!np.trim()) { notify("Please enter a product name", "error"); return; } setItems(prev => [{id: "item_added_"+Date.now(), product: np.trim(), qty: nq, unit: nu, status: "pending", packedQty: "", notes: ""}, ...prev]); setNp(""); setNq(""); } function handleRemove(id){ setItems(prev => prev.filter(i => i.id !== id)); } function submit(){ if(items.length === 0){ notify("Order must have at least 1 item. Delete the order instead.", "error"); return; } onSave(order.id, items, {poName: epName, orderDate: epDate, deliveryDate: edDate}); }
 
-  const inputStyle = {padding:"10px 14px",border:"1px solid #1E2A44",borderRadius:10,fontSize:13,color:"#EEF2FF",outline:"none",background:"#111828",width:"100%",boxSizing:"border-box",transition: "border-color 0.2s, box-shadow 0.2s"};
+  const inputStyle = {padding:"10px 14px",border:"1px solid var(--border-faint)",borderRadius:10,fontSize:16,color:"var(--text)",outline:"none",background:"var(--card-bg)",width:"100%",boxSizing:"border-box",transition: "border-color 0.2s, box-shadow 0.2s"};
 
   return(
-    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
+    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
       <datalist id="recipe-database">
         {RECIPE_DB.map(r => <option key={r.recipe_id} value={r.recipe_name} label={r.item_code ? `${r.recipe_name} · ${r.item_code}` : r.recipe_name} />)}
         {ITEMS_DB.filter(i => {const u=i.name.trim().toUpperCase(); return !RECIPE_DB.some(r=>r.recipe_name&&r.recipe_name.toUpperCase().trim()===u);}).map(i => <option key={i.item_code+"_"+i.name} value={i.name} label={`${i.name} · ${i.item_code}`} />)}
@@ -2041,7 +2037,7 @@ function EditOrderModal({order, onClose, onSave, notify}){
           <div style={{display:"flex", gap:10, marginBottom:20, flexDirection: isMobile ? "column" : "row"}}><div style={{flex:1}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6}}>PO REFERENCE NAME</div><input value={epName} onChange={e=>setEpName(e.target.value)} style={inputStyle}/></div><div style={{display:"flex", gap:10, flex:1}}><div style={{flex:1}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6}}>RECEIVED DATE</div><input value={epDate} onChange={e=>setEpDate(e.target.value)} style={inputStyle}/></div><div style={{flex:1}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6}}>DELIVERY BEFORE</div><input value={edDate} onChange={e=>setEdDate(e.target.value)} style={inputStyle}/></div></div></div>
           
           <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:16}}><div style={{width:28, height:28, borderRadius:"50%", background:C.ch, color:C.w, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, flexShrink:0}}>2</div><div style={{fontSize:13, fontWeight:800, color:C.ch}}>Add Missed Item</div></div>
-          <form onSubmit={handleAddNew} style={{display:"flex", flexDirection:isMobile?"column":"row", gap:10, background:"#0C1020", padding:"16px", borderRadius:14, border:"1px solid "+C.bdrL, marginBottom:28}}><input list="recipe-database" value={np} onChange={e=>setNp(e.target.value)} placeholder="Product Name" style={{flex:2, padding:"10px 14px", border:"1px solid "+C.bdr, borderRadius:8, outline:"none", fontSize:14, fontWeight:600}} /><div style={{display:"flex", gap:10, flex:1}}><input value={nq} onChange={e=>setNq(e.target.value)} placeholder="Qty" style={{width:"60px", padding:"10px 10px", border:"1px solid "+C.bdr, borderRadius:8, outline:"none", fontSize:14, textAlign:"center"}} /><select value={nu} onChange={e=>setNu(e.target.value)} style={{width:"80px", padding:"10px", border:"1px solid "+C.bdr, borderRadius:8, outline:"none", fontSize:14, cursor:"pointer"}}>{UNITS.map(u => <option key={u} value={u}>{u}</option>)}</select></div><Btn type="submit" variant="dark" full={isMobile}>+ Add</Btn></form>
+          <form onSubmit={handleAddNew} style={{display:"flex", flexDirection:isMobile?"column":"row", gap:10, background:"var(--sub-bg)", padding:"16px", borderRadius:14, border:"1px solid "+C.bdrL, marginBottom:28}}><input list="recipe-database" value={np} onChange={e=>setNp(e.target.value)} placeholder="Product Name" style={{flex:2, padding:"10px 14px", border:"1px solid "+C.bdr, borderRadius:8, outline:"none", fontSize:14, fontWeight:600}} /><div style={{display:"flex", gap:10, flex:1}}><input value={nq} onChange={e=>setNq(e.target.value)} placeholder="Qty" style={{width:"60px", padding:"10px 10px", border:"1px solid "+C.bdr, borderRadius:8, outline:"none", fontSize:14, textAlign:"center"}} /><select value={nu} onChange={e=>setNu(e.target.value)} style={{width:"80px", padding:"10px", border:"1px solid "+C.bdr, borderRadius:8, outline:"none", fontSize:14, cursor:"pointer"}}>{UNITS.map(u => <option key={u} value={u}>{u}</option>)}</select></div><Btn type="submit" variant="dark" full={isMobile}>+ Add</Btn></form>
           
           <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:16}}><div style={{width:28, height:28, borderRadius:"50%", background:C.ch, color:C.w, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, flexShrink:0}}>3</div><div style={{fontSize:13, fontWeight:800, color:C.ch}}>Current Items ({items.length})</div></div>
           <div style={{display:"flex", flexDirection:"column", gap:8}}>
@@ -2211,10 +2207,10 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
           <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,padding:"28px 28px 32px",display:"flex",flexDirection:"column",gap:16,position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.45),transparent)",pointerEvents:"none"}}/>
             <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto -4px"}}/>
-            <div style={{fontSize:19,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.02em"}}>Short Shipment</div>
+            <div style={{fontSize:19,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Short Shipment</div>
             <div style={{background:th.cardBg,padding:"14px 16px",borderRadius:12,border:`1px solid rgba(232,146,10,0.25)`}}>
               <div style={{fontSize:10,fontWeight:800,color:C.chL,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6}}>ITEM</div>
-              <div style={{fontWeight:900,color:"#EEF2FF",fontSize:15,marginBottom:4}}>{item.product}</div>
+              <div style={{fontWeight:900,color:C.ch,fontSize:15,marginBottom:4}}>{item.product}</div>
               <div style={{fontSize:12,color:"#E8920A",fontFamily:"'JetBrains Mono',monospace",fontWeight:800}}>Requested: {item.qty} {item.unit||""}</div>
             </div>
             <div>
@@ -2227,7 +2223,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
                 placeholder={`Sent qty (max ${item.qty||"?"} ${item.unit||""})`}
                 type="number"
                 min="0"
-                style={{width:"100%",padding:"13px 16px",border:"1.5px solid rgba(232,146,10,0.35)",borderRadius:10,fontSize:15,fontWeight:800,color:"#EEF2FF",outline:"none",fontFamily:"'JetBrains Mono',monospace",boxSizing:"border-box"}}
+                style={{width:"100%",padding:"13px 16px",border:"1.5px solid rgba(232,146,10,0.35)",borderRadius:10,fontSize:15,fontWeight:800,color:C.ch,outline:"none",fontFamily:"'JetBrains Mono',monospace",boxSizing:"border-box"}}
               />
             </div>
             <div>
@@ -2237,7 +2233,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
                 onChange={e=>setShortNote(e.target.value)}
                 onKeyDown={e=>{if(e.key==="Escape")setShowShortModal(false);}}
                 placeholder="e.g. ran out of stock at 2pm"
-                style={{width:"100%",padding:"11px 14px",background:th.panelBg,border:`1px solid ${th.divider}`,borderRadius:10,fontSize:13,fontWeight:500,color:"#EEF2FF",outline:"none",boxSizing:"border-box"}}
+                style={{width:"100%",padding:"11px 14px",background:th.panelBg,border:`1px solid ${th.divider}`,borderRadius:10,fontSize:13,fontWeight:500,color:C.ch,outline:"none",boxSizing:"border-box"}}
               />
             </div>
             <div style={{display:"flex",gap:10,paddingTop:4}}>
@@ -2254,7 +2250,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
           {/* ── Header: name + status ── */}
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10,marginBottom:12}}>
             <div style={{flex:1,minWidth:0}}>
-              <div style={{color:"#EEF2FF",fontSize:15,fontWeight:900,lineHeight:1.25,marginBottom:5,letterSpacing:"-0.02em"}}>{item.product}</div>
+              <div style={{color:C.ch,fontSize:15,fontWeight:900,lineHeight:1.25,marginBottom:5,letterSpacing:"-0.02em"}}>{item.product}</div>
               <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
                 <span style={{fontSize:12,color:item.status==='short'?"#E8920A":"#3A5070",fontFamily:"'JetBrains Mono',monospace",fontWeight:700}}>
                   {/* Bug fix: added ||"" guard on item.unit to prevent "undefined" */}
@@ -2516,7 +2512,7 @@ function ProductionView({orders, dailyProductions = [], onBatchUpdate, onDailyPr
   return(
     <div className="animate-fade-in custom-scrollbar">
       {recipeModal && (
-        <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(4px)", zIndex:999, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
+        <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:999, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
           <div className="animate-fade-up custom-scrollbar" style={{ background:"#0F1422", borderRadius:20, maxWidth:500, width:"100%", maxHeight:"88vh", overflowY:"auto", padding:24, boxShadow:C.shM }}>
             <div style={{ display:"flex", justifyContent:"space-between", marginBottom:16 }}>
               <span style={{ fontSize:16, fontWeight:900, color:C.ch }}>📖 Recipe</span>
@@ -2724,7 +2720,6 @@ function AdminOrdersTab({ orders }) {
         {(()=>{const hasIssues=(totals.short+totals.oos)>0; return(
           <div className="bento-hero animate-fade-up" style={{animationDelay:"0.05s",padding:"18px 16px",borderRadius:16,
             background:hasIssues?"linear-gradient(135deg,rgba(20,8,8,0.28),rgba(14,6,6,0.18))":"rgba(8,10,22,0.25)",
-            backdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",WebkitBackdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",
             border:"1px solid "+(hasIssues?"rgba(220,38,38,0.22)":C.bdrL)}}>
             <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.14em",color:hasIssues?C.rd:C.chL,marginBottom:8,opacity:0.85}}>Issues</div>
             <div style={{fontSize:38,fontWeight:900,color:hasIssues?C.rd:C.chL,letterSpacing:"-0.04em",lineHeight:1}}>{totals.short+totals.oos}</div>
@@ -2734,7 +2729,7 @@ function AdminOrdersTab({ orders }) {
         );})()}
 
         {/* Total Items */}
-        <div className="bento-hero animate-fade-up" style={{animationDelay:"0.08s",padding:"18px 16px",borderRadius:16,background:"rgba(8,10,22,0.25)",backdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",WebkitBackdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",border:"1px solid "+C.bdrL}}>
+        <div className="bento-hero animate-fade-up" style={{animationDelay:"0.08s",padding:"18px 16px",borderRadius:16,background:"rgba(8,10,22,0.25)",border:"1px solid "+C.bdrL}}>
           <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.14em",color:C.chL,marginBottom:8,opacity:0.85}}>Total Items</div>
           <div style={{fontSize:38,fontWeight:900,color:C.chM,letterSpacing:"-0.04em",lineHeight:1}}>{totals.total}</div>
           <div style={{fontSize:9,color:C.chXL,marginTop:7,fontWeight:600}}>across all orders</div>
@@ -2743,7 +2738,6 @@ function AdminOrdersTab({ orders }) {
         {/* In Production — spans 2 cols */}
         <div className="bento-hero animate-fade-up" style={{animationDelay:"0.12s",gridColumn:"span 2",padding:"18px 20px",borderRadius:16,
           background:"linear-gradient(135deg,rgba(18,14,6,0.28),rgba(12,10,4,0.18))",
-          backdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",WebkitBackdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",
           border:"1px solid rgba(232,146,10,0.20)",
           display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div>
@@ -3003,7 +2997,7 @@ class ErrorBoundary extends React.Component {
         <div style={{ minHeight: "100vh", background: "#090B10", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           <div style={{ background: "#141928", borderRadius: 16, padding: 32, maxWidth: 400, border: "1px solid #D31118", textAlign: "center" }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
-            <div style={{ fontSize: 20, fontWeight: 900, color: "#EEF2FF", marginBottom: 8 }}>Something went wrong</div>
+            <div style={{ fontSize: 20, fontWeight: 900, color: "var(--text)", marginBottom: 8 }}>Something went wrong</div>
             <div style={{ fontSize: 13, color: "#8896B3", marginBottom: 24 }}>{this.state.error?.message || "An unexpected error occurred."}</div>
             <button onClick={() => window.location.reload()} style={{ background: "#D31118", color: "#fff", border: "none", borderRadius: 8, padding: "12px 24px", fontWeight: 800, cursor: "pointer", fontSize: 14 }}>
               Reload App
@@ -3098,7 +3092,7 @@ function NotificationsTab({ role, userJoinDate }) {
 
   return (
     <div className="custom-scrollbar" style={{ flex:1, overflowY:"auto", padding:"20px 20px 8px", maxWidth:560, margin:"0 auto", width:"100%" }}>
-      <div style={{ fontFamily:"'Caveat',cursive", fontSize:26, fontWeight:700, color:C.ch, marginBottom:16 }}>Notifications</div>
+      <div style={{ fontSize:22, fontWeight:900, color:C.ch, marginBottom:16 }}>Notifications</div>
       {loading ? (
         <div style={{ padding:"40px 0", textAlign:"center" }}>
           <div className="dot"/><div className="dot"/><div className="dot"/>
@@ -3106,7 +3100,7 @@ function NotificationsTab({ role, userJoinDate }) {
       ) : notifs.length === 0 ? (
         <div className="empty-state" style={{ paddingTop:60 }}>
           <div style={{ fontSize:44, marginBottom:12 }}>🔔</div>
-          <div style={{ fontFamily:"'Caveat',cursive", fontSize:22, fontWeight:600, color:C.chL }}>No notifications yet</div>
+          <div style={{ fontSize:22, fontWeight:600, color:C.chL }}>No notifications yet</div>
           <div style={{ fontSize:12, color:C.chXL, marginTop:6 }}>Notifications from the last 7 days appear here</div>
         </div>
       ) : notifs.map((n, i) => {
@@ -4001,7 +3995,7 @@ function TFCOrderSystem(){
         {showInstallBanner&&<div className="install-banner">
           <div style={{width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0,boxShadow:"0 4px 14px rgba(211,17,24,0.45)"}}>🍽️</div>
           <div style={{flex:1,minWidth:0}}>
-            <div style={{fontSize:13,fontWeight:800,color:"#EEF2FF",lineHeight:1.2}}>Add to Home Screen</div>
+            <div style={{fontSize:13,fontWeight:800,color:"var(--text)",lineHeight:1.2}}>Add to Home Screen</div>
             <div style={{fontSize:11,color:"#8896B3",marginTop:2,fontWeight:500}}>Install TFC Order Tracker for quick access</div>
           </div>
           <button onClick={async()=>{ if(installPrompt){await installPrompt.prompt();setInstallPrompt(null);} setShowInstallBanner(false); }} style={{background:"linear-gradient(135deg,#D31118,#8A0B10)",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:800,padding:"8px 14px",cursor:"pointer",flexShrink:0,boxShadow:"0 2px 10px rgba(211,17,24,0.4)"}}>Install</button>
