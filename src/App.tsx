@@ -2691,16 +2691,17 @@ function AdminDashboard({ orders, dailyProductions = [], onCreateDP, onUpdateDP,
   );
 }
 
-// Android Chrome blocks `new Notification()` when a SW is active; fall back to showNotification().
+// Always prefer SW.showNotification() — works on all platforms including Android Chrome.
+// Fall back to direct Notification constructor only when no SW is available (desktop without SW).
 function fireNotif(title, options) {
   if (!("Notification" in window) || Notification.permission !== "granted") return;
-  try {
-    // eslint-disable-next-line no-new
-    new Notification(title, options);
-  } catch (_) {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options)).catch(() => {});
-    }
+  const opts = { icon: "/icon-192.png", badge: "/icon-192.png", ...options };
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.ready
+      .then(reg => reg.showNotification(title, opts))
+      .catch(() => { try { new Notification(title, opts); } catch(_){} });
+  } else {
+    try { new Notification(title, opts); } catch(_) {}
   }
 }
 
@@ -2765,62 +2766,72 @@ function TFCOrderSystem(){
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
+  // Keep notifPermission in sync if user changes it in browser settings then returns to the tab
+  useEffect(() => {
+    if (!("Notification" in window)) return;
+    const sync = () => setNotifPermission(Notification.permission);
+    document.addEventListener("visibilitychange", sync);
+    return () => document.removeEventListener("visibilitychange", sync);
+  }, []);
+
   const [orders,setOrders]=useState([]);
   const [dailyProductions, setDailyProductions] = useState([]);
   const [loadingInitial, setLoadingInitial] = useState(true);
 
-  // Role-based push notifications — fires when orders change after initial load
+  // Role-based push notifications — diffs Firestore snapshots and fires per-role alerts
   useEffect(() => {
-    if(!role || notifPermission !== "granted" || !("Notification" in window)) {
-      prevOrdersRef.current = orders;
-      return;
-    }
     const prev = prevOrdersRef.current;
-    if(prev === null){ prevOrdersRef.current = orders; return; } // skip initial snapshot
+    prevOrdersRef.current = orders; // always keep ref current so no burst on permission grant
 
+    // Only fire when role is active and permission is granted
+    if(!role || notifPermission !== "granted" || !("Notification" in window)) return;
+    // Skip on initial load (prev not yet set)
+    if(prev === null || prev === orders) return;
+
+    // Build a flat map of previous item states for O(1) lookup
     const prevMap = {};
-    prev.forEach(o => o.items.forEach(it => { prevMap[it.id] = it; }));
+    prev.forEach(o => o.items && o.items.forEach(it => { prevMap[it.id] = it; }));
 
     orders.forEach(order => {
+      if(!order.items) return;
       order.items.forEach(item => {
         const was = prevMap[item.id];
         if(!was || was.status === item.status) return; // no change
-        const changed = item.status;
+        const to = item.status;
 
         if(role === "admin"){
-          if(changed === "short") fireNotif("⚠ Short Shipment", {body:`${item.product} (${order.poName||order.restaurant}): Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`short-${item.id}`});
-          if(changed === "oos")   fireNotif("✕ Out of Stock", {body:`${item.product} in ${order.poName||order.restaurant}`,icon:"/icon-192.png",tag:`oos-${item.id}`});
+          if(to === "short") fireNotif("⚠ Short Shipment", {body:`${item.product} (${order.poName||order.restaurant}): Sent ${item.packedQty||"?"} of ${item.qty} ${item.unit||""}`,tag:`short-${item.id}`});
+          if(to === "oos")   fireNotif("✕ Out of Stock", {body:`${item.product} — ${order.poName||order.restaurant}`,tag:`oos-${item.id}`});
         }
         if(role === "packing"){
-          if(changed === "prod_done") fireNotif("✓ Ready to Pack", {body:`${item.product} — ${item.qty} ${item.unit||""} (${order.restaurant})`,icon:"/icon-192.png",tag:`pack-${item.id}`});
+          if(to === "prod_done") fireNotif("✓ Ready to Pack", {body:`${item.product} · ${item.qty} ${item.unit||""} · ${order.restaurant}`,tag:`ready-${item.id}`});
         }
         if(role === "production"){
-          if(changed === "production") fireNotif("🍳 New Batch", {body:`${item.product} — ${item.qty} ${item.unit||""} needed`,icon:"/icon-192.png",tag:`prod-${item.id}`});
+          if(to === "production") fireNotif("🍳 New Batch Needed", {body:`${item.product} · ${item.qty} ${item.unit||""}`,tag:`prod-${item.id}`});
         }
         if(role === "vins" && order.restaurant === "Vins"){
-          if(changed === "short") fireNotif("⚠ Short — Vins", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`vins-short-${item.id}`});
-          if(changed === "oos")   fireNotif("✕ OOS — Vins", {body:`${item.product} is out of stock`,icon:"/icon-192.png",tag:`vins-oos-${item.id}`});
+          if(to === "short") fireNotif("⚠ Short — Vins", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`,tag:`vs-${item.id}`});
+          if(to === "oos")   fireNotif("✕ Out of Stock — Vins", {body:`${item.product} unavailable`,tag:`vo-${item.id}`});
         }
         if(role === "manja" && order.restaurant === "Manja"){
-          if(changed === "short") fireNotif("⚠ Short — Manja", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty}`,icon:"/icon-192.png",tag:`manja-short-${item.id}`});
-          if(changed === "oos")   fireNotif("✕ OOS — Manja", {body:`${item.product} is out of stock`,icon:"/icon-192.png",tag:`manja-oos-${item.id}`});
+          if(to === "short") fireNotif("⚠ Short — Manja", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`,tag:`ms-${item.id}`});
+          if(to === "oos")   fireNotif("✕ Out of Stock — Manja", {body:`${item.product} unavailable`,tag:`mo-${item.id}`});
         }
       });
 
-      // Notify restaurant roles when their order is fully dispatched
-      if((role === "vins" && order.restaurant === "Vins") || (role === "manja" && order.restaurant === "Manja")){
+      // Alert restaurant role when their whole order is packed/delivered
+      const isMyRestaurant = (role === "vins" && order.restaurant === "Vins") || (role === "manja" && order.restaurant === "Manja");
+      if(isMyRestaurant){
         const prevOrder = prev.find(o => o.id === order.id);
-        if(prevOrder){
-          const wasAllDone = prevOrder.items.every(i => i.status === "delivered" || i.status === "packed");
-          const nowAllDone = order.items.every(i => i.status === "delivered" || i.status === "packed");
-          if(!wasAllDone && nowAllDone){
-            fireNotif("🚀 Order Ready", {body:`${order.poName||order.restaurant} order is fully packed and ready!`,icon:"/icon-192.png",tag:`done-${order.id}`});
+        if(prevOrder && prevOrder.items){
+          const wasDone = prevOrder.items.every(i => i.status === "delivered" || i.status === "packed");
+          const nowDone = order.items.every(i => i.status === "delivered" || i.status === "packed");
+          if(!wasDone && nowDone){
+            fireNotif("🚀 Order Ready!", {body:`${order.poName||order.restaurant} — fully packed and ready for dispatch`,tag:`done-${order.id}`});
           }
         }
       }
     });
-
-    prevOrdersRef.current = orders;
   }, [orders, role, notifPermission]);
 
   const [activeId,setActiveId]=useState(null); const [showModal,setShowModal]=useState(false); const [editingOrder, setEditingOrder] = useState(null); const [toast,setToast] = useState(null); const [sidebarOpen, setSidebarOpen]=useState(false);
