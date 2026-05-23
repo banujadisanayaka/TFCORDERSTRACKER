@@ -5,7 +5,7 @@ import "animate.css";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot,
-  updateDoc, writeBatch, query, where, getDocs, addDoc, orderBy, limit
+  updateDoc, writeBatch, query, where, getDocs, addDoc, orderBy, limit, runTransaction, getDoc
 } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
@@ -3832,25 +3832,26 @@ function TFCOrderSystem(){
     try {
       const docId = "daily_" + dateStr.replace(/-/g, "");
       const dpRef = doc(db, "daily_productions", docId);
-      const existingDp = dailyProductions.find(d => d.date === dateStr);
 
-      if (existingDp) {
-        const updatedItems = [...existingDp.items, newItem];
-        await updateDoc(dpRef, { items: updatedItems, updatedAt: Date.now() });
-      } else {
-        const dateObj = new Date(dateStr + "T00:00:00");
-        const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-        const sunOffset = dateObj.getDay(); 
-        const sunday = new Date(dateObj);
-        sunday.setDate(sunday.getDate() - sunOffset);
-        const weekOf = getLocalYMD(sunday);
-
-        await setDoc(dpRef, {
-          id: docId, date: dateStr, dayOfWeek: days[dateObj.getDay()], weekOf, status: "active", notes: "Contains unplanned production", 
-          items: [newItem],
-          createdAt: Date.now(), updatedAt: Date.now()
-        });
-      }
+      await runTransaction(db, async (transaction) => {
+        const snap = await transaction.get(dpRef);
+        if (snap.exists()) {
+          const freshItems = [...(snap.data().items || []), newItem];
+          transaction.update(dpRef, { items: freshItems, updatedAt: Date.now() });
+        } else {
+          const dateObj = new Date(dateStr + "T00:00:00");
+          const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+          const sunOffset = dateObj.getDay();
+          const sunday = new Date(dateObj);
+          sunday.setDate(sunday.getDate() - sunOffset);
+          const weekOf = getLocalYMD(sunday);
+          transaction.set(dpRef, {
+            id: docId, date: dateStr, dayOfWeek: days[dateObj.getDay()], weekOf, status: "active",
+            notes: "Contains unplanned production", items: [newItem],
+            createdAt: Date.now(), updatedAt: Date.now()
+          });
+        }
+      });
       notify("Extra production logged!", "success");
     } catch (e) { console.error("logExtraProduction failed:", e); notify("Failed to log extra production", "error"); }
   }
@@ -3882,10 +3883,15 @@ function TFCOrderSystem(){
 
   async function updateDailyProdItem(docId, itemId, updates) {
     try {
-      const dp = dailyProductions.find(d => d.id === docId);
-      if (!dp) return;
-      const updatedItems = dp.items.map(i => i.id === itemId ? { ...i, ...updates, updatedAt: Date.now() } : i);
-      await updateDoc(doc(db, "daily_productions", docId), { items: updatedItems, updatedAt: Date.now() });
+      const docRef = doc(db, "daily_productions", docId);
+      await runTransaction(db, async (transaction) => {
+        const snap = await transaction.get(docRef);
+        if (!snap.exists()) throw new Error("Document not found: " + docId);
+        const freshItems = (snap.data().items || []).map(i =>
+          i.id === itemId ? { ...i, ...updates, updatedAt: Date.now() } : i
+        );
+        transaction.update(docRef, { items: freshItems, updatedAt: Date.now() });
+      });
     } catch (e) { console.error("updateDailyProdItem failed:", e); notify("Update failed", "error"); }
   }
 
