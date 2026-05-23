@@ -2028,7 +2028,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
   );
 }
 
-function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
+function PackingRow({item, orderId, orders, onUpdate, notify}){
   const th=useTheme();
   const [showEdit, setShowEdit] = useState(false);
   const [qty, setQty] = useState(item.packedQty || "");
@@ -2038,6 +2038,20 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
   const [shortQty, setShortQty] = useState("");
   const [shortNote, setShortNote] = useState("");
 
+  // Bug fix: sync local edit state when Firestore pushes an update from another device,
+  // but only when the edit panel is closed so we don't clobber in-progress edits.
+  useEffect(() => {
+    if (!showEdit) {
+      setQty(item.packedQty || "");
+      setNotes(item.notes || "");
+    }
+  }, [item.packedQty, item.notes, item.status]); // eslint-disable-line
+
+  // Bug fix: close edit panel if item is externally moved to delivered
+  useEffect(() => {
+    if (item.status === 'delivered') setShowEdit(false);
+  }, [item.status]);
+
   function commit(status, extra={}){
     let dQty=qty;
     if(status==='packed'&&!qty&&item.qty){dQty=item.qty;setQty(item.qty);}
@@ -2046,22 +2060,25 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
   }
   function handleSendToProduction(){ setShowMergeModal(true); }
   function handleShort(){
-    setShortQty(qty || "");
-    setShortNote(notes || "");
+    // Bug fix: pre-fill from committed item values, not the (possibly unsaved) edit-panel state
+    setShortQty(item.packedQty || "");
+    setShortNote(item.notes || "");
     setShowShortModal(true);
   }
   function confirmShort(){
     const sq=parseFloat(shortQty);
     const rq=parseFloat(item.qty);
-    if(!shortQty||isNaN(sq)||sq<0){notify("Please enter a valid sent quantity.","error");return;}
-    if(rq&&sq>=rq){notify("Sent qty ≥ requested — mark as Packed instead?","error");return;}
+    if(!shortQty||isNaN(sq)||sq<0){notify("Enter how much you're actually sending.","error");return;}
+    // Bug fix: guard against NaN comparison when item.qty is missing
+    if(!isNaN(rq)&&sq>=rq){notify("Sent qty ≥ requested — mark as Packed instead?","error");return;}
     onUpdate(orderId,item.id,{status:'short',packedQty:shortQty,notes:shortNote,updatedAt:Date.now()});
-    setQty(shortQty); setNotes(shortNote);
+    // Bug fix: clear modal state so re-opening starts clean
+    setShortQty(""); setShortNote("");
     setShowShortModal(false);
   }
   const getActiveBatches=()=>{
     const b={};
-    orders.forEach(o=>o.items.forEach(it=>{if(it.status==="production"){const bId=it.batchId||it.id;if(!b[bId])b[bId]={batchId:bId,product:it.product,items:[]};b[bId].items.push(it);}}));
+    (orders||[]).forEach(o=>o.items&&o.items.forEach(it=>{if(it.status==="production"){const bId=it.batchId||it.id;if(!b[bId])b[bId]={batchId:bId,product:it.product,items:[]};b[bId].items.push(it);}}));
     return Object.values(b);
   };
 
@@ -2098,11 +2115,11 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
                 autoFocus
                 value={shortQty}
                 onChange={e=>setShortQty(e.target.value)}
-                onKeyDown={e=>{if(e.key==="Enter")confirmShort();}}
-                placeholder={`Sent qty (max ${item.qty} ${item.unit||""})`}
+                onKeyDown={e=>{if(e.key==="Enter")confirmShort();if(e.key==="Escape")setShowShortModal(false);}}
+                placeholder={`Sent qty (max ${item.qty||"?"} ${item.unit||""})`}
                 type="number"
                 min="0"
-                style={{width:"100%",padding:"13px 16px",background:"rgba(232,146,10,0.06)",border:"1.5px solid rgba(232,146,10,0.35)",borderRadius:10,fontSize:15,fontWeight:800,color:"#EEF2FF",outline:"none",fontFamily:"'JetBrains Mono',monospace",boxSizing:"border-box"}}
+                style={{width:"100%",padding:"13px 16px",border:"1.5px solid rgba(232,146,10,0.35)",borderRadius:10,fontSize:15,fontWeight:800,color:"#EEF2FF",outline:"none",fontFamily:"'JetBrains Mono',monospace",boxSizing:"border-box"}}
               />
             </div>
             <div>
@@ -2110,6 +2127,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
               <input
                 value={shortNote}
                 onChange={e=>setShortNote(e.target.value)}
+                onKeyDown={e=>{if(e.key==="Escape")setShowShortModal(false);}}
                 placeholder="e.g. ran out of stock at 2pm"
                 style={{width:"100%",padding:"11px 14px",background:th.panelBg,border:`1px solid ${th.divider}`,borderRadius:10,fontSize:13,fontWeight:500,color:"#EEF2FF",outline:"none",boxSizing:"border-box"}}
               />
@@ -2131,7 +2149,8 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
               <div style={{color:"#EEF2FF",fontSize:15,fontWeight:900,lineHeight:1.25,marginBottom:5,letterSpacing:"-0.02em"}}>{item.product}</div>
               <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
                 <span style={{fontSize:12,color:item.status==='short'?"#E8920A":"#3A5070",fontFamily:"'JetBrains Mono',monospace",fontWeight:700}}>
-                  {item.status==='short'?`Sent ${item.packedQty||0} / Req ${item.qty} ${item.unit}`:`${item.qty} ${item.unit}`}
+                  {/* Bug fix: added ||"" guard on item.unit to prevent "undefined" */}
+                  {item.status==='short'?`Sent ${item.packedQty||0} / Req ${item.qty} ${item.unit||""}`:`${item.qty} ${item.unit||""}`}
                 </span>
                 {itemCode&&<span style={{fontSize:10,fontWeight:900,color:"#D31118",background:"rgba(211,17,24,0.12)",border:"1px solid rgba(211,17,24,0.28)",borderRadius:5,padding:"2px 7px",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.04em",boxShadow:"0 0 6px rgba(211,17,24,0.18)"}}># {itemCode}</span>}
               </div>
@@ -2142,7 +2161,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
           {/* ── Inline edit form ── */}
           {showEdit&&item.status!=='delivered'&&(
             <div className="animate-fade-in" style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",background:th.panelBg,padding:"12px",borderRadius:10,border:`1px solid ${th.divider}`}}>
-              <input value={qty} onChange={e=>setQty(e.target.value)} placeholder="Qty sent" style={{width:90,padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontFamily:"'JetBrains Mono',monospace",fontWeight:700,flexShrink:0}}/>
+              <input value={qty} onChange={e=>setQty(e.target.value)} placeholder={`Qty (req: ${item.qty||"?"})`} style={{width:110,padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontFamily:"'JetBrains Mono',monospace",fontWeight:700,flexShrink:0}}/>
               <input value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Note (optional)" style={{flex:1,minWidth:100,padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontWeight:500}}/>
               <button onClick={()=>setShowEdit(false)} style={{padding:"8px 14px",background:th.chipBg,border:`1px solid ${th.closeBdr}`,borderRadius:7,fontSize:11,fontWeight:800,color:C.chM,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit"}}>Done</button>
             </div>
@@ -2175,7 +2194,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
               </div>
             </div>
           ):(
-            /* pending or prod_done — primary pack button + secondary chips */
+            /* pending or prod_done */
             <div>
               <button
                 className={`pk-pack-btn${item.status==='prod_done'?" pk-ready-btn":""}`}
@@ -2185,6 +2204,8 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
               </button>
               <div style={{display:"flex",gap:6,marginTop:8}}>
                 {item.status!=='prod_done'&&<button onClick={handleSendToProduction} className="pk-chip pk-chip-prod">→ Prod</button>}
+                {/* Bug fix: prod_done items can now be reset to pending if marked done by mistake */}
+                {item.status==='prod_done'&&<button onClick={()=>commit('pending')} className="pk-chip pk-chip-reset">↩ Reset</button>}
                 <button onClick={handleShort}       className="pk-chip pk-chip-short">⚠ Short</button>
                 <button onClick={()=>commit('oos')} className="pk-chip pk-chip-oos">✕ OOS</button>
                 <button onClick={()=>setShowEdit(!showEdit)} className="pk-chip pk-chip-edit">✎</button>
@@ -2199,15 +2220,22 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
 }
 
 function generateWhatsAppMessage(order) {
+  if (!order?.items) return encodeURIComponent("No order data.");
   let msg = `📋 *${order.poName || 'Purchase Order'}*\nRestaurant: ${order.restaurant}\n`;
   if(order.orderDate) msg += `PO received on : ${order.orderDate}\n`;
-  const sending = order.items.filter(i => i.status === 'packed' || i.status === 'delivered' || i.status === 'prod_done');
-  const prod = order.items.filter(i => i.status === 'production');
+  // Bug fix: prod_done = "Ready to Pack" (not yet shipped) — removed from sending filter
+  const sending = order.items.filter(i => i.status === 'packed' || i.status === 'delivered');
+  // Bug fix: prod_done items shown under production ("ready, packing soon")
+  const prod = order.items.filter(i => i.status === 'production' || i.status === 'prod_done');
   const issues = order.items.filter(i => i.status === 'short' || i.status === 'oos');
 
-  msg += `\n✅ Sending/ Delivered:\n`; if(sending.length === 0) msg += `- None yet\n`; sending.forEach(i => { msg += `- ${i.product} : ${i.packedQty || i.qty || '-'}\n`; });
-  msg += `\n🍳 In production:\n`; if(prod.length === 0) msg += `- None currently\n`; prod.forEach(i => { msg += `- ${i.product} : ${i.qty || '-'}\n`; });
-  msg += `\n⚠️ ISSUES:\n`; if(issues.length === 0) msg += `- No issues reported\n`; 
+  // Bug fix: was running both the "none" message AND the forEach — now properly exclusive
+  msg += `\n✅ Sending / Delivered:\n`;
+  if(sending.length === 0) { msg += `- None yet\n`; } else { sending.forEach(i => { msg += `- ${i.product} : ${i.packedQty || i.qty || '-'} ${i.unit||""}\n`; }); }
+  msg += `\n🍳 In production:\n`;
+  if(prod.length === 0) { msg += `- None currently\n`; } else { prod.forEach(i => { msg += `- ${i.product} : ${i.qty || '-'} ${i.unit||""}${i.status==='prod_done'?' ✓ ready':''}\n`; }); }
+  msg += `\n⚠️ ISSUES:\n`;
+  if(issues.length === 0) { msg += `- No issues reported\n`; }
   issues.forEach(i => { 
     if(i.status === 'short') {
       msg += `- ${i.product} (Short: Sent ${i.packedQty || '0'} instead of ${i.qty})${i.notes ? ' - ' + i.notes : ''}\n`; 
@@ -2222,7 +2250,11 @@ function PackingView({order, onUpdate, orders, notify}){
   const s=oStats(order); const rc=order.restaurant==="Vins"?C.ol:C.am;
   const totalDone=s.packed+s.delivered; const pct=s.total?Math.round((totalDone/s.total)*100):0;
   const urg=deliveryUrgency(order.deliveryDate);
+  // Bug fix: allDone only fired at 100% so orders with short/oos items never showed celebration.
+  // Now "allResolved" = nothing left pending/cooking — short and oos items count as resolved.
   const allDone = pct===100;
+  const hasIssues = s.short > 0 || s.oos > 0;
+  const allResolved = s.total > 0 && s.pending === 0 && s.prod === 0 && s.prod_done === 0;
 
   return(
     <div className="animate-fade-in custom-scrollbar">
@@ -2266,16 +2298,19 @@ function PackingView({order, onUpdate, orders, notify}){
           </div>
         )}
 
-        {/* All-done celebration */}
-        {allDone&&(
-          <div className="animate-fade-up" style={{marginTop:12,padding:"12px 16px",background:"linear-gradient(135deg,rgba(9,115,83,0.25),rgba(22,163,74,0.15))",borderRadius:10,border:"1px solid rgba(74,222,128,0.3)",display:"flex",alignItems:"center",gap:10}}>
-            <span style={{fontSize:20}}>🎉</span>
-            <span style={{fontSize:13,fontWeight:800,color:"#4ADE80"}}>All items packed — ready to dispatch!</span>
+        {/* All-done / all-resolved celebration */}
+        {allResolved&&(
+          <div className="animate-fade-up" style={{marginTop:12,padding:"12px 16px",background:hasIssues?"linear-gradient(135deg,rgba(232,146,10,0.18),rgba(232,146,10,0.08))":"linear-gradient(135deg,rgba(9,115,83,0.25),rgba(22,163,74,0.15))",borderRadius:10,border:hasIssues?"1px solid rgba(232,146,10,0.35)":"1px solid rgba(74,222,128,0.3)",display:"flex",alignItems:"center",gap:10}}>
+            <span style={{fontSize:20}}>{hasIssues?"⚠️":"🎉"}</span>
+            <div>
+              <div style={{fontSize:13,fontWeight:800,color:hasIssues?"#E8920A":"#4ADE80"}}>{hasIssues?`Dispatched with ${s.short+s.oos} issue${s.short+s.oos>1?"s":""}`:allDone?"All items packed — ready to dispatch!":"Ready to dispatch"}</div>
+              {hasIssues&&<div style={{fontSize:11,color:C.chL,marginTop:2,fontWeight:500}}>{s.short>0?`${s.short} short`+( s.oos>0?`, ${s.oos} OOS`:""):""}{s.short===0&&s.oos>0?`${s.oos} out of stock`:""} — send WhatsApp update</div>}
+            </div>
           </div>
         )}
       </div>
 
-      {order.items.map((item, index)=><PackingRow key={item.id} item={item} orderId={order.id} orders={orders} onUpdate={onUpdate} notify={notify} isFirst={index===0}/>)}
+      {order.items.map((item)=><PackingRow key={item.id} item={item} orderId={order.id} orders={orders} onUpdate={onUpdate} notify={notify}/>)}
     </div>
   );
 }
