@@ -593,11 +593,11 @@ const DC={ // dark palette (default)
 const C={...DC};
 
 const ROLES={
-  admin:{label:"Admin",icon:"⚙",img:"/icon-admin.png",color:C.ch,accent:C.ol,bg:C.beige,desc:"Create and manage all orders"},
-  packing:{label:"Packing",icon:"◻",img:"/icon-packing.png",color:C.ol,accent:C.ol,bg:C.olBg,desc:"Smart status updater for dispatch"},
-  production:{label:"Production",icon:"◈",img:"/icon-production.png",color:C.am,accent:C.am,bg:C.amBg,desc:"Production queue with recipes"},
-  vins:{label:"Vins Kitchen",icon:"V",img:"/icon-vins.png",color:C.chM,accent:C.chM,bg:C.beige,desc:"Live delivery tracker interface"},
-  manja:{label:"Manja Kitchen",icon:"M",img:"/icon-manja.png",color:C.amDk,accent:C.amDk,bg:C.amBg,desc:"Live delivery tracker interface"},
+  admin:{label:"Admin",icon:"⚙",color:C.ch,accent:C.ol,bg:C.beige,desc:"Create and manage all orders"},
+  packing:{label:"Packing",icon:"◻",color:C.ol,accent:C.ol,bg:C.olBg,desc:"Smart status updater for dispatch"},
+  production:{label:"Production",icon:"◈",color:C.am,accent:C.am,bg:C.amBg,desc:"Production queue with recipes"},
+  vins:{label:"Vins Kitchen",icon:"V",color:C.chM,accent:C.chM,bg:C.beige,desc:"Live delivery tracker interface"},
+  manja:{label:"Manja Kitchen",icon:"M",color:C.amDk,accent:C.amDk,bg:C.amBg,desc:"Live delivery tracker interface"},
 };
 
 const SC = {
@@ -1263,10 +1263,6 @@ function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel 
 function SplashScreen() {
   return (
     <div className="animate-fade-in grain" style={{position:"fixed",inset:0,zIndex:99999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",transition:"opacity 0.5s ease",overflow:"hidden"}}>
-      {/* Hero background image */}
-      <div style={{position:"absolute",inset:0,backgroundImage:"url('/bg-hero.png')",backgroundSize:"cover",backgroundPosition:"center",filter:"brightness(0.22) saturate(1.4)",zIndex:0}}/>
-      {/* Red gradient overlay */}
-      <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(13,20,36,0.7) 0%,rgba(13,20,36,0.4) 50%,rgba(13,20,36,0.9) 100%)",zIndex:1}}/>
       <PremiumBg/>
       <motion.div
         initial={{opacity:0,y:24}}
@@ -1274,10 +1270,10 @@ function SplashScreen() {
         transition={{duration:0.8,ease:[0.16,1,0.3,1],delay:0.1}}
         style={{display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:2}}
       >
-        <div style={{position:"relative",width:110,height:110,margin:"0 auto 28px"}}>
-          <img src="/tfc-logo.png" alt="TFC" style={{width:110,height:110,borderRadius:"50%",objectFit:"cover",animation:"logoGlow 3s infinite ease-in-out",display:"block"}}/>
-          <div style={{position:"absolute",inset:-12,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.25)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
-          <div style={{position:"absolute",inset:-22,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.10)",animation:"spinSlow 35s linear infinite reverse",pointerEvents:"none"}}/>
+        <div style={{position:"relative",width:96,height:96,margin:"0 auto 28px"}}>
+          <div style={{width:96,height:96,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:40,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
+          <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",inset:-18,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.08)",animation:"spinSlow 35s linear infinite reverse",pointerEvents:"none"}}/>
         </div>
         <div style={{fontSize:26,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.04em",marginBottom:6}}>The Food Company</div>
         <div style={{fontSize:11,color:"#3A5070",letterSpacing:"0.22em",textTransform:"uppercase",fontWeight:700,marginBottom:48}}>Operations Hub</div>
@@ -1309,9 +1305,6 @@ function LoginScreen({ onSignIn }) {
 
   return (
     <div className="animate-fade-in grain" style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",position:"relative",overflow:"hidden"}}>
-      {/* Hero background */}
-      <div style={{position:"absolute",inset:0,backgroundImage:"url('/bg-hero.png')",backgroundSize:"cover",backgroundPosition:"center",filter:"brightness(0.18) saturate(1.2)",zIndex:0}}/>
-      <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(8,12,24,0.6) 0%,rgba(8,12,24,0.3) 50%,rgba(8,12,24,0.85) 100%)",zIndex:1}}/>
       <PremiumBg/>
       <div style={{width:"100%",maxWidth:400,position:"relative",zIndex:2}}>
         {/* Logo */}
@@ -1322,7 +1315,7 @@ function LoginScreen({ onSignIn }) {
           style={{textAlign:"center",marginBottom:44}}
         >
           <div style={{position:"relative",width:90,height:90,margin:"0 auto 28px"}}>
-            <img src="/tfc-logo.png" alt="TFC" style={{width:90,height:90,borderRadius:"50%",objectFit:"cover",animation:"logoGlow 3s infinite ease-in-out",display:"block"}}/>
+            <div style={{width:90,height:90,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:38,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
             <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.2)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
           </div>
           <div style={{fontSize:30,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.05em",lineHeight:1,marginBottom:10}}>The Food Company</div>
@@ -1738,7 +1731,7 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
           style={{textAlign:"center",marginBottom:28}}
         >
           <div style={{position:"relative",width:62,height:62,margin:"0 auto 18px"}}>
-            <img src="/tfc-logo.png" alt="TFC" style={{width:62,height:62,borderRadius:"50%",objectFit:"cover",animation:"logoGlow 3s infinite ease-in-out",display:"block"}}/>
+            <div style={{width:62,height:62,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
             <div style={{position:"absolute",inset:-8,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.16)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
           </div>
           <div style={{fontSize:22,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.03em",lineHeight:1}}>Welcome back.</div>
@@ -1772,9 +1765,9 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
                 <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${r.color}30,transparent)`,pointerEvents:"none"}}/>
                 {/* Subtle glow orb */}
                 <div style={{position:"absolute",top:-40,right:-20,width:100,height:100,borderRadius:"50%",background:`radial-gradient(circle,${r.color}15 0%,transparent 70%)`,pointerEvents:"none"}}/>
-                {/* Icon — custom image with dark bg */}
-                <div style={{width:52,height:52,background:"rgba(8,12,24,0.7)",borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",border:"1px solid "+r.color+"30",flexShrink:0,overflow:"hidden"}}>
-                  <img src={r.img} alt={r.label} style={{width:38,height:38,objectFit:"contain",filter:"brightness(0) invert(1)",opacity:0.9}}/>
+                {/* Icon */}
+                <div style={{width:46,height:46,background:`linear-gradient(135deg,${r.color}22,${r.color}0A)`,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,fontWeight:900,color:r.color,border:"1px solid "+r.color+"30",flexShrink:0}}>
+                  {r.icon}
                 </div>
                 <div style={{flex:1}}>
                   <div style={{fontSize:15,fontWeight:900,color:"#EEF2FF",marginBottom:5,letterSpacing:"-0.02em"}}>{r.label}</div>
