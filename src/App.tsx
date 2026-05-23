@@ -1318,7 +1318,63 @@ function LoginScreen({ onSignIn }) {
   );
 }
 
-function RequestAccessScreen({ authUser, onSubmit, onSignOut }) {
+function InstallAppButton({ installPrompt, onInstallDone }) {
+  const [showGuide, setShowGuide] = useState(false);
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  if (isStandalone || (!installPrompt && !isIOS)) return null;
+
+  async function handleClick() {
+    if (installPrompt) {
+      await installPrompt.prompt();
+      onInstallDone?.();
+    } else {
+      setShowGuide(true);
+    }
+  }
+
+  return (
+    <>
+      <button
+        onClick={handleClick}
+        style={{display:"flex",alignItems:"center",justifyContent:"center",gap:9,width:"100%",padding:"13px 20px",background:"linear-gradient(135deg,rgba(0,212,255,0.10),rgba(0,212,255,0.05))",border:"1px solid rgba(0,212,255,0.22)",borderRadius:14,cursor:"pointer",fontFamily:"inherit",color:"#00D4FF",fontSize:13,fontWeight:800,letterSpacing:"0.01em",transition:"all 0.2s",marginTop:16}}
+        onMouseEnter={e=>{e.currentTarget.style.background="linear-gradient(135deg,rgba(0,212,255,0.16),rgba(0,212,255,0.08))";e.currentTarget.style.borderColor="rgba(0,212,255,0.4)";}}
+        onMouseLeave={e=>{e.currentTarget.style.background="linear-gradient(135deg,rgba(0,212,255,0.10),rgba(0,212,255,0.05))";e.currentTarget.style.borderColor="rgba(0,212,255,0.22)";}}
+      >
+        <span style={{fontSize:17}}>📲</span>
+        Add to Home Screen
+        {isIOS && <span style={{fontSize:10,fontWeight:600,color:"rgba(0,212,255,0.6)",marginLeft:2}}>(iOS Guide)</span>}
+      </button>
+
+      {showGuide && (
+        <div className="animate-fade-in" onClick={()=>setShowGuide(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+          <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,padding:"28px 28px 40px",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(0,212,255,0.35),transparent)",pointerEvents:"none"}}/>
+            <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto 20px"}}/>
+            <div style={{fontSize:19,fontWeight:900,color:"#EEF2FF",marginBottom:6}}>Add to Home Screen</div>
+            <div style={{fontSize:13,color:"#4A6080",marginBottom:24,fontWeight:500}}>Follow these steps in Safari to install the app:</div>
+            {[
+              { icon:"1️⃣", title:"Tap the Share button", desc:'Tap the Share icon (📤) at the bottom of Safari — it looks like a box with an arrow pointing up.' },
+              { icon:"2️⃣", title:'Tap "Add to Home Screen"', desc:'Scroll down in the share sheet and tap "Add to Home Screen".' },
+              { icon:"3️⃣", title:'Tap "Add" to confirm', desc:'The app will appear on your home screen and work like a native app.' },
+            ].map(step => (
+              <div key={step.icon} style={{display:"flex",gap:14,alignItems:"flex-start",marginBottom:18}}>
+                <span style={{fontSize:22,flexShrink:0,marginTop:1}}>{step.icon}</span>
+                <div>
+                  <div style={{fontSize:13,fontWeight:800,color:"#EEF2FF",marginBottom:3}}>{step.title}</div>
+                  <div style={{fontSize:12,color:"#4A6080",lineHeight:1.55,fontWeight:500}}>{step.desc}</div>
+                </div>
+              </div>
+            ))}
+            <button onClick={()=>setShowGuide(false)} style={{width:"100%",padding:"13px",marginTop:8,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.10)",borderRadius:12,fontSize:13,fontWeight:800,color:"#8896B3",cursor:"pointer",fontFamily:"inherit"}}>Got it</button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function RequestAccessScreen({ authUser, onSubmit, onSignOut, installPrompt, onInstallDone }) {
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -1406,13 +1462,14 @@ function RequestAccessScreen({ authUser, onSubmit, onSignOut }) {
           </>
         )}
 
-        <div style={{textAlign:"center",marginTop:28,fontSize:11,color:"#1A2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
+        <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
+        <div style={{textAlign:"center",marginTop:24,fontSize:11,color:"#1A2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
       </div>
     </div>
   );
 }
 
-function PendingScreen({ request, authUser, onSignOut }) {
+function PendingScreen({ request, authUser, onSignOut, installPrompt, onInstallDone }) {
   const cardRef = useRef(null);
   useTilt(cardRef, 7);
   useDeviceTilt(cardRef, 5);
@@ -1447,7 +1504,8 @@ function PendingScreen({ request, authUser, onSignOut }) {
           </div>
         </div>
 
-        <div style={{textAlign:"center",marginTop:28,fontSize:11,color:"#1E2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
+        <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
+        <div style={{textAlign:"center",marginTop:24,fontSize:11,color:"#1E2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
       </div>
     </div>
   );
@@ -1557,7 +1615,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
   );
 }
 
-function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, authUser, onSignOut, pendingCount }) {
+function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, authUser, onSignOut, pendingCount, installPrompt, onInstallDone }) {
   const isMobile = useIsMobile();
   const keys = availableRoles || Object.keys(ROLES);
 
@@ -1657,7 +1715,11 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
           })}
         </div>
 
-        <div className="animate-fade-up" style={{textAlign:"center",marginTop:36,fontSize:11,color:"#1A2840",fontWeight:600,animationDelay:"0.4s"}}>
+        <div className="animate-fade-up" style={{animationDelay:"0.35s"}}>
+          <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
+        </div>
+
+        <div className="animate-fade-up" style={{textAlign:"center",marginTop:24,fontSize:11,color:"#1A2840",fontWeight:600,animationDelay:"0.4s"}}>
           Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur
           <div style={{fontSize:10,marginTop:6,fontWeight:500,opacity:0.6}}>© 2026 Made by Banuja Disanayaka</div>
         </div>
@@ -3094,11 +3156,12 @@ function TFCOrderSystem(){
       onBack={() => setPhase("select")} authUser={authUser} onSignOut={handleSignOut}
     />;
   } else if(phase==="select") {
+    const installProps = { installPrompt, onInstallDone: () => { setInstallPrompt(null); setShowInstallBanner(false); } };
     if (!isOwner && !userRecord) {
       if (accessRequest && accessRequest.status === "pending") {
-        AppContent = <PendingScreen request={accessRequest} authUser={authUser} onSignOut={handleSignOut} />;
+        AppContent = <PendingScreen request={accessRequest} authUser={authUser} onSignOut={handleSignOut} {...installProps}/>;
       } else {
-        AppContent = <RequestAccessScreen authUser={authUser} onSubmit={submitAccessRequest} onSignOut={handleSignOut} />;
+        AppContent = <RequestAccessScreen authUser={authUser} onSubmit={submitAccessRequest} onSignOut={handleSignOut} {...installProps}/>;
       }
     } else {
       AppContent = <RoleSelectScreen
@@ -3106,6 +3169,7 @@ function TFCOrderSystem(){
         isOwner={isOwner} onControlPanel={() => setPhase("control_panel")}
         authUser={authUser} onSignOut={handleSignOut}
         pendingCount={accessRequests.filter(r => r.status === "pending").length}
+        {...installProps}
       />;
     }
   } else {
