@@ -2928,26 +2928,29 @@ function TFCOrderSystem(){
         const to = item.status;
 
         if(role === "admin"){
-          if(to === "short") fireNotif("⚠ Short Shipment", {body:`${item.product} (${order.poName||order.restaurant}): Sent ${item.packedQty||"?"} of ${item.qty} ${item.unit||""}`,tag:`short-${item.id}`});
-          if(to === "oos")   fireNotif("✕ Out of Stock", {body:`${item.product} — ${order.poName||order.restaurant}`,tag:`oos-${item.id}`});
+          if(to === "short")     fireNotif("⚠ Short Shipment",  {body:`${item.product} (${order.poName||order.restaurant}): Sent ${item.packedQty||"?"} of ${item.qty} ${item.unit||""}`,tag:`short-${item.id}`});
+          if(to === "oos")       fireNotif("✕ Out of Stock",     {body:`${item.product} — ${order.poName||order.restaurant}`,tag:`oos-${item.id}`});
+          if(to === "delivered") fireNotif("🚀 Delivered",       {body:`${item.product} · ${order.poName||order.restaurant}`,tag:`del-${item.id}`});
         }
         if(role === "packing"){
-          if(to === "prod_done") fireNotif("✓ Ready to Pack", {body:`${item.product} · ${item.qty} ${item.unit||""} · ${order.restaurant}`,tag:`ready-${item.id}`});
+          if(to === "prod_done") fireNotif("✓ Ready to Pack",   {body:`${item.product} · ${item.qty} ${item.unit||""} · ${order.restaurant}`,tag:`ready-${item.id}`});
         }
         if(role === "production"){
-          if(to === "production") fireNotif("🍳 New Batch Needed", {body:`${item.product} · ${item.qty} ${item.unit||""}`,tag:`prod-${item.id}`});
+          if(to === "production") fireNotif("🍳 New Batch Needed",{body:`${item.product} · ${item.qty} ${item.unit||""}`,tag:`prod-${item.id}`});
         }
         if(role === "vins" && order.restaurant === "Vins"){
-          if(to === "short") fireNotif("⚠ Short — Vins", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`,tag:`vs-${item.id}`});
-          if(to === "oos")   fireNotif("✕ Out of Stock — Vins", {body:`${item.product} unavailable`,tag:`vo-${item.id}`});
+          if(to === "short")     fireNotif("⚠ Short — Vins",    {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`,tag:`vs-${item.id}`});
+          if(to === "oos")       fireNotif("✕ Out of Stock — Vins",{body:`${item.product} unavailable`,tag:`vo-${item.id}`});
+          if(to === "delivered") fireNotif("🚀 Delivered — Vins",{body:`${item.product} · ${item.qty} ${item.unit||""}`,tag:`vd-${item.id}`});
         }
         if(role === "manja" && order.restaurant === "Manja"){
-          if(to === "short") fireNotif("⚠ Short — Manja", {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`,tag:`ms-${item.id}`});
-          if(to === "oos")   fireNotif("✕ Out of Stock — Manja", {body:`${item.product} unavailable`,tag:`mo-${item.id}`});
+          if(to === "short")     fireNotif("⚠ Short — Manja",   {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`,tag:`ms-${item.id}`});
+          if(to === "oos")       fireNotif("✕ Out of Stock — Manja",{body:`${item.product} unavailable`,tag:`mo-${item.id}`});
+          if(to === "delivered") fireNotif("🚀 Delivered — Manja",{body:`${item.product} · ${item.qty} ${item.unit||""}`,tag:`md-${item.id}`});
         }
       });
 
-      // Alert restaurant role when their whole order is packed/delivered
+      // Alert restaurant role when their whole order is fully dispatched
       const isMyRestaurant = (role === "vins" && order.restaurant === "Vins") || (role === "manja" && order.restaurant === "Manja");
       if(isMyRestaurant){
         const prevOrder = prev.find(o => o.id === order.id);
@@ -2958,6 +2961,33 @@ function TFCOrderSystem(){
             fireNotif("🚀 Order Ready!", {body:`${order.poName||order.restaurant} — fully packed and ready for dispatch`,tag:`done-${order.id}`});
           }
         }
+      }
+
+      // Alert admin when whole order is delivered
+      if(role === "admin"){
+        const prevOrder = prev.find(o => o.id === order.id);
+        if(prevOrder && prevOrder.items){
+          const wasDone = prevOrder.items.every(i => i.status === "delivered");
+          const nowDone = order.items.every(i => i.status === "delivered");
+          if(!wasDone && nowDone){
+            fireNotif("🚀 Order Fully Delivered", {body:`${order.poName||order.restaurant} — all items dispatched`,tag:`fulldel-${order.id}`});
+          }
+        }
+      }
+    });
+
+    // Detect new orders (tab is open — foreground path for packing, vins, manja)
+    const prevIds = new Set(prev.map(o => o.id));
+    orders.forEach(order => {
+      if(prevIds.has(order.id)) return;
+      if(role === "packing"){
+        fireNotif("📋 New PO Received", {body:`${order.restaurant}: ${order.poName||"New Order"}`,tag:`newpo-${order.id}`});
+      }
+      if(role === "vins" && order.restaurant === "Vins"){
+        fireNotif("📋 New Order — Vins", {body:`${order.poName||"New Order"}`,tag:`newpo-${order.id}`});
+      }
+      if(role === "manja" && order.restaurant === "Manja"){
+        fireNotif("📋 New Order — Manja", {body:`${order.poName||"New Order"}`,tag:`newpo-${order.id}`});
       }
     });
   }, [orders, role, notifPermission]);
