@@ -14,34 +14,16 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(function(payload) {
-  try {
-    // Read from webpush.notification (surfaced as payload.notification) first,
-    // fall back to data fields so we still show something if either path is missing.
-    const n = payload && payload.notification ? payload.notification : {};
-    const d = payload && payload.data ? payload.data : {};
-    const title = n.title || d.title || "TFC Orders";
-    const body  = n.body  || d.body  || "";
-    // Unique tag per message prevents Android from collapsing rapid notifications into one.
-    const tag = d.tag || n.tag || ("tfc-" + Date.now());
-    return self.registration.showNotification(title, {
-      body,
-      icon: "/icon-192.png",
-      badge: "/icon-192.png",
-      tag,
-      requireInteraction: false,
-      vibrate: [200, 100, 200],
-      renotify: true,
-      data: { url: "/", tag },
-    });
-  } catch (err) {
-    // Last-resort fallback so a malformed payload doesn't silently kill the notification
-    return self.registration.showNotification("TFC Orders", {
-      body: "New activity",
-      icon: "/icon-192.png",
-      badge: "/icon-192.png",
-      tag: "tfc-" + Date.now(),
-    });
-  }
+  const title = payload.notification?.title || "TFC Orders";
+  const body  = payload.notification?.body  || "";
+  self.registration.showNotification(title, {
+    body,
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
+    tag: payload.data?.tag || "tfc-push",
+    requireInteraction: false,
+    data: { url: "/" },
+  });
 });
 
 // Tap notification → open / focus the app
@@ -57,22 +39,8 @@ self.addEventListener("notificationclick", function(e) {
   );
 });
 
-// Browser rotated the push subscription (token may be stale) → tell any open clients to re-register.
-// If no clients are open, the next visit will hit the tab-focus heal path.
-self.addEventListener("pushsubscriptionchange", function(event) {
-  event.waitUntil(
-    clients.matchAll({ includeUncontrolled: true, type: "window" }).then(function(cs) {
-      return Promise.all(cs.map(c => {
-        try { c.postMessage({ type: "fcm-resubscribe" }); } catch(_) {}
-      }));
-    })
-  );
-});
-
 // ─── Asset caching ───────────────────────────────────────────────────────────
-const CACHE = "tfc-v9";
-// Precache both icons so Chrome has them ready when evaluating installability.
-// The 512px icon is required for the Android install badge/WebAPK prompt.
+const CACHE = "tfc-v5";
 const PRECACHE = ["/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", e => {

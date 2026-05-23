@@ -5,7 +5,7 @@ import "animate.css";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot,
-  updateDoc, writeBatch, query, where, getDocs
+  updateDoc, writeBatch, query, where, getDocs, addDoc, orderBy, limit
 } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
@@ -18,19 +18,43 @@ const itemsData = require("./TFC_Items_Database.json");
 const ITEMS_DB = itemsData || [];
 
 /* ═══════════════════════════════════════════════════════════════
-   PREMIUM CSS ANIMATIONS & DARK MODE (V8 3D)
+   SKETCH DESIGN SYSTEM — Paper + Ink Aesthetic
 ═══════════════════════════════════════════════════════════════ */
 const GLOBAL_STYLES = `
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=JetBrains+Mono:wght@500;600&display=swap');
 
-  *, *::before, *::after { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; overflow-x: hidden; background: #04060E; -webkit-tap-highlight-color: transparent; }
-  #root { overflow-x: hidden; }
+  *, *::before, *::after { box-sizing: border-box; touch-action: manipulation; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+  #root { overflow-x: hidden; overscroll-behavior-y: contain; }
+  button, a { -webkit-tap-highlight-color: transparent; }
+  button, input, select { -webkit-appearance: none; appearance: none; }
+
+  /* ── CSS Custom Properties (theme vars) ── */
+  :root, [data-theme="dark"] {
+    --page-bg: #0A0D1E; --card-bg: #111828; --card-shadow: 2px 3px 0 rgba(0,0,0,0.40);
+    --modal-bg: #0A0D1E; --border: rgba(238,242,255,0.18); --text: #EEF2FF;
+    --text-sub: #8896B3; --accent: #D31118; --input-bg: #0A1020;
+    --input-focus-border: #00D4FF; --input-focus-shadow: rgba(0,212,255,0.18);
+    --input-focus-bg: #07101C; --sidebar-bg: #0D1628;
+    --header-bg: rgba(10,13,30,0.95); --paper-dot: rgba(255,255,255,0.04);
+  }
+  [data-theme="light"] {
+    --page-bg: #FAFAF0; --card-bg: #FFFFFF; --card-shadow: 2px 3px 0 rgba(0,0,0,0.08);
+    --modal-bg: #FAFAF0; --border: #1A1A2E; --text: #1A1A2E;
+    --text-sub: #6B4C55; --accent: #C1121F; --input-bg: #FFFFFF;
+    --input-focus-border: #C1121F; --input-focus-shadow: rgba(193,18,31,0.14);
+    --input-focus-bg: #FFF8F8; --sidebar-bg: #F3F3E6;
+    --header-bg: rgba(250,250,240,0.95); --paper-dot: rgba(0,0,0,0.05);
+  }
+
+  /* Paper dot texture */
+  body { background-color: var(--page-bg); background-image: radial-gradient(circle, var(--paper-dot) 1px, transparent 1px); background-size: 24px 24px; }
 
   /* ── Safe-area / notch support ── */
   .safe-area-top { padding-top: env(safe-area-inset-top); }
   .offline-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; background: #7C1010; color: #FCA5A5; text-align: center; font-size: 12px; font-weight: 700; padding: calc(4px + env(safe-area-inset-top)) 16px 4px; letter-spacing: 0.04em; display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .install-banner { position: fixed; bottom: env(safe-area-inset-bottom, 0px); left: 0; right: 0; z-index: 9990; background: rgba(4,6,14,0.97); border-top: 1px solid rgba(0,212,255,0.18); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 12px 20px; display: flex; align-items: center; gap: 12px; animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .install-banner { position: fixed; bottom: env(safe-area-inset-bottom, 0px); left: 0; right: 0; z-index: 9990; background: var(--header-bg); border-top: 1.5px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 12px; animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -48,41 +72,39 @@ const GLOBAL_STYLES = `
   @keyframes loadBar { 0%{transform:translateX(-100%)} 100%{transform:translateX(250%)} }
   @keyframes statusPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0.5} }
 
-  /* ── iOS Liquid Glass card system ── */
+  /* ── Sketch card system (replaces glass-card) ── */
   .glass-card {
-    background-color: rgba(10,14,30,0.28);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-    backdrop-filter: blur(44px) brightness(1.12) saturate(1.9);
-    -webkit-backdrop-filter: blur(44px) brightness(1.12) saturate(1.9);
-    border: 1px solid transparent;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 16px 48px rgba(0,0,0,0.55), 0 40px 100px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(0,212,255,0.04);
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    box-shadow: var(--card-shadow);
     position: relative;
     overflow: hidden;
   }
-  /* Gradient border — bright top-left → subtle bottom-right */
-  .glass-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    border-radius: inherit; padding: 1px;
-    background: linear-gradient(160deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.12) 35%, rgba(255,255,255,0.04) 65%, rgba(0,212,255,0.09) 100%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: 1;
+  .glass-card::before, .glass-card::after { display: none !important; }
+
+  .sketch-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
   }
-  /* Specular arc — curved light reflection at top */
-  .glass-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 10%; right: 10%; height: 55%;
-    background: radial-gradient(ellipse 75% 45% at 50% 0%, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.04) 45%, transparent 70%);
-    pointer-events: none;
-    border-radius: inherit;
-    animation: specularDrift 9s ease-in-out infinite;
-    z-index: 1;
+  /* Sketch pill buttons */
+  .sketch-pill {
+    border: 1.5px solid var(--border);
+    border-radius: 100px 95px 100px 95px / 100px 100px 95px 100px;
+    padding: 10px 20px; background: transparent; color: var(--text);
+    cursor: pointer; font-weight: 600; font-size: 14px;
+    box-shadow: 1px 2px 0 rgba(0,0,0,0.07);
+    transition: all 0.15s ease; font-family: inherit; min-height: 48px;
   }
+  .sketch-pill.active, .sketch-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .sketch-pill:active { transform: scale(0.95); }
+
+  /* Sketch font */
+  .sketch-font { font-family: 'Caveat', cursive !important; }
 
   /* ── Grain texture overlay ── */
   .grain::after {
@@ -127,9 +149,10 @@ const GLOBAL_STYLES = `
   .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
   
   .skeleton-box { background: linear-gradient(90deg, #111828 0%, #1B2640 50%, #111828 100%); background-size: 200% 100%; animation: shimmerLoad 2s infinite; border-radius: 12px; }
+  [data-theme="light"] .skeleton-box { background: linear-gradient(90deg, #E8E8D8 0%, #F0F0E0 50%, #E8E8D8 100%); background-size: 200% 100%; }
   .celebration-card { border: 2px solid #097353 !important; animation: celebrateGlow 2s infinite ease-in-out; }
   
-  .glass-header { position: sticky; top: -20px; z-index: 40; backdrop-filter: blur(36px) brightness(1.08) saturate(1.6); -webkit-backdrop-filter: blur(36px) brightness(1.08) saturate(1.6); background: rgba(4,6,14,0.68); padding: 20px 20px 16px 20px; margin: -20px -20px 16px -20px; border-bottom: 1px solid rgba(211,17,24,0.12); transition: all 0.3s ease; }
+  .glass-header { position: sticky; top: -20px; z-index: 40; background: var(--header-bg); padding: 20px 20px 16px 20px; margin: -20px -20px 16px -20px; border-bottom: 1px solid var(--border); transition: all 0.3s ease; }
   @media (min-width: 768px) { .glass-header { top: -32px; padding: 32px 40px 16px 40px; margin: -32px -40px 16px -40px; } }
 
   .accordion-content { overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; max-height: 0; opacity: 0; }
@@ -143,14 +166,14 @@ const GLOBAL_STYLES = `
   .dot:nth-child(2) { animation-delay: -0.16s; }
 
   .custom-scrollbar { -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
-  .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+  .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(26,53,88,0.6); border-radius: 10px; }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #224070; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; opacity: 0.5; }
+  @media(max-width:768px) { .custom-scrollbar::-webkit-scrollbar { width: 0; height: 0; } }
 
-  input:focus, textarea:focus, select:focus { border-color: #00D4FF !important; box-shadow: 0 0 0 3px rgba(0,212,255,0.15) !important; background: #07101C !important; }
-  input::placeholder, textarea::placeholder { color: #2A3A58; }
-  input, textarea, select { color: #EEF2FF !important; background: #0A1020 !important; }
+  input:focus, textarea:focus, select:focus { border-color: var(--input-focus-border) !important; box-shadow: 0 0 0 3px var(--input-focus-shadow) !important; background: var(--input-focus-bg) !important; outline: none; }
+  input::placeholder, textarea::placeholder { color: var(--text-sub); opacity: 0.6; }
+  input, textarea, select { color: var(--text) !important; background: var(--input-bg) !important; border: 1.5px solid var(--border); border-radius: 12px 11px 13px 12px; font-size: 16px; }
 
   /* ── Premium card depth system (V6) ── */
   .packing-card { background: linear-gradient(160deg, #111828 0%, #0D1520 100%); transition: all 0.25s ease; }
@@ -218,13 +241,21 @@ const GLOBAL_STYLES = `
   @media(hover:hover){ .pk-card:hover { transform:translateY(-2px); } }
   .pk-card:active { transform:translateY(0) !important; }
 
-  .pk-pending   { background:linear-gradient(160deg,rgba(12,18,32,0.32),rgba(8,14,26,0.22)); backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); -webkit-backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); border:1px solid rgba(136,150,179,0.14); box-shadow:-3px 0 0 0 rgba(136,150,179,0.38), 0 4px 22px rgba(0,0,0,0.45); }
-  .pk-production{ background:linear-gradient(160deg,rgba(15,19,10,0.32),rgba(10,14,7,0.22)); backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); -webkit-backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); border:1px solid rgba(251,176,64,0.14); box-shadow:-3px 0 0 0 #FBB040, 0 4px 26px rgba(0,0,0,0.45), 0 0 32px rgba(251,176,64,0.08); }
-  .pk-prod_done { background:linear-gradient(160deg,rgba(9,20,16,0.32),rgba(6,14,10,0.22)); backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); -webkit-backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); border:1px solid rgba(74,222,128,0.16); box-shadow:-3px 0 0 0 #4ADE80, 0 4px 26px rgba(0,0,0,0.45), 0 0 32px rgba(74,222,128,0.09); }
-  .pk-packed    { background:linear-gradient(160deg,rgba(19,8,8,0.32),rgba(14,6,6,0.22)); backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); -webkit-backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); border:1px solid rgba(211,17,24,0.16); box-shadow:-3px 0 0 0 rgba(211,17,24,0.85), 0 4px 26px rgba(0,0,0,0.45), 0 0 30px rgba(211,17,24,0.08); }
-  .pk-delivered { background:linear-gradient(160deg,rgba(9,11,20,0.22),rgba(7,9,15,0.15)); backdrop-filter:blur(16px) brightness(1.05) saturate(1.3); -webkit-backdrop-filter:blur(16px) brightness(1.05) saturate(1.3); border:1px solid rgba(255,255,255,0.05); box-shadow:none; opacity:0.5; }
-  .pk-short     { background:linear-gradient(160deg,rgba(16,13,6,0.32),rgba(10,9,6,0.22)); backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); -webkit-backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); border:1px solid rgba(232,146,10,0.16); box-shadow:-3px 0 0 0 #E8920A, 0 4px 22px rgba(0,0,0,0.45), 0 0 26px rgba(232,146,10,0.09); }
-  .pk-oos       { background:linear-gradient(160deg,rgba(19,10,10,0.32),rgba(14,8,8,0.22)); backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); -webkit-backdrop-filter:blur(20px) brightness(1.08) saturate(1.5); border:1px solid rgba(252,165,165,0.14); box-shadow:-3px 0 0 0 rgba(252,165,165,0.58), 0 4px 22px rgba(0,0,0,0.45); }
+  .pk-pending   { background:#0F1525; border:1px solid rgba(136,150,179,0.22); box-shadow:-3px 0 0 0 rgba(136,150,179,0.42), 0 4px 18px rgba(0,0,0,0.30); }
+  .pk-production{ background:#111A0D; border:1px solid rgba(251,176,64,0.22); box-shadow:-3px 0 0 0 #FBB040, 0 4px 22px rgba(0,0,0,0.30), 0 0 20px rgba(251,176,64,0.07); }
+  .pk-prod_done { background:#091410; border:1px solid rgba(74,222,128,0.22); box-shadow:-3px 0 0 0 #4ADE80, 0 4px 22px rgba(0,0,0,0.30), 0 0 20px rgba(74,222,128,0.07); }
+  .pk-packed    { background:#130808; border:1px solid rgba(211,17,24,0.22); box-shadow:-3px 0 0 0 rgba(211,17,24,0.85), 0 4px 22px rgba(0,0,0,0.30), 0 0 18px rgba(211,17,24,0.06); }
+  .pk-delivered { background:#090B14; border:1px solid rgba(255,255,255,0.05); box-shadow:none; opacity:0.5; }
+  .pk-short     { background:#100D06; border:1px solid rgba(232,146,10,0.22); box-shadow:-3px 0 0 0 #E8920A, 0 4px 18px rgba(0,0,0,0.30), 0 0 18px rgba(232,146,10,0.07); }
+  .pk-oos       { background:#130A0A; border:1px solid rgba(252,165,165,0.18); box-shadow:-3px 0 0 0 rgba(252,165,165,0.55), 0 4px 18px rgba(0,0,0,0.30); }
+
+  [data-theme="light"] .pk-pending   { background:#F8F9FF; border:1px solid rgba(100,116,139,0.25); box-shadow:-3px 0 0 0 rgba(100,116,139,0.50), 0 2px 10px rgba(0,0,0,0.07); }
+  [data-theme="light"] .pk-production{ background:#FFFBF0; border:1px solid rgba(217,119,6,0.28); box-shadow:-3px 0 0 0 #D97706, 0 2px 10px rgba(0,0,0,0.07); }
+  [data-theme="light"] .pk-prod_done { background:#F0FFF6; border:1px solid rgba(22,163,74,0.28); box-shadow:-3px 0 0 0 #16A34A, 0 2px 10px rgba(0,0,0,0.07); }
+  [data-theme="light"] .pk-packed    { background:#FFF0F0; border:1px solid rgba(193,18,31,0.28); box-shadow:-3px 0 0 0 rgba(193,18,31,0.85), 0 2px 10px rgba(0,0,0,0.07); }
+  [data-theme="light"] .pk-delivered { background:#F8F8F8; opacity:0.6; }
+  [data-theme="light"] .pk-short     { background:#FFFAF0; border:1px solid rgba(180,115,8,0.28); box-shadow:-3px 0 0 0 #B47308, 0 2px 8px rgba(0,0,0,0.07); }
+  [data-theme="light"] .pk-oos       { background:#FFF5F5; border:1px solid rgba(185,28,28,0.22); box-shadow:-3px 0 0 0 rgba(185,28,28,0.55), 0 2px 8px rgba(0,0,0,0.07); }
 
   /* Primary pack/dispatch action buttons */
   .pk-pack-btn { width:100%; padding:14px; background:linear-gradient(135deg,#D31118,#8A0B10); color:#fff; border:none; border-radius:12px; font-weight:900; font-size:14px; cursor:pointer; letter-spacing:0.02em; box-shadow:0 4px 20px rgba(211,17,24,0.45), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.15s ease; font-family:inherit; }
@@ -301,16 +332,11 @@ const GLOBAL_STYLES = `
   @keyframes prodPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
   .prod-dot { width:6px; height:6px; border-radius:50%; background:#FBB040; animation:prodPulse 1.6s ease-in-out infinite; display:inline-block; flex-shrink:0; box-shadow:0 0 7px rgba(251,176,64,0.65); }
 
-  /* ── pk-card Liquid Glass glow system v4 ── */
-  .pk-production { background:linear-gradient(160deg,rgba(15,19,10,0.38),rgba(10,14,7,0.26)) !important; backdrop-filter:blur(22px) brightness(1.10) saturate(1.6) !important; -webkit-backdrop-filter:blur(22px) brightness(1.10) saturate(1.6) !important; border:1px solid rgba(251,176,64,0.20) !important; box-shadow:-3px 0 0 0 #FBB040, 0 6px 36px rgba(0,0,0,0.55), 0 0 60px rgba(251,176,64,0.16), 0 0 0 1px rgba(251,176,64,0.07) !important; }
-  .pk-prod_done  { background:linear-gradient(160deg,rgba(9,20,16,0.38),rgba(6,14,10,0.26)) !important; backdrop-filter:blur(22px) brightness(1.10) saturate(1.6) !important; -webkit-backdrop-filter:blur(22px) brightness(1.10) saturate(1.6) !important; border:1px solid rgba(74,222,128,0.22) !important; box-shadow:-3px 0 0 0 #4ADE80, 0 6px 36px rgba(0,0,0,0.55), 0 0 65px rgba(74,222,128,0.18), 0 0 0 1px rgba(74,222,128,0.07) !important; }
-  .pk-packed     { background:linear-gradient(160deg,rgba(19,8,8,0.38),rgba(14,6,6,0.26)) !important; backdrop-filter:blur(22px) brightness(1.10) saturate(1.6) !important; -webkit-backdrop-filter:blur(22px) brightness(1.10) saturate(1.6) !important; border:1px solid rgba(211,17,24,0.22) !important; box-shadow:-3px 0 0 0 rgba(211,17,24,0.95), 0 6px 36px rgba(0,0,0,0.55), 0 0 60px rgba(211,17,24,0.15), 0 0 0 1px rgba(211,17,24,0.07) !important; }
-  .pk-short      { background:linear-gradient(160deg,rgba(16,13,6,0.38),rgba(10,9,6,0.26)) !important; backdrop-filter:blur(22px) brightness(1.10) saturate(1.6) !important; -webkit-backdrop-filter:blur(22px) brightness(1.10) saturate(1.6) !important; border:1px solid rgba(232,146,10,0.22) !important; box-shadow:-3px 0 0 0 #E8920A, 0 6px 32px rgba(0,0,0,0.5), 0 0 55px rgba(232,146,10,0.15), 0 0 0 1px rgba(232,146,10,0.07) !important; }
+  /* (pk-card states defined above — no duplicates) */
 
-  /* ── Modal sheet: iOS Liquid Glass ── */
-  .modal-sheet { background:rgba(6,8,20,0.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E") !important; background-size:200px 200px !important; backdrop-filter:blur(64px) brightness(1.10) saturate(1.75) !important; -webkit-backdrop-filter:blur(64px) brightness(1.10) saturate(1.75) !important; border:1px solid transparent !important; box-shadow:0 40px 120px rgba(0,0,0,0.82), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 60px rgba(0,212,255,0.025) !important; position:relative !important; overflow:hidden !important; }
-  .modal-sheet::before { content:''; position:absolute; inset:0; border-radius:inherit; padding:1px; background:linear-gradient(160deg,rgba(255,255,255,0.42) 0%,rgba(255,255,255,0.10) 40%,rgba(255,255,255,0.03) 70%,rgba(0,212,255,0.10) 100%); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:destination-out; mask-composite:exclude; pointer-events:none; z-index:1; }
-  .modal-sheet::after { content:''; position:absolute; top:0; left:5%; right:5%; height:50%; background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.04) 45%, transparent 70%); pointer-events:none; border-radius:inherit; animation:specularDrift 11s ease-in-out infinite; z-index:1; }
+  /* ── Modal sheet (solid, no blur) ── */
+  .modal-sheet { background: var(--modal-bg) !important; border: 1.5px solid var(--border) !important; box-shadow: 0 24px 80px rgba(0,0,0,0.70) !important; position: relative !important; overflow: hidden !important; }
+  .modal-sheet::before, .modal-sheet::after { display: none !important; }
 
   /* ── Portal ambient orbs ── */
   .portal-orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
@@ -342,14 +368,13 @@ const GLOBAL_STYLES = `
   .admin-tab-bar { display:flex; padding:4px; border-radius:12px; }
   .admin-tab-btn { padding:8px 18px; border:none; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.2s cubic-bezier(0.16,1,0.3,1); white-space:nowrap; }
 
-  /* ── Bento tile top specular arc (Liquid Glass) ── */
-  .bento-hero::before { content:''; position:absolute; top:0; left:8%; right:8%; height:55%; background:radial-gradient(ellipse 75% 40% at 50% 0%,rgba(255,255,255,0.12) 0%,rgba(255,255,255,0.04) 45%,transparent 70%); pointer-events:none; z-index:1; animation:specularDrift 10s ease-in-out infinite; }
+  .bento-hero::before { display: none; }
 
   /* ── Cursor spotlight — liquid lens ── */
   .cursor-spotlight { background-image: radial-gradient(500px circle at var(--cx,-9999px) var(--cy,-9999px), rgba(0,212,255,0.07), rgba(255,255,255,0.025) 40%, transparent 70%); }
 
-  /* ── Glass card hover — Liquid Glass intensified ── */
-  @media(hover:hover) { .glass-card:hover { backdrop-filter:blur(52px) brightness(1.16) saturate(2.0) !important; -webkit-backdrop-filter:blur(52px) brightness(1.16) saturate(2.0) !important; background-color:rgba(10,14,30,0.32) !important; box-shadow: 0 2px 4px rgba(0,0,0,0.6), 0 16px 48px rgba(0,0,0,0.75), 0 40px 100px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(0,212,255,0.06) !important; } }
+  @media(hover:hover) { .glass-card:hover { box-shadow: 3px 4px 0 rgba(0,0,0,0.14) !important; transform: translateY(-1px); } }
+  [data-theme="light"] .glass-card:hover { box-shadow: 3px 4px 0 rgba(0,0,0,0.10) !important; }
 
   /* ── Batch complete button ── */
   .batch-complete-btn:hover { box-shadow:0 6px 28px rgba(9,115,83,0.58) !important; }
@@ -368,10 +393,41 @@ const GLOBAL_STYLES = `
   /* ── Mobile: hide scrollbar on small screens for cleaner look ── */
   @media(max-width:768px) { .custom-scrollbar::-webkit-scrollbar { width:0; height:0; } }
 
-  /* ── Mobile font scaling for large display numbers ── */
+  /* ── Mobile font scaling ── */
   @media(max-width:480px) {
     .mobile-stat-num { font-size:28px !important; }
     .mobile-title { font-size:20px !important; letter-spacing:-0.02em !important; }
+  }
+
+  /* ── Bottom Navigation Bar ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    height: 64px; padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--header-bg); border-top: 1.5px solid var(--border);
+    display: flex; align-items: stretch;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.12);
+  }
+  .bottom-nav-tab {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2px;
+    padding: 6px 4px; background: transparent; border: none;
+    cursor: pointer; font-family: inherit; min-height: 44px; min-width: 44px;
+    -webkit-tap-highlight-color: transparent; transition: opacity 0.15s ease;
+  }
+  .bottom-nav-tab:active { opacity: 0.65; transform: scale(0.94); }
+  .bottom-nav-label { font-family: 'Caveat', cursive; font-size: 11px; font-weight: 700; text-transform: capitalize; letter-spacing: 0.02em; }
+
+  /* Main content bottom padding when nav is visible */
+  .has-bottom-nav { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
+
+  /* Day-tile light mode */
+  [data-theme="light"] .day-tile { background: #FFFFFF; border-color: rgba(26,26,46,0.18); }
+  [data-theme="light"] .batch-v2 { background: linear-gradient(160deg,#FFFBF5,#FFF8F0); border-color: rgba(232,146,10,0.22); }
+  [data-theme="light"] .queue-card { background: linear-gradient(145deg,#FFFFF5,#FFFBF0); border-color: rgba(232,146,10,0.18); }
+
+  /* ── Reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
 
 `;
@@ -556,30 +612,7 @@ function getLocalYMD(d = new Date()) {
 /* ═══════════════════════════════════════════════════════════════
    THEME SYSTEM — dark / light palettes + context
 ═══════════════════════════════════════════════════════════════ */
-const ThemeCtx = React.createContext(true); // true = dark
-function useTheme(){
-  return {
-    isDark: true,
-    divider:  "rgba(255,255,255,0.08)",
-    subBg:    "rgba(255,255,255,0.04)",
-    cardBg:   "rgba(255,255,255,0.04)",
-    chipBg:   "rgba(255,255,255,0.06)",
-    footerBg: "rgba(4,6,14,0.85)",
-    headerBg: "rgba(4,6,14,0.92)",
-    panelBg:  "rgba(4,7,16,0.82)",
-    editBg:   "#060A12",
-    editBdr:  "#1A2640",
-    closeBg:  "rgba(255,255,255,0.05)",
-    closeBdr: "rgba(255,255,255,0.09)",
-    trackBg:  "rgba(255,255,255,0.07)",
-    svgTrack: "rgba(255,255,255,0.07)",
-    noteBg:   "rgba(255,255,255,0.03)",
-    noteBdr:  "rgba(255,255,255,0.08)",
-    cyGlow:   "rgba(0,212,255,0.12)",
-  };
-}
-
-const DC={ // dark palette (default)
+const DC={ // dark palette
   w: "#0D1424", off: "#080C18", beige: "#080C18", beigeD: "#111A30",
   ch: "#EEF2FF", chM: "#B8C4E0", chL: "#8896B3", chXL: "#1E2D4A",
   bdr: "#1A2640", bdrL: "#111C32",
@@ -588,10 +621,47 @@ const DC={ // dark palette (default)
   gn: "#16A34A", gnBg: "rgba(22,163,74,0.13)",
   rd: "#DC2626", rdBg: "rgba(220,38,38,0.12)",
   cy: "#00D4FF", cyBg: "rgba(0,212,255,0.10)", cyBgD: "rgba(0,212,255,0.18)",
-  sh: "0 2px 12px rgba(0,0,0,0.5)", shM: "0 8px 40px rgba(0,0,0,0.7)"
+  sh: "2px 3px 0 rgba(0,0,0,0.40)", shM: "3px 5px 0 rgba(0,0,0,0.55)"
 };
-// Mutable palette — always dark
+const LC={ // light palette — paper + ink
+  w: "#FAFAF0", off: "#F3F3E6", beige: "#F3F3E6", beigeD: "#F5DE8D",
+  ch: "#1A1A2E", chM: "#3D1A26", chL: "#6B4C55", chXL: "#A88C94",
+  bdr: "#1A1A2E", bdrL: "#8B8B7A",
+  ol: "#C1121F", olDk: "#8B0D15", olBg: "rgba(193,18,31,0.08)", olBgD: "rgba(193,18,31,0.16)",
+  am: "#A0720A", amDk: "#7A5508", amBg: "rgba(160,114,10,0.10)", amBgD: "rgba(160,114,10,0.20)",
+  gn: "#15803D", gnBg: "rgba(21,128,61,0.10)",
+  rd: "#B91C1C", rdBg: "rgba(185,28,28,0.10)",
+  cy: "#0369A1", cyBg: "rgba(3,105,161,0.10)", cyBgD: "rgba(3,105,161,0.18)",
+  sh: "2px 3px 0 rgba(0,0,0,0.08)", shM: "3px 5px 0 rgba(0,0,0,0.12)"
+};
+// Module-level C = DC (for static defaults; components use useTheme() for reactive palette)
 const C={...DC};
+
+function makeThemeObj(palette, isDark) {
+  return {
+    isDark,
+    ...palette,
+    divider:  isDark ? "rgba(255,255,255,0.08)" : "rgba(26,26,46,0.15)",
+    subBg:    isDark ? "rgba(255,255,255,0.04)" : "rgba(243,243,230,0.60)",
+    cardBg:   isDark ? "#111828"                : "#FFFFFF",
+    chipBg:   isDark ? "rgba(255,255,255,0.06)" : "rgba(26,26,46,0.08)",
+    footerBg: isDark ? "rgba(10,13,30,0.90)"    : "rgba(243,243,230,0.90)",
+    headerBg: isDark ? "rgba(10,13,30,0.95)"    : "rgba(250,250,240,0.95)",
+    panelBg:  isDark ? "#0D1628"                : "#F3F3E6",
+    editBg:   isDark ? "#060A12"                : "#FFFFFF",
+    editBdr:  isDark ? "#1A2640"                : "#D8D8C8",
+    closeBg:  isDark ? "rgba(255,255,255,0.05)" : "rgba(26,26,46,0.06)",
+    closeBdr: isDark ? "rgba(255,255,255,0.09)" : "rgba(26,26,46,0.14)",
+    trackBg:  isDark ? "rgba(255,255,255,0.07)" : "rgba(26,26,46,0.10)",
+    svgTrack: isDark ? "rgba(255,255,255,0.07)" : "rgba(26,26,46,0.10)",
+    noteBg:   isDark ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.70)",
+    noteBdr:  isDark ? "rgba(255,255,255,0.08)" : "rgba(26,26,46,0.14)",
+    cyGlow:   isDark ? "rgba(0,212,255,0.12)"   : "rgba(3,105,161,0.10)",
+  };
+}
+
+const ThemeCtx = React.createContext(makeThemeObj(DC, true));
+function useTheme() { return React.useContext(ThemeCtx); }
 
 const ROLES={
   admin:{label:"Admin",icon:"⚙",color:C.ch,accent:C.ol,bg:C.beige,desc:"Create and manage all orders"},
@@ -1433,95 +1503,108 @@ function InstallAppButton({ installPrompt, onInstallDone }) {
 }
 
 function RequestAccessScreen({ authUser, onSubmit, onSignOut, installPrompt, onInstallDone }) {
+  const th = useTheme();
   const [selectedRoles, setSelectedRoles] = useState([]);
+  const [enteredName, setEnteredName] = useState(authUser?.displayName || "");
+  const [enteredOutlet, setEnteredOutlet] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const isMobile = useIsMobile();
-  const successRef = useRef(null);
-  useTilt(successRef, 7);
 
   function toggleRole(k) {
     setSelectedRoles(prev => prev.includes(k) ? prev.filter(r => r !== k) : [...prev, k]);
   }
 
+  const canSubmit = enteredName.trim() && enteredOutlet.trim() && selectedRoles.length > 0;
+
   async function handleRequest() {
-    if (selectedRoles.length === 0) return;
+    if (!canSubmit) return;
     setSubmitting(true);
-    await onSubmit(selectedRoles);
+    await onSubmit(selectedRoles, enteredName.trim(), enteredOutlet.trim());
     setSubmitted(true);
     setSubmitting(false);
   }
 
   return (
-    <div className="animate-fade-in grain custom-scrollbar" style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",position:"relative",overflow:"hidden"}}>
-      <PremiumBg/>
-      <div style={{width:"100%",maxWidth:560,position:"relative",zIndex:2}}>
+    <div className="animate-fade-in custom-scrollbar" style={{minHeight:"100vh",background:"var(--page-bg)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px"}}>
+      <div style={{width:"100%",maxWidth:420}}>
         {/* User chip */}
-        <div className="animate-fade-up glass-card" style={{borderRadius:16,padding:"14px 18px",marginBottom:22,display:"flex",alignItems:"center",gap:14,position:"relative",overflow:"hidden"}}>
-          <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)",pointerEvents:"none"}}/>
-          {authUser.photoURL ? <img src={authUser.photoURL} alt="" style={{width:44,height:44,borderRadius:"50%",border:"2px solid rgba(211,17,24,0.4)",flexShrink:0}}/> : <div style={{width:44,height:44,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>}
+        <div className="animate-fade-up sketch-card" style={{padding:"12px 16px",marginBottom:20,display:"flex",alignItems:"center",gap:12}}>
+          {authUser.photoURL ? <img src={authUser.photoURL} alt="" style={{width:36,height:36,borderRadius:"50%",border:"2px solid var(--accent)",flexShrink:0}}/> : <div style={{width:36,height:36,borderRadius:"50%",background:"var(--accent)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>}
           <div style={{flex:1,minWidth:0}}>
-            <div style={{fontSize:14,fontWeight:800,color:C.ch,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.displayName||"Unknown"}</div>
-            <div style={{fontSize:11,color:C.chL,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.email}</div>
+            <div style={{fontSize:13,fontWeight:800,color:"var(--text)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.displayName||"User"}</div>
+            <div style={{fontSize:10,color:"var(--text-sub)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.email}</div>
           </div>
-          <button onClick={onSignOut} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",color:C.chL,padding:"6px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,fontFamily:"inherit"}}>Sign Out</button>
+          <button onClick={onSignOut} style={{background:th.closeBg,border:"1.5px solid var(--border)",color:"var(--text-sub)",padding:"6px 10px",borderRadius:20,fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,fontFamily:"inherit",minHeight:36}}>Sign Out</button>
         </div>
 
-        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:28,animationDelay:"0.05s"}}>
-          <div style={{fontSize:20,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.02em",marginBottom:8}}>Request Access</div>
-          <div style={{fontSize:13,color:"#4A6080",fontWeight:500,lineHeight:1.5}}>Select one or more roles you need. Your request will be reviewed by the owner.</div>
+        <div style={{marginBottom:20}}>
+          <div style={{fontSize:28,fontWeight:700,color:"var(--accent)",fontFamily:"'Caveat',cursive",lineHeight:1,marginBottom:4}}>Request Access</div>
+          <div style={{fontSize:13,color:"var(--text-sub)",fontWeight:500}}>Fill in your details and select roles to request.</div>
         </div>
 
         {submitted ? (
-          <div ref={successRef} className="animate-fade-up glass-card tilt-wrap" style={{borderRadius:22,padding:"44px 32px",textAlign:"center",position:"relative",overflow:"hidden"}}>
-            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(74,222,128,0.3),transparent)",pointerEvents:"none"}}/>
-            <div style={{position:"absolute",top:-60,left:"50%",transform:"translateX(-50%)",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(9,115,83,0.18) 0%,transparent 70%)",pointerEvents:"none"}}/>
-            <div style={{position:"relative",fontSize:48,marginBottom:18,filter:"drop-shadow(0 0 14px rgba(74,222,128,0.5))"}}>✓</div>
-            <div style={{fontSize:20,fontWeight:900,color:"#4ADE80",marginBottom:10}}>Request Sent!</div>
-            <div style={{fontSize:13,color:C.chM,fontWeight:500,lineHeight:1.6}}>Your request for <strong style={{color:"#EEF2FF"}}>{selectedRoles.map(r=>ROLES[r]?.label).join(", ")}</strong> access has been submitted. You'll be notified when approved.</div>
+          <div className="animate-fade-up sketch-card" style={{padding:"36px 28px",textAlign:"center"}}>
+            <div style={{fontSize:44,marginBottom:14}}>✓</div>
+            <div style={{fontSize:22,fontWeight:700,color:"var(--accent)",fontFamily:"'Caveat',cursive",marginBottom:8}}>Request Sent!</div>
+            <div style={{fontSize:13,color:"var(--text-sub)",lineHeight:1.6}}>Your request for <strong style={{color:"var(--text)"}}>{selectedRoles.map(r=>ROLES[r]?.label).join(", ")}</strong> has been submitted.</div>
           </div>
         ) : (
           <>
-            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:11,marginBottom:20}}>
-              {Object.entries(ROLES).map(([k, r], i) => {
+            {/* Name input */}
+            <div style={{marginBottom:12}}>
+              <div style={{fontSize:12,fontWeight:700,color:"var(--text-sub)",marginBottom:6,textTransform:"uppercase",letterSpacing:"0.06em"}}>Your Name</div>
+              <input
+                value={enteredName} onChange={e=>setEnteredName(e.target.value)}
+                placeholder="e.g. Ahmad Razif"
+                style={{width:"100%",padding:"12px 14px",borderRadius:"12px 11px 13px 12px",border:"1.5px solid var(--border)",background:"var(--input-bg)",color:"var(--text)",fontSize:16,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
+              />
+            </div>
+            {/* Outlet input */}
+            <div style={{marginBottom:20}}>
+              <div style={{fontSize:12,fontWeight:700,color:"var(--text-sub)",marginBottom:6,textTransform:"uppercase",letterSpacing:"0.06em"}}>Outlet / Location</div>
+              <input
+                value={enteredOutlet} onChange={e=>setEnteredOutlet(e.target.value)}
+                placeholder="e.g. TTDI, Bangsar, Damansara"
+                style={{width:"100%",padding:"12px 14px",borderRadius:"12px 11px 13px 12px",border:"1.5px solid var(--border)",background:"var(--input-bg)",color:"var(--text)",fontSize:16,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
+              />
+            </div>
+
+            {/* Role pills */}
+            <div style={{fontSize:12,fontWeight:700,color:"var(--text-sub)",marginBottom:10,textTransform:"uppercase",letterSpacing:"0.06em"}}>Select Roles</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:9,marginBottom:24}}>
+              {Object.entries(ROLES).map(([k, r]) => {
                 const isSelected = selectedRoles.includes(k);
                 return (
-                  <div key={k} onClick={() => toggleRole(k)}
-                    className="animate-fade-up glass-card role-card"
+                  <button key={k} onClick={() => toggleRole(k)}
                     style={{
-                      animationDelay:`${i*0.06}s`,
-                      gridColumn:(!isMobile && i===4)?"1 / -1":"auto",
-                      borderRadius:16, padding:"18px 20px",
-                      cursor:"pointer", display:"flex", flexDirection:"column", gap:10, alignItems:"flex-start",
-                      borderTop:"2px solid "+(isSelected?r.color:r.color+"40"),
-                      border:isSelected?"2px solid "+r.color:"",
-                      outline:isSelected?"none":"",
-                      boxShadow:isSelected?`0 0 0 2px ${r.color}40, 0 12px 32px rgba(0,0,0,0.5)`:"",
-                      position:"relative", overflow:"hidden",
-                      transition:"all 0.2s ease",
-                    }}>
-                    <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${r.color}${isSelected?"40":"20"},transparent)`,pointerEvents:"none"}}/>
-                    {isSelected && <div style={{position:"absolute",top:-30,right:-10,width:80,height:80,borderRadius:"50%",background:`radial-gradient(circle,${r.color}20 0%,transparent 70%)`,pointerEvents:"none"}}/>}
-                    <div style={{width:40,height:40,background:`linear-gradient(135deg,${r.color}22,${r.color}0A)`,borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:r.color,border:"1px solid "+r.color+(isSelected?"50":"25"),transition:"transform 0.2s",transform:isSelected?"scale(1.12)":"scale(1)"}}>{r.icon}</div>
-                    <div>
-                      <div style={{fontSize:14,fontWeight:800,color:"#EEF2FF",marginBottom:3}}>{r.label}</div>
-                      <div style={{fontSize:12,color:"#4A6080",lineHeight:1.5,fontWeight:500}}>{r.desc}</div>
-                    </div>
-                    {isSelected && <div style={{fontSize:11,color:r.color,fontWeight:800,display:"flex",alignItems:"center",gap:5,background:r.color+"14",border:"1px solid "+r.color+"30",padding:"4px 9px",borderRadius:6}}>✓ Selected</div>}
-                  </div>
+                      borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px",
+                      padding:"10px 18px",
+                      background:isSelected?"var(--accent)":"transparent",
+                      border:`1.5px solid ${isSelected?"var(--accent)":"var(--border)"}`,
+                      color:isSelected?"#fff":"var(--text)",
+                      fontWeight:700,fontSize:14,cursor:"pointer",
+                      fontFamily:"'Caveat',cursive",
+                      minHeight:44,
+                      transition:"all 0.15s ease",
+                    }}
+                  >
+                    {r.label}
+                  </button>
                 );
               })}
             </div>
 
-            <button onClick={handleRequest} disabled={selectedRoles.length===0||submitting} className="btn-3d"
-              style={{width:"100%",padding:"15px",background:selectedRoles.length>0?"linear-gradient(135deg,#D31118,#8A0B10)":"rgba(20,28,46,0.8)",border:selectedRoles.length>0?"none":"1px solid rgba(255,255,255,0.06)",borderRadius:14,color:selectedRoles.length>0?"#fff":C.chL,fontSize:15,fontWeight:800,cursor:selectedRoles.length>0&&!submitting?"pointer":"not-allowed",boxShadow:selectedRoles.length>0?"0 4px 22px rgba(211,17,24,0.45),inset 0 1px 0 rgba(255,255,255,0.10)":"none",transition:"all 0.2s",opacity:submitting?0.7:1}}>
-              {submitting?"Sending Request…":selectedRoles.length>0?`Request Access (${selectedRoles.length} role${selectedRoles.length>1?"s":""})`:"Select Roles Above"}
-            </button>
+            <motion.button onClick={handleRequest} disabled={!canSubmit||submitting} whileTap={{scale:0.97}}
+              style={{width:"100%",padding:"14px",background:canSubmit?"var(--accent)":"var(--border)",border:"none",borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px",color:canSubmit?"#fff":"var(--text-sub)",fontSize:16,fontWeight:700,cursor:canSubmit&&!submitting?"pointer":"not-allowed",fontFamily:"'Caveat',cursive",transition:"all 0.2s ease",opacity:submitting?0.7:1}}>
+              {submitting ? "Sending…" : canSubmit ? `Request Access (${selectedRoles.length} role${selectedRoles.length>1?"s":""})` : "Fill all fields above"}
+            </motion.button>
           </>
         )}
 
-        <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
-        <div style={{textAlign:"center",marginTop:24,fontSize:11,color:"#1A2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
+        <div style={{marginTop:16}}>
+          <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
+        </div>
+        <div style={{textAlign:"center",marginTop:20,fontSize:11,color:"var(--text-sub)",fontWeight:500}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
       </div>
     </div>
   );
@@ -1574,66 +1657,71 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
   const [tab, setTab] = useState("requests");
   const isMobile = useIsMobile();
   const pendingRequests = requests.filter(r => r.status === "pending");
+  const [editingUser, setEditingUser] = useState(null);
+  const [editRoles, setEditRoles] = useState([]);
+
+  function startEdit(user) { setEditingUser(user.email); setEditRoles(user.roles || []); }
+  function toggleEditRole(rk) { setEditRoles(prev => prev.includes(rk) ? prev.filter(r => r !== rk) : [...prev, rk]); }
+  async function saveEditRoles() {
+    try {
+      await updateDoc(doc(db, "authorized_users", editingUser), { roles: editRoles });
+      setEditingUser(null);
+    } catch(e) { alert("Failed to update roles"); }
+  }
 
   return (
-    <div className="animate-fade-in grain" style={{ minHeight:"100vh", display:"flex", flexDirection:"column", fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif", position:"relative", overflow:"hidden" }}>
-      <PremiumBg/>
-      <div style={{ position:"relative", zIndex:2, background:th.headerBg, borderBottom:`1px solid ${th.divider}`, padding:"14px 24px", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", display:"flex", alignItems:"center", gap:16, flexShrink:0 }}>
-        <button onClick={onBack} style={{ background:C.off, border:"1px solid "+C.bdrL, color:C.chM, padding:"8px 14px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>← Back</button>
+    <div className="animate-fade-in" style={{ minHeight:"100vh", display:"flex", flexDirection:"column", background:"var(--page-bg)" }}>
+      <div style={{ background:"var(--header-bg)", borderBottom:"1.5px solid var(--border)", padding:"14px 20px", display:"flex", alignItems:"center", gap:14, flexShrink:0 }}>
+        <button onClick={onBack} style={{ background:"var(--card-bg)", border:"1.5px solid var(--border)", color:"var(--text)", padding:"8px 14px", borderRadius:20, fontSize:12, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit", minHeight:36 }}>← Back</button>
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:16, fontWeight:900, color:C.ch }}>Control Panel</div>
-          <div style={{ fontSize:11, color:C.chL }}>Owner: {authUser.email}</div>
+          <div style={{ fontSize:16, fontWeight:700, color:"var(--text)", fontFamily:"'Caveat',cursive" }}>Control Panel</div>
+          <div style={{ fontSize:11, color:"var(--text-sub)" }}>{authUser.email}</div>
         </div>
-        <button onClick={onSignOut} style={{ background:"none", border:"1px solid "+C.bdrL, color:C.chL, padding:"6px 12px", borderRadius:8, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Sign Out</button>
+        <button onClick={onSignOut} style={{ background:"none", border:"1.5px solid var(--border)", color:"var(--text-sub)", padding:"6px 12px", borderRadius:20, fontSize:11, fontWeight:700, cursor:"pointer", flexShrink:0, fontFamily:"inherit", minHeight:36 }}>Sign Out</button>
       </div>
 
-      <div style={{ position:"relative", zIndex:2, display:"flex", background:th.panelBg, borderBottom:`1px solid ${th.divider}`, flexShrink:0, backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)" }}>
-        {[{ key:"requests", label:`Pending Requests ${pendingRequests.length > 0 ? "("+pendingRequests.length+")" : ""}` }, { key:"users", label:`Manage Users (${authorizedUsers.length})` }].map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)} style={{ flex:1, padding:"14px 16px", background:"none", border:"none", borderBottom:"3px solid "+(tab===t.key?C.ol:"transparent"), color:tab===t.key?C.ol:C.chL, fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit", transition:"all 0.2s" }}>{t.label}</button>
+      <div style={{ display:"flex", background:"var(--card-bg)", borderBottom:"1.5px solid var(--border)", flexShrink:0 }}>
+        {[{ key:"requests", label:`Requests ${pendingRequests.length > 0 ? "("+pendingRequests.length+")" : ""}` }, { key:"users", label:`Users (${authorizedUsers.length})` }].map(t => (
+          <button key={t.key} onClick={() => setTab(t.key)} style={{ flex:1, padding:"14px 12px", background:"none", border:"none", borderBottom:"3px solid "+(tab===t.key?"var(--accent)":"transparent"), color:tab===t.key?"var(--accent)":"var(--text-sub)", fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit", transition:"all 0.2s" }}>{t.label}</button>
         ))}
       </div>
 
-      <div className="custom-scrollbar" style={{ position:"relative", zIndex:2, flex:1, overflowY:"auto", padding: isMobile ? 20 : 32 }}>
+      <div className="custom-scrollbar" style={{ flex:1, overflowY:"auto", padding: isMobile ? 16 : 28 }}>
         {tab === "requests" && (
           <div>
             {pendingRequests.length === 0 ? (
-              <div className="animate-fade-up" style={{ textAlign:"center", padding:"60px 20px", color:C.chXL }}>
-                <div style={{ fontSize:48, marginBottom:16 }}>✓</div>
-                <div style={{ fontSize:16, fontWeight:700 }}>No pending requests</div>
+              <div style={{ textAlign:"center", padding:"60px 20px", color:"var(--text-sub)" }}>
+                <div style={{ fontSize:40, marginBottom:12 }}>✓</div>
+                <div style={{ fontSize:16, fontWeight:700, fontFamily:"'Caveat',cursive" }}>No pending requests</div>
               </div>
             ) : pendingRequests.map((req, i) => (
-              <div key={req.id} className="animate-fade-up" style={{ animationDelay:`${i*0.05}s`, background:C.w, borderRadius:16, padding:"20px 24px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:12 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:16 }}>
-                  {req.photoURL ? (
-                    <img src={req.photoURL} alt="" style={{ width:48, height:48, borderRadius:"50%", border:"2px solid "+C.bdrL, flexShrink:0 }} />
-                  ) : (
-                    <div style={{ width:48, height:48, borderRadius:"50%", background:C.bdrL, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, color:C.chM, flexShrink:0 }}>{req.name?.[0] || "?"}</div>
-                  )}
+              <div key={req.id} className="animate-fade-up sketch-card" style={{ animationDelay:`${i*0.05}s`, padding:"18px 20px", marginBottom:12 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
+                  {req.photoURL ? <img src={req.photoURL} alt="" style={{ width:44, height:44, borderRadius:"50%", border:"2px solid var(--border)", flexShrink:0 }}/> : <div style={{ width:44, height:44, borderRadius:"50%", background:"var(--border)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, color:"var(--text)", flexShrink:0 }}>{req.name?.[0] || "?"}</div>}
                   <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:15, fontWeight:800, color:C.ch, marginBottom:2 }}>{req.name}</div>
-                    <div style={{ fontSize:12, color:C.chL, marginBottom:4 }}>{req.email}</div>
-                    <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                      <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>{(req.requestedRoles || [req.requestedRole]).map(r => <span key={r} style={{ fontSize:11, fontWeight:800, color:ROLES[r]?.color || C.chM, background:ROLES[r]?.bg || C.off, border:"1px solid "+(ROLES[r]?.color || C.bdrL)+"40", borderRadius:6, padding:"3px 8px" }}>{ROLES[r]?.icon} {ROLES[r]?.label || r}</span>)}</div>
-                    </div>
+                    <div style={{ fontSize:14, fontWeight:800, color:"var(--text)" }}>{req.name}</div>
+                    <div style={{ fontSize:11, color:"var(--text-sub)" }}>{req.email}</div>
+                    {req.outlet && <div style={{ fontSize:11, color:"var(--text-sub)", marginTop:2 }}>📍 {req.outlet}</div>}
+                    <div style={{ display:"flex", gap:5, flexWrap:"wrap", marginTop:6 }}>{(req.requestedRoles || [req.requestedRole]).map(r => <span key={r} style={{ fontSize:11, fontWeight:700, color:"var(--accent)", background:th.olBg, border:"1px solid var(--accent)", borderRadius:20, padding:"2px 8px" }}>{ROLES[r]?.label || r}</span>)}</div>
                   </div>
                 </div>
                 <div style={{ display:"flex", gap:10 }}>
-                  <button onClick={() => onApprove(req)} style={{ flex:1, padding:"11px", background:"linear-gradient(135deg, #097353, #065A40)", border:"none", borderRadius:10, color:"#fff", fontSize:13, fontWeight:800, cursor:"pointer", boxShadow:"0 3px 10px rgba(9,115,83,0.3)", fontFamily:"inherit" }}>✓ Approve</button>
-                  <button onClick={() => onReject(req)} style={{ flex:1, padding:"11px", background:C.rdBg, border:"1px solid rgba(220,38,38,0.3)", borderRadius:10, color:C.rd, fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>✕ Reject</button>
+                  <button onClick={() => onApprove(req)} style={{ flex:1, padding:"11px", background:"linear-gradient(135deg,#097353,#065A40)", border:"none", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'Caveat',cursive", minHeight:44 }}>✓ Approve</button>
+                  <button onClick={() => onReject(req)} style={{ flex:1, padding:"11px", background:th.rdBg, border:"1.5px solid "+th.rd, borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:th.rd, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'Caveat',cursive", minHeight:44 }}>✕ Reject</button>
                 </div>
               </div>
             ))}
 
             {requests.filter(r => r.status !== "pending").length > 0 && (
-              <div style={{ marginTop:24 }}>
-                <div style={{ fontSize:10, fontWeight:900, color:C.chL, textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:12 }}>Past Requests</div>
+              <div style={{ marginTop:20 }}>
+                <div style={{ fontSize:10, fontWeight:900, color:"var(--text-sub)", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10 }}>Past Requests</div>
                 {requests.filter(r => r.status !== "pending").map((req, i) => (
-                  <div key={req.id} className="animate-fade-up" style={{ animationDelay:`${i*0.03}s`, background:C.off, borderRadius:12, padding:"14px 18px", border:"1px solid "+C.bdrL, marginBottom:8, display:"flex", alignItems:"center", gap:12, opacity:0.7 }}>
+                  <div key={req.id} style={{ animationDelay:`${i*0.03}s`, background:th.subBg, borderRadius:10, padding:"12px 14px", border:"1px solid var(--border)", marginBottom:8, display:"flex", alignItems:"center", gap:10, opacity:0.75 }}>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontSize:13, fontWeight:700, color:C.ch }}>{req.name}</div>
-                      <div style={{ fontSize:11, color:C.chL }}>{req.email} · {(req.requestedRoles || [req.requestedRole]).map(r => ROLES[r]?.label || r).join(", ")}</div>
+                      <div style={{ fontSize:13, fontWeight:700, color:"var(--text)" }}>{req.name}</div>
+                      <div style={{ fontSize:11, color:"var(--text-sub)" }}>{req.email} · {(req.requestedRoles || [req.requestedRole]).map(r => ROLES[r]?.label || r).join(", ")}</div>
                     </div>
-                    <span style={{ fontSize:11, fontWeight:800, padding:"3px 8px", borderRadius:6, background:req.status==="approved"?"rgba(9,115,83,0.2)":C.rdBg, color:req.status==="approved"?"#4ADE80":C.rd, border:"1px solid "+(req.status==="approved"?"rgba(9,115,83,0.4)":"rgba(220,38,38,0.3)") }}>{req.status}</span>
+                    <span style={{ fontSize:11, fontWeight:800, padding:"3px 8px", borderRadius:20, background:req.status==="approved"?"rgba(9,115,83,0.2)":th.rdBg, color:req.status==="approved"?"#4ADE80":th.rd, border:"1px solid "+(req.status==="approved"?"rgba(9,115,83,0.35)":th.rd+"50") }}>{req.status}</span>
                   </div>
                 ))}
               </div>
@@ -1644,26 +1732,55 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
         {tab === "users" && (
           <div>
             {authorizedUsers.length === 0 ? (
-              <div className="animate-fade-up" style={{ textAlign:"center", padding:"60px 20px", color:C.chXL }}>
-                <div style={{ fontSize:16, fontWeight:700 }}>No authorized users yet</div>
+              <div style={{ textAlign:"center", padding:"60px 20px", color:"var(--text-sub)" }}>
+                <div style={{ fontSize:16, fontWeight:700, fontFamily:"'Caveat',cursive" }}>No authorized users yet</div>
               </div>
             ) : authorizedUsers.map((user, i) => (
-              <div key={user.email} className="animate-fade-up" style={{ animationDelay:`${i*0.05}s`, background:C.w, borderRadius:16, padding:"18px 22px", border:"1px solid "+C.bdrL, boxShadow:C.sh, marginBottom:12, display:"flex", alignItems:"center", gap:14 }}>
-                {user.photoURL ? (
-                  <img src={user.photoURL} alt="" style={{ width:44, height:44, borderRadius:"50%", border:"2px solid "+C.bdrL, flexShrink:0 }} />
-                ) : (
-                  <div style={{ width:44, height:44, borderRadius:"50%", background:C.bdrL, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, color:C.chM, flexShrink:0 }}>{user.name?.[0] || "?"}</div>
-                )}
-                <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ fontSize:14, fontWeight:800, color:C.ch, marginBottom:2 }}>{user.name}</div>
-                  <div style={{ fontSize:11, color:C.chL, marginBottom:6 }}>{user.email}</div>
-                  <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-                    {(user.roles || []).map(role => (
-                      <span key={role} style={{ fontSize:11, fontWeight:800, color:ROLES[role]?.color || C.chM, background:ROLES[role]?.bg || C.off, border:"1px solid "+(ROLES[role]?.color || C.bdrL)+"40", borderRadius:6, padding:"3px 8px" }}>{ROLES[role]?.icon} {ROLES[role]?.label || role}</span>
-                    ))}
+              <div key={user.email} className="animate-fade-up sketch-card" style={{ animationDelay:`${i*0.05}s`, padding:"16px 18px", marginBottom:12 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom: editingUser === user.email ? 12 : 0 }}>
+                  {user.photoURL ? <img src={user.photoURL} alt="" style={{ width:40, height:40, borderRadius:"50%", border:"2px solid var(--border)", flexShrink:0 }}/> : <div style={{ width:40, height:40, borderRadius:"50%", background:"var(--border)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"var(--text)", flexShrink:0 }}>{user.name?.[0] || "?"}</div>}
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:13, fontWeight:800, color:"var(--text)" }}>{user.name}</div>
+                    <div style={{ fontSize:11, color:"var(--text-sub)" }}>{user.email}</div>
+                    {user.outlet && <div style={{ fontSize:11, color:"var(--text-sub)", marginTop:1 }}>📍 {user.outlet}</div>}
+                    {editingUser !== user.email && (
+                      <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginTop:6 }}>
+                        {(user.roles || []).map(role => <span key={role} style={{ fontSize:11, fontWeight:700, color:"var(--accent)", background:th.olBg, border:"1px solid var(--accent)", borderRadius:20, padding:"2px 8px" }}>{ROLES[role]?.label || role}</span>)}
+                      </div>
+                    )}
                   </div>
+                  {editingUser !== user.email && (
+                    <div style={{ display:"flex", flexDirection:"column", gap:6, flexShrink:0 }}>
+                      <button onClick={() => startEdit(user)} style={{ background:th.chipBg, border:"1.5px solid var(--border)", color:"var(--text)", padding:"6px 10px", borderRadius:20, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:34 }}>✏ Edit</button>
+                      <button onClick={() => { if(window.confirm(`Remove ${user.name}?`)) onRemoveUser(user.email); }} style={{ background:th.rdBg, border:"1px solid "+th.rd, color:th.rd, padding:"6px 10px", borderRadius:20, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:34 }}>Remove</button>
+                    </div>
+                  )}
                 </div>
-                <button onClick={() => { if(window.confirm(`Remove ${user.name}?`)) onRemoveUser(user.email); }} style={{ background:C.rdBg, border:"1px solid rgba(220,38,38,0.3)", color:C.rd, padding:"8px 12px", borderRadius:8, fontSize:11, fontWeight:800, cursor:"pointer", flexShrink:0, fontFamily:"inherit" }}>Remove</button>
+                {/* Inline role editor */}
+                {editingUser === user.email && (
+                  <div>
+                    <div style={{ fontSize:11, fontWeight:700, color:"var(--text-sub)", textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:8 }}>Edit Roles</div>
+                    <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginBottom:12 }}>
+                      {Object.keys(ROLES).map(rk => {
+                        const has = editRoles.includes(rk);
+                        return (
+                          <button key={rk} onClick={() => toggleEditRole(rk)}
+                            style={{ borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", padding:"8px 16px", fontSize:13,
+                              background:has?"var(--accent)":"transparent",
+                              border:`1.5px solid ${has?"var(--accent)":"var(--border)"}`,
+                              color:has?"#fff":"var(--text)", fontWeight:700, cursor:"pointer",
+                              fontFamily:"'Caveat',cursive", minHeight:40, transition:"all 0.15s" }}>
+                            {ROLES[rk].label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div style={{ display:"flex", gap:10 }}>
+                      <button onClick={saveEditRoles} style={{ flex:1, padding:"10px", background:"var(--accent)", border:"none", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'Caveat',cursive", minHeight:44 }}>Save</button>
+                      <button onClick={() => setEditingUser(null)} style={{ flex:1, padding:"10px", background:th.chipBg, border:"1.5px solid var(--border)", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", color:"var(--text-sub)", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'Caveat',cursive", minHeight:44 }}>Cancel</button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -1674,121 +1791,96 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
 }
 
 function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, authUser, onSignOut, pendingCount, installPrompt, onInstallDone }) {
-  const isMobile = useIsMobile();
+  const th = useTheme();
   const keys = availableRoles || Object.keys(ROLES);
-
-  /* Per-card tilt: store refs in an array */
-  const cardRefs = useRef([]);
-  useEffect(() => {
-    cardRefs.current.forEach(el => {
-      if (!el) return;
-      if (window.matchMedia("(pointer: coarse)").matches) return;
-      function onMove(e) {
-        const r = el.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width - 0.5) * 2;
-        const y = ((e.clientY - r.top) / r.height - 0.5) * 2;
-        el.style.transform = `perspective(800px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg) translateY(-6px) scale(1.02)`;
-        el.style.boxShadow = `${x * -10}px ${y * -10}px 30px rgba(0,0,0,0.5), 0 20px 60px rgba(0,0,0,0.4)`;
-      }
-      function onLeave() {
-        el.style.transform = "";
-        el.style.boxShadow = "";
-      }
-      el.addEventListener("mousemove", onMove);
-      el.addEventListener("mouseleave", onLeave);
-      el._tiltCleanup = () => { el.removeEventListener("mousemove", onMove); el.removeEventListener("mouseleave", onLeave); };
-    });
-    return () => cardRefs.current.forEach(el => el?._tiltCleanup?.());
-  }, [keys.join(",")]);
+  const [selected, setSelected] = useState(null);
 
   return (
-    <div className="animate-fade-in grain custom-scrollbar" style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",position:"relative",overflow:"hidden"}}>
-      <PremiumBg/>
-      <div style={{width:"100%",maxWidth:560,position:"relative",zIndex:2}}>
+    <div className="animate-fade-in custom-scrollbar" style={{minHeight:"100vh",background:"var(--page-bg)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px",position:"relative"}}>
+      <div style={{width:"100%",maxWidth:420,position:"relative",zIndex:2}}>
+
         {/* User chip */}
         {authUser && (
-          <div className="animate-fade-up glass-card" style={{borderRadius:16,padding:"13px 18px",marginBottom:24,display:"flex",alignItems:"center",gap:12,position:"relative",overflow:"hidden"}}>
-            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)",pointerEvents:"none"}}/>
-            {authUser.photoURL ? <img src={authUser.photoURL} alt="" style={{width:38,height:38,borderRadius:"50%",border:"2px solid "+(isOwner?"rgba(211,17,24,0.6)":"rgba(255,255,255,0.12)"),flexShrink:0}}/> : <div style={{width:38,height:38,borderRadius:"50%",background:isOwner?"linear-gradient(135deg,#D31118,#8A0B10)":"rgba(255,255,255,0.08)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>}
+          <div className="animate-fade-up sketch-card" style={{padding:"13px 16px",marginBottom:20,display:"flex",alignItems:"center",gap:12}}>
+            {authUser.photoURL ? <img src={authUser.photoURL} alt="" style={{width:36,height:36,borderRadius:"50%",border:"2px solid "+(isOwner?"var(--accent)":"var(--border)"),flexShrink:0}}/> : <div style={{width:36,height:36,borderRadius:"50%",background:isOwner?"var(--accent)":"var(--border)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>}
             <div style={{flex:1,minWidth:0}}>
-              <div style={{fontSize:13,fontWeight:800,color:C.ch,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.displayName||"User"}</div>
-              <div style={{fontSize:10,color:isOwner?C.ol:C.chL,fontWeight:isOwner?800:500,textTransform:"uppercase",letterSpacing:"0.06em"}}>{isOwner?"Owner · Full Access":"Authorized User"}</div>
+              <div style={{fontSize:13,fontWeight:800,color:"var(--text)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.displayName||"User"}</div>
+              <div style={{fontSize:10,color:isOwner?"var(--accent)":"var(--text-sub)",fontWeight:isOwner?800:500,textTransform:"uppercase",letterSpacing:"0.06em"}}>{isOwner?"Owner · Full Access":"Authorized User"}</div>
             </div>
             {isOwner && (
-              <button onClick={onControlPanel} style={{background:"rgba(211,17,24,0.12)",border:"1px solid rgba(211,17,24,0.3)",color:C.ol,padding:"7px 13px",borderRadius:9,fontSize:11,fontWeight:800,cursor:"pointer",flexShrink:0,fontFamily:"inherit",position:"relative",transition:"all 0.2s"}}>
-                Control Panel
-                {pendingCount > 0 && <span style={{position:"absolute",top:-7,right:-7,background:C.rd,color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #04060E"}}>{pendingCount}</span>}
+              <button onClick={onControlPanel} style={{background:th.olBg,border:"1.5px solid var(--accent)",color:"var(--accent)",padding:"7px 12px",borderRadius:20,fontSize:11,fontWeight:800,cursor:"pointer",flexShrink:0,fontFamily:"inherit",position:"relative",transition:"all 0.2s",minHeight:36}}>
+                Panel
+                {pendingCount > 0 && <span style={{position:"absolute",top:-6,right:-6,background:"var(--accent)",color:"#fff",borderRadius:"50%",width:16,height:16,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center"}}>{pendingCount}</span>}
               </button>
             )}
-            <button onClick={onSignOut} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",color:C.chL,padding:"6px 10px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,fontFamily:"inherit"}}>Sign Out</button>
+            <button onClick={onSignOut} style={{background:th.closeBg,border:"1.5px solid var(--border)",color:"var(--text-sub)",padding:"6px 10px",borderRadius:20,fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,fontFamily:"inherit",minHeight:36}}>Out</button>
           </div>
         )}
 
         {/* Heading */}
-        <motion.div
-          initial={{opacity:0,y:-16}}
-          animate={{opacity:1,y:0}}
-          transition={{duration:0.6,ease:[0.16,1,0.3,1]}}
-          style={{textAlign:"center",marginBottom:28}}
-        >
-          <div style={{position:"relative",width:62,height:62,margin:"0 auto 18px"}}>
-            <div style={{width:62,height:62,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
-            <div style={{position:"absolute",inset:-8,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.16)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
-          </div>
-          <div style={{fontSize:22,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.03em",lineHeight:1}}>Welcome back.</div>
-          <div style={{fontSize:13,color:"#4A6080",fontWeight:500,marginTop:8}}>Select your operational role to continue</div>
+        <motion.div initial={{opacity:0,y:-12}} animate={{opacity:1,y:0}} transition={{duration:0.5,ease:[0.16,1,0.3,1]}} style={{marginBottom:24}}>
+          <div style={{fontSize:32,fontWeight:700,color:"var(--accent)",fontFamily:"'Caveat',cursive",lineHeight:1,marginBottom:4}}>TFC Order Tracker</div>
+          <div style={{fontSize:14,color:"var(--text-sub)",fontWeight:500}}>Select your role to continue</div>
         </motion.div>
 
-        {/* Role tiles */}
-        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
+        {/* Role pills */}
+        <div style={{display:"flex",flexWrap:"wrap",gap:10,marginBottom:24}}>
           {keys.map((k, i) => {
             const r = ROLES[k]; if (!r) return null;
+            const isActive = selected === k;
             return (
-              <motion.div
+              <motion.button
                 key={k}
-                ref={el => { cardRefs.current[i] = el; }}
-                onClick={() => onSelect(k)}
-                className="glass-card role-card"
+                onClick={() => setSelected(k)}
+                initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{duration:0.4,delay:i*0.07,ease:[0.16,1,0.3,1]}}
+                whileTap={{scale:0.95}}
                 style={{
-                  gridColumn:(!isMobile && i === keys.length - 1 && keys.length % 2 !== 0) ? "1 / -1" : "auto",
-                  borderRadius:18, padding:"22px 22px 18px",
-                  cursor:"pointer", display:"flex", flexDirection:"column", gap:14, alignItems:"flex-start",
-                  borderTop:"2px solid "+r.color+"60",
-                  position:"relative", overflow:"hidden",
+                  borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px",
+                  padding:"11px 22px",
+                  background:isActive?"var(--accent)":"transparent",
+                  border:`1.5px solid ${isActive?"var(--accent)":"var(--border)"}`,
+                  color:isActive?"#fff":"var(--text)",
+                  fontWeight:700,fontSize:14,cursor:"pointer",
+                  boxShadow:isActive?"2px 3px 0 rgba(0,0,0,0.15)":"1px 2px 0 rgba(0,0,0,0.06)",
+                  fontFamily:"'Caveat',cursive",
+                  transition:"all 0.15s ease",
+                  minHeight:48,
                 }}
-                initial={{opacity:0,y:28}}
-                animate={{opacity:1,y:0}}
-                transition={{duration:0.5,ease:[0.16,1,0.3,1],delay:i*0.08}}
-                whileHover={{scale:1.03,y:-4,boxShadow:`0 20px 60px rgba(0,0,0,0.5), 0 0 30px ${r.color}20`}}
-                whileTap={{scale:0.97}}
               >
-                {/* Top shine */}
-                <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${r.color}30,transparent)`,pointerEvents:"none"}}/>
-                {/* Subtle glow orb */}
-                <div style={{position:"absolute",top:-40,right:-20,width:100,height:100,borderRadius:"50%",background:`radial-gradient(circle,${r.color}15 0%,transparent 70%)`,pointerEvents:"none"}}/>
-                {/* Icon */}
-                <div style={{width:46,height:46,background:`linear-gradient(135deg,${r.color}22,${r.color}0A)`,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,fontWeight:900,color:r.color,border:"1px solid "+r.color+"30",flexShrink:0}}>
-                  {r.icon}
-                </div>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:15,fontWeight:900,color:"#EEF2FF",marginBottom:5,letterSpacing:"-0.02em"}}>{r.label}</div>
-                  <div style={{fontSize:12,color:"#4A6080",lineHeight:1.55,fontWeight:500}}>{r.desc}</div>
-                </div>
-                <div style={{fontSize:11,color:r.color,display:"flex",alignItems:"center",gap:6,fontWeight:700,background:r.color+"14",border:"1px solid "+r.color+"28",padding:"5px 10px",borderRadius:6}}>
-                  <span style={{fontSize:9}}>▶</span> Enter portal
-                </div>
-              </motion.div>
+                {r.label}
+              </motion.button>
             );
           })}
         </div>
 
-        <div className="animate-fade-up" style={{animationDelay:"0.35s"}}>
+        {/* Enter button */}
+        <motion.button
+          disabled={!selected}
+          onClick={() => selected && onSelect(selected)}
+          whileTap={{scale:0.97}}
+          style={{
+            width:"100%",padding:"14px 0",
+            background:selected?"var(--accent)":"var(--border)",
+            border:"none",
+            borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px",
+            color:selected?"#fff":"var(--text-sub)",
+            fontSize:16,fontWeight:700,cursor:selected?"pointer":"default",
+            fontFamily:"'Caveat',cursive",
+            boxShadow:selected?"2px 3px 0 rgba(0,0,0,0.18)":"none",
+            transition:"all 0.2s ease",
+            opacity:selected?1:0.5,
+          }}
+        >
+          Enter →
+        </motion.button>
+
+        <div style={{marginTop:16}}>
           <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
         </div>
 
-        <div className="animate-fade-up" style={{textAlign:"center",marginTop:24,fontSize:11,color:"#1A2840",fontWeight:600,animationDelay:"0.4s"}}>
+        <div style={{textAlign:"center",marginTop:20,fontSize:11,color:"var(--text-sub)",fontWeight:500}}>
           Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur
-          <div style={{fontSize:10,marginTop:6,fontWeight:500,opacity:0.6}}>© 2026 Made by Banuja Disanayaka</div>
+          <div style={{fontSize:10,marginTop:4,opacity:0.6}}>© 2026 Made by Banuja Disanayaka</div>
         </div>
       </div>
     </div>
@@ -2908,6 +3000,200 @@ class ErrorBoundary extends React.Component {
   }
 }
 
+/* ── Bottom Navigation Bar ── */
+function BottomNav({ activeTab, onTab, unreadCount }) {
+  const C = useTheme();
+  const tabs = [
+    { id: "dashboard", label: "Home", icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+      </svg>
+    )},
+    { id: "notifications", label: "Alerts", badge: unreadCount, icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
+        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+      </svg>
+    )},
+    { id: "roles", label: "Roles", icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
+        <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+      </svg>
+    )},
+    { id: "profile", label: "Profile", icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    )},
+  ];
+  return (
+    <nav className="bottom-nav">
+      {tabs.map(tab => {
+        const active = activeTab === tab.id;
+        return (
+          <button key={tab.id} className="bottom-nav-tab" onClick={() => onTab(tab.id)}
+            style={{ color: active ? C.ol : C.chL }}>
+            <div style={{ position: "relative" }}>
+              {tab.icon(active)}
+              {tab.badge > 0 && (
+                <span style={{ position:"absolute", top:-4, right:-4, background:"#D31118", color:"#fff", borderRadius:"50%", width:15, height:15, fontSize:9, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", border:"1.5px solid var(--page-bg)" }}>
+                  {tab.badge > 9 ? "9+" : tab.badge}
+                </span>
+              )}
+            </div>
+            <span className="bottom-nav-label" style={{ color: active ? C.ol : C.chL }}>{tab.label}</span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+/* ── Notifications Tab ── */
+function NotificationsTab({ role, userJoinDate }) {
+  const C = useTheme();
+  const [notifs, setNotifs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    localStorage.setItem("tfc_last_notif_seen", String(Date.now()));
+    const cutoff = Math.max(Date.now() - WEEK_MS, userJoinDate || 0);
+    const q = query(
+      collection(db, "notifications"),
+      where("sentAt", ">=", cutoff),
+      orderBy("sentAt", "desc"),
+      limit(60)
+    );
+    const unsub = onSnapshot(q, snap => {
+      setNotifs(snap.docs.map(d => d.data()).filter(n => n.targetRoles?.includes(role)));
+      setLoading(false);
+    }, () => setLoading(false));
+    return unsub;
+  }, [role, userJoinDate]);
+
+  function relTime(ts) {
+    const diff = Date.now() - ts;
+    if (diff < 60000) return "just now";
+    if (diff < 3600000) return Math.floor(diff / 60000) + "m ago";
+    if (diff < 86400000) return Math.floor(diff / 3600000) + "h ago";
+    return Math.floor(diff / 86400000) + "d ago";
+  }
+
+  return (
+    <div className="custom-scrollbar" style={{ flex:1, overflowY:"auto", padding:"20px 20px 8px", maxWidth:560, margin:"0 auto", width:"100%" }}>
+      <div style={{ fontFamily:"'Caveat',cursive", fontSize:26, fontWeight:700, color:C.ch, marginBottom:16 }}>Notifications</div>
+      {loading ? (
+        <div style={{ padding:"40px 0", textAlign:"center" }}>
+          <div className="dot"/><div className="dot"/><div className="dot"/>
+        </div>
+      ) : notifs.length === 0 ? (
+        <div className="empty-state" style={{ paddingTop:60 }}>
+          <div style={{ fontSize:44, marginBottom:12 }}>🔔</div>
+          <div style={{ fontFamily:"'Caveat',cursive", fontSize:22, fontWeight:600, color:C.chL }}>No notifications yet</div>
+          <div style={{ fontSize:12, color:C.chXL, marginTop:6 }}>Notifications from the last 7 days appear here</div>
+        </div>
+      ) : notifs.map((n, i) => {
+        const roleColor = ROLES[n.targetRoles?.[0]]?.color || C.chM;
+        return (
+          <div key={i} style={{ display:"flex", gap:12, padding:"14px 16px", marginBottom:10, background:C.off, border:"1.5px solid "+C.bdrL, borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", boxShadow:C.sh }}>
+            <div style={{ width:10, height:10, borderRadius:"50%", background:roleColor, flexShrink:0, marginTop:5 }}/>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ fontSize:14, fontWeight:800, color:C.ch, marginBottom:2 }}>{n.title}</div>
+              {n.body ? <div style={{ fontSize:12, color:C.chM, lineHeight:1.5 }}>{n.body}</div> : null}
+              <div style={{ fontSize:11, color:C.chL, marginTop:5 }}>{relTime(n.sentAt)}</div>
+            </div>
+          </div>
+        );
+      })}
+      <div style={{ height:16 }}/>
+    </div>
+  );
+}
+
+/* ── Profile Tab ── */
+function ProfileTab({ authUser, userRecord, onSignOut, installPrompt, onInstallDone }) {
+  const C = useTheme();
+  const { isDark, toggleTheme } = React.useContext(ThemeCtx);
+  return (
+    <div className="custom-scrollbar" style={{ flex:1, overflowY:"auto", padding:"24px 20px", maxWidth:440, margin:"0 auto", width:"100%" }}>
+      <div style={{ fontFamily:"'Caveat',cursive", fontSize:26, fontWeight:700, color:C.ch, marginBottom:20 }}>Profile</div>
+      {/* Avatar + name */}
+      <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:24, padding:"16px 18px", background:C.off, border:"1.5px solid "+C.bdrL, borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", boxShadow:C.sh }}>
+        {authUser?.photoURL
+          ? <img src={authUser.photoURL} alt="" style={{ width:52, height:52, borderRadius:"50%", border:"2px solid "+C.bdrL, flexShrink:0 }}/>
+          : <div style={{ width:52, height:52, borderRadius:"50%", background:"linear-gradient(135deg,#D31118,#8A0B10)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, fontWeight:900, color:"#fff", flexShrink:0 }}>{authUser?.displayName?.[0]||"?"}</div>
+        }
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontSize:16, fontWeight:800, color:C.ch, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{authUser?.displayName||"User"}</div>
+          <div style={{ fontSize:12, color:C.chL, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{authUser?.email}</div>
+          {userRecord?.outlet && <div style={{ fontSize:11, color:C.chL, marginTop:2 }}>📍 {userRecord.outlet}</div>}
+        </div>
+      </div>
+
+      {/* Theme toggle */}
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 16px", background:C.off, border:"1.5px solid "+C.bdrL, borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", marginBottom:12, boxShadow:C.sh }}>
+        <div>
+          <div style={{ fontSize:14, fontWeight:700, color:C.ch }}>{isDark ? "🌙 Dark Mode" : "☀️ Light Mode"}</div>
+          <div style={{ fontSize:11, color:C.chL }}>Tap to switch theme</div>
+        </div>
+        <button onClick={toggleTheme}
+          style={{ padding:"9px 18px", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", border:"1.5px solid "+C.ol, background:C.olBg, color:C.ol, fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit", minHeight:44, boxShadow:"1px 2px 0 rgba(0,0,0,0.07)" }}>
+          {isDark ? "Light" : "Dark"}
+        </button>
+      </div>
+
+      {/* Sign out */}
+      <button onClick={onSignOut}
+        style={{ width:"100%", padding:"13px", background:"transparent", border:"1.5px solid "+C.bdr, borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", color:C.chM, fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"inherit", marginBottom:12, minHeight:48, boxShadow:C.sh }}>
+        Sign Out
+      </button>
+
+      <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
+
+      <div style={{ textAlign:"center", marginTop:24, fontSize:10, color:C.chXL, fontWeight:500 }}>
+        Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur<br/>
+        © 2026 Made by Banuja Disanayaka
+      </div>
+    </div>
+  );
+}
+
+/* ── Roles Tab (quick role switcher) ── */
+function RolesTab({ availableRoles, currentRole, onSelect }) {
+  const C = useTheme();
+  const [selected, setSelected] = useState(currentRole);
+  const keys = availableRoles || Object.keys(ROLES);
+  return (
+    <div style={{ flex:1, padding:"24px 20px", maxWidth:440, margin:"0 auto", width:"100%" }}>
+      <div style={{ fontFamily:"'Caveat',cursive", fontSize:26, fontWeight:700, color:C.ch, marginBottom:6 }}>Switch Role</div>
+      <div style={{ fontSize:12, color:C.chL, marginBottom:20 }}>Current: <strong style={{ color:C.ch }}>{ROLES[currentRole]?.label}</strong></div>
+      <div style={{ display:"flex", flexWrap:"wrap", gap:10, marginBottom:24 }}>
+        {keys.map(rk => {
+          const r = ROLES[rk]; if (!r) return null;
+          const active = selected === rk;
+          return (
+            <motion.button key={rk}
+              onClick={() => setSelected(rk)}
+              whileTap={{ scale: 0.93 }}
+              className={`sketch-pill ${active ? "selected" : ""}`}
+              style={{ border:"1.5px solid "+(active ? C.ol : C.bdrL), color: active ? "#fff" : C.chM, background: active ? C.ol : "transparent" }}>
+              {r.icon} {r.label}
+            </motion.button>
+          );
+        })}
+      </div>
+      <motion.button
+        disabled={selected === currentRole || !selected}
+        onClick={() => onSelect(selected)}
+        whileTap={{ scale: 0.97 }}
+        style={{ width:"100%", padding:"14px", background:selected && selected !== currentRole ? C.ol : C.off, border:"1.5px solid "+(selected && selected !== currentRole ? C.ol : C.bdrL), borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", color:selected && selected !== currentRole ? "#fff" : C.chL, fontSize:15, fontWeight:800, cursor:selected && selected !== currentRole ? "pointer" : "not-allowed", fontFamily:"inherit", minHeight:52, boxShadow:C.sh }}>
+        {selected === currentRole ? "Already on this role" : "Switch →"}
+      </motion.button>
+    </div>
+  );
+}
+
 function TFCOrderSystem(){
   const isMobile = useIsMobile();
   const [splashState, setSplashState] = useState("visible");
@@ -3065,6 +3351,14 @@ function TFCOrderSystem(){
       } else if (data.sent > 0) {
         console.log("[Push]", title, "→", cleanRoles, ":", data.sent + "/" + data.total, "delivered");
       }
+      // Persist to Firestore notification history (7-day TTL via expiresAt field)
+      addDoc(collection(db, "notifications"), {
+        title, body: body || "", tag: tag || "tfc",
+        targetRoles: cleanRoles,
+        senderEmail: authUser?.email || null,
+        sentAt: Date.now(),
+        expiresAt: Date.now() + WEEK_MS,
+      }).catch(() => {});
     } catch (e) {
       // Network error — retry once
       if (_attempt < 1) {
@@ -3233,6 +3527,10 @@ function TFCOrderSystem(){
   }, [orders, role, notifPermission, loadingInitial]);
 
   const [activeId,setActiveId]=useState(null); const [showModal,setShowModal]=useState(false); const [editingOrder, setEditingOrder] = useState(null); const [toast,setToast] = useState(null); const [sidebarOpen, setSidebarOpen]=useState(false);
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [isDark, setIsDark] = useState(() => localStorage.getItem("tfc_theme") === "dark");
+  const toggleTheme = () => setIsDark(d => { localStorage.setItem("tfc_theme", !d ? "dark" : "light"); return !d; });
 
   // Auth state (authUser/authLoading hoisted above for TDZ safety in notification effects)
   const [userRecord, setUserRecord] = useState(null);
@@ -3244,7 +3542,28 @@ function TFCOrderSystem(){
   useEffect(() => { const timer1 = setTimeout(() => setSplashState("fading"), 2000); const timer2 = setTimeout(() => setSplashState("hidden"), 2500); return () => { clearTimeout(timer1); clearTimeout(timer2); }; }, []);
   function notify(msg,type="success"){ setToast({msg,type}); setTimeout(()=>setToast(null),4000); }
 
-  const isDark = true;
+  // Reset tab to dashboard when role changes
+  useEffect(() => { setActiveTab("dashboard"); }, [role]);
+
+  // Sync data-theme on <html> so CSS vars (body bg, etc.) update correctly at root level
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
+
+  // Unread notification count
+  useEffect(() => {
+    if (!role) return;
+    const userJoinDate = authUser?.email === OWNER_EMAIL
+      ? new Date(authUser?.metadata?.creationTime || 0).getTime()
+      : (userRecord?.approvedAt || 0);
+    const cutoff = Math.max(Date.now() - WEEK_MS, userJoinDate);
+    const q = query(collection(db, "notifications"), where("sentAt", ">=", cutoff), orderBy("sentAt", "desc"), limit(30));
+    return onSnapshot(q, snap => {
+      const lastSeen = parseInt(localStorage.getItem("tfc_last_notif_seen") || "0");
+      const relevant = snap.docs.map(d => d.data()).filter(n => n.targetRoles?.includes(role));
+      setUnreadCount(relevant.filter(n => n.sentAt > lastSeen).length);
+    });
+  }, [role, authUser, userRecord]);
 
   // Auth state listener
   useEffect(() => {
@@ -3308,11 +3627,14 @@ function TFCOrderSystem(){
     setUserRecord(null); setAccessRequest(null);
   }
 
-  async function submitAccessRequest(requestedRoles) {
+  async function submitAccessRequest(requestedRoles, enteredName, enteredOutlet) {
     try {
       const id = "req_" + Date.now();
       await setDoc(doc(db, "access_requests", id), {
-        id, email: authUser.email, name: authUser.displayName, photoURL: authUser.photoURL,
+        id, email: authUser.email,
+        name: enteredName || authUser.displayName,
+        photoURL: authUser.photoURL,
+        outlet: enteredOutlet || "",
         requestedRole: requestedRoles[0], requestedRoles, status: "pending", createdAt: Date.now()
       });
       notify("Request sent! Waiting for owner approval.");
@@ -3324,6 +3646,7 @@ function TFCOrderSystem(){
       const rolesToGrant = request.requestedRoles || [request.requestedRole];
       await setDoc(doc(db, "authorized_users", request.email), {
         email: request.email, name: request.name, photoURL: request.photoURL,
+        outlet: request.outlet || "",
         roles: rolesToGrant, approvedAt: Date.now()
       });
       await setDoc(doc(db, "access_requests", request.id), { ...request, status: "approved" });
@@ -3518,16 +3841,19 @@ function TFCOrderSystem(){
     setTimeout(()=>{ setRole(r); setPhase("app"); setScreenExiting(false); }, 320);
   }
 
-  if (splashState === "visible" || splashState === "fading") return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{ opacity: splashState === "fading" ? 0 : 1, transition: "opacity 0.5s ease" }}><SplashScreen /></div></ThemeCtx.Provider> );
+  const _themeVal = { ...makeThemeObj(isDark ? DC : LC, isDark), toggleTheme };
+  const _dt = isDark ? "dark" : "light";
+
+  if (splashState === "visible" || splashState === "fading") return ( <ThemeCtx.Provider value={_themeVal}><style>{GLOBAL_STYLES}</style><div data-theme={_dt} style={{ opacity: splashState === "fading" ? 0 : 1, transition: "opacity 0.5s ease" }}><SplashScreen /></div></ThemeCtx.Provider> );
 
   // Auth loading
-  if (authLoading) return (<ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark"><SplashScreen /></div></ThemeCtx.Provider>);
+  if (authLoading) return (<ThemeCtx.Provider value={_themeVal}><style>{GLOBAL_STYLES}</style><div data-theme={_dt}><SplashScreen /></div></ThemeCtx.Provider>);
 
   // Not logged in
-  if (!authUser) return (<ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark"><LoginScreen onSignIn={handleGoogleSignIn} /></div></ThemeCtx.Provider>);
+  if (!authUser) return (<ThemeCtx.Provider value={_themeVal}><style>{GLOBAL_STYLES}</style><div data-theme={_dt}><LoginScreen onSignIn={handleGoogleSignIn} /></div></ThemeCtx.Provider>);
 
   // Loading user's Firestore record
-  if (userRecordLoading) return (<ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark"><SplashScreen /></div></ThemeCtx.Provider>);
+  if (userRecordLoading) return (<ThemeCtx.Provider value={_themeVal}><style>{GLOBAL_STYLES}</style><div data-theme={_dt}><SplashScreen /></div></ThemeCtx.Provider>);
 
   let AppContent;
   const isOwner = authUser.email === OWNER_EMAIL;
@@ -3621,21 +3947,25 @@ function TFCOrderSystem(){
       }
     };
 
-    const topBarBg   = "linear-gradient(180deg,rgba(4,6,14,0.98) 0%,rgba(4,6,14,0.94) 100%)";
-    const topBarBdr  = "1px solid rgba(0,212,255,0.09)";
-    const topBarShd  = "0 4px 40px rgba(0,0,0,0.7), 0 1px 0 rgba(0,212,255,0.06)";
-    const sidebarBg  = "rgba(4,6,14,0.97)";
-    const sidebarBdr = "1px solid rgba(255,255,255,0.07)";
-    const mainBg     = "radial-gradient(ellipse 90% 50% at 50% -5%,rgba(211,17,24,0.07) 0%,transparent 55%), radial-gradient(ellipse 60% 40% at 85% 20%,rgba(0,212,255,0.05) 0%,transparent 50%), radial-gradient(ellipse 50% 35% at 15% 70%,rgba(63,70,200,0.06) 0%,transparent 50%), #04060E";
-    const orderCount = "#1E2D4A";
-    const copyright  = "#142030";
+    const th = makeThemeObj(isDark ? DC : LC, isDark);
+    const topBarBg   = th.headerBg;
+    const topBarBdr  = `1px solid ${th.divider}`;
+    const topBarShd  = isDark ? "0 2px 16px rgba(0,0,0,0.50)" : "0 2px 10px rgba(0,0,0,0.06)";
+    const sidebarBg  = th.panelBg;
+    const sidebarBdr = `1px solid ${th.divider}`;
+    const mainBg     = isDark ? "#0A0D1E" : "#FAFAF0";
+    const orderCount = th.chL;
+    const copyright  = th.chXL;
+
+    const userJoinDate = authUser?.email === OWNER_EMAIL
+      ? new Date(authUser?.metadata?.creationTime || 0).getTime()
+      : (userRecord?.approvedAt || 0);
+    const installProps2 = { installPrompt, onInstallDone: () => { setInstallPrompt(null); setShowInstallBanner(false); } };
 
     AppContent = (
       <div
-        className="animate-fade-in cursor-spotlight"
-        style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:"#04060E",fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",overflow:"hidden",position:"relative",transition:"background-color 0.4s ease, opacity 0.32s ease",opacity:screenExiting?0:1}}
-        onMouseMove={e=>{const el=e.currentTarget;const r=el.getBoundingClientRect();el.style.setProperty("--cx",(e.clientX-r.left)+"px");el.style.setProperty("--cy",(e.clientY-r.top)+"px");}}
-        onMouseLeave={e=>{e.currentTarget.style.setProperty("--cx","-9999px");e.currentTarget.style.setProperty("--cy","-9999px");}}
+        className="animate-fade-in"
+        style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:mainBg,fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",overflow:"hidden",position:"relative",transition:"background-color 0.4s ease",opacity:screenExiting?0:1}}
       >
         <div className="dot-grid-fixed"/>
         <div className="portal-orb portal-orb-1"/>
@@ -3663,7 +3993,7 @@ function TFCOrderSystem(){
         </div>}
 
         {/* ── Portal Top Bar ── */}
-        <div style={{background:topBarBg,borderBottom:topBarBdr,backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:topBarShd,transition:"all 0.4s ease",paddingTop:"env(safe-area-inset-top, 0px)"}}>
+        <div style={{background:topBarBg,borderBottom:topBarBdr,flexShrink:0,zIndex:60,position:"relative",boxShadow:topBarShd,transition:"all 0.4s ease",paddingTop:"env(safe-area-inset-top, 0px)"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",height:58}}>
           <div className="portal-bar-shine"/>
           {/* Left */}
@@ -3721,10 +4051,10 @@ function TFCOrderSystem(){
         </div>
 
         <div style={{display:"flex",flex:1,overflow:"hidden",position:"relative",zIndex:2}}>
-          {isMobile&&sidebarOpen&&<div onClick={()=>setSidebarOpen(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.65)",backdropFilter:"blur(3px)",zIndex:40,animation:"fadeIn 0.3s ease-out forwards"}}/>}
+          {isMobile&&sidebarOpen&&<div onClick={()=>setSidebarOpen(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.55)",zIndex:40,animation:"fadeIn 0.3s ease-out forwards"}}/>}
 
           {/* Sidebar */}
-          <div className="custom-scrollbar" style={{width:240,borderRight:sidebarBdr,background:sidebarBg,backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",padding:"14px 12px",overflowY:"auto",flexShrink:0,display:"flex",flexDirection:"column",gap:5,position:isMobile?"absolute":"relative",zIndex:50,height:"100%",left:0,top:0,transform:isMobile?(sidebarOpen?"translateX(0)":"translateX(-100%)"):"none",transition:"transform 0.3s cubic-bezier(0.16,1,0.3,1), background 0.4s ease",boxShadow:isMobile&&sidebarOpen?(isDark?"0 0 60px rgba(0,0,0,0.8)":"0 0 40px rgba(0,0,0,0.15)"):"none"}}>
+          <div className="custom-scrollbar" style={{width:240,borderRight:sidebarBdr,background:sidebarBg,padding:"14px 12px",overflowY:"auto",flexShrink:0,display:"flex",flexDirection:"column",gap:5,position:isMobile?"absolute":"relative",zIndex:50,height:"100%",left:0,top:0,transform:isMobile?(sidebarOpen?"translateX(0)":"translateX(-100%)"):"none",transition:"transform 0.3s cubic-bezier(0.16,1,0.3,1), background 0.4s ease",boxShadow:isMobile&&sidebarOpen?(isDark?"0 0 40px rgba(0,0,0,0.7)":"0 0 24px rgba(0,0,0,0.10)"):"none"}}>
             {role==="admin"&&(<div style={{marginBottom:10}}><button className="btn-3d create-order-btn" onClick={()=>{setShowModal(true);if(isMobile)setSidebarOpen(false);}} style={{width:"100%",padding:"14px 0",border:"none",borderRadius:12,background:"linear-gradient(135deg,#D31118,#8A0B10)",color:"#FFFFFF",fontSize:14,cursor:"pointer",fontWeight:900,letterSpacing:"0.03em",boxShadow:"0 4px 22px rgba(211,17,24,0.55),0 0 40px rgba(211,17,24,0.12),inset 0 1px 0 rgba(255,255,255,0.12)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>+</span> Create Order</button></div>)}
             {role==="production"&&(<div style={{padding:"12px 14px",background:"rgba(232,146,10,0.08)",borderRadius:10,border:"1px solid rgba(232,146,10,0.2)",marginBottom:10}}><div style={{fontSize:11,fontWeight:900,color:C.amDk,textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:3}}>Production Mode</div><div style={{fontSize:11,color:C.chL,lineHeight:1.4,fontWeight:500}}>All items flagged for production.</div></div>)}
             <div className="section-label-v2" style={{color:C.chL}}>Orders {viewOrders.length>0&&<span style={{fontWeight:700,marginLeft:3}}>({viewOrders.length})</span>}</div>
@@ -3732,18 +4062,30 @@ function TFCOrderSystem(){
             <div style={{marginTop:"auto",paddingTop:20,textAlign:"center",fontSize:9,color:copyright,fontWeight:500}}>© 2026 Made by Banuja Disanayaka</div>
           </div>
 
-          {/* Main content */}
-          <div className="custom-scrollbar" style={{flex:1,overflowY:"auto",padding:isMobile?"16px":"32px 40px",background:mainBg,width:"100%",position:"relative",transition:"background 0.4s ease"}}>
-            <div key={`${role}-${activeId||"none"}`} className="view-enter" style={{minHeight:"100%"}}>
-              {renderMain()}
+          {/* Main content — dashboard tab */}
+          {activeTab === "dashboard" && (
+            <div className="custom-scrollbar has-bottom-nav" style={{flex:1,overflowY:"auto",padding:isMobile?"16px":"32px 40px",width:"100%",position:"relative",transition:"background 0.4s ease"}}>
+              <div key={`${role}-${activeId||"none"}`} className="view-enter" style={{minHeight:"100%"}}>
+                {renderMain()}
+              </div>
             </div>
-          </div>
+          )}
+          {/* Non-dashboard tabs */}
+          {activeTab !== "dashboard" && (
+            <div className="custom-scrollbar has-bottom-nav" style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column"}}>
+              {activeTab === "notifications" && <NotificationsTab role={role} userJoinDate={userJoinDate}/>}
+              {activeTab === "roles" && <RolesTab availableRoles={availableRoles} currentRole={role} onSelect={r=>{ selectRole(r); setActiveTab("dashboard"); }}/>}
+              {activeTab === "profile" && <ProfileTab authUser={authUser} userRecord={userRecord} onSignOut={handleSignOut} {...installProps2}/>}
+            </div>
+          )}
         </div>
+        {/* Bottom Navigation */}
+        <BottomNav activeTab={activeTab} onTab={t=>{ setActiveTab(t); if(t==="dashboard")setSidebarOpen(false); }} unreadCount={unreadCount}/>
       </div>
     );
   }
 
-  return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{minHeight:"100vh"}}><AnimatePresence mode="wait"><motion.div key={phase+(role||"")} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-10}} transition={{duration:0.28,ease:[0.16,1,0.3,1]}}>{AppContent}</motion.div></AnimatePresence></div></ThemeCtx.Provider> );
+  return ( <ThemeCtx.Provider value={_themeVal}><style>{GLOBAL_STYLES}</style><div data-theme={_dt} style={{minHeight:"100vh"}}><AnimatePresence mode="wait"><motion.div key={phase+(role||"")} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-10}} transition={{duration:0.28,ease:[0.16,1,0.3,1]}}>{AppContent}</motion.div></AnimatePresence></div></ThemeCtx.Provider> );
 }
 
 export default function App() {
