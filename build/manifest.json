@@ -1,6 +1,6 @@
 {
-  "name": "TFC Order Tracker",
-  "short_name": "TFC Orders",
+  "name": "TFC Operations Hub",
+  "short_name": "TFC Ops Hub",
   "description": "Track and manage TFC food production orders in real time",
   "start_url": "/",
   "display": "standalone",
