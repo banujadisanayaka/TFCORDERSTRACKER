@@ -2981,12 +2981,21 @@ function TFCOrderSystem(){
   async function sendPush(roles, title, body, tag) {
     if (!roles?.length) return;
     try {
-      await fetch("/.netlify/functions/push", {
+      const res = await fetch("/.netlify/functions/push", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetRoles: roles, payload: { title, body, tag }, senderToken: currentFCMToken.current }),
       });
-    } catch (_) {}
+      const data = await res.json().catch(() => ({}));
+      if (data.sent === 0 || data.reason === "no_tokens") {
+        console.warn("[Push] no tokens found for roles:", roles, "— target users may not have opened the app or granted notification permission");
+        notify(`No devices registered for ${roles.join("/")} — ask them to open the app and allow notifications`, "error");
+      } else if (data.sent > 0) {
+        console.log("[Push]", title, "→", roles, ":", data.sent + "/" + data.total, "delivered");
+      }
+    } catch (e) {
+      console.warn("[Push] failed:", e.message);
+    }
   }
 
   async function registerFCMToken(r, _attempt = 0) {
@@ -3003,7 +3012,7 @@ function TFCOrderSystem(){
       if (!token) throw new Error("empty token returned by FCM");
       currentFCMToken.current = token;
       await setDoc(doc(db, "fcm_tokens", token.slice(-28)), {
-        token, email: authUser?.email || "anon", activeRole: r, updatedAt: Date.now(),
+        token, email: authUser?.email || "anon", uid: authUser?.uid || null, activeRole: r, updatedAt: Date.now(),
       });
       // Persist registration timestamp so TTL health-check can detect stale tokens
       try { localStorage.setItem(FCM_LS_KEY, JSON.stringify({ ts: Date.now(), role: r })); } catch(_) {}
