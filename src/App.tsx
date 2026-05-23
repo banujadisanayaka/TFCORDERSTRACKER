@@ -2920,6 +2920,15 @@ function TFCOrderSystem(){
   const [notifStatus, setNotifStatus] = useState("idle"); // idle | active | error
   const prevOrdersRef = useRef(null);
   const currentFCMToken = useRef(null);
+  // Tracks whether the orders observer has seen its first post-load snapshot.
+  // Prevents firing N "new order" notifications when the initial Firestore
+  // snapshot arrives (every existing order would look "new" otherwise).
+  const observerArmedRef = useRef(false);
+  // Tracks the last (role, uid) tuple we registered FCM for. When this tuple
+  // changes (role switch or user switch), we know we need to re-register.
+  const fcmRegLastKeyRef = useRef(null);
+  // Latest in-flight registration role — if another call supersedes, abort writes.
+  const pendingRegRoleRef = useRef(null);
 
   useEffect(() => {
     const goOnline = () => {
@@ -2941,6 +2950,10 @@ function TFCOrderSystem(){
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
+  // Read notifStatus through a ref so the visibility handler doesn't need to re-bind on every status flip
+  const notifStatusRef = useRef(notifStatus);
+  useEffect(() => { notifStatusRef.current = notifStatus; }, [notifStatus]);
+
   // On every tab-focus: sync permission state AND heal a stale/broken FCM token
   useEffect(() => {
     if (!("Notification" in window)) return;
@@ -2949,51 +2962,111 @@ function TFCOrderSystem(){
       const perm = Notification.permission;
       setNotifPermission(perm);
       if (perm !== "granted" || !role) return;
-      // Re-register if token not active, or if last registration was > 6 days ago, or role changed
-      let needsRefresh = notifStatus !== "active";
+      // Re-register if token not active, last registration > TTL, role changed, or user changed
+      let needsRefresh = notifStatusRef.current !== "active";
       if (!needsRefresh) {
         try {
           const d = JSON.parse(localStorage.getItem(FCM_LS_KEY) || "{}");
-          needsRefresh = !d.ts || Date.now() - d.ts > FCM_TTL_MS || d.role !== role;
+          needsRefresh = !d.ts || Date.now() - d.ts > FCM_TTL_MS || d.role !== role || d.uid !== authUser?.uid;
         } catch(_) { needsRefresh = true; }
       }
       if (needsRefresh) {
-        console.log("[FCM] tab-focus heal: re-registering (notifStatus=" + notifStatus + ")");
-        setNotifStatus("idle"); // reset to orange while re-registering
+        console.log("[FCM] tab-focus heal: re-registering");
+        setNotifStatus("idle");
         registerFCMToken(role);
       }
     };
     document.addEventListener("visibilitychange", sync);
     return () => document.removeEventListener("visibilitychange", sync);
-  }, [role, notifStatus]); // re-run when role/status changes so closure has fresh values
+  }, [role, authUser?.uid]);
 
-  // FCM foreground message handler — fires when app tab is open but hidden (background tab)
+  // Initial FCM registration: fires once per (role, uid) when role+permission+auth are all ready.
+  // Without this, users who already have role cached in localStorage and previously granted
+  // permission would never have their FCM token registered after a fresh app load.
+  // We always call registerFCMToken (not just when LS says fresh) because currentFCMToken.current
+  // is in-memory only — every page load needs the token re-fetched to populate it for sendPush.
+  // Re-fires when role OR uid changes (so a user switch correctly re-registers under the new uid).
+  useEffect(() => {
+    if (!role || notifPermission !== "granted" || !authUser?.uid) {
+      fcmRegLastKeyRef.current = null;
+      return;
+    }
+    const key = role + ":" + authUser.uid;
+    if (fcmRegLastKeyRef.current === key) return;
+    fcmRegLastKeyRef.current = key;
+    registerFCMToken(role);
+  }, [role, notifPermission, authUser?.uid]); // eslint-disable-line
+
+  // FCM foreground message handler — fires when the app has any open tab (visible or hidden).
+  // Visible tabs are handled by the Firestore observer (in-app toast); for hidden tabs we show
+  // a browser notification so the user sees something even if they're on another tab.
   useEffect(() => {
     const msg = getMsg();
     if (!msg) return;
     return onMessage(msg, payload => {
-      if (document.visibilityState === "visible") return; // observer handles visible tab
+      if (document.visibilityState === "visible") return;
       const n = payload.notification;
-      if (n?.title) fireNotif(n.title, { body: n.body || "", tag: payload.data?.tag });
+      const d = payload.data;
+      const title = n?.title || d?.title;
+      const body  = n?.body  || d?.body  || "";
+      const tag   = d?.tag || n?.tag || ("tfc-" + Date.now());
+      if (title) fireNotif(title, { body, tag });
     });
   }, []);
 
-  async function sendPush(roles, title, body, tag) {
+  // SW → app message channel: respond to pushsubscriptionchange or other SW-initiated events
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+    const handler = (e) => {
+      if (!e.data) return;
+      if (e.data.type === "fcm-resubscribe" && role && Notification.permission === "granted") {
+        console.log("[FCM] SW requested re-subscribe");
+        setNotifStatus("idle");
+        registerFCMToken(role);
+      }
+    };
+    navigator.serviceWorker.addEventListener("message", handler);
+    return () => navigator.serviceWorker.removeEventListener("message", handler);
+  }, [role]);
+
+  async function sendPush(roles, title, body, tag, _attempt = 0) {
     if (!roles?.length) return;
+    // Filter out null/undefined/empty role names (e.g. when restaurant is unknown)
+    const cleanRoles = roles.filter(r => r && typeof r === "string");
+    if (!cleanRoles.length) return;
     try {
       const res = await fetch("/.netlify/functions/push", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetRoles: roles, payload: { title, body, tag }, senderToken: currentFCMToken.current }),
+        body: JSON.stringify({
+          targetRoles: cleanRoles,
+          payload: { title, body, tag },
+          senderToken: currentFCMToken.current,
+          senderEmail: authUser?.email || null,
+        }),
       });
+      if (!res.ok) {
+        // Server error (500/502/etc) — retry once after 2s before giving up
+        if (_attempt < 1) {
+          await new Promise(r => setTimeout(r, 2000));
+          return sendPush(roles, title, body, tag, _attempt + 1);
+        }
+        console.warn("[Push] HTTP", res.status, "for", cleanRoles);
+        return;
+      }
       const data = await res.json().catch(() => ({}));
       if (data.sent === 0 || data.reason === "no_tokens") {
-        console.warn("[Push] no tokens found for roles:", roles, "— target users may not have opened the app or granted notification permission");
-        notify(`No devices registered for ${roles.join("/")} — ask them to open the app and allow notifications`, "error");
+        console.warn("[Push] no tokens found for roles:", cleanRoles, data);
+        notify(`No devices registered for ${cleanRoles.join("/")} — ask them to open the app and allow notifications`, "error");
       } else if (data.sent > 0) {
-        console.log("[Push]", title, "→", roles, ":", data.sent + "/" + data.total, "delivered");
+        console.log("[Push]", title, "→", cleanRoles, ":", data.sent + "/" + data.total, "delivered");
       }
     } catch (e) {
+      // Network error — retry once
+      if (_attempt < 1) {
+        await new Promise(r => setTimeout(r, 2000));
+        return sendPush(roles, title, body, tag, _attempt + 1);
+      }
       console.warn("[Push] failed:", e.message);
     }
   }
@@ -3001,21 +3074,43 @@ function TFCOrderSystem(){
   async function registerFCMToken(r, _attempt = 0) {
     if (!("Notification" in window) || Notification.permission !== "granted") return;
     if (!VAPID_KEY || VAPID_KEY.startsWith("YOUR_")) return;
+    pendingRegRoleRef.current = r; // claim this role for the race-safety check
     console.log("[FCM] register attempt", _attempt + 1, "for role:", r);
     try {
       const msg = getMsg();
-      if (!msg) throw new Error("getMessaging() returned null");
+      if (!msg) throw new Error("getMessaging() returned null — browser may not support FCM");
       const reg = await navigator.serviceWorker.ready;
       // Nudge SW to pick up any pending update before requesting token
       reg.update().catch(() => {});
       const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
       if (!token) throw new Error("empty token returned by FCM");
+      // Race-safety: if another registerFCMToken call superseded this one, abort
+      if (pendingRegRoleRef.current !== r) {
+        console.log("[FCM] aborted — superseded by newer registration");
+        return;
+      }
+      // Update in-memory token FIRST so even if Firestore write fails,
+      // we know our own token and can exclude it from sendPush recipients.
       currentFCMToken.current = token;
-      await setDoc(doc(db, "fcm_tokens", token.slice(-28)), {
-        token, email: authUser?.email || "anon", uid: authUser?.uid || null, activeRole: r, updatedAt: Date.now(),
-      });
-      // Persist registration timestamp so TTL health-check can detect stale tokens
-      try { localStorage.setItem(FCM_LS_KEY, JSON.stringify({ ts: Date.now(), role: r })); } catch(_) {}
+      try {
+        await setDoc(doc(db, "fcm_tokens", token.slice(-28)), {
+          token,
+          email: authUser?.email || "anon",
+          uid: authUser?.uid || null,
+          activeRole: r,
+          updatedAt: Date.now(),
+        });
+      } catch (writeErr) {
+        // Write failed (rules, network) — log but don't kill registration
+        console.error("[FCM] token doc write failed:", writeErr.message);
+        throw writeErr; // trigger retry path
+      }
+      // Persist registration metadata so TTL health-check can detect stale tokens
+      try {
+        localStorage.setItem(FCM_LS_KEY, JSON.stringify({
+          ts: Date.now(), role: r, uid: authUser?.uid || null,
+        }));
+      } catch(_) {}
       setNotifStatus("active");
       console.log("[FCM] ✓ registered for", r, "token …" + token.slice(-8));
     } catch (e) {
@@ -3039,12 +3134,22 @@ function TFCOrderSystem(){
     const prev = prevOrdersRef.current;
     prevOrdersRef.current = orders; // always keep ref current so no burst on permission grant
 
+    // Skip while initial Firestore load is in progress
+    if (loadingInitial) return;
+    // First post-load snapshot establishes the baseline — every existing order would
+    // look "new" against the empty prev otherwise, spawning N false notifications.
+    if (!observerArmedRef.current) {
+      observerArmedRef.current = true;
+      return;
+    }
     // Only fire when role is active and permission is granted
     if(!role || notifPermission !== "granted" || !("Notification" in window)) return;
-    // Skip on initial load (prev not yet set)
-    if(prev === null || prev === orders) return;
-    // Fireground observer handles visible tab only — hidden/closed tabs receive FCM push from the Netlify function
+    // Skip if same reference (no actual change)
+    if(prev === orders) return;
+    // Foreground observer handles visible tab only — hidden/closed tabs receive FCM push from the Netlify function
     if (document.visibilityState !== "visible") return;
+    // Defensive: prev may be null if observer fires before any data arrived (shouldn't happen given loadingInitial guard, but cheap to check)
+    if (!prev) return;
 
     // Build a flat map of previous item states for O(1) lookup
     const prevMap = {};
@@ -3121,7 +3226,7 @@ function TFCOrderSystem(){
         fireNotif("📋 New Order — Manja", {body:`${order.poName||"New Order"}`,tag:`newpo-${order.id}`});
       }
     });
-  }, [orders, role, notifPermission]);
+  }, [orders, role, notifPermission, loadingInitial]);
 
   const [activeId,setActiveId]=useState(null); const [showModal,setShowModal]=useState(false); const [editingOrder, setEditingOrder] = useState(null); const [toast,setToast] = useState(null); const [sidebarOpen, setSidebarOpen]=useState(false);
 

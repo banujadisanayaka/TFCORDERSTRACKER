@@ -45,7 +45,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { targetRoles, payload, senderToken } = JSON.parse(event.body || "{}");
+    const { targetRoles, payload, senderToken, senderEmail } = JSON.parse(event.body || "{}");
     if (!targetRoles?.length || !payload?.title) {
       return { statusCode: 400, headers: HEADERS, body: "Missing targetRoles or payload.title" };
     }
@@ -63,20 +63,28 @@ exports.handler = async (event) => {
     const seen    = new Set();
     const valid   = [];
     const staleRefs = [];
+    const perRoleCounts = {};
 
-    for (const snap of snaps) {
+    snaps.forEach((snap, i) => {
+      const r = targetRoles[i];
+      perRoleCounts[r] = { found: snap.size, kept: 0 };
       for (const d of snap.docs) {
-        const { token, updatedAt } = d.data();
-        if (!token || token === senderToken || seen.has(token)) continue;
+        const data = d.data();
+        const { token, updatedAt, email } = data;
+        if (!token) continue;
+        // Sender exclusion: by token primarily, fall back to email when sender has no token yet
+        if (senderToken && token === senderToken) continue;
+        if (!senderToken && senderEmail && email === senderEmail) continue;
+        if (seen.has(token)) continue;
         seen.add(token);
         if (updatedAt && updatedAt < staleThreshold) {
-          // Mark for deletion — token too old to be valid
           staleRefs.push(d.ref);
         } else {
           valid.push(token);
+          perRoleCounts[r].kept += 1;
         }
       }
-    }
+    });
 
     // Opportunistically delete stale tokens (fire-and-forget, don't block response)
     if (staleRefs.length) {
@@ -85,11 +93,15 @@ exports.handler = async (event) => {
     }
 
     if (!valid.length) {
-      console.log("push.js: no valid tokens for roles:", targetRoles);
-      return { statusCode: 200, headers: HEADERS, body: JSON.stringify({ sent: 0, reason: "no_tokens" }) };
+      console.log("push.js: no valid tokens — per-role:", JSON.stringify(perRoleCounts));
+      return {
+        statusCode: 200,
+        headers: HEADERS,
+        body: JSON.stringify({ sent: 0, reason: "no_tokens", perRoleCounts }),
+      };
     }
 
-    console.log(`push.js: sending "${payload.title}" to ${valid.length} token(s) for roles [${targetRoles}]`);
+    console.log(`push.js: sending "${payload.title}" to ${valid.length} token(s) — per-role:`, JSON.stringify(perRoleCounts));
 
     const messaging = admin.messaging();
     // FCM max 500 tokens per multicast call
@@ -112,8 +124,9 @@ exports.handler = async (event) => {
             tag: payload.tag || "tfc",
           },
           webpush: {
-            // Urgency:high wakes Android even in Doze/battery-saver mode
-            headers: { Urgency: "high" },
+            // Urgency:high wakes Android even in Doze/battery-saver mode;
+            // TTL=86400 keeps the message queued for 24h if the device is offline.
+            headers: { Urgency: "high", TTL: "86400" },
             notification: {
               title: payload.title,
               body: payload.body || "",
@@ -121,6 +134,7 @@ exports.handler = async (event) => {
               badge: "/icon-192.png",
               tag: payload.tag || "tfc",
               requireInteraction: false,
+              renotify: true,
               vibrate: [200, 100, 200],
             },
             fcmOptions: { link: "/" },
@@ -161,7 +175,11 @@ exports.handler = async (event) => {
     }
 
     console.log(`push.js: delivered ${successCount}/${valid.length} push(es)`);
-    return { statusCode: 200, headers: HEADERS, body: JSON.stringify({ sent: successCount, total: valid.length }) };
+    return {
+      statusCode: 200,
+      headers: HEADERS,
+      body: JSON.stringify({ sent: successCount, total: valid.length, perRoleCounts }),
+    };
 
   } catch (err) {
     console.error("push.js: unhandled error:", err.message, err.stack);
