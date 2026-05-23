@@ -2881,6 +2881,7 @@ function TFCOrderSystem(){
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [notifPermission, setNotifPermission] = useState(() => ("Notification" in window ? Notification.permission : "denied"));
+  const [notifStatus, setNotifStatus] = useState("idle"); // idle | active | error
   const prevOrdersRef = useRef(null);
   const currentFCMToken = useRef(null);
 
@@ -2929,18 +2930,23 @@ function TFCOrderSystem(){
   }
 
   async function registerFCMToken(r) {
-    if (!("Notification" in window) || Notification.permission !== "granted") return;
-    if (!VAPID_KEY || VAPID_KEY.startsWith("YOUR_")) return;
+    console.log("[FCM] registerFCMToken called for role:", r);
+    if (!("Notification" in window)) { console.warn("[FCM] Notifications not supported"); return; }
+    if (Notification.permission !== "granted") { console.warn("[FCM] Permission not granted:", Notification.permission); return; }
+    if (!VAPID_KEY || VAPID_KEY.startsWith("YOUR_")) { console.warn("[FCM] VAPID key missing"); return; }
     try {
       const msg = getMsg();
-      if (!msg) return;
+      if (!msg) { console.warn("[FCM] getMessaging() returned null"); return; }
       const reg = await navigator.serviceWorker.ready;
+      console.log("[FCM] SW ready, requesting token...");
       const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-      if (!token) return;
+      if (!token) { console.warn("[FCM] No token returned"); return; }
       currentFCMToken.current = token;
       const email = authUser?.email || "anon";
       await setDoc(doc(db, "fcm_tokens", token.slice(-28)), { token, email, activeRole: r, updatedAt: Date.now() });
-    } catch (e) { console.error("FCM register:", e); }
+      console.log("[FCM] ✓ Token registered for", r, "—", token.slice(0,20)+"...");
+      setNotifStatus("active");
+    } catch (e) { console.error("[FCM] register failed:", e); setNotifStatus("error"); }
   }
 
   const [orders,setOrders]=useState([]);
@@ -3501,15 +3507,21 @@ function TFCOrderSystem(){
                     Notification.requestPermission().then(p=>{setNotifPermission(p); if(p==="granted"){registerFCMToken(role);notify("Notifications enabled!","success");}else if(p==="denied")notify("Notifications blocked. Allow in browser settings.","error");});
                   } else if(notifPermission==="denied"){
                     notify("Notifications blocked. Go to browser Settings → Site settings to allow them.","error");
+                  } else if(notifPermission==="granted" && notifStatus !== "active"){
+                    registerFCMToken(role);
+                    notify("Re-registering notifications…","success");
                   } else {
                     notify("Notifications are active ✓","success");
                   }
                 }}
-                title={notifPermission==="granted"?"Notifications on":notifPermission==="denied"?"Notifications blocked":"Enable notifications"}
-                style={{background:notifPermission==="granted"?"rgba(74,222,128,0.08)":notifPermission==="denied"?"rgba(248,113,113,0.08)":"rgba(255,255,255,0.04)",border:`1px solid ${notifPermission==="granted"?"rgba(74,222,128,0.25)":notifPermission==="denied"?"rgba(248,113,113,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:8,minWidth:36,minHeight:36,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,position:"relative",flexShrink:0,transition:"all 0.2s"}}
+                title={notifPermission==="granted"?(notifStatus==="active"?"Notifications active ✓":notifStatus==="error"?"Notification error — click to retry":"Registering…"):notifPermission==="denied"?"Notifications blocked":"Enable notifications"}
+                style={{background:notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.08)":notifStatus==="error"?"rgba(248,113,113,0.08)":"rgba(232,146,10,0.08)"):"rgba(255,255,255,0.04)",border:`1px solid ${notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.25)":notifStatus==="error"?"rgba(248,113,113,0.25)":"rgba(232,146,10,0.25)"):notifPermission==="denied"?"rgba(248,113,113,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:8,minWidth:36,minHeight:36,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,position:"relative",flexShrink:0,transition:"all 0.2s"}}
               >
-                {notifPermission==="granted"?"🔔":notifPermission==="denied"?"🔕":"🔔"}
+                {notifPermission==="denied"?"🔕":"🔔"}
                 {notifPermission==="default"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #04060E"}}/>}
+                {notifPermission==="granted"&&notifStatus==="active"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#4ADE80",borderRadius:"50%",border:"1.5px solid #04060E"}}/>}
+                {notifPermission==="granted"&&notifStatus==="error"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#F87171",borderRadius:"50%",border:"1.5px solid #04060E"}}/>}
+                {notifPermission==="granted"&&notifStatus==="idle"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #04060E"}}/>}
               </button>
             )}
             {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:`2px solid ${isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)"}`,flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
