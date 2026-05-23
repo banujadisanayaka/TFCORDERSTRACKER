@@ -2,6 +2,9 @@
   publish = "build"
   command = "npm run build"
 
+[build.environment]
+  CI = "false"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "zisi"
