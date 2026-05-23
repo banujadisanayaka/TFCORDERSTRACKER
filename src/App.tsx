@@ -1,11 +1,15 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { gsap } from "gsap";
+import "animate.css";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot,
   updateDoc, writeBatch, query, where, getDocs
 } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 // ⚠️ Force-load the JSON database bypassing strict compilers
 const recipeData = require("./TFC_Recipes_Database.json");
@@ -392,6 +396,14 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const OWNER_EMAIL = "banuja2005@gmail.com";
 
+// FCM: get your VAPID key from Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
+const VAPID_KEY = "BIN1-ss4iczuvtzmloazWkckRh4XELDk5g8ugpYi3CVlGMYEHukVUfA0K3VlJy0UpEKV67BTiPAQZHcSF5a3GRI";
+let _messaging = null;
+function getMsg() {
+  if (!_messaging) { try { _messaging = getMessaging(app); } catch(_) {} }
+  return _messaging;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    HELPERS & HOOKS
 ═══════════════════════════════════════════════════════════════ */
@@ -618,7 +630,12 @@ function Toast({msg,type}){
   const isErr=type==="error";
   const accentColor=isErr?"#DC2626":"#22C55E";
   return(
-    <div className="toast-slide-right" style={{
+    <motion.div
+      initial={{opacity:0,y:-60,scale:0.95}}
+      animate={{opacity:1,y:0,scale:1}}
+      exit={{opacity:0,y:-40,scale:0.95}}
+      transition={{duration:0.35,ease:[0.16,1,0.3,1]}}
+      style={{
       position:"fixed",bottom:28,right:24,
       zIndex:9999,maxWidth:360,minWidth:260,
       background:isErr?"rgba(14,4,4,0.97)":"rgba(4,12,8,0.97)",
@@ -643,7 +660,7 @@ function Toast({msg,type}){
         <div style={{fontSize:10,fontWeight:800,color:isErr?"rgba(248,113,113,0.65)":"rgba(74,222,128,0.65)",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:3}}>{isErr?"Error":"Done"}</div>
         <span style={{fontSize:13,fontWeight:700,color:"#EEF2FF",lineHeight:1.35}}>{msg}</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -1247,7 +1264,12 @@ function SplashScreen() {
   return (
     <div className="animate-fade-in grain" style={{position:"fixed",inset:0,zIndex:99999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",transition:"opacity 0.5s ease",overflow:"hidden"}}>
       <PremiumBg/>
-      <div className="animate-fade-up" style={{display:"flex",flexDirection:"column",alignItems:"center",animationDelay:"0.1s",position:"relative",zIndex:2}}>
+      <motion.div
+        initial={{opacity:0,y:24}}
+        animate={{opacity:1,y:0}}
+        transition={{duration:0.8,ease:[0.16,1,0.3,1],delay:0.1}}
+        style={{display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:2}}
+      >
         <div style={{position:"relative",width:96,height:96,margin:"0 auto 28px"}}>
           <div style={{width:96,height:96,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:40,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
           <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
@@ -1258,7 +1280,7 @@ function SplashScreen() {
         <div style={{width:180,height:3,background:"rgba(255,255,255,0.05)",borderRadius:4,overflow:"hidden",position:"relative"}}>
           <div style={{position:"absolute",top:0,left:0,width:"45%",height:"100%",background:"linear-gradient(90deg,transparent,#D31118,transparent)",animation:"loadBar 1.6s ease-in-out infinite"}}/>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -1272,7 +1294,12 @@ function LoginScreen({ onSignIn }) {
 
   async function handleClick() {
     setLoading(true); setError("");
-    try { await onSignIn(); } catch (e) { setError("Sign-in failed. Please try again."); }
+    try { await onSignIn(); }
+    catch (e) {
+      if (e?.code === "auth/unauthorized-domain") setError("This domain is not authorized in Firebase. Add it in Firebase Console → Authentication → Authorized domains.");
+      else if (e?.code === "auth/popup-blocked") setError("Popup blocked — please allow popups for this site.");
+      else setError("Sign-in failed. Please try again.");
+    }
     setLoading(false);
   }
 
@@ -1281,28 +1308,45 @@ function LoginScreen({ onSignIn }) {
       <PremiumBg/>
       <div style={{width:"100%",maxWidth:400,position:"relative",zIndex:2}}>
         {/* Logo */}
-        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:44}}>
+        <motion.div
+          initial={{opacity:0,y:-20}}
+          animate={{opacity:1,y:0}}
+          transition={{duration:0.7,ease:[0.16,1,0.3,1]}}
+          style={{textAlign:"center",marginBottom:44}}
+        >
           <div style={{position:"relative",width:90,height:90,margin:"0 auto 28px"}}>
             <div style={{width:90,height:90,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:38,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
             <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.2)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
           </div>
           <div style={{fontSize:30,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.05em",lineHeight:1,marginBottom:10}}>The Food Company</div>
           <div style={{fontSize:11,color:"#2A4060",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.18em"}}>Operations Hub</div>
-        </div>
+        </motion.div>
 
-        {/* Glass card with 3D tilt */}
-        <div ref={cardRef} className="animate-fade-up glass-card tilt-wrap" style={{borderRadius:24,padding:"36px 32px",position:"relative",overflow:"hidden",animationDelay:"0.15s"}}>
+        {/* Glass card with 3D tilt + Framer Motion */}
+        <motion.div
+          ref={cardRef}
+          className="glass-card tilt-wrap"
+          style={{borderRadius:24,padding:"36px 32px",position:"relative",overflow:"hidden"}}
+          initial={{opacity:0,y:30}}
+          animate={{opacity:1,y:0}}
+          transition={{duration:0.6,ease:[0.16,1,0.3,1],delay:0.2}}
+        >
           {/* Top shine line */}
           <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.13),transparent)",pointerEvents:"none"}}/>
           <div style={{fontSize:11,fontWeight:700,color:"#2A4060",marginBottom:28,textAlign:"center",textTransform:"uppercase",letterSpacing:"0.18em"}}>Sign in to continue</div>
-          <button onClick={handleClick} disabled={loading} className="btn-3d" style={{width:"100%",padding:"15px 20px",background:loading?"rgba(30,40,60,0.8)":"linear-gradient(135deg,#D31118 0%,#8A0B10 100%)",border:"none",borderRadius:14,cursor:loading?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:12,boxShadow:loading?"none":"0 4px 22px rgba(211,17,24,0.48),inset 0 1px 0 rgba(255,255,255,0.10)",transition:"all 0.2s ease"}}>
+          <motion.button
+            onClick={handleClick} disabled={loading} className="btn-3d"
+            style={{width:"100%",padding:"15px 20px",background:loading?"rgba(30,40,60,0.8)":"linear-gradient(135deg,#D31118 0%,#8A0B10 100%)",border:"none",borderRadius:14,cursor:loading?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:12,boxShadow:loading?"none":"0 4px 22px rgba(211,17,24,0.48),inset 0 1px 0 rgba(255,255,255,0.10)",transition:"background 0.2s ease"}}
+            whileHover={loading?{}:{scale:1.02,boxShadow:"0 6px 30px rgba(211,17,24,0.6)"}}
+            whileTap={loading?{}:{scale:0.97}}
+          >
             <div style={{width:26,height:26,borderRadius:"50%",background:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:"#D31118",flexShrink:0,boxShadow:"0 1px 4px rgba(0,0,0,0.25)"}}>G</div>
             <span style={{fontSize:15,fontWeight:800,color:"#FFFFFF",letterSpacing:"0.02em"}}>{loading?"Signing in…":"Continue with Google"}</span>
             {!loading && <span style={{marginLeft:"auto",fontSize:16,opacity:0.5,color:"#fff"}}>→</span>}
-          </button>
+          </motion.button>
           {error && <div className="animate-fade-in" style={{marginTop:14,fontSize:12,color:C.rd,fontWeight:700,textAlign:"center",background:C.rdBg,padding:"10px 14px",borderRadius:10,border:"1px solid rgba(220,38,38,0.22)"}}>{error}</div>}
           <div style={{marginTop:28,paddingTop:20,borderTop:"1px solid rgba(255,255,255,0.05)",textAlign:"center",fontSize:11,color:"#1A2840",fontWeight:600}}>Secured via Google OAuth 2.0</div>
-        </div>
+        </motion.div>
 
         <div style={{textAlign:"center",marginTop:32,fontSize:11,color:"#1E2840",fontWeight:600}}>
           Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur
@@ -1313,7 +1357,81 @@ function LoginScreen({ onSignIn }) {
   );
 }
 
-function RequestAccessScreen({ authUser, onSubmit, onSignOut }) {
+function InstallAppButton({ installPrompt, onInstallDone }) {
+  const [showGuide, setShowGuide] = useState(false);
+  const ua = navigator.userAgent;
+  // iPad on iOS 13+ reports as Macintosh — detect via touch points
+  const isIOS = /iphone|ipad|ipod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+  const isAndroid = /android/i.test(ua);
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+
+  // Already installed — hide
+  if (isStandalone) return null;
+  // Desktop browser with no prompt — hide (they can use browser menu themselves)
+  if (!installPrompt && !isIOS && !isAndroid) return null;
+
+  async function handleClick() {
+    if (installPrompt) {
+      await installPrompt.prompt();
+      onInstallDone?.();
+    } else {
+      setShowGuide(true);
+    }
+  }
+
+  const iosSteps = [
+    { icon:"1️⃣", title:"Tap the Share button", desc:'Tap the Share icon (📤) at the bottom of Safari — looks like a box with an arrow pointing up.' },
+    { icon:"2️⃣", title:'Tap "Add to Home Screen"', desc:'Scroll down in the share sheet and tap "Add to Home Screen".' },
+    { icon:"3️⃣", title:'Tap "Add" to confirm', desc:'The app icon will appear on your home screen.' },
+  ];
+  const androidSteps = [
+    { icon:"1️⃣", title:"Tap the menu  ⋮", desc:'Tap the three-dot menu at the top-right of Chrome.' },
+    { icon:"2️⃣", title:'Tap "Add to Home screen"', desc:'Scroll down and tap "Add to Home screen" in the menu.' },
+    { icon:"3️⃣", title:'Tap "Add" to confirm', desc:'The app icon will appear on your home screen.' },
+  ];
+  const steps = isIOS ? iosSteps : androidSteps;
+  const guideLabel = isIOS ? "iOS Guide" : "Android Guide";
+
+  return (
+    <>
+      <button
+        onClick={handleClick}
+        style={{display:"flex",alignItems:"center",justifyContent:"center",gap:9,width:"100%",padding:"13px 20px",background:"linear-gradient(135deg,rgba(0,212,255,0.10),rgba(0,212,255,0.05))",border:"1px solid rgba(0,212,255,0.22)",borderRadius:14,cursor:"pointer",fontFamily:"inherit",color:"#00D4FF",fontSize:13,fontWeight:800,letterSpacing:"0.01em",transition:"all 0.2s",marginTop:16}}
+        onMouseEnter={e=>{e.currentTarget.style.background="linear-gradient(135deg,rgba(0,212,255,0.16),rgba(0,212,255,0.08))";e.currentTarget.style.borderColor="rgba(0,212,255,0.4)";}}
+        onMouseLeave={e=>{e.currentTarget.style.background="linear-gradient(135deg,rgba(0,212,255,0.10),rgba(0,212,255,0.05))";e.currentTarget.style.borderColor="rgba(0,212,255,0.22)";}}
+      >
+        <span style={{fontSize:17}}>📲</span>
+        Add to Home Screen
+        {!installPrompt && <span style={{fontSize:10,fontWeight:600,color:"rgba(0,212,255,0.6)",marginLeft:2}}>({guideLabel})</span>}
+      </button>
+
+      {showGuide && (
+        <div className="animate-fade-in" onClick={()=>setShowGuide(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+          <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,padding:"28px 28px 40px",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(0,212,255,0.35),transparent)",pointerEvents:"none"}}/>
+            <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto 20px"}}/>
+            <div style={{fontSize:19,fontWeight:900,color:"#EEF2FF",marginBottom:6}}>Add to Home Screen</div>
+            <div style={{fontSize:13,color:"#4A6080",marginBottom:24,fontWeight:500}}>
+              {isIOS ? "Follow these steps in Safari:" : "Follow these steps in Chrome:"}
+            </div>
+            {steps.map(step => (
+              <div key={step.icon} style={{display:"flex",gap:14,alignItems:"flex-start",marginBottom:18}}>
+                <span style={{fontSize:22,flexShrink:0,marginTop:1}}>{step.icon}</span>
+                <div>
+                  <div style={{fontSize:13,fontWeight:800,color:"#EEF2FF",marginBottom:3}}>{step.title}</div>
+                  <div style={{fontSize:12,color:"#4A6080",lineHeight:1.55,fontWeight:500}}>{step.desc}</div>
+                </div>
+              </div>
+            ))}
+            <button onClick={()=>setShowGuide(false)} style={{width:"100%",padding:"13px",marginTop:8,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.10)",borderRadius:12,fontSize:13,fontWeight:800,color:"#8896B3",cursor:"pointer",fontFamily:"inherit"}}>Got it</button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function RequestAccessScreen({ authUser, onSubmit, onSignOut, installPrompt, onInstallDone }) {
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -1401,13 +1519,14 @@ function RequestAccessScreen({ authUser, onSubmit, onSignOut }) {
           </>
         )}
 
-        <div style={{textAlign:"center",marginTop:28,fontSize:11,color:"#1A2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
+        <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
+        <div style={{textAlign:"center",marginTop:24,fontSize:11,color:"#1A2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
       </div>
     </div>
   );
 }
 
-function PendingScreen({ request, authUser, onSignOut }) {
+function PendingScreen({ request, authUser, onSignOut, installPrompt, onInstallDone }) {
   const cardRef = useRef(null);
   useTilt(cardRef, 7);
   useDeviceTilt(cardRef, 5);
@@ -1442,7 +1561,8 @@ function PendingScreen({ request, authUser, onSignOut }) {
           </div>
         </div>
 
-        <div style={{textAlign:"center",marginTop:28,fontSize:11,color:"#1E2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
+        <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
+        <div style={{textAlign:"center",marginTop:24,fontSize:11,color:"#1E2840",fontWeight:600}}>Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur</div>
       </div>
     </div>
   );
@@ -1552,7 +1672,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
   );
 }
 
-function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, authUser, onSignOut, pendingCount }) {
+function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, authUser, onSignOut, pendingCount, installPrompt, onInstallDone }) {
   const isMobile = useIsMobile();
   const keys = availableRoles || Object.keys(ROLES);
 
@@ -1604,33 +1724,42 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
         )}
 
         {/* Heading */}
-        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:28,animationDelay:"0.05s"}}>
+        <motion.div
+          initial={{opacity:0,y:-16}}
+          animate={{opacity:1,y:0}}
+          transition={{duration:0.6,ease:[0.16,1,0.3,1]}}
+          style={{textAlign:"center",marginBottom:28}}
+        >
           <div style={{position:"relative",width:62,height:62,margin:"0 auto 18px"}}>
             <div style={{width:62,height:62,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
             <div style={{position:"absolute",inset:-8,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.16)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
           </div>
           <div style={{fontSize:22,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.03em",lineHeight:1}}>Welcome back.</div>
           <div style={{fontSize:13,color:"#4A6080",fontWeight:500,marginTop:8}}>Select your operational role to continue</div>
-        </div>
+        </motion.div>
 
         {/* Role tiles */}
         <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
           {keys.map((k, i) => {
             const r = ROLES[k]; if (!r) return null;
             return (
-              <div
+              <motion.div
                 key={k}
                 ref={el => { cardRefs.current[i] = el; }}
                 onClick={() => onSelect(k)}
-                className="animate-fade-up glass-card role-card"
+                className="glass-card role-card"
                 style={{
-                  animationDelay:`${i * 0.07}s`,
                   gridColumn:(!isMobile && i === keys.length - 1 && keys.length % 2 !== 0) ? "1 / -1" : "auto",
                   borderRadius:18, padding:"22px 22px 18px",
                   cursor:"pointer", display:"flex", flexDirection:"column", gap:14, alignItems:"flex-start",
                   borderTop:"2px solid "+r.color+"60",
                   position:"relative", overflow:"hidden",
                 }}
+                initial={{opacity:0,y:28}}
+                animate={{opacity:1,y:0}}
+                transition={{duration:0.5,ease:[0.16,1,0.3,1],delay:i*0.08}}
+                whileHover={{scale:1.03,y:-4,boxShadow:`0 20px 60px rgba(0,0,0,0.5), 0 0 30px ${r.color}20`}}
+                whileTap={{scale:0.97}}
               >
                 {/* Top shine */}
                 <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${r.color}30,transparent)`,pointerEvents:"none"}}/>
@@ -1647,12 +1776,16 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
                 <div style={{fontSize:11,color:r.color,display:"flex",alignItems:"center",gap:6,fontWeight:700,background:r.color+"14",border:"1px solid "+r.color+"28",padding:"5px 10px",borderRadius:6}}>
                   <span style={{fontSize:9}}>▶</span> Enter portal
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
 
-        <div className="animate-fade-up" style={{textAlign:"center",marginTop:36,fontSize:11,color:"#1A2840",fontWeight:600,animationDelay:"0.4s"}}>
+        <div className="animate-fade-up" style={{animationDelay:"0.35s"}}>
+          <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
+        </div>
+
+        <div className="animate-fade-up" style={{textAlign:"center",marginTop:24,fontSize:11,color:"#1A2840",fontWeight:600,animationDelay:"0.4s"}}>
           Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur
           <div style={{fontSize:10,marginTop:6,fontWeight:500,opacity:0.6}}>© 2026 Made by Banuja Disanayaka</div>
         </div>
@@ -1834,17 +1967,20 @@ function OrderCard({order, active, onClick, onDelete, index}){
   const hasIssue=s.short+s.oos>0;
 
   return(
-    <div
+    <motion.div
       onClick={onClick}
-      className={`animate-fade-up hover-lift ${isComplete&&!active?'celebration-card':''} ${active?(order.restaurant==="Vins"?"order-card-active-vins":"order-card-active-manja"):""}`}
+      className={`hover-lift ${isComplete&&!active?'celebration-card':''} ${active?(order.restaurant==="Vins"?"order-card-active-vins":"order-card-active-manja"):""}`}
       style={{
-        animationDelay:`${index*0.05}s`,
         padding:"14px 16px",borderRadius:16,marginBottom:8,cursor:"pointer",
         background:active?(th.isDark?`linear-gradient(160deg,#111E36,#0B1228)`:`linear-gradient(160deg,#EFF4FF,#E8F0FF)`):C.off,
         border:`1.5px solid ${active?rc+"60":C.bdrL}`,
         borderLeft:`4px solid ${active?rc:C.bdrL}`,
-        transition:"all 0.25s cubic-bezier(0.16,1,0.3,1)"
+        transition:"border 0.25s cubic-bezier(0.16,1,0.3,1), background 0.25s cubic-bezier(0.16,1,0.3,1)"
       }}
+      initial={{opacity:0,y:16}}
+      animate={{opacity:1,y:0}}
+      transition={{duration:0.4,ease:[0.16,1,0.3,1],delay:Math.min((index||0)*0.05,0.4)}}
+      whileHover={{y:-2}}
     >
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:active?10:8,position:"relative"}}>
         <div style={{fontWeight:800,color:active?C.ch:C.chM,fontSize:active?15:13,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",letterSpacing:"-0.02em",transition:"font-size 0.2s ease"}}>
@@ -1887,7 +2023,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
           )}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -1897,6 +2033,9 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
   const [qty, setQty] = useState(item.packedQty || "");
   const [notes, setNotes] = useState(item.notes || "");
   const [showMergeModal, setShowMergeModal] = useState(false);
+  const [showShortModal, setShowShortModal] = useState(false);
+  const [shortQty, setShortQty] = useState("");
+  const [shortNote, setShortNote] = useState("");
 
   function commit(status, extra={}){
     let dQty=qty;
@@ -1906,8 +2045,18 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
   }
   function handleSendToProduction(){ setShowMergeModal(true); }
   function handleShort(){
-    if(!qty&&item.qty){setShowEdit(true);notify("Enter the SENT quantity first, then mark as Short.","error");return;}
-    commit('short');
+    setShortQty(qty || "");
+    setShortNote(notes || "");
+    setShowShortModal(true);
+  }
+  function confirmShort(){
+    const sq=parseFloat(shortQty);
+    const rq=parseFloat(item.qty);
+    if(!shortQty||isNaN(sq)||sq<0){notify("Please enter a valid sent quantity.","error");return;}
+    if(rq&&sq>=rq){notify("Sent qty ≥ requested — mark as Packed instead?","error");return;}
+    onUpdate(orderId,item.id,{status:'short',packedQty:shortQty,notes:shortNote,updatedAt:Date.now()});
+    setQty(shortQty); setNotes(shortNote);
+    setShowShortModal(false);
   }
   const getActiveBatches=()=>{
     const b={};
@@ -1930,6 +2079,47 @@ function PackingRow({item, orderId, orders, onUpdate, notify, isFirst}){
   return(
     <>
       {showMergeModal&&<MergeModal pendingItem={item} activeBatches={getActiveBatches()} onMerge={bId=>{commit('production',{batchId:bId});setShowMergeModal(false);}} onNewBatch={()=>{commit('production',{batchId:"b_"+Date.now()+Math.random()});setShowMergeModal(false);}} onCancel={()=>setShowMergeModal(false)}/>}
+
+      {showShortModal&&(
+        <div className="animate-fade-in" onClick={()=>setShowShortModal(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:0}}>
+          <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,padding:"28px 28px 32px",display:"flex",flexDirection:"column",gap:16,position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.45),transparent)",pointerEvents:"none"}}/>
+            <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto -4px"}}/>
+            <div style={{fontSize:19,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.02em"}}>Short Shipment</div>
+            <div style={{background:th.cardBg,padding:"14px 16px",borderRadius:12,border:`1px solid rgba(232,146,10,0.25)`}}>
+              <div style={{fontSize:10,fontWeight:800,color:C.chL,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6}}>ITEM</div>
+              <div style={{fontWeight:900,color:"#EEF2FF",fontSize:15,marginBottom:4}}>{item.product}</div>
+              <div style={{fontSize:12,color:"#E8920A",fontFamily:"'JetBrains Mono',monospace",fontWeight:800}}>Requested: {item.qty} {item.unit||""}</div>
+            </div>
+            <div>
+              <div style={{fontSize:11,fontWeight:800,color:C.chL,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.08em"}}>How much are you actually sending?</div>
+              <input
+                autoFocus
+                value={shortQty}
+                onChange={e=>setShortQty(e.target.value)}
+                onKeyDown={e=>{if(e.key==="Enter")confirmShort();}}
+                placeholder={`Sent qty (max ${item.qty} ${item.unit||""})`}
+                type="number"
+                min="0"
+                style={{width:"100%",padding:"13px 16px",background:"rgba(232,146,10,0.06)",border:"1.5px solid rgba(232,146,10,0.35)",borderRadius:10,fontSize:15,fontWeight:800,color:"#EEF2FF",outline:"none",fontFamily:"'JetBrains Mono',monospace",boxSizing:"border-box"}}
+              />
+            </div>
+            <div>
+              <div style={{fontSize:11,fontWeight:800,color:C.chL,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.08em"}}>Reason / Note <span style={{fontWeight:500,textTransform:"none",letterSpacing:0}}>(optional)</span></div>
+              <input
+                value={shortNote}
+                onChange={e=>setShortNote(e.target.value)}
+                placeholder="e.g. ran out of stock at 2pm"
+                style={{width:"100%",padding:"11px 14px",background:th.panelBg,border:`1px solid ${th.divider}`,borderRadius:10,fontSize:13,fontWeight:500,color:"#EEF2FF",outline:"none",boxSizing:"border-box"}}
+              />
+            </div>
+            <div style={{display:"flex",gap:10,paddingTop:4}}>
+              <button onClick={()=>setShowShortModal(false)} style={{flex:1,padding:"13px",background:th.chipBg,border:`1px solid ${th.divider}`,borderRadius:12,fontSize:13,fontWeight:800,color:C.chL,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+              <button onClick={confirmShort} style={{flex:2,padding:"13px",background:"linear-gradient(135deg,rgba(232,146,10,0.25),rgba(232,146,10,0.12))",border:"1.5px solid rgba(232,146,10,0.45)",borderRadius:12,fontSize:13,fontWeight:900,color:"#E8920A",cursor:"pointer",fontFamily:"inherit",letterSpacing:"0.02em"}}>⚠ Confirm Short</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className={`animate-fade-up pk-card ${cur.cls}`}>
         <div style={{padding:"16px 18px"}}>
@@ -2632,6 +2822,20 @@ function AdminDashboard({ orders, dailyProductions = [], onCreateDP, onUpdateDP,
   );
 }
 
+// Always prefer SW.showNotification() — works on all platforms including Android Chrome.
+// Fall back to direct Notification constructor only when no SW is available (desktop without SW).
+function fireNotif(title, options) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  const opts = { icon: "/icon-192.png", badge: "/icon-192.png", ...options };
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.ready
+      .then(reg => reg.showNotification(title, opts))
+      .catch(() => { try { new Notification(title, opts); } catch(_){} });
+  } else {
+    try { new Notification(title, opts); } catch(_) {}
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    MAIN APP ROUTER (WITH ERROR BOUNDARY)
 ═══════════════════════════════════════════════════════════════ */
@@ -2676,6 +2880,10 @@ function TFCOrderSystem(){
   const [isOnline, setIsOnline] = useState(() => navigator.onLine);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [notifPermission, setNotifPermission] = useState(() => ("Notification" in window ? Notification.permission : "denied"));
+  const [notifStatus, setNotifStatus] = useState("idle"); // idle | active | error
+  const prevOrdersRef = useRef(null);
+  const currentFCMToken = useRef(null);
 
   useEffect(() => {
     const goOnline = () => setIsOnline(true);
@@ -2691,9 +2899,146 @@ function TFCOrderSystem(){
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
+  // Keep notifPermission in sync if user changes it in browser settings then returns to the tab
+  useEffect(() => {
+    if (!("Notification" in window)) return;
+    const sync = () => setNotifPermission(Notification.permission);
+    document.addEventListener("visibilitychange", sync);
+    return () => document.removeEventListener("visibilitychange", sync);
+  }, []);
+
+  // FCM foreground message handler — fires when app tab is open but hidden (background tab)
+  useEffect(() => {
+    const msg = getMsg();
+    if (!msg) return;
+    return onMessage(msg, payload => {
+      if (document.visibilityState === "visible") return; // observer handles visible tab
+      const n = payload.notification;
+      if (n?.title) fireNotif(n.title, { body: n.body || "", tag: payload.data?.tag });
+    });
+  }, []);
+
+  async function sendPush(roles, title, body, tag) {
+    if (!roles?.length) return;
+    try {
+      await fetch("/.netlify/functions/push", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetRoles: roles, payload: { title, body, tag }, senderToken: currentFCMToken.current }),
+      });
+    } catch (_) {}
+  }
+
+  async function registerFCMToken(r) {
+    console.log("[FCM] registerFCMToken called for role:", r);
+    if (!("Notification" in window)) { console.warn("[FCM] Notifications not supported"); return; }
+    if (Notification.permission !== "granted") { console.warn("[FCM] Permission not granted:", Notification.permission); return; }
+    if (!VAPID_KEY || VAPID_KEY.startsWith("YOUR_")) { console.warn("[FCM] VAPID key missing"); return; }
+    try {
+      const msg = getMsg();
+      if (!msg) { console.warn("[FCM] getMessaging() returned null"); return; }
+      const reg = await navigator.serviceWorker.ready;
+      console.log("[FCM] SW ready, requesting token...");
+      const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+      if (!token) { console.warn("[FCM] No token returned"); return; }
+      currentFCMToken.current = token;
+      const email = authUser?.email || "anon";
+      await setDoc(doc(db, "fcm_tokens", token.slice(-28)), { token, email, activeRole: r, updatedAt: Date.now() });
+      console.log("[FCM] ✓ Token registered for", r, "—", token.slice(0,20)+"...");
+      setNotifStatus("active");
+    } catch (e) { console.error("[FCM] register failed:", e); setNotifStatus("error"); }
+  }
+
   const [orders,setOrders]=useState([]);
   const [dailyProductions, setDailyProductions] = useState([]);
   const [loadingInitial, setLoadingInitial] = useState(true);
+
+  // Role-based push notifications — diffs Firestore snapshots and fires per-role alerts
+  useEffect(() => {
+    const prev = prevOrdersRef.current;
+    prevOrdersRef.current = orders; // always keep ref current so no burst on permission grant
+
+    // Only fire when role is active and permission is granted
+    if(!role || notifPermission !== "granted" || !("Notification" in window)) return;
+    // Skip on initial load (prev not yet set)
+    if(prev === null || prev === orders) return;
+
+    // Build a flat map of previous item states for O(1) lookup
+    const prevMap = {};
+    prev.forEach(o => o.items && o.items.forEach(it => { prevMap[it.id] = it; }));
+
+    orders.forEach(order => {
+      if(!order.items) return;
+      order.items.forEach(item => {
+        const was = prevMap[item.id];
+        if(!was || was.status === item.status) return; // no change
+        if(item.updatedBy && item.updatedBy === authUser?.email) return; // skip own changes — FCM handles other devices
+        const to = item.status;
+
+        if(role === "admin"){
+          if(to === "short")     fireNotif("⚠ Short Shipment",  {body:`${item.product} (${order.poName||order.restaurant}): Sent ${item.packedQty||"?"} of ${item.qty} ${item.unit||""}`,tag:`short-${item.id}`});
+          if(to === "oos")       fireNotif("✕ Out of Stock",     {body:`${item.product} — ${order.poName||order.restaurant}`,tag:`oos-${item.id}`});
+          if(to === "delivered") fireNotif("🚀 Delivered",       {body:`${item.product} · ${order.poName||order.restaurant}`,tag:`del-${item.id}`});
+        }
+        if(role === "packing"){
+          if(to === "prod_done") fireNotif("✓ Ready to Pack",   {body:`${item.product} · ${item.qty} ${item.unit||""} · ${order.restaurant}`,tag:`ready-${item.id}`});
+        }
+        if(role === "production"){
+          if(to === "production") fireNotif("🍳 New Batch Needed",{body:`${item.product} · ${item.qty} ${item.unit||""}`,tag:`prod-${item.id}`});
+        }
+        if(role === "vins" && order.restaurant === "Vins"){
+          if(to === "short")     fireNotif("⚠ Short — Vins",    {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`,tag:`vs-${item.id}`});
+          if(to === "oos")       fireNotif("✕ Out of Stock — Vins",{body:`${item.product} unavailable`,tag:`vo-${item.id}`});
+          if(to === "delivered") fireNotif("🚀 Delivered — Vins",{body:`${item.product} · ${item.qty} ${item.unit||""}`,tag:`vd-${item.id}`});
+        }
+        if(role === "manja" && order.restaurant === "Manja"){
+          if(to === "short")     fireNotif("⚠ Short — Manja",   {body:`${item.product}: Sent ${item.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`,tag:`ms-${item.id}`});
+          if(to === "oos")       fireNotif("✕ Out of Stock — Manja",{body:`${item.product} unavailable`,tag:`mo-${item.id}`});
+          if(to === "delivered") fireNotif("🚀 Delivered — Manja",{body:`${item.product} · ${item.qty} ${item.unit||""}`,tag:`md-${item.id}`});
+        }
+      });
+
+      // Alert restaurant role when their whole order is fully dispatched
+      const isMyRestaurant = (role === "vins" && order.restaurant === "Vins") || (role === "manja" && order.restaurant === "Manja");
+      if(isMyRestaurant){
+        const prevOrder = prev.find(o => o.id === order.id);
+        if(prevOrder && prevOrder.items){
+          const wasDone = prevOrder.items.every(i => i.status === "delivered" || i.status === "packed");
+          const nowDone = order.items.every(i => i.status === "delivered" || i.status === "packed");
+          if(!wasDone && nowDone){
+            fireNotif("🚀 Order Ready!", {body:`${order.poName||order.restaurant} — fully packed and ready for dispatch`,tag:`done-${order.id}`});
+          }
+        }
+      }
+
+      // Alert admin when whole order is delivered
+      if(role === "admin"){
+        const prevOrder = prev.find(o => o.id === order.id);
+        if(prevOrder && prevOrder.items){
+          const wasDone = prevOrder.items.every(i => i.status === "delivered");
+          const nowDone = order.items.every(i => i.status === "delivered");
+          if(!wasDone && nowDone){
+            fireNotif("🚀 Order Fully Delivered", {body:`${order.poName||order.restaurant} — all items dispatched`,tag:`fulldel-${order.id}`});
+          }
+        }
+      }
+    });
+
+    // Detect new orders (tab is open — foreground path for packing, vins, manja)
+    const prevIds = new Set(prev.map(o => o.id));
+    orders.forEach(order => {
+      if(prevIds.has(order.id)) return;
+      if(role === "packing"){
+        fireNotif("📋 New PO Received", {body:`${order.restaurant}: ${order.poName||"New Order"}`,tag:`newpo-${order.id}`});
+      }
+      if(role === "vins" && order.restaurant === "Vins"){
+        fireNotif("📋 New Order — Vins", {body:`${order.poName||"New Order"}`,tag:`newpo-${order.id}`});
+      }
+      if(role === "manja" && order.restaurant === "Manja"){
+        fireNotif("📋 New Order — Manja", {body:`${order.poName||"New Order"}`,tag:`newpo-${order.id}`});
+      }
+    });
+  }, [orders, role, notifPermission]);
 
   const [activeId,setActiveId]=useState(null); const [showModal,setShowModal]=useState(false); const [editingOrder, setEditingOrder] = useState(null); const [toast,setToast] = useState(null); const [sidebarOpen, setSidebarOpen]=useState(false);
 
@@ -2757,7 +3102,14 @@ function TFCOrderSystem(){
 
   async function handleGoogleSignIn() {
     try { await signInWithPopup(auth, googleProvider); }
-    catch(e) { notify("Sign-in failed. Please try again.", "error"); }
+    catch(e) {
+      const msg = e?.code === "auth/unauthorized-domain"
+        ? "Domain not authorized in Firebase — add this site's URL to Firebase Console → Authentication → Authorized domains."
+        : e?.code === "auth/popup-blocked"
+        ? "Sign-in popup was blocked. Allow popups for this site and try again."
+        : "Sign-in failed. Please try again.";
+      notify(msg, "error");
+    }
   }
 
   async function handleSignOut() {
@@ -2809,7 +3161,10 @@ function TFCOrderSystem(){
       const liveOrders = snapshot.docs.map(doc => doc.data());
       liveOrders.sort((a, b) => b.createdAt - a.createdAt);
       setOrders(liveOrders);
-      setLoadingInitial(false); 
+      setLoadingInitial(false);
+    }, (err) => {
+      console.error("Orders snapshot error:", err);
+      setLoadingInitial(false);
     });
     return () => unsubscribeOrders();
   }, []);
@@ -2824,11 +3179,56 @@ function TFCOrderSystem(){
     return () => unsubscribeDP();
   }, []);
 
-  async function updateItem(orderId, itemId, updates){ try { const orderToUpdate = orders.find(o => o.id === orderId); if(!orderToUpdate) return; const updatedItems = orderToUpdate.items.map(i => i.id === itemId ? {...i, ...updates} : i); await setDoc(doc(db, "orders", orderId), {...orderToUpdate, items: updatedItems}); } catch (e) { console.error("Update item failed:", e); notify("Failed to update", "error"); } }
-  async function handleBatchUpdate(batch, status) { try { const updatesPromises = []; const affectedOrderIds = [...new Set(batch.items.map(it => it.orderId))]; affectedOrderIds.forEach(oId => { const orderToUpdate = orders.find(o => o.id === oId); if(!orderToUpdate) return; const updatedItems = orderToUpdate.items.map(i => { if(batch.items.some(batchIt => batchIt.id === i.id)) { return {...i, status: status, updatedAt: Date.now()}; } return i; }); updatesPromises.push(setDoc(doc(db, "orders", oId), {...orderToUpdate, items: updatedItems})); }); await Promise.all(updatesPromises); notify("Master Batch updated!", "success"); } catch (e) { console.error("Batch update failed:", e); notify("Failed to update batch", "error"); } }
-  async function saveOrderEdit(orderId, newItems, metaData) { try { const orderToUpdate = orders.find(o => o.id === orderId); if(!orderToUpdate) return; await setDoc(doc(db, "orders", orderId), { ...orderToUpdate, items: newItems, ...metaData, updatedAt: Date.now() }); setEditingOrder(null); notify("Order updated!", "success"); } catch (e) { console.error("Save order edit failed:", e); notify("Failed to update", "error"); } }
+  async function updateItem(orderId, itemId, updates){
+    try {
+      const orderToUpdate = orders.find(o => o.id === orderId); if(!orderToUpdate) return;
+      const item = orderToUpdate.items.find(i => i.id === itemId);
+      const updatedItems = orderToUpdate.items.map(i => i.id === itemId ? {...i, ...updates, updatedBy: authUser?.email} : i);
+      await setDoc(doc(db, "orders", orderId), {...orderToUpdate, items: updatedItems});
+      // Push to other devices
+      if(updates.status && item && updates.status !== item.status){
+        const rr = orderToUpdate.restaurant?.toLowerCase();
+        const pn = item.product;
+        const on = orderToUpdate.poName || orderToUpdate.restaurant;
+        if(updates.status==="production")  sendPush(["production"], "🍳 New Batch", `${pn} · ${item.qty} ${item.unit||""}`, `prod-${itemId}`);
+        else if(updates.status==="prod_done") sendPush(["packing"], "✓ Ready to Pack", `${pn} · ${item.qty} ${item.unit||""} · ${orderToUpdate.restaurant}`, `ready-${itemId}`);
+        else if(updates.status==="short")  sendPush(["admin",rr], "⚠ Short Shipment", `${pn} (${on}): Sent ${updates.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`, `short-${itemId}`);
+        else if(updates.status==="oos")    sendPush(["admin",rr], "✕ Out of Stock", `${pn} — ${on}`, `oos-${itemId}`);
+        else if(updates.status==="delivered") sendPush(["admin",rr], "🚀 Delivered", `${pn} · ${on}`, `del-${itemId}`);
+      }
+    } catch (e) { console.error("Update item failed:", e); notify("Failed to update", "error"); }
+  }
+  async function handleBatchUpdate(batch, status) {
+    try {
+      const updatesPromises = []; const affectedOrderIds = [...new Set(batch.items.map(it => it.orderId))];
+      affectedOrderIds.forEach(oId => {
+        const orderToUpdate = orders.find(o => o.id === oId); if(!orderToUpdate) return;
+        const updatedItems = orderToUpdate.items.map(i => batch.items.some(b => b.id === i.id) ? {...i, status, updatedAt: Date.now(), updatedBy: authUser?.email} : i);
+        updatesPromises.push(setDoc(doc(db, "orders", oId), {...orderToUpdate, items: updatedItems}));
+      });
+      await Promise.all(updatesPromises);
+      notify("Master Batch updated!", "success");
+      if(status==="prod_done") sendPush(["packing"], "✓ Batch Ready to Pack", `${batch.items.length} item${batch.items.length!==1?"s":""} ready`, `batch-${Date.now()}`);
+      if(status==="production") sendPush(["production"], "🍳 Batch Production", `${batch.items.length} item${batch.items.length!==1?"s":""} to produce`, `bprod-${Date.now()}`);
+    } catch (e) { console.error("Batch update failed:", e); notify("Failed to update batch", "error"); }
+  }
+  async function saveOrderEdit(orderId, newItems, metaData) {
+    try {
+      const orderToUpdate = orders.find(o => o.id === orderId); if(!orderToUpdate) return;
+      await setDoc(doc(db, "orders", orderId), { ...orderToUpdate, items: newItems, ...metaData, updatedAt: Date.now() });
+      setEditingOrder(null); notify("Order updated!", "success");
+      sendPush(["packing"], "✏ PO Updated", `${orderToUpdate.poName||orderToUpdate.restaurant} has been edited`, `edit-${orderId}`);
+    } catch (e) { console.error("Save order edit failed:", e); notify("Failed to update", "error"); }
+  }
   async function deleteOrder(orderId){ try { await deleteDoc(doc(db, "orders", orderId)); if(activeId === orderId) setActiveId(null); notify("Order removed", "success"); } catch (e) { console.error("Delete order failed:", e); notify("Failed to delete", "error"); } }
-  async function handleNewOrder(restaurant, poName, poDate, delDate, rows){ try { const newOrder = { id: "ord_" + Date.now(), restaurant, poName: poName.trim() || `${restaurant} Order`, orderDate: poDate, deliveryDate: delDate.trim(), createdAt: Date.now(), items: rows.map((r,i) => ({ id: "item_" + i + "_" + Date.now(), product: r.product.trim(), qty: r.qty, unit: r.unit, status: "pending", packedQty: "", notes: "" })) }; await setDoc(doc(db, "orders", newOrder.id), newOrder); setActiveId(newOrder.id); setShowModal(false); notify(`${rows.length} items added`, "success"); } catch (e) { console.error("Create order failed:", e); notify("Failed to save", "error"); } }
+  async function handleNewOrder(restaurant, poName, poDate, delDate, rows){
+    try {
+      const newOrder = { id: "ord_" + Date.now(), restaurant, poName: poName.trim() || `${restaurant} Order`, orderDate: poDate, deliveryDate: delDate.trim(), createdAt: Date.now(), items: rows.map((r,i) => ({ id: "item_" + i + "_" + Date.now(), product: r.product.trim(), qty: r.qty, unit: r.unit, status: "pending", packedQty: "", notes: "" })) };
+      await setDoc(doc(db, "orders", newOrder.id), newOrder);
+      setActiveId(newOrder.id); setShowModal(false); notify(`${rows.length} items added`, "success");
+      sendPush(["packing"], "📋 New PO Received", `${restaurant}: ${newOrder.poName}`, `new-${newOrder.id}`);
+    } catch (e) { console.error("Create order failed:", e); notify("Failed to save", "error"); }
+  }
 
   async function createDailyProduction(dateStr, items, notes = "") {
     try {
@@ -2915,7 +3315,18 @@ function TFCOrderSystem(){
     } catch (e) { console.error("updateDailyProdItem failed:", e); notify("Update failed", "error"); }
   }
 
-  function selectRole(r){ setScreenExiting(true); setTimeout(()=>{ setRole(r); setPhase("app"); setScreenExiting(false); }, 320); }
+  function selectRole(r){
+    if("Notification" in window && Notification.permission === "default"){
+      Notification.requestPermission().then(p => {
+        setNotifPermission(p);
+        if(p === "granted") registerFCMToken(r);
+      });
+    } else if("Notification" in window && Notification.permission === "granted"){
+      registerFCMToken(r);
+    }
+    setScreenExiting(true);
+    setTimeout(()=>{ setRole(r); setPhase("app"); setScreenExiting(false); }, 320);
+  }
 
   if (splashState === "visible" || splashState === "fading") return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{ opacity: splashState === "fading" ? 0 : 1, transition: "opacity 0.5s ease" }}><SplashScreen /></div></ThemeCtx.Provider> );
 
@@ -2939,11 +3350,12 @@ function TFCOrderSystem(){
       onBack={() => setPhase("select")} authUser={authUser} onSignOut={handleSignOut}
     />;
   } else if(phase==="select") {
+    const installProps = { installPrompt, onInstallDone: () => { setInstallPrompt(null); setShowInstallBanner(false); } };
     if (!isOwner && !userRecord) {
       if (accessRequest && accessRequest.status === "pending") {
-        AppContent = <PendingScreen request={accessRequest} authUser={authUser} onSignOut={handleSignOut} />;
+        AppContent = <PendingScreen request={accessRequest} authUser={authUser} onSignOut={handleSignOut} {...installProps}/>;
       } else {
-        AppContent = <RequestAccessScreen authUser={authUser} onSubmit={submitAccessRequest} onSignOut={handleSignOut} />;
+        AppContent = <RequestAccessScreen authUser={authUser} onSubmit={submitAccessRequest} onSignOut={handleSignOut} {...installProps}/>;
       }
     } else {
       AppContent = <RoleSelectScreen
@@ -2951,6 +3363,7 @@ function TFCOrderSystem(){
         isOwner={isOwner} onControlPanel={() => setPhase("control_panel")}
         authUser={authUser} onSignOut={handleSignOut}
         pendingCount={accessRequests.filter(r => r.status === "pending").length}
+        {...installProps}
       />;
     }
   } else {
@@ -3041,7 +3454,7 @@ function TFCOrderSystem(){
         <div className="portal-orb portal-orb-4"/>
         <div className="portal-orb portal-orb-5"/>
 
-        {toast&&<Toast msg={toast.msg} type={toast.type}/>}
+        <AnimatePresence>{toast&&<Toast msg={toast.msg} type={toast.type}/>}</AnimatePresence>
         {showModal&&<NewOrderModal onClose={()=>setShowModal(false)} onSubmit={handleNewOrder} notify={notify}/>}
         {editingOrder&&<EditOrderModal order={editingOrder} onClose={()=>setEditingOrder(null)} onSave={saveOrderEdit} notify={notify}/>}
 
@@ -3060,7 +3473,8 @@ function TFCOrderSystem(){
         </div>}
 
         {/* ── Portal Top Bar ── */}
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",paddingTop:"env(safe-area-inset-top)",height:"calc(58px + env(safe-area-inset-top, 0px))",background:topBarBg,borderBottom:topBarBdr,backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:topBarShd,transition:"all 0.4s ease"}}>
+        <div style={{background:topBarBg,borderBottom:topBarBdr,backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",flexShrink:0,zIndex:60,position:"relative",boxShadow:topBarShd,transition:"all 0.4s ease",paddingTop:"env(safe-area-inset-top, 0px)"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px",height:58}}>
           <div className="portal-bar-shine"/>
           {/* Left */}
           <div style={{display:"flex",alignItems:"center",gap:12}}>
@@ -3086,9 +3500,34 @@ function TFCOrderSystem(){
               </span>
               {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#D31118",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #04060E",animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
             </div>
+            {"Notification" in window && (
+              <button
+                onClick={()=>{
+                  if(notifPermission==="default"){
+                    Notification.requestPermission().then(p=>{setNotifPermission(p); if(p==="granted"){registerFCMToken(role);notify("Notifications enabled!","success");}else if(p==="denied")notify("Notifications blocked. Allow in browser settings.","error");});
+                  } else if(notifPermission==="denied"){
+                    notify("Notifications blocked. Go to browser Settings → Site settings to allow them.","error");
+                  } else if(notifPermission==="granted" && notifStatus !== "active"){
+                    registerFCMToken(role);
+                    notify("Re-registering notifications…","success");
+                  } else {
+                    notify("Notifications are active ✓","success");
+                  }
+                }}
+                title={notifPermission==="granted"?(notifStatus==="active"?"Notifications active ✓":notifStatus==="error"?"Notification error — click to retry":"Registering…"):notifPermission==="denied"?"Notifications blocked":"Enable notifications"}
+                style={{background:notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.08)":notifStatus==="error"?"rgba(248,113,113,0.08)":"rgba(232,146,10,0.08)"):"rgba(255,255,255,0.04)",border:`1px solid ${notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.25)":notifStatus==="error"?"rgba(248,113,113,0.25)":"rgba(232,146,10,0.25)"):notifPermission==="denied"?"rgba(248,113,113,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:8,minWidth:36,minHeight:36,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,position:"relative",flexShrink:0,transition:"all 0.2s"}}
+              >
+                {notifPermission==="denied"?"🔕":"🔔"}
+                {notifPermission==="default"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #04060E"}}/>}
+                {notifPermission==="granted"&&notifStatus==="active"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#4ADE80",borderRadius:"50%",border:"1.5px solid #04060E"}}/>}
+                {notifPermission==="granted"&&notifStatus==="error"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#F87171",borderRadius:"50%",border:"1.5px solid #04060E"}}/>}
+                {notifPermission==="granted"&&notifStatus==="idle"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #04060E"}}/>}
+              </button>
+            )}
             {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:`2px solid ${isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)"}`,flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#D31118,#8A0B10)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
             <button onClick={()=>{ setScreenExiting(true); setTimeout(()=>{ setPhase("select");setRole(null);setActiveId(null);setScreenExiting(false); }, 320); }} style={{background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.05)",border:`1px solid ${isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`,color:C.chL,padding:"6px 12px",borderRadius:8,minHeight:36,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
           </div>
+        </div>
         </div>
 
         <div style={{display:"flex",flex:1,overflow:"hidden",position:"relative",zIndex:2}}>
@@ -3114,7 +3553,7 @@ function TFCOrderSystem(){
     );
   }
 
-  return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{minHeight:"100vh",opacity:screenExiting?0:1,transition:"opacity 0.32s ease"}}>{AppContent}</div></ThemeCtx.Provider> );
+  return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{minHeight:"100vh"}}><AnimatePresence mode="wait"><motion.div key={phase+(role||"")} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-10}} transition={{duration:0.28,ease:[0.16,1,0.3,1]}}>{AppContent}</motion.div></AnimatePresence></div></ThemeCtx.Provider> );
 }
 
 export default function App() {
