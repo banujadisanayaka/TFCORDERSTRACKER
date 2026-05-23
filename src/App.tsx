@@ -1,5 +1,8 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { gsap } from "gsap";
+import "animate.css";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot,
@@ -590,11 +593,11 @@ const DC={ // dark palette (default)
 const C={...DC};
 
 const ROLES={
-  admin:{label:"Admin",icon:"⚙",color:C.ch,accent:C.ol,bg:C.beige,desc:"Create and manage all orders"},
-  packing:{label:"Packing",icon:"◻",color:C.ol,accent:C.ol,bg:C.olBg,desc:"Smart status updater for dispatch"},
-  production:{label:"Production",icon:"◈",color:C.am,accent:C.am,bg:C.amBg,desc:"Production queue with recipes"},
-  vins:{label:"Vins Kitchen",icon:"V",color:C.chM,accent:C.chM,bg:C.beige,desc:"Live delivery tracker interface"},
-  manja:{label:"Manja Kitchen",icon:"M",color:C.amDk,accent:C.amDk,bg:C.amBg,desc:"Live delivery tracker interface"},
+  admin:{label:"Admin",icon:"⚙",img:"/icon-admin.png",color:C.ch,accent:C.ol,bg:C.beige,desc:"Create and manage all orders"},
+  packing:{label:"Packing",icon:"◻",img:"/icon-packing.png",color:C.ol,accent:C.ol,bg:C.olBg,desc:"Smart status updater for dispatch"},
+  production:{label:"Production",icon:"◈",img:"/icon-production.png",color:C.am,accent:C.am,bg:C.amBg,desc:"Production queue with recipes"},
+  vins:{label:"Vins Kitchen",icon:"V",img:"/icon-vins.png",color:C.chM,accent:C.chM,bg:C.beige,desc:"Live delivery tracker interface"},
+  manja:{label:"Manja Kitchen",icon:"M",img:"/icon-manja.png",color:C.amDk,accent:C.amDk,bg:C.amBg,desc:"Live delivery tracker interface"},
 };
 
 const SC = {
@@ -627,7 +630,12 @@ function Toast({msg,type}){
   const isErr=type==="error";
   const accentColor=isErr?"#DC2626":"#22C55E";
   return(
-    <div className="toast-slide-right" style={{
+    <motion.div
+      initial={{opacity:0,y:-60,scale:0.95}}
+      animate={{opacity:1,y:0,scale:1}}
+      exit={{opacity:0,y:-40,scale:0.95}}
+      transition={{duration:0.35,ease:[0.16,1,0.3,1]}}
+      style={{
       position:"fixed",bottom:28,right:24,
       zIndex:9999,maxWidth:360,minWidth:260,
       background:isErr?"rgba(14,4,4,0.97)":"rgba(4,12,8,0.97)",
@@ -652,7 +660,7 @@ function Toast({msg,type}){
         <div style={{fontSize:10,fontWeight:800,color:isErr?"rgba(248,113,113,0.65)":"rgba(74,222,128,0.65)",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:3}}>{isErr?"Error":"Done"}</div>
         <span style={{fontSize:13,fontWeight:700,color:"#EEF2FF",lineHeight:1.35}}>{msg}</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -1255,19 +1263,28 @@ function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel 
 function SplashScreen() {
   return (
     <div className="animate-fade-in grain" style={{position:"fixed",inset:0,zIndex:99999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",transition:"opacity 0.5s ease",overflow:"hidden"}}>
+      {/* Hero background image */}
+      <div style={{position:"absolute",inset:0,backgroundImage:"url('/bg-hero.png')",backgroundSize:"cover",backgroundPosition:"center",filter:"brightness(0.22) saturate(1.4)",zIndex:0}}/>
+      {/* Red gradient overlay */}
+      <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(13,20,36,0.7) 0%,rgba(13,20,36,0.4) 50%,rgba(13,20,36,0.9) 100%)",zIndex:1}}/>
       <PremiumBg/>
-      <div className="animate-fade-up" style={{display:"flex",flexDirection:"column",alignItems:"center",animationDelay:"0.1s",position:"relative",zIndex:2}}>
-        <div style={{position:"relative",width:96,height:96,margin:"0 auto 28px"}}>
-          <div style={{width:96,height:96,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:40,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
-          <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
-          <div style={{position:"absolute",inset:-18,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.08)",animation:"spinSlow 35s linear infinite reverse",pointerEvents:"none"}}/>
+      <motion.div
+        initial={{opacity:0,y:24}}
+        animate={{opacity:1,y:0}}
+        transition={{duration:0.8,ease:[0.16,1,0.3,1],delay:0.1}}
+        style={{display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:2}}
+      >
+        <div style={{position:"relative",width:110,height:110,margin:"0 auto 28px"}}>
+          <img src="/tfc-logo.png" alt="TFC" style={{width:110,height:110,borderRadius:"50%",objectFit:"cover",animation:"logoGlow 3s infinite ease-in-out",display:"block"}}/>
+          <div style={{position:"absolute",inset:-12,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.25)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",inset:-22,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.10)",animation:"spinSlow 35s linear infinite reverse",pointerEvents:"none"}}/>
         </div>
         <div style={{fontSize:26,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.04em",marginBottom:6}}>The Food Company</div>
         <div style={{fontSize:11,color:"#3A5070",letterSpacing:"0.22em",textTransform:"uppercase",fontWeight:700,marginBottom:48}}>Operations Hub</div>
         <div style={{width:180,height:3,background:"rgba(255,255,255,0.05)",borderRadius:4,overflow:"hidden",position:"relative"}}>
           <div style={{position:"absolute",top:0,left:0,width:"45%",height:"100%",background:"linear-gradient(90deg,transparent,#D31118,transparent)",animation:"loadBar 1.6s ease-in-out infinite"}}/>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -1292,31 +1309,51 @@ function LoginScreen({ onSignIn }) {
 
   return (
     <div className="animate-fade-in grain" style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif",position:"relative",overflow:"hidden"}}>
+      {/* Hero background */}
+      <div style={{position:"absolute",inset:0,backgroundImage:"url('/bg-hero.png')",backgroundSize:"cover",backgroundPosition:"center",filter:"brightness(0.18) saturate(1.2)",zIndex:0}}/>
+      <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(8,12,24,0.6) 0%,rgba(8,12,24,0.3) 50%,rgba(8,12,24,0.85) 100%)",zIndex:1}}/>
       <PremiumBg/>
       <div style={{width:"100%",maxWidth:400,position:"relative",zIndex:2}}>
         {/* Logo */}
-        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:44}}>
+        <motion.div
+          initial={{opacity:0,y:-20}}
+          animate={{opacity:1,y:0}}
+          transition={{duration:0.7,ease:[0.16,1,0.3,1]}}
+          style={{textAlign:"center",marginBottom:44}}
+        >
           <div style={{position:"relative",width:90,height:90,margin:"0 auto 28px"}}>
-            <div style={{width:90,height:90,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:38,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
+            <img src="/tfc-logo.png" alt="TFC" style={{width:90,height:90,borderRadius:"50%",objectFit:"cover",animation:"logoGlow 3s infinite ease-in-out",display:"block"}}/>
             <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.2)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
           </div>
           <div style={{fontSize:30,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.05em",lineHeight:1,marginBottom:10}}>The Food Company</div>
           <div style={{fontSize:11,color:"#2A4060",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.18em"}}>Operations Hub</div>
-        </div>
+        </motion.div>
 
-        {/* Glass card with 3D tilt */}
-        <div ref={cardRef} className="animate-fade-up glass-card tilt-wrap" style={{borderRadius:24,padding:"36px 32px",position:"relative",overflow:"hidden",animationDelay:"0.15s"}}>
+        {/* Glass card with 3D tilt + Framer Motion */}
+        <motion.div
+          ref={cardRef}
+          className="glass-card tilt-wrap"
+          style={{borderRadius:24,padding:"36px 32px",position:"relative",overflow:"hidden"}}
+          initial={{opacity:0,y:30}}
+          animate={{opacity:1,y:0}}
+          transition={{duration:0.6,ease:[0.16,1,0.3,1],delay:0.2}}
+        >
           {/* Top shine line */}
           <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.13),transparent)",pointerEvents:"none"}}/>
           <div style={{fontSize:11,fontWeight:700,color:"#2A4060",marginBottom:28,textAlign:"center",textTransform:"uppercase",letterSpacing:"0.18em"}}>Sign in to continue</div>
-          <button onClick={handleClick} disabled={loading} className="btn-3d" style={{width:"100%",padding:"15px 20px",background:loading?"rgba(30,40,60,0.8)":"linear-gradient(135deg,#D31118 0%,#8A0B10 100%)",border:"none",borderRadius:14,cursor:loading?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:12,boxShadow:loading?"none":"0 4px 22px rgba(211,17,24,0.48),inset 0 1px 0 rgba(255,255,255,0.10)",transition:"all 0.2s ease"}}>
+          <motion.button
+            onClick={handleClick} disabled={loading} className="btn-3d"
+            style={{width:"100%",padding:"15px 20px",background:loading?"rgba(30,40,60,0.8)":"linear-gradient(135deg,#D31118 0%,#8A0B10 100%)",border:"none",borderRadius:14,cursor:loading?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:12,boxShadow:loading?"none":"0 4px 22px rgba(211,17,24,0.48),inset 0 1px 0 rgba(255,255,255,0.10)",transition:"background 0.2s ease"}}
+            whileHover={loading?{}:{scale:1.02,boxShadow:"0 6px 30px rgba(211,17,24,0.6)"}}
+            whileTap={loading?{}:{scale:0.97}}
+          >
             <div style={{width:26,height:26,borderRadius:"50%",background:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:"#D31118",flexShrink:0,boxShadow:"0 1px 4px rgba(0,0,0,0.25)"}}>G</div>
             <span style={{fontSize:15,fontWeight:800,color:"#FFFFFF",letterSpacing:"0.02em"}}>{loading?"Signing in…":"Continue with Google"}</span>
             {!loading && <span style={{marginLeft:"auto",fontSize:16,opacity:0.5,color:"#fff"}}>→</span>}
-          </button>
+          </motion.button>
           {error && <div className="animate-fade-in" style={{marginTop:14,fontSize:12,color:C.rd,fontWeight:700,textAlign:"center",background:C.rdBg,padding:"10px 14px",borderRadius:10,border:"1px solid rgba(220,38,38,0.22)"}}>{error}</div>}
           <div style={{marginTop:28,paddingTop:20,borderTop:"1px solid rgba(255,255,255,0.05)",textAlign:"center",fontSize:11,color:"#1A2840",fontWeight:600}}>Secured via Google OAuth 2.0</div>
-        </div>
+        </motion.div>
 
         <div style={{textAlign:"center",marginTop:32,fontSize:11,color:"#1E2840",fontWeight:600}}>
           Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur
@@ -1694,41 +1731,50 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
         )}
 
         {/* Heading */}
-        <div className="animate-fade-up" style={{textAlign:"center",marginBottom:28,animationDelay:"0.05s"}}>
+        <motion.div
+          initial={{opacity:0,y:-16}}
+          animate={{opacity:1,y:0}}
+          transition={{duration:0.6,ease:[0.16,1,0.3,1]}}
+          style={{textAlign:"center",marginBottom:28}}
+        >
           <div style={{position:"relative",width:62,height:62,margin:"0 auto 18px"}}>
-            <div style={{width:62,height:62,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
+            <img src="/tfc-logo.png" alt="TFC" style={{width:62,height:62,borderRadius:"50%",objectFit:"cover",animation:"logoGlow 3s infinite ease-in-out",display:"block"}}/>
             <div style={{position:"absolute",inset:-8,borderRadius:"50%",border:"1px solid rgba(211,17,24,0.16)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
           </div>
           <div style={{fontSize:22,fontWeight:900,color:"#EEF2FF",letterSpacing:"-0.03em",lineHeight:1}}>Welcome back.</div>
           <div style={{fontSize:13,color:"#4A6080",fontWeight:500,marginTop:8}}>Select your operational role to continue</div>
-        </div>
+        </motion.div>
 
         {/* Role tiles */}
         <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
           {keys.map((k, i) => {
             const r = ROLES[k]; if (!r) return null;
             return (
-              <div
+              <motion.div
                 key={k}
                 ref={el => { cardRefs.current[i] = el; }}
                 onClick={() => onSelect(k)}
-                className="animate-fade-up glass-card role-card"
+                className="glass-card role-card"
                 style={{
-                  animationDelay:`${i * 0.07}s`,
                   gridColumn:(!isMobile && i === keys.length - 1 && keys.length % 2 !== 0) ? "1 / -1" : "auto",
                   borderRadius:18, padding:"22px 22px 18px",
                   cursor:"pointer", display:"flex", flexDirection:"column", gap:14, alignItems:"flex-start",
                   borderTop:"2px solid "+r.color+"60",
                   position:"relative", overflow:"hidden",
                 }}
+                initial={{opacity:0,y:28}}
+                animate={{opacity:1,y:0}}
+                transition={{duration:0.5,ease:[0.16,1,0.3,1],delay:i*0.08}}
+                whileHover={{scale:1.03,y:-4,boxShadow:`0 20px 60px rgba(0,0,0,0.5), 0 0 30px ${r.color}20`}}
+                whileTap={{scale:0.97}}
               >
                 {/* Top shine */}
                 <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${r.color}30,transparent)`,pointerEvents:"none"}}/>
                 {/* Subtle glow orb */}
                 <div style={{position:"absolute",top:-40,right:-20,width:100,height:100,borderRadius:"50%",background:`radial-gradient(circle,${r.color}15 0%,transparent 70%)`,pointerEvents:"none"}}/>
-                {/* Icon */}
-                <div style={{width:46,height:46,background:`linear-gradient(135deg,${r.color}22,${r.color}0A)`,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,fontWeight:900,color:r.color,border:"1px solid "+r.color+"30",flexShrink:0}}>
-                  {r.icon}
+                {/* Icon — custom image with dark bg */}
+                <div style={{width:52,height:52,background:"rgba(8,12,24,0.7)",borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",border:"1px solid "+r.color+"30",flexShrink:0,overflow:"hidden"}}>
+                  <img src={r.img} alt={r.label} style={{width:38,height:38,objectFit:"contain",filter:"brightness(0) invert(1)",opacity:0.9}}/>
                 </div>
                 <div style={{flex:1}}>
                   <div style={{fontSize:15,fontWeight:900,color:"#EEF2FF",marginBottom:5,letterSpacing:"-0.02em"}}>{r.label}</div>
@@ -1737,7 +1783,7 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
                 <div style={{fontSize:11,color:r.color,display:"flex",alignItems:"center",gap:6,fontWeight:700,background:r.color+"14",border:"1px solid "+r.color+"28",padding:"5px 10px",borderRadius:6}}>
                   <span style={{fontSize:9}}>▶</span> Enter portal
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -1928,17 +1974,20 @@ function OrderCard({order, active, onClick, onDelete, index}){
   const hasIssue=s.short+s.oos>0;
 
   return(
-    <div
+    <motion.div
       onClick={onClick}
-      className={`animate-fade-up hover-lift ${isComplete&&!active?'celebration-card':''} ${active?(order.restaurant==="Vins"?"order-card-active-vins":"order-card-active-manja"):""}`}
+      className={`hover-lift ${isComplete&&!active?'celebration-card':''} ${active?(order.restaurant==="Vins"?"order-card-active-vins":"order-card-active-manja"):""}`}
       style={{
-        animationDelay:`${index*0.05}s`,
         padding:"14px 16px",borderRadius:16,marginBottom:8,cursor:"pointer",
         background:active?(th.isDark?`linear-gradient(160deg,#111E36,#0B1228)`:`linear-gradient(160deg,#EFF4FF,#E8F0FF)`):C.off,
         border:`1.5px solid ${active?rc+"60":C.bdrL}`,
         borderLeft:`4px solid ${active?rc:C.bdrL}`,
-        transition:"all 0.25s cubic-bezier(0.16,1,0.3,1)"
+        transition:"border 0.25s cubic-bezier(0.16,1,0.3,1), background 0.25s cubic-bezier(0.16,1,0.3,1)"
       }}
+      initial={{opacity:0,y:16}}
+      animate={{opacity:1,y:0}}
+      transition={{duration:0.4,ease:[0.16,1,0.3,1],delay:Math.min((index||0)*0.05,0.4)}}
+      whileHover={{y:-2}}
     >
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:active?10:8,position:"relative"}}>
         <div style={{fontWeight:800,color:active?C.ch:C.chM,fontSize:active?15:13,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",letterSpacing:"-0.02em",transition:"font-size 0.2s ease"}}>
@@ -1981,7 +2030,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
           )}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -3406,7 +3455,7 @@ function TFCOrderSystem(){
         <div className="portal-orb portal-orb-4"/>
         <div className="portal-orb portal-orb-5"/>
 
-        {toast&&<Toast msg={toast.msg} type={toast.type}/>}
+        <AnimatePresence>{toast&&<Toast msg={toast.msg} type={toast.type}/>}</AnimatePresence>
         {showModal&&<NewOrderModal onClose={()=>setShowModal(false)} onSubmit={handleNewOrder} notify={notify}/>}
         {editingOrder&&<EditOrderModal order={editingOrder} onClose={()=>setEditingOrder(null)} onSave={saveOrderEdit} notify={notify}/>}
 
@@ -3499,7 +3548,7 @@ function TFCOrderSystem(){
     );
   }
 
-  return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{minHeight:"100vh",opacity:screenExiting?0:1,transition:"opacity 0.32s ease"}}>{AppContent}</div></ThemeCtx.Provider> );
+  return ( <ThemeCtx.Provider value={true}><style>{GLOBAL_STYLES}</style><div data-theme="dark" style={{minHeight:"100vh"}}><AnimatePresence mode="wait"><motion.div key={phase+(role||"")} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-10}} transition={{duration:0.28,ease:[0.16,1,0.3,1]}}>{AppContent}</motion.div></AnimatePresence></div></ThemeCtx.Provider> );
 }
 
 export default function App() {
