@@ -105,12 +105,23 @@ exports.handler = async (event) => {
         res = await sendWithRetry(messaging, {
           tokens: chunk,
           notification: { title: payload.title, body: payload.body || "" },
+          // data fields let the service worker read title/body even if notification is absent
+          data: {
+            title: payload.title,
+            body: payload.body || "",
+            tag: payload.tag || "tfc",
+          },
           webpush: {
+            // Urgency:high wakes Android even in Doze/battery-saver mode
+            headers: { Urgency: "high" },
             notification: {
+              title: payload.title,
+              body: payload.body || "",
               icon: "/icon-192.png",
               badge: "/icon-192.png",
               tag: payload.tag || "tfc",
               requireInteraction: false,
+              vibrate: [200, 100, 200],
             },
             fcmOptions: { link: "/" },
           },

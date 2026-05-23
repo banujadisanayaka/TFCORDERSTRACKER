@@ -14,14 +14,18 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(function(payload) {
-  const title = payload.notification?.title || "TFC Orders";
-  const body  = payload.notification?.body  || "";
+  // Read from webpush.notification (via payload.notification) first, fall back to data fields
+  const title = payload.notification?.title || payload.data?.title || "TFC Orders";
+  const body  = payload.notification?.body  || payload.data?.body  || "";
+  // Use unique tag so rapid-fire notifications don't collapse into one
+  const tag   = payload.data?.tag || payload.notification?.tag || ("tfc-" + Date.now());
   self.registration.showNotification(title, {
     body,
     icon: "/icon-192.png",
     badge: "/icon-192.png",
-    tag: payload.data?.tag || "tfc-push",
+    tag,
     requireInteraction: false,
+    vibrate: [200, 100, 200],
     data: { url: "/" },
   });
 });
@@ -40,7 +44,7 @@ self.addEventListener("notificationclick", function(e) {
 });
 
 // ─── Asset caching ───────────────────────────────────────────────────────────
-const CACHE = "tfc-v6";
+const CACHE = "tfc-v7";
 // Only precache the small icon — the 512px one is for WebAPK/homescreen only,
 // no need to download it in the SW install step.
 const PRECACHE = ["/icon-192.png"];
