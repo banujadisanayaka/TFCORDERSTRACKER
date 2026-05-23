@@ -21,7 +21,6 @@ const ITEMS_DB = itemsData || [];
    SKETCH DESIGN SYSTEM — Paper + Ink Aesthetic
 ═══════════════════════════════════════════════════════════════ */
 const GLOBAL_STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=JetBrains+Mono:wght@500;600&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; touch-action: manipulation; }
@@ -32,14 +31,15 @@ const GLOBAL_STYLES = `
 
   /* ── CSS Custom Properties (theme vars) ── */
   :root, [data-theme="dark"] {
-    --page-bg: #0A0D1E; --card-bg: #111828; --card-shadow: 2px 3px 0 rgba(0,0,0,0.40);
-    --modal-bg: #0A0D1E; --border: rgba(238,242,255,0.18); --text: #EEF2FF;
-    --text-sub: #8896B3; --accent: #D31118; --input-bg: #0A1020;
-    --input-focus-border: #00D4FF; --input-focus-shadow: rgba(0,212,255,0.18);
-    --input-focus-bg: #07101C; --sidebar-bg: #0D1628;
-    --header-bg: rgba(10,13,30,0.95); --paper-dot: rgba(255,255,255,0.04);
-    --border-faint: rgba(255,255,255,0.10);
-    --sub-bg: rgba(255,255,255,0.03);
+    --page-bg: #0C0A14; --card-bg: #15101E; --card-shadow: 2px 3px 0 rgba(0,0,0,0.45);
+    --modal-bg: #0C0A14; --border: rgba(245,222,141,0.22); --text: #EDE0C8;
+    --text-sub: #9A8878; --accent: #C1121F; --input-bg: #100D1A;
+    --gold: #F5DE8D; --burgundy: #6B0E1E;
+    --input-focus-border: #F5DE8D; --input-focus-shadow: rgba(245,222,141,0.15);
+    --input-focus-bg: #130F1C; --sidebar-bg: #100D18;
+    --header-bg: rgba(12,10,20,0.96); --paper-dot: rgba(245,222,141,0.05);
+    --border-faint: rgba(245,222,141,0.14);
+    --sub-bg: rgba(245,222,141,0.04);
   }
   [data-theme="light"] {
     --page-bg: #FAFAF0; --card-bg: #FFFFFF; --card-shadow: 2px 3px 0 rgba(0,0,0,0.08);
@@ -79,7 +79,7 @@ const GLOBAL_STYLES = `
   /* ── Sketch card system (replaces glass-card) ── */
   .glass-card {
     background: var(--card-bg);
-    border: 2px solid var(--border);
+    border: 1.5px solid var(--border);
     border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
     box-shadow: var(--card-shadow);
     position: relative;
@@ -89,7 +89,7 @@ const GLOBAL_STYLES = `
 
   .sketch-card {
     background: var(--card-bg);
-    border: 2px solid var(--border);
+    border: 1.5px solid var(--border);
     border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
     box-shadow: var(--card-shadow);
     position: relative;
@@ -99,16 +99,17 @@ const GLOBAL_STYLES = `
   .sketch-pill {
     border: 1.5px solid var(--border);
     border-radius: 100px 95px 100px 95px / 100px 100px 95px 100px;
-    padding: 10px 20px; background: transparent; color: var(--text);
-    cursor: pointer; font-weight: 600; font-size: 14px;
-    box-shadow: 1px 2px 0 rgba(0,0,0,0.07);
-    transition: all 0.15s ease; font-family: inherit; min-height: 48px;
+    padding: 10px 22px; background: transparent; color: var(--text);
+    cursor: pointer; font-weight: 700; font-size: 13px;
+    box-shadow: 1px 2px 0 rgba(0,0,0,0.10);
+    transition: all 0.15s ease; font-family: inherit; min-height: 44px;
+    letter-spacing: 0.01em;
   }
   .sketch-pill.active, .sketch-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
   .sketch-pill:active { transform: scale(0.95); }
 
   /* Sketch font */
-  .sketch-font { font-family: 'Caveat', cursive !important; }
+  .sketch-font { font-weight: 700; letter-spacing: -0.01em; }
 
   /* ── Grain texture overlay ── */
   .grain::after {
@@ -428,7 +429,7 @@ const GLOBAL_STYLES = `
     -webkit-tap-highlight-color: transparent; transition: opacity 0.15s ease;
   }
   .bottom-nav-tab:active { opacity: 0.65; transform: scale(0.94); }
-  .bottom-nav-label { font-family: 'Caveat', cursive; font-size: 11px; font-weight: 700; text-transform: capitalize; letter-spacing: 0.02em; }
+  .bottom-nav-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-family: inherit; }
 
   /* Main content bottom padding when nav is visible */
   .has-bottom-nav { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
@@ -625,16 +626,18 @@ function getLocalYMD(d = new Date()) {
 /* ═══════════════════════════════════════════════════════════════
    THEME SYSTEM — dark / light palettes + context
 ═══════════════════════════════════════════════════════════════ */
-const DC={ // dark palette
-  w: "#0D1424", off: "#080C18", beige: "#080C18", beigeD: "#111A30",
-  ch: "#EEF2FF", chM: "#B8C4E0", chL: "#8896B3", chXL: "#1E2D4A",
-  bdr: "#1A2640", bdrL: "#111C32",
-  ol: "#D31118", olDk: "#A50D12", olBg: "rgba(211,17,24,0.14)", olBgD: "rgba(211,17,24,0.26)",
+const DC={ // dark palette — warm paper ink
+  w: "#0C0A14", off: "#100D1A", beige: "#100D1A", beigeD: "#1C1428",
+  ch: "#EDE0C8", chM: "#C4B49A", chL: "#9A8878", chXL: "#4A3D34",
+  bdr: "#2A1F2E", bdrL: "#1E1628",
+  gold: "#F5DE8D", goldBg: "rgba(245,222,141,0.12)", goldBgD: "rgba(245,222,141,0.22)",
+  bur: "#6B0E1E", burBg: "rgba(107,14,30,0.20)",
+  ol: "#C1121F", olDk: "#8B0D15", olBg: "rgba(193,18,31,0.14)", olBgD: "rgba(193,18,31,0.28)",
   am: "#E8920A", amDk: "#B86F06", amBg: "rgba(232,146,10,0.13)", amBgD: "rgba(232,146,10,0.24)",
   gn: "#16A34A", gnBg: "rgba(22,163,74,0.13)",
   rd: "#DC2626", rdBg: "rgba(220,38,38,0.12)",
   cy: "#00D4FF", cyBg: "rgba(0,212,255,0.10)", cyBgD: "rgba(0,212,255,0.18)",
-  sh: "2px 3px 0 rgba(0,0,0,0.40)", shM: "3px 5px 0 rgba(0,0,0,0.55)"
+  sh: "2px 3px 0 rgba(0,0,0,0.45)", shM: "3px 5px 0 rgba(0,0,0,0.60)"
 };
 const LC={ // light palette — paper + ink
   w: "#FAFAF0", off: "#F3F3E6", beige: "#F3F3E6", beigeD: "#F5DE8D",
@@ -656,12 +659,12 @@ function makeThemeObj(palette, isDark) {
     ...palette,
     divider:  isDark ? "rgba(255,255,255,0.08)" : "rgba(26,26,46,0.15)",
     subBg:    isDark ? "rgba(255,255,255,0.04)" : "rgba(243,243,230,0.60)",
-    cardBg:   isDark ? "#111828"                : "#FFFFFF",
+    cardBg:   isDark ? "#15101E"                : "#FFFFFF",
     chipBg:   isDark ? "rgba(255,255,255,0.06)" : "rgba(26,26,46,0.08)",
-    footerBg: isDark ? "rgba(10,13,30,0.90)"    : "rgba(243,243,230,0.90)",
-    headerBg: isDark ? "rgba(10,13,30,0.95)"    : "rgba(250,250,240,0.95)",
-    panelBg:  isDark ? "#0D1628"                : "#F3F3E6",
-    editBg:   isDark ? "#060A12"                : "#FFFFFF",
+    footerBg: isDark ? "rgba(12,10,20,0.92)"    : "rgba(243,243,230,0.90)",
+    headerBg: isDark ? "rgba(12,10,20,0.96)"    : "rgba(250,250,240,0.95)",
+    panelBg:  isDark ? "#100D18"                : "#F3F3E6",
+    editBg:   isDark ? "#080614"                : "#FFFFFF",
     editBdr:  isDark ? "#1A2640"                : "#D8D8C8",
     closeBg:  isDark ? "rgba(255,255,255,0.05)" : "rgba(26,26,46,0.06)",
     closeBdr: isDark ? "rgba(255,255,255,0.09)" : "rgba(26,26,46,0.14)",
@@ -1550,14 +1553,14 @@ function RequestAccessScreen({ authUser, onSubmit, onSignOut, installPrompt, onI
         </div>
 
         <div style={{marginBottom:20}}>
-          <div style={{fontSize:28,fontWeight:700,color:"var(--accent)",fontFamily:"'Caveat',cursive",lineHeight:1,marginBottom:4}}>Request Access</div>
+          <div style={{fontSize:24,fontWeight:900,color:"var(--accent)",letterSpacing:"-0.03em",lineHeight:1,marginBottom:4}}>Request Access</div>
           <div style={{fontSize:13,color:"var(--text-sub)",fontWeight:500}}>Fill in your details and select roles to request.</div>
         </div>
 
         {submitted ? (
           <div className="animate-fade-up sketch-card" style={{padding:"36px 28px",textAlign:"center"}}>
             <div style={{fontSize:44,marginBottom:14}}>✓</div>
-            <div style={{fontSize:22,fontWeight:700,color:"var(--accent)",fontFamily:"'Caveat',cursive",marginBottom:8}}>Request Sent!</div>
+            <div style={{fontSize:22,fontWeight:900,color:"var(--accent)",letterSpacing:"-0.02em",marginBottom:8}}>Request Sent!</div>
             <div style={{fontSize:13,color:"var(--text-sub)",lineHeight:1.6}}>Your request for <strong style={{color:"var(--text)"}}>{selectedRoles.map(r=>ROLES[r]?.label).join(", ")}</strong> has been submitted.</div>
           </div>
         ) : (
@@ -1594,10 +1597,11 @@ function RequestAccessScreen({ authUser, onSubmit, onSignOut, installPrompt, onI
                       background:isSelected?"var(--accent)":"transparent",
                       border:`1.5px solid ${isSelected?"var(--accent)":"var(--border)"}`,
                       color:isSelected?"#fff":"var(--text)",
-                      fontWeight:700,fontSize:14,cursor:"pointer",
-                      fontFamily:"'Caveat',cursive",
+                      fontWeight:700,fontSize:13,cursor:"pointer",
+                      fontFamily:"inherit",
                       minHeight:44,
                       transition:"all 0.15s ease",
+                      letterSpacing:"0.01em",
                     }}
                   >
                     {r.label}
@@ -1607,7 +1611,7 @@ function RequestAccessScreen({ authUser, onSubmit, onSignOut, installPrompt, onI
             </div>
 
             <motion.button onClick={handleRequest} disabled={!canSubmit||submitting} whileTap={{scale:0.97}}
-              style={{width:"100%",padding:"14px",background:canSubmit?"var(--accent)":"var(--border)",border:"none",borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px",color:canSubmit?"#fff":"var(--text-sub)",fontSize:16,fontWeight:700,cursor:canSubmit&&!submitting?"pointer":"not-allowed",fontFamily:"'Caveat',cursive",transition:"all 0.2s ease",opacity:submitting?0.7:1}}>
+              style={{width:"100%",padding:"14px",background:canSubmit?"var(--accent)":"rgba(245,222,141,0.12)",border:"none",borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px",color:canSubmit?"#fff":"var(--text-sub)",fontSize:15,fontWeight:800,cursor:canSubmit&&!submitting?"pointer":"not-allowed",fontFamily:"inherit",letterSpacing:"0.01em",transition:"all 0.2s ease",opacity:submitting?0.7:1}}>
               {submitting ? "Sending…" : canSubmit ? `Request Access (${selectedRoles.length} role${selectedRoles.length>1?"s":""})` : "Fill all fields above"}
             </motion.button>
           </>
@@ -1831,7 +1835,7 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
 
         {/* Heading */}
         <motion.div initial={{opacity:0,y:-12}} animate={{opacity:1,y:0}} transition={{duration:0.5,ease:[0.16,1,0.3,1]}} style={{marginBottom:24}}>
-          <div style={{fontSize:32,fontWeight:700,color:"var(--accent)",fontFamily:"'Caveat',cursive",lineHeight:1,marginBottom:4}}>TFC Order Tracker</div>
+          <div style={{fontSize:28,fontWeight:900,color:"var(--accent)",letterSpacing:"-0.04em",lineHeight:1,marginBottom:4}}>TFC Order Tracker</div>
           <div style={{fontSize:14,color:"var(--text-sub)",fontWeight:500}}>Select your role to continue</div>
         </motion.div>
 
@@ -1850,13 +1854,14 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
                   borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px",
                   padding:"11px 22px",
                   background:isActive?"var(--accent)":"transparent",
-                  border:`1.5px solid ${isActive?"var(--accent)":"var(--border)"}`,
+                  border:`1.5px solid ${isActive?"var(--accent)":"rgba(245,222,141,0.30)"}`,
                   color:isActive?"#fff":"var(--text)",
-                  fontWeight:700,fontSize:14,cursor:"pointer",
-                  boxShadow:isActive?"2px 3px 0 rgba(0,0,0,0.15)":"1px 2px 0 rgba(0,0,0,0.06)",
-                  fontFamily:"'Caveat',cursive",
+                  fontWeight:700,fontSize:13,cursor:"pointer",
+                  boxShadow:isActive?"2px 3px 0 rgba(0,0,0,0.20)":"1px 2px 0 rgba(0,0,0,0.08)",
+                  fontFamily:"inherit",
+                  letterSpacing:"0.02em",
                   transition:"all 0.15s ease",
-                  minHeight:48,
+                  minHeight:44,
                 }}
               >
                 {r.label}
@@ -1877,7 +1882,7 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
             borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px",
             color:selected?"#fff":"var(--text-sub)",
             fontSize:16,fontWeight:700,cursor:selected?"pointer":"default",
-            fontFamily:"'Caveat',cursive",
+            fontFamily:"inherit",
             boxShadow:selected?"2px 3px 0 rgba(0,0,0,0.18)":"none",
             transition:"all 0.2s ease",
             opacity:selected?1:0.5,
@@ -3127,7 +3132,7 @@ function ProfileTab({ authUser, userRecord, onSignOut, installPrompt, onInstallD
   const { isDark, toggleTheme } = React.useContext(ThemeCtx);
   return (
     <div className="custom-scrollbar" style={{ flex:1, overflowY:"auto", padding:"24px 20px", maxWidth:440, margin:"0 auto", width:"100%" }}>
-      <div style={{ fontFamily:"'Caveat',cursive", fontSize:26, fontWeight:700, color:C.ch, marginBottom:20 }}>Profile</div>
+      <div style={{ fontSize:20, fontWeight:900, color:C.ch, letterSpacing:"-0.02em", marginBottom:20 }}>Profile</div>
       {/* Avatar + name */}
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:24, padding:"16px 18px", background:C.off, border:"1.5px solid "+C.bdrL, borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", boxShadow:C.sh }}>
         {authUser?.photoURL
@@ -3176,7 +3181,7 @@ function RolesTab({ availableRoles, currentRole, onSelect }) {
   const keys = availableRoles || Object.keys(ROLES);
   return (
     <div style={{ flex:1, padding:"24px 20px", maxWidth:440, margin:"0 auto", width:"100%" }}>
-      <div style={{ fontFamily:"'Caveat',cursive", fontSize:26, fontWeight:700, color:C.ch, marginBottom:6 }}>Switch Role</div>
+      <div style={{ fontSize:20, fontWeight:900, color:C.ch, letterSpacing:"-0.02em", marginBottom:6 }}>Switch Role</div>
       <div style={{ fontSize:12, color:C.chL, marginBottom:20 }}>Current: <strong style={{ color:C.ch }}>{ROLES[currentRole]?.label}</strong></div>
       <div style={{ display:"flex", flexWrap:"wrap", gap:10, marginBottom:24 }}>
         {keys.map(rk => {
@@ -3539,7 +3544,7 @@ function TFCOrderSystem(){
   const [activeId,setActiveId]=useState(null); const [showModal,setShowModal]=useState(false); const [editingOrder, setEditingOrder] = useState(null); const [toast,setToast] = useState(null); const [sidebarOpen, setSidebarOpen]=useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [unreadCount, setUnreadCount] = useState(0);
-  const [isDark, setIsDark] = useState(() => localStorage.getItem("tfc_theme") === "dark");
+  const [isDark, setIsDark] = useState(() => localStorage.getItem("tfc_theme") !== "light");
   const toggleTheme = () => setIsDark(d => { localStorage.setItem("tfc_theme", !d ? "dark" : "light"); return !d; });
 
   // Auth state (authUser/authLoading hoisted above for TDZ safety in notification effects)
