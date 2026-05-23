@@ -3545,6 +3545,11 @@ function TFCOrderSystem(){
   // Reset tab to dashboard when role changes
   useEffect(() => { setActiveTab("dashboard"); }, [role]);
 
+  // Sync data-theme on <html> so CSS vars (body bg, etc.) update correctly at root level
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
+
   // Unread notification count
   useEffect(() => {
     if (!role) return;
