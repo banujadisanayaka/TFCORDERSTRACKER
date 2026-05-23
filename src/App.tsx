@@ -46,6 +46,17 @@ const GLOBAL_STYLES = `
     --input-focus-border: #C1121F; --input-focus-shadow: rgba(193,18,31,0.14);
     --input-focus-bg: #FFF8F8; --sidebar-bg: #F3F3E6;
     --header-bg: rgba(250,250,240,0.95); --paper-dot: rgba(0,0,0,0.05);
+    --border-faint: rgba(0,0,0,0.15); --sub-bg: rgba(0,0,0,0.04);
+    --color-success: #15803D; --color-warning: #B45309; --color-danger: #B91C1C; --color-info: #0369A1;
+  }
+  :root, [data-theme="dark"] {
+    --border-faint: rgba(238,242,255,0.12); --sub-bg: rgba(255,255,255,0.04);
+    --color-success: #16A34A; --color-warning: #E8920A; --color-danger: #C1121F; --color-info: #0EA5E9;
+    --accent-glow: rgba(193,18,31,0.25); --gold-glow: rgba(245,222,141,0.18);
+  }
+  :root {
+    --text-2xs: 10px; --ls-label: 0.12em; --text-xs: 11px; --text-sm: 13px;
+    --text-base: 15px; --text-md: 17px; --text-lg: 20px; --text-xl: 24px; --text-2xl: 28px;
   }
 
   /* Paper dot texture */
@@ -335,8 +346,15 @@ const GLOBAL_STYLES = `
   /* (pk-card states defined above — no duplicates) */
 
   /* ── Modal sheet (solid, no blur) ── */
-  .modal-sheet { background: var(--modal-bg) !important; border: 1.5px solid var(--border) !important; box-shadow: 0 24px 80px rgba(0,0,0,0.70) !important; position: relative !important; overflow: hidden !important; }
+  .modal-sheet { background: var(--card-bg) !important; border: 1.5px solid var(--border) !important; border-top: 3px solid var(--accent) !important; box-shadow: 0 24px 80px rgba(0,0,0,0.70) !important; position: relative !important; overflow: hidden !important; }
   .modal-sheet::before, .modal-sheet::after { display: none !important; }
+  [data-theme="light"] .modal-sheet { border-color: rgba(0,0,0,0.12) !important; }
+
+  /* ── Design system utility classes ── */
+  .left-accent-card { background:var(--card-bg); border:1px solid var(--border-faint); border-left:3px solid var(--accent); border-radius:12px; box-shadow:var(--card-shadow); }
+  .toggle-switch { width:48px; height:26px; border-radius:99px; position:relative; cursor:pointer; transition:background .25s; border:1.5px solid var(--border-faint); }
+  .toggle-switch__dot { position:absolute; top:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .25s; box-shadow:0 1px 4px rgba(0,0,0,.30); }
+  .ds-badge { display:inline-flex; align-items:center; border-radius:99px; font-size:var(--text-xs,11px); font-weight:800; letter-spacing:var(--ls-label,0.12em); padding:3px 10px; }
 
   /* ── Portal ambient orbs ── */
   .portal-orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
@@ -1686,13 +1704,22 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
         ))}
       </div>
 
+      {pendingRequests.length > 0 && (
+        <div style={{ background:"rgba(232,146,10,0.12)", borderBottom:"1px solid rgba(232,146,10,0.25)", padding:"10px 20px", display:"flex", alignItems:"center", gap:10, flexShrink:0 }}>
+          <span style={{ fontSize:"var(--text-xs,11px)", fontWeight:800, color:"var(--color-warning,#E8920A)" }}>
+            ⚠ {pendingRequests.length} request{pendingRequests.length>1?"s":""} waiting for approval
+          </span>
+        </div>
+      )}
+
       <div className="custom-scrollbar" style={{ flex:1, overflowY:"auto", padding: isMobile ? 16 : 28 }}>
         {tab === "requests" && (
           <div>
             {pendingRequests.length === 0 ? (
-              <div style={{ textAlign:"center", padding:"60px 20px", color:"var(--text-sub)" }}>
-                <div style={{ fontSize:40, marginBottom:12 }}>✓</div>
-                <div style={{ fontSize:16, fontWeight:700, fontFamily:"'Caveat',cursive" }}>No pending requests</div>
+              <div style={{ textAlign:"center", padding:"60px 20px" }}>
+                <div style={{ fontSize:32, marginBottom:14, opacity:0.8 }}>✅</div>
+                <div style={{ fontSize:"var(--text-lg,20px)", fontWeight:900, color:"var(--color-success,#16A34A)", marginBottom:6 }}>All caught up</div>
+                <div style={{ fontSize:"var(--text-sm,13px)", color:"var(--text-sub)" }}>No pending access requests</div>
               </div>
             ) : pendingRequests.map((req, i) => (
               <div key={req.id} className="animate-fade-up sketch-card" style={{ animationDelay:`${i*0.05}s`, padding:"18px 20px", marginBottom:12 }}>
@@ -1743,6 +1770,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
                     <div style={{ fontSize:13, fontWeight:800, color:"var(--text)" }}>{user.name}</div>
                     <div style={{ fontSize:11, color:"var(--text-sub)" }}>{user.email}</div>
                     {user.outlet && <div style={{ fontSize:11, color:"var(--text-sub)", marginTop:1 }}>📍 {user.outlet}</div>}
+                    {user.approvedAt && <div style={{ fontSize:"var(--text-xs,11px)", color:"var(--text-sub)", marginTop:1 }}>Since {new Date(user.approvedAt).toLocaleDateString("en-GB",{month:"short",year:"numeric"})}</div>}
                     {editingUser !== user.email && (
                       <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginTop:6 }}>
                         {(user.roles || []).map(role => <span key={role} style={{ fontSize:11, fontWeight:700, color:"var(--accent)", background:th.olBg, border:"1px solid var(--accent)", borderRadius:20, padding:"2px 8px" }}>{ROLES[role]?.label || role}</span>)}
@@ -1819,8 +1847,10 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
 
         {/* Heading */}
         <motion.div initial={{opacity:0,y:-12}} animate={{opacity:1,y:0}} transition={{duration:0.5,ease:[0.16,1,0.3,1]}} style={{marginBottom:24}}>
-          <div style={{fontSize:32,fontWeight:700,color:"var(--accent)",fontFamily:"'Caveat',cursive",lineHeight:1,marginBottom:4}}>TFC Order Tracker</div>
-          <div style={{fontSize:14,color:"var(--text-sub)",fontWeight:500}}>Select your role to continue</div>
+          <div style={{borderLeft:"4px solid var(--gold,#F5DE8D)",paddingLeft:14}}>
+            <div style={{fontSize:"var(--text-2xl,28px)",fontWeight:900,color:"var(--accent)",letterSpacing:"-0.04em",lineHeight:1.1,marginBottom:4}}>TFC Order Tracker</div>
+            <div style={{fontSize:"var(--text-sm,13px)",color:"var(--text-sub)",fontWeight:500}}>Select your role to continue</div>
+          </div>
         </motion.div>
 
         {/* Role pills */}
@@ -1841,7 +1871,7 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
                   border:`1.5px solid ${isActive?"var(--accent)":"var(--border)"}`,
                   color:isActive?"#fff":"var(--text)",
                   fontWeight:700,fontSize:14,cursor:"pointer",
-                  boxShadow:isActive?"2px 3px 0 rgba(0,0,0,0.15)":"1px 2px 0 rgba(0,0,0,0.06)",
+                  boxShadow:isActive?"0 0 0 3px rgba(193,18,31,0.20)":"1px 2px 0 rgba(0,0,0,0.06)",
                   fontFamily:"'Caveat',cursive",
                   transition:"all 0.15s ease",
                   minHeight:48,
@@ -1860,13 +1890,13 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
           whileTap={{scale:0.97}}
           style={{
             width:"100%",padding:"14px 0",
-            background:selected?"var(--accent)":"var(--border)",
+            background:selected?"linear-gradient(135deg,#C1121F,#8B0D15)":"var(--border)",
             border:"none",
             borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px",
             color:selected?"#fff":"var(--text-sub)",
             fontSize:16,fontWeight:700,cursor:selected?"pointer":"default",
             fontFamily:"'Caveat',cursive",
-            boxShadow:selected?"2px 3px 0 rgba(0,0,0,0.18)":"none",
+            boxShadow:selected?"0 4px 14px rgba(193,18,31,0.35)":"none",
             transition:"all 0.2s ease",
             opacity:selected?1:0.5,
           }}
@@ -2087,6 +2117,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
 
       <div style={{marginBottom:8,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
         <span style={{fontSize:10,fontWeight:900,color:rc,background:rc+"18",borderRadius:99,padding:"3px 11px",letterSpacing:"0.03em",border:`1px solid ${rc}30`}}>{order.restaurant}</span>
+        {order.deliveryDate&&<span style={{fontSize:"var(--text-2xs,10px)",color:C.chL,fontWeight:600}}>· {order.deliveryDate}</span>}
         {(s.prod+s.prod_done)>0&&<span style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#FBB040",fontWeight:800,background:"rgba(251,176,64,0.08)",border:"1px solid rgba(251,176,64,0.18)",borderRadius:99,padding:"2px 9px"}}><span className="prod-dot"/>{s.prod+s.prod_done} cooking</span>}
       </div>
 
@@ -2673,10 +2704,10 @@ function AdminOrdersTab({ orders }) {
   
   if(orders.length === 0) return (
     <div className="animate-fade-up glass-card empty-state" style={{borderRadius:18}}>
-      <div className="empty-icon">📋</div>
-      <div style={{fontSize:18,fontWeight:900,color:C.ch,marginBottom:8}}>No orders yet</div>
-      <div style={{fontSize:13,color:C.chL,fontWeight:500,maxWidth:260,lineHeight:1.6,marginBottom:20}}>Tap <strong style={{color:C.ch}}>+ Create Order</strong> in the sidebar to add your first order.</div>
-      <div style={{display:"flex",alignItems:"center",gap:8,fontSize:12,color:C.ol,fontWeight:700,background:C.olBg,border:"1px solid "+C.olBgD,borderRadius:8,padding:"8px 14px"}}><span>←</span> Start from the sidebar</div>
+      <div style={{fontSize:32,marginBottom:14,opacity:0.65}}>📋</div>
+      <div style={{fontSize:"var(--text-lg,20px)",fontWeight:900,color:C.ch,marginBottom:6}}>No orders yet</div>
+      <div style={{fontSize:"var(--text-sm,13px)",color:C.chL,fontWeight:500,maxWidth:260,lineHeight:1.6,marginBottom:20}}>Tap + Create Order in the sidebar to add your first order.</div>
+      <button style={{display:"flex",alignItems:"center",gap:8,fontSize:12,color:"#fff",fontWeight:800,background:"linear-gradient(135deg,#C1121F,#8B0D15)",border:"none",borderRadius:10,padding:"10px 18px",cursor:"pointer",fontFamily:"inherit",boxShadow:"0 4px 14px rgba(193,18,31,0.35)"}}>← Start from the sidebar</button>
     </div>
   );
 
@@ -2688,8 +2719,8 @@ function AdminOrdersTab({ orders }) {
       <div className="bento-stat-grid" style={{display:"grid",gridTemplateColumns:"1.7fr 1fr 1fr",gridTemplateRows:"auto auto",gap:10,marginBottom:22}}>
 
         {/* Hero: Fulfilled (spans 2 rows) */}
-        <div className="bento-hero glass-card animate-fade-up" style={{gridRow:"span 2",padding:"24px 22px",display:"flex",flexDirection:"column",justifyContent:"space-between",minHeight:148}}>
-          <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.16em",color:"#00D4FF",opacity:0.9}}>Fulfilled</div>
+        <div className="bento-hero glass-card animate-fade-up" style={{gridRow:"span 2",padding:"24px 22px",display:"flex",flexDirection:"column",justifyContent:"space-between",minHeight:148,borderTop:"3px solid var(--color-info,#0EA5E9)"}}>
+          <div style={{fontSize:"var(--text-xs,11px)",fontWeight:900,textTransform:"uppercase",letterSpacing:"var(--ls-label,0.12em)",color:"var(--color-info,#00D4FF)"}}>Fulfilled</div>
           <div>
             <div className="gradient-text-cyan count-pop" style={{fontSize:54,fontWeight:900,letterSpacing:"-0.05em",lineHeight:1}}>{totals.packed+totals.delivered}</div>
             <div style={{fontSize:11,color:C.chL,marginTop:6,fontWeight:600}}>of <strong style={{color:C.chM}}>{totals.total}</strong> total items</div>
@@ -2698,7 +2729,7 @@ function AdminOrdersTab({ orders }) {
             <div style={{height:4,background:th.trackBg,borderRadius:99,overflow:"hidden",marginBottom:5}}>
               <div style={{height:4,width:totals.total?((totals.packed+totals.delivered)/totals.total*100)+"%":"0%",background:"linear-gradient(90deg,#0090B8,#00D4FF)",borderRadius:99,transition:"width 1.2s cubic-bezier(0.16,1,0.3,1)",boxShadow:"0 0 10px rgba(0,212,255,0.45)"}}/>
             </div>
-            <div style={{fontSize:9,color:C.chL,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.10em"}}>
+            <div style={{fontSize:"var(--text-2xs,10px)",color:C.chL,fontWeight:700,textTransform:"uppercase",letterSpacing:"var(--ls-label,0.12em)"}}>
               {totals.total?Math.round(((totals.packed+totals.delivered)/totals.total)*100):0}% complete
             </div>
           </div>
@@ -2707,31 +2738,31 @@ function AdminOrdersTab({ orders }) {
         {/* Issues */}
         {(()=>{const hasIssues=(totals.short+totals.oos)>0; return(
           <div className="bento-hero animate-fade-up" style={{animationDelay:"0.05s",padding:"18px 16px",borderRadius:16,
-            background:hasIssues?"linear-gradient(135deg,rgba(20,8,8,0.28),rgba(14,6,6,0.18))":"rgba(8,10,22,0.25)",
-            backdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",WebkitBackdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",
-            border:"1px solid "+(hasIssues?"rgba(220,38,38,0.22)":C.bdrL)}}>
-            <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.14em",color:hasIssues?C.rd:C.chL,marginBottom:8,opacity:0.85}}>Issues</div>
+            background:"var(--card-bg)",
+            border:"1px solid var(--border-faint)",
+            borderTop:`3px solid ${hasIssues?"var(--color-danger,#C1121F)":"var(--color-info,#0EA5E9)"}`}}>
+            <div style={{fontSize:"var(--text-xs,11px)",fontWeight:900,textTransform:"uppercase",letterSpacing:"var(--ls-label,0.12em)",color:hasIssues?C.rd:C.chL,marginBottom:8}}>Issues</div>
             <div style={{fontSize:38,fontWeight:900,color:hasIssues?C.rd:C.chL,letterSpacing:"-0.04em",lineHeight:1}}>{totals.short+totals.oos}</div>
-            {hasIssues&&<div style={{fontSize:9,color:C.rd,marginTop:7,fontWeight:800,display:"flex",alignItems:"center",gap:4}}><span style={{width:5,height:5,borderRadius:"50%",background:C.rd,animation:"pulseSoft 1.5s infinite",display:"inline-block"}}/> Needs attention</div>}
-            {!hasIssues&&<div style={{fontSize:9,color:C.chL,marginTop:7,fontWeight:600}}>All clear ✓</div>}
+            {hasIssues&&<div style={{fontSize:"var(--text-xs,11px)",color:C.rd,marginTop:7,fontWeight:800,display:"flex",alignItems:"center",gap:4}}><span style={{width:5,height:5,borderRadius:"50%",background:C.rd,animation:"pulseSoft 1.5s infinite",display:"inline-block"}}/> Needs attention</div>}
+            {!hasIssues&&<div style={{fontSize:"var(--text-xs,11px)",color:C.chL,marginTop:7,fontWeight:600}}>All clear ✓</div>}
           </div>
         );})()}
 
         {/* Total Items */}
-        <div className="bento-hero animate-fade-up" style={{animationDelay:"0.08s",padding:"18px 16px",borderRadius:16,background:"rgba(8,10,22,0.25)",backdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",WebkitBackdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",border:"1px solid "+C.bdrL}}>
-          <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.14em",color:C.chL,marginBottom:8,opacity:0.85}}>Total Items</div>
+        <div className="bento-hero animate-fade-up" style={{animationDelay:"0.08s",padding:"18px 16px",borderRadius:16,background:"var(--card-bg)",border:"1px solid var(--border-faint)",borderTop:"3px solid var(--gold,#F5DE8D)"}}>
+          <div style={{fontSize:"var(--text-xs,11px)",fontWeight:900,textTransform:"uppercase",letterSpacing:"var(--ls-label,0.12em)",color:C.chL,marginBottom:8}}>Total Items</div>
           <div style={{fontSize:38,fontWeight:900,color:C.chM,letterSpacing:"-0.04em",lineHeight:1}}>{totals.total}</div>
-          <div style={{fontSize:9,color:C.chXL,marginTop:7,fontWeight:600}}>across all orders</div>
+          <div style={{fontSize:"var(--text-xs,11px)",color:C.chXL,marginTop:7,fontWeight:600}}>across all orders</div>
         </div>
 
         {/* In Production — spans 2 cols */}
         <div className="bento-hero animate-fade-up" style={{animationDelay:"0.12s",gridColumn:"span 2",padding:"18px 20px",borderRadius:16,
-          background:"linear-gradient(135deg,rgba(18,14,6,0.28),rgba(12,10,4,0.18))",
-          backdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",WebkitBackdropFilter:"blur(32px) brightness(1.08) saturate(1.7)",
-          border:"1px solid rgba(232,146,10,0.20)",
+          background:"var(--card-bg)",
+          border:"1px solid var(--border-faint)",
+          borderTop:"3px solid var(--color-warning,#E8920A)",
           display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div>
-            <div style={{fontSize:9,fontWeight:900,textTransform:"uppercase",letterSpacing:"0.14em",color:C.amDk,marginBottom:8,opacity:0.9}}>In Production</div>
+            <div style={{fontSize:"var(--text-xs,11px)",fontWeight:900,textTransform:"uppercase",letterSpacing:"var(--ls-label,0.12em)",color:C.amDk,marginBottom:8}}>In Production</div>
             <div style={{fontSize:38,fontWeight:900,color:C.am,letterSpacing:"-0.04em",lineHeight:1}}>{totals.prod+totals.prod_done}</div>
           </div>
           {totals.prod>0&&(
@@ -3005,22 +3036,22 @@ function BottomNav({ activeTab, onTab, unreadCount }) {
   const C = useTheme();
   const tabs = [
     { id: "dashboard", label: "Home", icon: (active) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
         <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
       </svg>
     )},
     { id: "notifications", label: "Alerts", badge: unreadCount, icon: (active) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
         <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
       </svg>
     )},
     { id: "roles", label: "Roles", icon: (active) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
         <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
       </svg>
     )},
     { id: "profile", label: "Profile", icon: (active) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? C.ol : C.chL} stroke="none">
         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
       </svg>
     )},
@@ -3032,7 +3063,7 @@ function BottomNav({ activeTab, onTab, unreadCount }) {
         return (
           <button key={tab.id} className="bottom-nav-tab" onClick={() => onTab(tab.id)}
             style={{ color: active ? C.ol : C.chL }}>
-            <div style={{ position: "relative" }}>
+            <div style={{ position:"relative", background:active?(C.isDark?"rgba(245,222,141,0.12)":"rgba(193,18,31,0.08)"):"transparent", borderRadius:12, padding:"5px 8px", transition:"background 0.2s" }}>
               {tab.icon(active)}
               {tab.badge > 0 && (
                 <span style={{ position:"absolute", top:-4, right:-4, background:"#D31118", color:"#fff", borderRadius:"50%", width:15, height:15, fontSize:9, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", border:"1.5px solid var(--page-bg)" }}>
@@ -3082,22 +3113,24 @@ function NotificationsTab({ role, userJoinDate }) {
 
   return (
     <div className="custom-scrollbar" style={{ flex:1, overflowY:"auto", padding:"20px 20px 8px", maxWidth:560, margin:"0 auto", width:"100%" }}>
-      <div style={{ fontFamily:"'Caveat',cursive", fontSize:26, fontWeight:700, color:C.ch, marginBottom:16 }}>Notifications</div>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
+        <div style={{ fontSize:"var(--text-lg,20px)", fontWeight:900, color:C.ch, letterSpacing:"-0.02em" }}>Notifications</div>
+        {!loading && notifs.length > 0 && <span className="ds-badge" style={{ color:"var(--gold,#F5DE8D)", background:"rgba(245,222,141,0.12)", border:"1px solid rgba(245,222,141,0.25)" }}>{notifs.length} this week</span>}
+      </div>
       {loading ? (
         <div style={{ padding:"40px 0", textAlign:"center" }}>
           <div className="dot"/><div className="dot"/><div className="dot"/>
         </div>
       ) : notifs.length === 0 ? (
         <div className="empty-state" style={{ paddingTop:60 }}>
-          <div style={{ fontSize:44, marginBottom:12 }}>🔔</div>
-          <div style={{ fontFamily:"'Caveat',cursive", fontSize:22, fontWeight:600, color:C.chL }}>No notifications yet</div>
-          <div style={{ fontSize:12, color:C.chXL, marginTop:6 }}>Notifications from the last 7 days appear here</div>
+          <div style={{ fontSize:32, marginBottom:14, opacity:0.6 }}>🔔</div>
+          <div style={{ fontSize:"var(--text-lg,20px)", fontWeight:900, color:C.chL, marginBottom:6 }}>No notifications yet</div>
+          <div style={{ fontSize:"var(--text-sm,13px)", color:C.chXL }}>Notifications from the last 7 days appear here</div>
         </div>
       ) : notifs.map((n, i) => {
         const roleColor = ROLES[n.targetRoles?.[0]]?.color || C.chM;
         return (
-          <div key={i} style={{ display:"flex", gap:12, padding:"14px 16px", marginBottom:10, background:C.off, border:"1.5px solid "+C.bdrL, borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", boxShadow:C.sh }}>
-            <div style={{ width:10, height:10, borderRadius:"50%", background:roleColor, flexShrink:0, marginTop:5 }}/>
+          <div key={i} style={{ display:"flex", gap:12, padding:"14px 16px", marginBottom:8, background:"var(--card-bg)", border:"1px solid var(--border-faint)", borderLeft:`3px solid ${roleColor}`, borderRadius:12, boxShadow:"var(--card-shadow)" }}>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:14, fontWeight:800, color:C.ch, marginBottom:2 }}>{n.title}</div>
               {n.body ? <div style={{ fontSize:12, color:C.chM, lineHeight:1.5 }}>{n.body}</div> : null}
@@ -3134,18 +3167,31 @@ function ProfileTab({ authUser, userRecord, onSignOut, installPrompt, onInstallD
       {/* Theme toggle */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 16px", background:C.off, border:"1.5px solid "+C.bdrL, borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", marginBottom:12, boxShadow:C.sh }}>
         <div>
-          <div style={{ fontSize:14, fontWeight:700, color:C.ch }}>{isDark ? "🌙 Dark Mode" : "☀️ Light Mode"}</div>
-          <div style={{ fontSize:11, color:C.chL }}>Tap to switch theme</div>
+          <div style={{ fontSize:"var(--text-base,15px)", fontWeight:700, color:C.ch }}>{isDark ? "🌙 Dark Mode" : "☀️ Light Mode"}</div>
+          <div style={{ fontSize:"var(--text-xs,11px)", color:C.chL }}>Tap to switch theme</div>
         </div>
-        <button onClick={toggleTheme}
-          style={{ padding:"9px 18px", borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px", border:"1.5px solid "+C.ol, background:C.olBg, color:C.ol, fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit", minHeight:44, boxShadow:"1px 2px 0 rgba(0,0,0,0.07)" }}>
-          {isDark ? "Light" : "Dark"}
-        </button>
+        <div onClick={toggleTheme} className="toggle-switch" style={{ background:isDark?"var(--accent)":"var(--gold,#F5DE8D)", flexShrink:0 }}>
+          <div className="toggle-switch__dot" style={{ left:isDark?26:3 }}/>
+        </div>
       </div>
+
+      {/* Stats row */}
+      {userRecord && (
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:12 }}>
+          <div style={{ background:"var(--sub-bg)", border:"1px solid var(--border-faint)", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
+            <div style={{ fontSize:"var(--text-xs,11px)", color:C.chL, textTransform:"uppercase", letterSpacing:"var(--ls-label,0.12em)", marginBottom:4 }}>Member since</div>
+            <div style={{ fontSize:"var(--text-md,17px)", fontWeight:800, color:C.ch }}>{userRecord.approvedAt ? new Date(userRecord.approvedAt).toLocaleDateString("en-GB",{month:"short",year:"numeric"}) : "—"}</div>
+          </div>
+          <div style={{ background:"var(--sub-bg)", border:"1px solid var(--border-faint)", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
+            <div style={{ fontSize:"var(--text-xs,11px)", color:C.chL, textTransform:"uppercase", letterSpacing:"var(--ls-label,0.12em)", marginBottom:4 }}>Roles</div>
+            <div style={{ fontSize:"var(--text-md,17px)", fontWeight:800, color:C.ch }}>{userRecord.roles?.length ?? 1}</div>
+          </div>
+        </div>
+      )}
 
       {/* Sign out */}
       <button onClick={onSignOut}
-        style={{ width:"100%", padding:"13px", background:"transparent", border:"1.5px solid "+C.bdr, borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", color:C.chM, fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"inherit", marginBottom:12, minHeight:48, boxShadow:C.sh }}>
+        style={{ width:"100%", padding:"13px", background:"transparent", border:"1.5px solid var(--color-danger,#C1121F)", borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", color:"var(--color-danger,#C1121F)", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"inherit", marginBottom:12, minHeight:48 }}>
         Sign Out
       </button>
 
