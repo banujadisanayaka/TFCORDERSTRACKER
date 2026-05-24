@@ -325,9 +325,9 @@ const GLOBAL_STYLES = `
   .batch-complete-btn:active { transform:translateY(1px); }
 
   /* ── Admin day-tile ── */
-  .day-tile { background:linear-gradient(160deg,#0A0C18,#070912); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:16px; margin-bottom:10px; transition:border-color 0.2s; }
+  .day-tile { background:var(--card-bg); border:1px solid var(--border-faint); border-radius:14px; padding:16px; margin-bottom:10px; transition:border-color 0.2s; }
   .day-tile-active { border-color:rgba(112,1,67,0.25) !important; }
-  .day-tile-empty  { background:transparent; border:2px dashed rgba(255,255,255,0.06) !important; border-radius:12px; padding:14px; text-align:center; margin-bottom:10px; }
+  .day-tile-empty  { background:transparent; border:2px dashed rgba(194,216,196,0.12) !important; border-radius:12px; padding:14px; text-align:center; margin-bottom:10px; }
 
   /* ── RecipeCard terminal ── */
   .recipe-terminal { background:#1A1A1A; border:1px solid rgba(112,1,67,0.2); border-radius:12px; overflow:hidden; }
@@ -1902,7 +1902,7 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
         </motion.div>
 
         {/* Role pills */}
-        <div style={{display:"flex",flexWrap:"wrap",gap:10,marginBottom:24}}>
+        <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginBottom:24}}>
           {keys.map((k, i) => {
             const r = ROLES[k]; if (!r) return null;
             const isActive = selected === k;
@@ -1911,12 +1911,11 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
                 key={k}
                 onClick={() => setSelected(k)}
                 initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{duration:0.4,delay:i*0.07,ease:[0.16,1,0.3,1]}}
-                whileTap={{scale:0.95}}
+                whileTap={{scale:0.97}}
                 style={{
                   borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px",
-                  padding:"11px 22px",
                   background:isActive?"var(--accent)":"transparent",
-                  border:`1.5px solid ${isActive?"var(--accent)":"rgba(245,222,141,0.30)"}`,
+                  border:`1.5px solid ${isActive?"var(--accent)":"rgba(194,216,196,0.28)"}`,
                   color:isActive?"#fff":"var(--text)",
                   fontWeight:700,fontSize:13,cursor:"pointer",
                   boxShadow:isActive?"0 0 0 3px rgba(112,1,67,0.20), 2px 3px 0 rgba(0,0,0,0.20)":"1px 2px 0 rgba(0,0,0,0.08)",
@@ -1926,6 +1925,7 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
                   minHeight:52,
                   padding:"12px 18px",
                   textAlign:"left",
+                  width:"100%",
                 }}
               >
                 <div style={{fontSize:13,fontWeight:800,lineHeight:1.2}}>{r.icon} {r.label}</div>
@@ -2860,8 +2860,23 @@ function AdminOrdersTab({ orders }) {
 function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShiftWeek, onCreateDP, onUpdateDP, onDeleteDP, onActivateWeek }) {
   const th=useTheme();
   const [editingDay, setEditingDay] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(() => getLocalYMD());
   const [confirmDeleteDpId, setConfirmDeleteDpId] = useState(null);
   const [showActivateConfirm, setShowActivateConfirm] = useState(false);
+
+  // Auto-select today when week changes
+  React.useEffect(() => {
+    const today = getLocalYMD();
+    const todayInWeek = weekDays.find(d => d.date === today);
+    setSelectedDate(todayInWeek ? today : weekDays[0]?.date || today);
+  }, [selectedWeek]);
+
+  // Always read displayDay fresh from weekDays props (so snapshot updates propagate)
+  const displayDay = weekDays.find(d => d.date === selectedDate) || weekDays[0];
+  const isDayActive = displayDay?.dp?.status === "active";
+  const isTodaySelected = displayDay?.date === getLocalYMD();
+  const doneCnt = displayDay?.dp?.items?.filter(i => i.status === "prod_done").length ?? 0;
+  const totalCnt = displayDay?.dp?.items?.length ?? 0;
 
   return (
     <div className="animate-fade-in">
@@ -2871,101 +2886,124 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
           onSave={(saveKey, items, notes) => {
             if (editingDay.dp) onUpdateDP(saveKey, items, notes, selectedWeek);
             else onCreateDP(saveKey, items, notes);
+            setSelectedDate(editingDay.date);
           }}
           onClose={() => setEditingDay(null)}
         />
       )}
-      
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
-        <div style={{fontSize:11,fontWeight:900,color:C.chL,textTransform:"uppercase",letterSpacing:"1px"}}>Week of {new Date(selectedWeek).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}</div>
-        <div style={{display:"flex",gap:6}}>
-          <button onClick={() => onShiftWeek(-1)} className="hover-lift" style={{padding:"6px 12px",background:C.off,border:"1px solid "+C.bdrL,borderRadius:7,fontSize:11,color:C.chL,fontWeight:700,cursor:"pointer"}}>◀ Prev</button>
-          <button onClick={() => onShiftWeek(1)} className="hover-lift" style={{padding:"6px 12px",background:C.olBg,border:"1px solid "+C.olBgD,borderRadius:7,fontSize:11,color:C.ol,fontWeight:800,cursor:"pointer"}}>Next ▶</button>
+
+      {/* Week navigation */}
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+        <button onClick={() => onShiftWeek(-1)} style={{padding:"7px 13px",background:C.off,border:"1px solid "+C.bdrL,borderRadius:8,fontSize:12,color:C.chL,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>◀</button>
+        <div style={{fontSize:11,fontWeight:900,color:C.chL,textTransform:"uppercase",letterSpacing:"0.08em",textAlign:"center"}}>
+          {new Date(weekDays[0]?.date+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"})} – {new Date(weekDays[6]?.date+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}
         </div>
+        <button onClick={() => onShiftWeek(1)} style={{padding:"7px 13px",background:C.olBg,border:"1px solid "+C.olBgD,borderRadius:8,fontSize:12,color:C.ol,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>▶</button>
       </div>
 
-      {weekDays.map(day => {
-        const isToday = day.date === getLocalYMD();
-        const isActive = day.dp?.status === "active";
-
-        if (!day.dp) {
+      {/* 7-day mini calendar strip */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3,marginBottom:16,padding:"10px",background:th.subBg,borderRadius:14,border:"1px solid "+th.divider}}>
+        {weekDays.map(day => {
+          const isToday = day.date === getLocalYMD();
+          const isSelected = selectedDate === day.date;
+          const hasPlan = !!day.dp;
+          const isLive = day.dp?.status === "active";
+          const dDone = day.dp?.items?.filter(i=>i.status==="prod_done").length ?? 0;
+          const dTotal = day.dp?.items?.length ?? 0;
+          const allDone = hasPlan && dTotal > 0 && dDone === dTotal;
+          let dotColor = hasPlan ? (allDone ? "#4ADE80" : isLive ? C.ol : C.am) : "transparent";
           return (
-            <div key={day.date} className="day-tile-empty">
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                <div>
-                  <span style={{fontSize:11,fontWeight:900,color:isToday?C.ol:C.chL,textTransform:"uppercase",letterSpacing:"0.1em"}}>{day.dayOfWeek}</span>
-                  <span style={{fontSize:11,color:C.chL,fontWeight:600,marginLeft:8}}>{day.displayDate}</span>
-                  {isToday&&<span style={{marginLeft:8,fontSize:9,background:C.olBg,color:C.ol,border:"1px solid "+C.olBgD,borderRadius:20,padding:"2px 7px",fontWeight:900}}>TODAY</span>}
-                </div>
-                <button onClick={()=>setEditingDay(day)} style={{background:"rgba(112,1,67,0.09)",border:"1px solid rgba(112,1,67,0.25)",borderRadius:8,padding:"5px 12px",fontSize:11,fontWeight:800,color:C.ol,cursor:"pointer",fontFamily:"inherit"}}>+ Plan</button>
-              </div>
-            </div>
+            <button key={day.date} onClick={() => setSelectedDate(day.date)}
+              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 2px",borderRadius:10,border:isSelected?`2px solid ${C.ol}`:isToday?`1.5px solid rgba(112,1,67,0.30)`:"1.5px solid transparent",background:isSelected?C.olBg:isToday?"rgba(112,1,67,0.04)":"transparent",cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>
+              <span style={{fontSize:9,fontWeight:900,color:isToday?C.ol:C.chL,textTransform:"uppercase",letterSpacing:"0.04em"}}>{day.dayOfWeek.slice(0,3)}</span>
+              <span style={{fontSize:15,fontWeight:isToday?900:700,color:isSelected?C.ol:isToday?C.ch:C.chM,lineHeight:1}}>{new Date(day.date+"T00:00:00").getDate()}</span>
+              <span style={{width:6,height:6,borderRadius:"50%",background:dotColor,opacity:hasPlan?1:0.3,border:hasPlan&&!allDone?"1px solid "+dotColor:"none"}}/>
+            </button>
           );
-        }
+        })}
+      </div>
 
-        const doneCnt = day.dp.items.filter(i=>i.status==="prod_done").length;
-        const totalCnt = day.dp.items.length;
-
-        return (
-          <div key={day.date} className={`day-tile ${isActive?"day-tile-active":""}`} style={{border:isToday?"1px solid rgba(112,1,67,0.3)":""}}>
-            {/* Day header */}
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${th.divider}`}}>
-              <div style={{display:"flex",alignItems:"center",gap:8}}>
-                <div>
-                  <div style={{fontSize:11,fontWeight:900,color:isToday?C.ol:C.ch,textTransform:"uppercase",letterSpacing:"0.1em"}}>{day.dayOfWeek} · {day.displayDate}</div>
-                </div>
-                <span style={{fontSize:9,fontWeight:900,padding:"2px 7px",borderRadius:20,
-                  background:isActive?"rgba(22,163,74,0.12)":"rgba(136,150,179,0.1)",
-                  color:isActive?"#4ADE80":"#8896B3",
-                  border:"1px solid "+(isActive?"rgba(22,163,74,0.3)":"rgba(136,150,179,0.2)")
-                }}>{isActive?"● LIVE":"○ DRAFT"}</span>
-                {isToday&&<span style={{fontSize:9,background:C.olBg,color:C.ol,border:"1px solid "+C.olBgD,borderRadius:20,padding:"2px 7px",fontWeight:900}}>TODAY</span>}
-              </div>
-              <span style={{fontSize:11,fontWeight:900,color:doneCnt===totalCnt&&totalCnt>0?"#4ADE80":C.chM}}>{doneCnt}/{totalCnt}</span>
+      {/* Selected day detail */}
+      {displayDay && (
+        <div className="animate-fade-in" key={displayDay.date}>
+          {!displayDay.dp ? (
+            <div style={{background:th.subBg,border:"2px dashed rgba(194,216,196,0.18)",borderRadius:16,padding:"28px 20px",textAlign:"center"}}>
+              <div style={{fontSize:18,marginBottom:6}}>📋</div>
+              <div style={{fontSize:14,fontWeight:900,color:C.ch,marginBottom:4}}>{displayDay.dayOfWeek}</div>
+              <div style={{fontSize:11,color:C.chL,marginBottom:18}}>{displayDay.displayDate} · No production planned</div>
+              <button onClick={()=>setEditingDay(displayDay)} style={{padding:"11px 28px",background:`linear-gradient(135deg,${C.ol},${C.olDk})`,border:"none",borderRadius:12,fontSize:13,fontWeight:900,color:"#fff",cursor:"pointer",fontFamily:"inherit",boxShadow:`0 4px 16px rgba(112,1,67,0.35)`}}>+ Create Plan</button>
             </div>
-
-            {/* Items */}
-            {day.dp.items.map(item=>(
-              <div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"8px 0",borderBottom:`1px solid ${th.divider}`,fontSize:11}}>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontWeight:800,color:item.status==="prod_done"?"#4ADE80":C.ch,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",marginBottom:2,textDecoration:item.status==="prod_done"?"line-through":"none",opacity:item.status==="prod_done"?0.7:1}}>
-                    {item.product}
-                    {item.isExtra&&<span style={{background:"rgba(184,111,6,0.15)",color:C.am,fontSize:9,fontWeight:900,padding:"1px 5px",borderRadius:4}}>EXTRA</span>}
+          ) : (
+            <div style={{background:"var(--card-bg)",border:`1px solid ${isDayActive?"rgba(112,1,67,0.28)":th.divider}`,borderRadius:16,overflow:"hidden",boxShadow:isDayActive?"0 0 0 1px rgba(112,1,67,0.10)":"none"}}>
+              {/* Day header */}
+              <div style={{padding:"14px 16px",borderBottom:`1px solid ${th.divider}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                <div>
+                  <div style={{fontSize:13,fontWeight:900,color:isTodaySelected?C.ol:C.ch,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:4}}>{displayDay.dayOfWeek} · {displayDay.displayDate}</div>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}>
+                    <span style={{fontSize:9,fontWeight:900,padding:"2px 7px",borderRadius:20,background:isDayActive?"rgba(22,163,74,0.12)":"rgba(136,150,179,0.1)",color:isDayActive?"#4ADE80":"#8896B3",border:"1px solid "+(isDayActive?"rgba(22,163,74,0.3)":"rgba(136,150,179,0.2)")}}>{isDayActive?"● LIVE":"○ DRAFT"}</span>
+                    {isTodaySelected&&<span style={{fontSize:9,background:C.olBg,color:C.ol,border:"1px solid "+C.olBgD,borderRadius:20,padding:"2px 7px",fontWeight:900}}>TODAY</span>}
                   </div>
-                  {item.recipeName&&<span style={{fontSize:9,color:C.ol,fontWeight:700}}>📖 recipe</span>}
-                  {item.notes&&<div style={{fontSize:10,color:C.chL,fontStyle:"italic",marginTop:1}}>📝 {item.notes}</div>}
                 </div>
-                <div style={{textAlign:"right",flexShrink:0,marginLeft:12}}>
-                  <div style={{fontFamily:"'JetBrains Mono',monospace",fontWeight:700,color:C.am,fontSize:10}}>{item.kgQty}kg{item.packetQty>0?` · ${item.packetQty}pkts`:""}</div>
-                  {item.status==="prod_done"&&<div style={{fontFamily:"'JetBrains Mono',monospace",fontWeight:700,color:"#4ADE80",fontSize:10}}>{item.actualKgQty??item.kgQty}kg ✓</div>}
+                <div style={{textAlign:"right"}}>
+                  <div style={{fontSize:24,fontWeight:900,lineHeight:1,color:doneCnt===totalCnt&&totalCnt>0?"#4ADE80":C.ch}}>{doneCnt}/{totalCnt}</div>
+                  <div style={{fontSize:9,color:C.chL,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em"}}>Done</div>
                 </div>
               </div>
-            ))}
+              {/* Progress bar */}
+              {totalCnt > 0 && <div style={{height:3,background:th.trackBg}}><div style={{height:"100%",width:`${(doneCnt/totalCnt)*100}%`,background:doneCnt===totalCnt?"#4ADE80":C.ol,transition:"width 0.5s ease",borderRadius:2}}/></div>}
 
-            {/* Actions */}
-            {confirmDeleteDpId === day.dp.id ? (
-              <div style={{marginTop:10,paddingTop:10,display:"flex",alignItems:"center",gap:8,background:"rgba(112,1,67,0.07)",border:"1px solid rgba(112,1,67,0.2)",borderRadius:8,padding:"10px 12px"}}>
-                <span style={{flex:1,fontSize:11,color:"var(--text-sub)",fontWeight:700}}>Delete {day.dayOfWeek}'s plan?</span>
-                <button onClick={()=>{onDeleteDP(day.dp.id);setConfirmDeleteDpId(null);}} style={{padding:"7px 12px",background:"rgba(220,38,38,0.12)",border:"1px solid rgba(220,38,38,0.35)",borderRadius:7,fontSize:11,fontWeight:800,color:C.rd,cursor:"pointer",fontFamily:"inherit",minHeight:36}}>Delete</button>
-                <button onClick={()=>setConfirmDeleteDpId(null)} style={{padding:"7px 12px",background:"transparent",border:"1px solid var(--border-faint)",borderRadius:7,fontSize:11,fontWeight:700,color:"var(--text-sub)",cursor:"pointer",fontFamily:"inherit",minHeight:36}}>Cancel</button>
+              {/* Items */}
+              <div style={{padding:"10px 16px"}}>
+                {displayDay.dp.items.map((item,idx) => {
+                  const done = item.status === "prod_done";
+                  return (
+                    <div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",borderBottom:idx<displayDay.dp.items.length-1?`1px solid ${th.divider}`:"none"}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,flex:1,minWidth:0}}>
+                        <div style={{width:8,height:8,borderRadius:"50%",flexShrink:0,background:done?"#4ADE80":isDayActive?C.ol:C.am,boxShadow:done?"0 0 6px rgba(74,222,128,0.5)":isDayActive?`0 0 6px rgba(112,1,67,0.3)`:"none"}}/>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{fontSize:12,fontWeight:800,color:done?C.chL:C.ch,textDecoration:done?"line-through":"none",opacity:done?0.65:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{item.product}</div>
+                          <div style={{display:"flex",gap:4,marginTop:2,flexWrap:"wrap"}}>
+                            {item.isExtra&&<span style={{fontSize:9,background:"rgba(184,111,6,0.15)",color:C.am,fontWeight:900,padding:"1px 5px",borderRadius:4}}>+EXTRA</span>}
+                            {item.recipeName&&<span style={{fontSize:9,color:C.ol,fontWeight:700}}>📖 recipe</span>}
+                            {item.notes&&<span style={{fontSize:9,color:C.chL,fontStyle:"italic"}}>📝 {item.notes}</span>}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{textAlign:"right",flexShrink:0,marginLeft:10,fontFamily:"'JetBrains Mono',monospace",fontSize:10,fontWeight:700}}>
+                        {done
+                          ? <span style={{color:"#4ADE80"}}>{item.actualKgQty??item.kgQty}kg ✓</span>
+                          : <span style={{color:C.am}}>{item.kgQty}kg{item.packetQty>0?` · ${item.packetQty}p`:""}</span>}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            ) : (
-              <div style={{marginTop:10,paddingTop:10,display:"flex",gap:8}}>
-                <button onClick={()=>setEditingDay(day)} style={{flex:1,padding:"8px",background:"rgba(232,146,10,0.08)",border:"1px solid rgba(232,146,10,0.2)",borderRadius:8,fontSize:11,fontWeight:800,color:C.amDk,cursor:"pointer",fontFamily:"inherit"}}>✎ Edit</button>
-                <button onClick={()=>setConfirmDeleteDpId(day.dp.id)} style={{flex:1,padding:"8px",background:"rgba(220,38,38,0.07)",border:"1px solid rgba(220,38,38,0.18)",borderRadius:8,fontSize:11,fontWeight:800,color:C.rd,cursor:"pointer",fontFamily:"inherit"}}>🗑 Remove</button>
-              </div>
-            )}
-          </div>
-        );
-      })}
+
+              {/* Actions */}
+              {confirmDeleteDpId === displayDay.dp.id ? (
+                <div style={{margin:"0 16px 16px",display:"flex",alignItems:"center",gap:8,background:"rgba(112,1,67,0.07)",border:"1px solid rgba(112,1,67,0.2)",borderRadius:8,padding:"10px 12px"}}>
+                  <span style={{flex:1,fontSize:11,color:"var(--text-sub)",fontWeight:700}}>Delete {displayDay.dayOfWeek}'s plan?</span>
+                  <button onClick={()=>{onDeleteDP(displayDay.dp.id);setConfirmDeleteDpId(null);}} style={{padding:"7px 12px",background:"rgba(220,38,38,0.12)",border:"1px solid rgba(220,38,38,0.35)",borderRadius:7,fontSize:11,fontWeight:800,color:C.rd,cursor:"pointer",fontFamily:"inherit",minHeight:36}}>Delete</button>
+                  <button onClick={()=>setConfirmDeleteDpId(null)} style={{padding:"7px 12px",background:"transparent",border:"1px solid var(--border-faint)",borderRadius:7,fontSize:11,fontWeight:700,color:"var(--text-sub)",cursor:"pointer",fontFamily:"inherit",minHeight:36}}>Cancel</button>
+                </div>
+              ) : (
+                <div style={{padding:"10px 16px 16px",display:"flex",gap:8}}>
+                  <button onClick={()=>setEditingDay(displayDay)} style={{flex:1,padding:"9px",background:"rgba(232,146,10,0.08)",border:"1px solid rgba(232,146,10,0.2)",borderRadius:8,fontSize:11,fontWeight:800,color:C.amDk,cursor:"pointer",fontFamily:"inherit"}}>✎ Edit Plan</button>
+                  <button onClick={()=>setConfirmDeleteDpId(displayDay.dp.id)} style={{flex:1,padding:"9px",background:"rgba(220,38,38,0.07)",border:"1px solid rgba(220,38,38,0.18)",borderRadius:8,fontSize:11,fontWeight:800,color:C.rd,cursor:"pointer",fontFamily:"inherit"}}>🗑 Remove</button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {weekDPs.length > 0 && (
         <div style={{display:"flex",gap:10,marginTop:16,paddingTop:16,borderTop:"1px solid "+C.bdrL}}>
-          <div style={{flex:1,padding:12,background:C.off,border:"1px solid "+C.bdrL,borderRadius:9,fontSize:12,fontWeight:800,color:hasDrafts ? C.chL : "#097353",textAlign:"center"}}>
-            {hasDrafts ? "You have unpublished drafts" : "✓ All plans active for production"}
+          <div style={{flex:1,padding:12,background:C.off,border:"1px solid "+C.bdrL,borderRadius:9,fontSize:12,fontWeight:800,color:hasDrafts?C.chL:"#097353",textAlign:"center"}}>
+            {hasDrafts ? "⚠ Unpublished drafts" : "✓ All plans live"}
           </div>
           {hasDrafts && (
-            <button onClick={() => setShowActivateConfirm(true)} className="hover-lift" style={{flex:2,padding:12,background:"linear-gradient(135deg,#700143,#4D002E)",border:"none",borderRadius:9,fontSize:12,fontWeight:900,color:"#fff",cursor:"pointer",boxShadow:"0 4px 16px rgba(112,1,67,.4)"}}>⚡ Activate Drafts → Send to Kitchen</button>
+            <button onClick={() => setShowActivateConfirm(true)} style={{flex:2,padding:12,background:`linear-gradient(135deg,${C.ol},${C.olDk})`,border:"none",borderRadius:9,fontSize:12,fontWeight:900,color:"#fff",cursor:"pointer",boxShadow:"0 4px 16px rgba(112,1,67,.4)",fontFamily:"inherit"}}>⚡ Activate → Send to Kitchen</button>
           )}
         </div>
       )}
@@ -3002,7 +3040,7 @@ function AdminDashboard({ orders, dailyProductions = [], onCreateDP, onUpdateDP,
   const weekDPs = dailyProductions.filter(dp => dp.weekOf === selectedWeek);
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(selectedWeek + "T00:00:00");
-    d.setDate(d.getDate() + i + 1); 
+    d.setDate(d.getDate() + i);
     const dateStr = getLocalYMD(d);
     const existing = weekDPs.find(dp => dp.date === dateStr);
     return { date: dateStr, dayOfWeek: d.toLocaleDateString("en-GB", { weekday: "long" }), displayDate: d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }), dp: existing || null };
