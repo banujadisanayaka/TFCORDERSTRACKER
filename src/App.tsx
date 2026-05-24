@@ -31,15 +31,15 @@ const GLOBAL_STYLES = `
 
   /* ── CSS Custom Properties (theme vars) ── */
   :root, [data-theme="dark"] {
-    --page-bg: #222222; --card-bg: #2A2828; --card-shadow: 2px 3px 0 rgba(0,0,0,0.50);
-    --modal-bg: #222222; --border: rgba(194,216,196,0.24); --text: #F8EDAD;
-    --text-sub: #A09080; --accent: #700143; --input-bg: #1E1E1E;
+    --page-bg: #222222; --card-bg: #2C2C2C; --card-shadow: 1px 2px 0 rgba(0,0,0,0.40);
+    --modal-bg: #323232; --border: rgba(255,255,255,0.10); --text: #F8EDAD;
+    --text-sub: #A1A1AA; --accent: #700143; --input-bg: #1E1E1E;
     --gold: #C2D8C4; --burgundy: #4A0030;
     --input-focus-border: #C2D8C4; --input-focus-shadow: rgba(194,216,196,0.15);
     --input-focus-bg: #1A1A1A; --sidebar-bg: #1E1E1E;
     --header-bg: rgba(34,34,34,0.96); --paper-dot: rgba(194,216,196,0.06);
-    --border-faint: rgba(194,216,196,0.16);
-    --sub-bg: rgba(194,216,196,0.05);
+    --border-faint: rgba(255,255,255,0.08);
+    --sub-bg: rgba(255,255,255,0.04);
   }
   [data-theme="light"] {
     --page-bg: #F8F9FA; --card-bg: #FFFFFF; --card-shadow: 2px 3px 0 rgba(0,0,0,0.08);
@@ -63,7 +63,7 @@ const GLOBAL_STYLES = `
     --radius-sm:8px; --radius-md:12px;
   }
   :root, [data-theme="dark"] {
-    --color-success: #16A34A; --color-warning: #E8920A; --color-danger: #C1305A; --color-info: #0EA5E9;
+    --color-success: #4ADE80; --color-warning: #FBBF24; --color-danger: #F87171; --color-info: #60A5FA;
     --accent-glow: rgba(112,1,67,0.30); --gold-glow: rgba(194,216,196,0.18);
   }
 
@@ -648,17 +648,17 @@ function getLocalYMD(d = new Date()) {
    THEME SYSTEM — dark / light palettes + context
 ═══════════════════════════════════════════════════════════════ */
 const DC={ // dark palette — charcoal/plum/sage
-  w: "#222222", off: "#2A2828", beige: "#2A2828", beigeD: "#343030",
-  ch: "#F8EDAD", chM: "#D4C498", chL: "#A09080", chXL: "#504840",
-  bdr: "#3A2A34", bdrL: "#2E2828",
+  w: "#222222", off: "#2C2C2C", beige: "#2C2C2C", beigeD: "#383838",
+  ch: "#F8EDAD", chM: "#D4C498", chL: "#A1A1AA", chXL: "#52525B",
+  bdr: "#3A2A34", bdrL: "#333333",
   gold: "#C2D8C4", goldBg: "rgba(194,216,196,0.12)", goldBgD: "rgba(194,216,196,0.22)",
   bur: "#4A0030", burBg: "rgba(74,0,48,0.22)",
   ol: "#700143", olDk: "#4D002E", olBg: "rgba(112,1,67,0.15)", olBgD: "rgba(112,1,67,0.28)",
-  am: "#E8920A", amDk: "#B86F06", amBg: "rgba(232,146,10,0.13)", amBgD: "rgba(232,146,10,0.24)",
-  gn: "#16A34A", gnBg: "rgba(22,163,74,0.13)",
-  rd: "#C1305A", rdBg: "rgba(193,48,90,0.14)",
+  am: "#FBBF24", amDk: "#F59E0B", amBg: "rgba(251,191,36,0.12)", amBgD: "rgba(251,191,36,0.22)",
+  gn: "#4ADE80", gnBg: "rgba(74,222,128,0.12)",
+  rd: "#F87171", rdBg: "rgba(248,113,113,0.12)",
   cy: "#C2D8C4", cyBg: "rgba(194,216,196,0.10)", cyBgD: "rgba(194,216,196,0.20)",
-  sh: "2px 3px 0 rgba(0,0,0,0.50)", shM: "3px 5px 0 rgba(0,0,0,0.65)"
+  sh: "1px 2px 0 rgba(0,0,0,0.40)", shM: "2px 4px 0 rgba(0,0,0,0.55)"
 };
 const LC={ // light palette — neutral/plum/blue
   w: "#F8F9FA", off: "#F4F4F5", beige: "#F4F4F5", beigeD: "#E4E4E7",
@@ -680,13 +680,13 @@ function makeThemeObj(palette, isDark) {
     ...palette,
     divider:  isDark ? "rgba(255,255,255,0.08)"     : "rgba(0,0,0,0.09)",
     subBg:    isDark ? "rgba(194,216,196,0.05)"     : "rgba(0,0,0,0.03)",
-    cardBg:   isDark ? "#2A2828"                    : "#FFFFFF",
+    cardBg:   isDark ? "#2C2C2C"                    : "#FFFFFF",
     chipBg:   isDark ? "rgba(255,255,255,0.06)"     : "rgba(0,0,0,0.05)",
     footerBg: isDark ? "rgba(34,34,34,0.92)"        : "rgba(244,244,245,0.95)",
     headerBg: isDark ? "rgba(34,34,34,0.96)"        : "rgba(255,255,255,0.97)",
     panelBg:  isDark ? "#1E1E1E"                    : "#F4F4F5",
     editBg:   isDark ? "#1A1A1A"                    : "#FFFFFF",
-    editBdr:  isDark ? "#2E2828"                    : "#E4E4E7",
+    editBdr:  isDark ? "#333333"                    : "#E4E4E7",
     closeBg:  isDark ? "rgba(255,255,255,0.05)"     : "rgba(0,0,0,0.04)",
     closeBdr: isDark ? "rgba(255,255,255,0.09)"     : "rgba(0,0,0,0.09)",
     trackBg:  isDark ? "rgba(255,255,255,0.07)"     : "rgba(0,0,0,0.08)",
@@ -710,11 +710,11 @@ const ROLES={
 
 const SC = {
   pending: { label: "Pending", c: "#A0B8A2", bg: "rgba(162,184,162,0.10)", bdr: "rgba(162,184,162,0.22)", step: 1 },
-  production: { label: "Cooking", c: "#FBB040", bg: "rgba(232,146,10,0.12)", bdr: "rgba(232,146,10,0.30)", step: 2 },
+  production: { label: "Cooking", c: "#FBBF24", bg: "rgba(251,191,36,0.12)", bdr: "rgba(251,191,36,0.30)", step: 2 },
   prod_done: { label: "Ready to Pack", c: "#4ADE80", bg: "rgba(22,163,74,0.12)", bdr: "rgba(22,163,74,0.30)", step: 3 },
   packed: { label: "Packed ✓", c: "#D46090", bg: "rgba(112,1,67,0.12)", bdr: "rgba(112,1,67,0.28)", step: 4 },
   delivered: { label: "Delivered 🚀", c: "#F8EDAD", bg: "rgba(248,237,173,0.07)", bdr: "rgba(248,237,173,0.14)", step: 5 },
-  short: { label: "Short ⚠", c: "#FBB040", bg: "rgba(232,146,10,0.12)", bdr: "rgba(232,146,10,0.30)", step: -1 },
+  short: { label: "Short ⚠", c: "#FBBF24", bg: "rgba(251,191,36,0.12)", bdr: "rgba(251,191,36,0.30)", step: -1 },
   oos: { label: "Out of Stock", c: "#E8A0B4", bg: "rgba(193,48,90,0.12)", bdr: "rgba(193,48,90,0.28)", step: -1 },
 };
 
