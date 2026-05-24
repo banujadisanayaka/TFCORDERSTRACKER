@@ -4,11 +4,16 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover">
-	<meta name="theme-color" content="#D31118">
+	<meta name="theme-color" content="#0A0B0E">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 	<meta name="apple-mobile-web-app-title" content="TFC Ops Hub">
 	<meta name="description" content="Track and manage TFC food production orders in real time">
+	<meta property="og:title" content="TFC Ops Hub">
+	<meta property="og:description" content="Track and manage TFC food production orders in real time">
+	<meta property="og:type" content="website">
+	<meta property="og:image" content="/icon-512.png">
+	<meta name="twitter:card" content="summary">
 	<link rel="manifest" href="%PUBLIC_URL%/manifest.json">
 	<link rel="shortcut icon" href="%PUBLIC_URL%/icon-192.png">
 	<link rel="apple-touch-icon" href="%PUBLIC_URL%/icon-192.png">
@@ -26,25 +31,25 @@
 	<!-- Inline shell so the screen is dark immediately (no white flash) while the JS bundle loads -->
 	<style>
 		*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-		html,body{height:100%;background:#04060E;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+		html,body{height:100%;background:#0A0B0E;color:#F4F4F5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
 		#root{min-height:100vh}
 		#app-shell{
 			position:fixed;inset:0;display:flex;flex-direction:column;
-			align-items:center;justify-content:center;background:#04060E;
+			align-items:center;justify-content:center;background:#0A0B0E;
 			z-index:9999;transition:opacity 0.3s ease;
 		}
 		#app-shell.hidden{opacity:0;pointer-events:none}
 		.shell-logo{
 			width:72px;height:72px;border-radius:50%;
-			background:#D31118;display:flex;align-items:center;justify-content:center;
-			margin-bottom:20px;box-shadow:0 0 32px rgba(211,17,24,0.5);
+			background:#BE123C;display:flex;align-items:center;justify-content:center;
+			margin-bottom:20px;box-shadow:0 0 32px rgba(190,18,60,0.5);
 		}
-		.shell-logo svg{width:36px;height:36px;fill:#fff}
-		.shell-title{font-size:1.1rem;font-weight:600;color:#fff;letter-spacing:0.05em;margin-bottom:6px}
+		.shell-logo svg{width:36px;height:36px;fill:#F4F4F5}
+		.shell-title{font-size:1.1rem;font-weight:600;color:#F4F4F5;letter-spacing:0.05em;margin-bottom:6px}
 		.shell-sub{font-size:0.78rem;color:rgba(255,255,255,0.45);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:28px}
-		.shell-bar{width:160px;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden}
+		.shell-bar{width:160px;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
 		.shell-bar::after{
-			content:'';display:block;height:100%;width:40%;background:#D31118;border-radius:2px;
+			content:'';display:block;height:100%;width:40%;background:#BE123C;border-radius:2px;
 			animation:shell-slide 1.4s ease-in-out infinite;
 		}
 		@keyframes shell-slide{

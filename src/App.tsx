@@ -31,15 +31,15 @@ const GLOBAL_STYLES = `
 
   /* ── CSS Custom Properties (theme vars) ── */
   :root, [data-theme="dark"] {
-    --page-bg: #111118; --card-bg: #1C1C24; --card-shadow: 1px 2px 0 rgba(0,0,0,0.50);
-    --modal-bg: #252530; --border: rgba(255,255,255,0.10); --text: #EEEDF8;
-    --text-sub: #7E7E9A; --accent: #C41969; --input-bg: #141420;
-    --gold: #06B6D4; --burgundy: #6D1040;
+    --page-bg: #0A0B0E; --card-bg: #14161C; --card-shadow: 0 1px 3px rgba(0,0,0,0.50);
+    --modal-bg: #1C1F26; --border: rgba(255,255,255,0.08); --text: #F4F4F5;
+    --text-sub: #8B8B96; --accent: #BE123C; --input-bg: #10131A;
+    --gold: #06B6D4; --burgundy: #9F1239;
     --input-focus-border: #06B6D4; --input-focus-shadow: rgba(6,182,212,0.18);
-    --input-focus-bg: #181828; --sidebar-bg: #0C0C12;
-    --header-bg: rgba(17,17,24,0.97); --paper-dot: rgba(196,25,105,0.04);
-    --border-faint: rgba(255,255,255,0.07);
-    --sub-bg: rgba(255,255,255,0.04);
+    --input-focus-bg: #14171F; --sidebar-bg: #07080B;
+    --header-bg: rgba(10,11,14,0.92); --paper-dot: rgba(190,18,60,0.04);
+    --border-faint: rgba(255,255,255,0.05);
+    --sub-bg: rgba(255,255,255,0.03);
   }
 
   /* Type scale */
@@ -50,8 +50,8 @@ const GLOBAL_STYLES = `
     --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
     --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px;
     --radius-sm:8px; --radius-md:12px;
-    --color-success: #4ADE80; --color-warning: #FBBF24; --color-danger: #F87171; --color-info: #60A5FA;
-    --accent-glow: rgba(196,25,105,0.30); --gold-glow: rgba(6,182,212,0.18);
+    --color-success: #10B981; --color-warning: #FBBF24; --color-danger: #F87171; --color-info: #38BDF8;
+    --accent-glow: rgba(190,18,60,0.30); --gold-glow: rgba(6,182,212,0.18);
   }
 
   /* Paper dot texture */
@@ -59,19 +59,19 @@ const GLOBAL_STYLES = `
 
   /* ── Safe-area / notch support ── */
   .safe-area-top { padding-top: env(safe-area-inset-top); }
-  .offline-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; background: #901247; color: #EEEDF8; text-align: center; font-size: 12px; font-weight: 700; padding: calc(4px + env(safe-area-inset-top)) 16px 4px; letter-spacing: 0.04em; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .offline-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; background: #831843; color: #F4F4F5; text-align: center; font-size: 12px; font-weight: 700; padding: calc(4px + env(safe-area-inset-top)) 16px 4px; letter-spacing: 0.04em; display: flex; align-items: center; justify-content: center; gap: 6px; }
   .install-banner { position: fixed; bottom: env(safe-area-inset-bottom, 0px); left: 0; right: 0; z-index: 9990; background: var(--header-bg); border-top: 1.5px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 12px; animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes pulseSoft { 0% { box-shadow: 0 0 0 0 rgba(196,25,105,0.4); } 70% { box-shadow: 0 0 0 10px rgba(196,25,105,0); } 100% { box-shadow: 0 0 0 0 rgba(196,25,105,0); } }
+  @keyframes pulseSoft { 0% { box-shadow: 0 0 0 0 rgba(190,18,60,0.4); } 70% { box-shadow: 0 0 0 10px rgba(190,18,60,0); } 100% { box-shadow: 0 0 0 0 rgba(190,18,60,0); } }
   @keyframes shimmerPulse { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
   /* ── 3D Premium: orb float animations ── */
   @keyframes orbFloat1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(60px,-40px) scale(1.08)} 66%{transform:translate(-30px,55px) scale(0.96)} }
   @keyframes orbFloat2 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-80px,55px) scale(1.06)} 66%{transform:translate(80px,-30px) scale(1.10)} }
   @keyframes orbFloat3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(35px,45px) scale(1.14)} }
-  @keyframes logoGlow { 0%,100%{box-shadow:0 0 0 1px rgba(196,25,105,0.30),0 6px 28px rgba(196,25,105,0.28),0 0 80px rgba(196,25,105,0.10)} 50%{box-shadow:0 0 0 1px rgba(6,182,212,0.35),0 8px 40px rgba(6,182,212,0.28),0 0 110px rgba(6,182,212,0.12)} }
+  @keyframes logoGlow { 0%,100%{box-shadow:0 0 0 1px rgba(190,18,60,0.30),0 6px 28px rgba(190,18,60,0.28),0 0 80px rgba(190,18,60,0.10)} 50%{box-shadow:0 0 0 1px rgba(6,182,212,0.35),0 8px 40px rgba(6,182,212,0.28),0 0 110px rgba(6,182,212,0.12)} }
   @keyframes specularDrift { 0%,100%{opacity:1;transform:scaleX(1) translateX(0)} 33%{opacity:0.7;transform:scaleX(0.82) translateX(-4%)} 66%{opacity:0.85;transform:scaleX(0.92) translateX(3%)} }
   @keyframes liquidPulse { 0%,100%{backdrop-filter:blur(44px) brightness(1.12) saturate(1.9)} 50%{backdrop-filter:blur(48px) brightness(1.15) saturate(2.0)} }
   @keyframes spinSlow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
@@ -136,7 +136,7 @@ const GLOBAL_STYLES = `
 
   /* ── Premium button 3D press ── */
   .btn-3d { transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease !important; }
-  .btn-3d:not(:disabled):active { transform: translateY(2px) scale(0.975) !important; box-shadow: 0 1px 4px rgba(196,25,105,0.3) !important; }
+  .btn-3d:not(:disabled):active { transform: translateY(2px) scale(0.975) !important; box-shadow: 0 1px 4px rgba(190,18,60,0.3) !important; }
   @keyframes shimmerLoad { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
   @keyframes dotBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
   @keyframes celebrateGlow { 0% { box-shadow: 0 0 5px rgba(9, 115, 83, 0.2); } 50% { box-shadow: 0 0 20px rgba(9, 115, 83, 0.6); } 100% { box-shadow: 0 0 5px rgba(9, 115, 83, 0.2); } }
@@ -189,16 +189,16 @@ const GLOBAL_STYLES = `
   .packing-card-delivered { opacity: 0.55; }
 
   /* ── Premium action buttons (V6) ── */
-  .pack-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #C41969, #901247); color: #fff; border: none; border-radius: 10px; font-weight: 900; font-size: 13px; cursor: pointer; letter-spacing: 0.03em; box-shadow: 0 4px 14px rgba(196,25,105,0.35); transition: all 0.2s ease; font-family: inherit; }
-  .pack-btn:hover { box-shadow: 0 6px 20px rgba(196,25,105,0.5); transform: translateY(-1px); }
-  .pack-btn:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(196,25,105,0.3); }
+  .pack-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #BE123C, #831843); color: #fff; border: none; border-radius: 10px; font-weight: 900; font-size: 13px; cursor: pointer; letter-spacing: 0.03em; box-shadow: 0 4px 14px rgba(190,18,60,0.35); transition: all 0.2s ease; font-family: inherit; }
+  .pack-btn:hover { box-shadow: 0 6px 20px rgba(190,18,60,0.5); transform: translateY(-1px); }
+  .pack-btn:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(190,18,60,0.3); }
   .dispatch-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, #097353, #065A40); color: #fff; border: none; border-radius: 10px; font-weight: 900; font-size: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(9,115,83,0.3); transition: all 0.2s ease; font-family: inherit; }
   .dispatch-btn:hover { box-shadow: 0 6px 20px rgba(9,115,83,0.45); transform: translateY(-1px); }
 
   /* ── Status accent left border (V6) ── */
   .border-cooking { border-left: 4px solid rgba(232,146,10,0.8) !important; }
-  .border-prod-done { border-left: 4px solid rgba(74,222,128,0.7) !important; }
-  .border-packed { border-left: 4px solid rgba(196,25,105,0.7) !important; }
+  .border-prod-done { border-left: 4px solid rgba(16,185,129,0.7) !important; }
+  .border-packed { border-left: 4px solid rgba(190,18,60,0.7) !important; }
   .border-delivered { border-left: 4px solid rgba(136,150,179,0.35) !important; }
   .border-short { border-left: 4px solid rgba(251,176,64,0.7) !important; }
   .border-oos { border-left: 4px solid rgba(252,165,165,0.6) !important; }
@@ -225,15 +225,15 @@ const GLOBAL_STYLES = `
 
   /* ── Status glow on badges ── */
   .badge-glow-cooking  { box-shadow: 0 0 8px rgba(251,176,64,0.55)  !important; }
-  .badge-glow-prod_done{ box-shadow: 0 0 8px rgba(74,222,128,0.55)  !important; }
-  .badge-glow-packed   { box-shadow: 0 0 8px rgba(196,25,105,0.55)    !important; }
+  .badge-glow-prod_done{ box-shadow: 0 0 8px rgba(16,185,129,0.55)  !important; }
+  .badge-glow-packed   { box-shadow: 0 0 8px rgba(190,18,60,0.55)    !important; }
   .badge-glow-short    { box-shadow: 0 0 8px rgba(251,176,64,0.45)  !important; }
   .badge-glow-oos      { box-shadow: 0 0 8px rgba(252,165,165,0.45) !important; }
 
   /* ── Portal top bar gradient underline ── */
   .portal-bar-shine {
     position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(196,25,105,0.35) 40%, rgba(196,25,105,0.35) 60%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(190,18,60,0.35) 40%, rgba(190,18,60,0.35) 60%, transparent 100%);
     pointer-events: none;
   }
 
@@ -248,17 +248,17 @@ const GLOBAL_STYLES = `
 
   .pk-pending   { background:#0F1525; border:1px solid rgba(136,150,179,0.22); box-shadow:-3px 0 0 0 rgba(136,150,179,0.42), 0 4px 18px rgba(0,0,0,0.30); }
   .pk-production{ background:#111A0D; border:1px solid rgba(251,176,64,0.22); box-shadow:-3px 0 0 0 #FBB040, 0 4px 22px rgba(0,0,0,0.30), 0 0 20px rgba(251,176,64,0.07); }
-  .pk-prod_done { background:#091410; border:1px solid rgba(74,222,128,0.22); box-shadow:-3px 0 0 0 #4ADE80, 0 4px 22px rgba(0,0,0,0.30), 0 0 20px rgba(74,222,128,0.07); }
-  .pk-packed    { background:#1A0814; border:1px solid rgba(196,25,105,0.22); box-shadow:-3px 0 0 0 rgba(196,25,105,0.85), 0 4px 22px rgba(0,0,0,0.30), 0 0 18px rgba(196,25,105,0.06); }
+  .pk-prod_done { background:#091410; border:1px solid rgba(16,185,129,0.22); box-shadow:-3px 0 0 0 #10B981, 0 4px 22px rgba(0,0,0,0.30), 0 0 20px rgba(16,185,129,0.07); }
+  .pk-packed    { background:#1A0814; border:1px solid rgba(190,18,60,0.22); box-shadow:-3px 0 0 0 rgba(190,18,60,0.85), 0 4px 22px rgba(0,0,0,0.30), 0 0 18px rgba(190,18,60,0.06); }
   .pk-delivered { background:#090B14; border:1px solid rgba(255,255,255,0.05); box-shadow:none; opacity:0.5; }
   .pk-short     { background:#100D06; border:1px solid rgba(232,146,10,0.22); box-shadow:-3px 0 0 0 #E8920A, 0 4px 18px rgba(0,0,0,0.30), 0 0 18px rgba(232,146,10,0.07); }
   .pk-oos       { background:#130A0A; border:1px solid rgba(252,165,165,0.18); box-shadow:-3px 0 0 0 rgba(252,165,165,0.55), 0 4px 18px rgba(0,0,0,0.30); }
 
 
   /* Primary pack/dispatch action buttons */
-  .pk-pack-btn { width:100%; padding:14px; background:linear-gradient(135deg,#C41969,#901247); color:#fff; border:none; border-radius:12px; font-weight:900; font-size:14px; cursor:pointer; letter-spacing:0.02em; box-shadow:0 4px 20px rgba(196,25,105,0.45), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.15s ease; font-family:inherit; }
-  .pk-pack-btn:hover { box-shadow:0 6px 28px rgba(196,25,105,0.62), 0 0 0 1px rgba(196,25,105,0.28); transform:translateY(-1px); }
-  .pk-pack-btn:active { transform:translateY(1px); box-shadow:0 2px 8px rgba(196,25,105,0.3); }
+  .pk-pack-btn { width:100%; padding:14px; background:linear-gradient(135deg,#BE123C,#831843); color:#fff; border:none; border-radius:12px; font-weight:900; font-size:14px; cursor:pointer; letter-spacing:0.02em; box-shadow:0 4px 20px rgba(190,18,60,0.45), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.15s ease; font-family:inherit; }
+  .pk-pack-btn:hover { box-shadow:0 6px 28px rgba(190,18,60,0.62), 0 0 0 1px rgba(190,18,60,0.28); transform:translateY(-1px); }
+  .pk-pack-btn:active { transform:translateY(1px); box-shadow:0 2px 8px rgba(190,18,60,0.3); }
   .pk-ready-btn { background:linear-gradient(135deg,#16803C,#0F5C2C) !important; box-shadow:0 4px 20px rgba(22,128,60,0.45), inset 0 1px 0 rgba(255,255,255,0.12) !important; }
   .pk-ready-btn:hover { box-shadow:0 6px 28px rgba(22,128,60,0.60), 0 0 0 1px rgba(22,128,60,0.25) !important; }
 
@@ -276,7 +276,7 @@ const GLOBAL_STYLES = `
   .pk-chip-reset  { color:#5A6A8A; background:rgba(90,106,138,0.08); border-color:rgba(90,106,138,0.2); }
 
   /* Cooking shimmer for production state */
-  .pk-cooking-state { display:flex; align-items:center; gap:10; padding:11px 14px; border-radius:10px; background:linear-gradient(90deg,#121A08 0%,#1A2410 50%,#121A08 100%); background-size:200% 100%; animation:shimmerPulse 2.5s infinite; border:1px solid rgba(251,176,64,0.15); }
+  .pk-cooking-state { display:flex; align-items:center; gap:10px; padding:11px 14px; border-radius:10px; background:linear-gradient(90deg,#121A08 0%,#1A2410 50%,#121A08 100%); background-size:200% 100%; animation:shimmerPulse 2.5s infinite; border:1px solid rgba(251,176,64,0.15); }
 
   /* ── Toast: bottom-right slide-in ── */
   @keyframes toastSlideUp { from{opacity:0;transform:translateX(-50%) translateY(24px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
@@ -299,12 +299,12 @@ const GLOBAL_STYLES = `
 
   /* ── Admin day-tile ── */
   .day-tile { background:var(--card-bg); border:1px solid var(--border-faint); border-radius:14px; padding:16px; margin-bottom:10px; transition:border-color 0.2s; }
-  .day-tile-active { border-color:rgba(196,25,105,0.25) !important; }
+  .day-tile-active { border-color:rgba(190,18,60,0.25) !important; }
   .day-tile-empty  { background:transparent; border:2px dashed rgba(6,182,212,0.12) !important; border-radius:12px; padding:14px; text-align:center; margin-bottom:10px; }
 
   /* ── RecipeCard terminal ── */
-  .recipe-terminal { background:#141420; border:1px solid rgba(196,25,105,0.2); border-radius:12px; overflow:hidden; }
-  .recipe-terminal-bar { background:rgba(196,25,105,0.08); border-bottom:1px solid rgba(196,25,105,0.15); padding:10px 14px; display:flex; align-items:center; gap:8px; }
+  .recipe-terminal { background:#10131A; border:1px solid rgba(190,18,60,0.2); border-radius:12px; overflow:hidden; }
+  .recipe-terminal-bar { background:rgba(190,18,60,0.08); border-bottom:1px solid rgba(190,18,60,0.15); padding:10px 14px; display:flex; align-items:center; gap:8px; }
   .recipe-terminal-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
 
   /* ── Empty state ── */
@@ -312,11 +312,11 @@ const GLOBAL_STYLES = `
   .empty-icon { font-size:52px; margin-bottom:18px; filter:grayscale(0.3) opacity(0.7); }
 
   /* ── Gradient text (dark mode — white-start gradients) ── */
-  .gradient-text-red { background:linear-gradient(135deg,#EEEDF8 0%,#E8B0C4 40%,#A00060 75%,#C41969 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
-  .gradient-text-amber { background:linear-gradient(135deg,#EEEDF8 0%,#FFD98A 40%,#F59E0B 75%,#C97A05 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
-  .gradient-text-brand { background:linear-gradient(135deg,#EEEDF8 0%,#06B6D4 30%,#9060B0 65%,#C41969 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .gradient-text-red { background:linear-gradient(135deg,#F4F4F5 0%,#E8B0C4 40%,#A00060 75%,#BE123C 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .gradient-text-amber { background:linear-gradient(135deg,#F4F4F5 0%,#FFD98A 40%,#F59E0B 75%,#C97A05 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .gradient-text-brand { background:linear-gradient(135deg,#F4F4F5 0%,#06B6D4 30%,#9060B0 65%,#BE123C 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
   .gradient-text-white { background:linear-gradient(135deg,#FFFFFF 0%,#06B6D4 50%,#0284A0 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
-  .gradient-text-cyan  { background:linear-gradient(135deg,#EEEDF8 0%,#06B6D4 40%,#0891B2 70%,#0E7490 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .gradient-text-cyan  { background:linear-gradient(135deg,#F4F4F5 0%,#06B6D4 40%,#0891B2 70%,#0E7490 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 
   /* ── Gradient text light-mode overrides (dark-start so text is visible on cream) ── */
 
@@ -326,7 +326,7 @@ const GLOBAL_STYLES = `
 
   /* ── Sidebar section label v2 ── */
   .section-label-v2 { display:flex; align-items:center; gap:8px; font-size:var(--text-2xs,10px); font-weight:900; text-transform:uppercase; letter-spacing:var(--ls-label,0.12em); color:var(--text-sub); padding:10px 4px 6px; position:relative; }
-  .section-label-v2::before { content:''; width:3px; height:12px; border-radius:2px; background:linear-gradient(180deg,#C41969,#901247); flex-shrink:0; box-shadow:0 0 6px rgba(196,25,105,0.5); }
+  .section-label-v2::before { content:''; width:3px; height:12px; border-radius:2px; background:linear-gradient(180deg,#BE123C,#831843); flex-shrink:0; box-shadow:0 0 6px rgba(190,18,60,0.5); }
 
   /* ── Design system utility classes ── */
   .left-accent-card { background:var(--card-bg); border:1px solid var(--border-faint); border-left:3px solid var(--accent); border-radius:12px; box-shadow:var(--card-shadow); }
@@ -342,11 +342,11 @@ const GLOBAL_STYLES = `
 
   /* ── Portal ambient orbs ── */
   .portal-orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
-  .portal-orb-1 { width:min(750px,85vw); height:min(750px,85vw); background:radial-gradient(circle,rgba(196,25,105,0.10) 0%,transparent 70%); top:-18%; left:-12%; animation:orbFloat1 28s ease-in-out infinite; filter:blur(65px); }
+  .portal-orb-1 { width:min(750px,85vw); height:min(750px,85vw); background:radial-gradient(circle,rgba(190,18,60,0.10) 0%,transparent 70%); top:-18%; left:-12%; animation:orbFloat1 28s ease-in-out infinite; filter:blur(65px); }
   .portal-orb-2 { width:min(580px,72vw); height:min(580px,72vw); background:radial-gradient(circle,rgba(6,182,212,0.07) 0%,transparent 70%); bottom:-15%; right:-8%; animation:orbFloat2 34s ease-in-out infinite; filter:blur(60px); }
-  .portal-orb-3 { width:min(380px,55vw); height:min(380px,55vw); background:radial-gradient(circle,rgba(196,25,105,0.06) 0%,transparent 70%); top:45%; left:55%; animation:orbFloat3 22s ease-in-out infinite; filter:blur(70px); }
+  .portal-orb-3 { width:min(380px,55vw); height:min(380px,55vw); background:radial-gradient(circle,rgba(190,18,60,0.06) 0%,transparent 70%); top:45%; left:55%; animation:orbFloat3 22s ease-in-out infinite; filter:blur(70px); }
   .portal-orb-4 { width:min(520px,68vw); height:min(520px,68vw); background:radial-gradient(circle,rgba(6,182,212,0.06) 0%,transparent 70%); top:20%; right:-10%; animation:orbFloat2 40s ease-in-out infinite; filter:blur(65px); }
-  .portal-orb-5 { width:min(420px,60vw); height:min(420px,60vw); background:radial-gradient(circle,rgba(109,16,64,0.08) 0%,transparent 70%); bottom:10%; left:5%; animation:orbFloat1 45s ease-in-out infinite; filter:blur(70px); }
+  .portal-orb-5 { width:min(420px,60vw); height:min(420px,60vw); background:radial-gradient(circle,rgba(159,18,57,0.08) 0%,transparent 70%); bottom:10%; left:5%; animation:orbFloat1 45s ease-in-out infinite; filter:blur(70px); }
 
   /* ── Create Order button shimmer sweep ── */
   @keyframes shimmerBtn { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
@@ -357,7 +357,7 @@ const GLOBAL_STYLES = `
   .hover-lift:hover { transform:translateY(-4px) !important; box-shadow:0 12px 32px rgba(0,0,0,0.7) !important; }
 
   /* ── OrderCard active glow state ── */
-  .order-card-active-vins { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(196,25,105,0.18) !important; }
+  .order-card-active-vins { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(190,18,60,0.18) !important; }
   .order-card-active-manja { box-shadow:0 12px 40px rgba(0,0,0,0.75), 0 0 30px rgba(232,146,10,0.18) !important; }
 
   /* ── Bento card system (Tier 2) ── */
@@ -494,10 +494,10 @@ function useCountUp(target) {
 function PremiumBg() {
   return (
     <>
-      <div style={{position:"fixed",inset:0,background:"#111118",zIndex:0,pointerEvents:"none"}}/>
-      <div style={{position:"fixed",width:"min(680px,90vw)",height:"min(680px,90vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(196,25,105,0.20) 0%,transparent 70%)",top:"-22%",left:"-12%",animation:"orbFloat1 22s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(55px)"}}/>
+      <div style={{position:"fixed",inset:0,background:"#0A0B0E",zIndex:0,pointerEvents:"none"}}/>
+      <div style={{position:"fixed",width:"min(680px,90vw)",height:"min(680px,90vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(190,18,60,0.20) 0%,transparent 70%)",top:"-22%",left:"-12%",animation:"orbFloat1 22s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(55px)"}}/>
       <div style={{position:"fixed",width:"min(900px,110vw)",height:"min(900px,110vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(20,50,160,0.13) 0%,transparent 70%)",bottom:"-32%",right:"-22%",animation:"orbFloat2 28s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(65px)"}}/>
-      <div style={{position:"fixed",width:"min(460px,70vw)",height:"min(460px,70vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(196,25,105,0.10) 0%,transparent 70%)",top:"42%",right:"8%",animation:"orbFloat3 19s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(50px)"}}/>
+      <div style={{position:"fixed",width:"min(460px,70vw)",height:"min(460px,70vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(190,18,60,0.10) 0%,transparent 70%)",top:"42%",right:"8%",animation:"orbFloat3 19s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(50px)"}}/>
       <div style={{position:"fixed",width:"min(520px,72vw)",height:"min(520px,72vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(14,165,233,0.10) 0%,transparent 70%)",top:"15%",right:"-15%",animation:"orbFloat2 36s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(60px)"}}/>
       <div style={{position:"fixed",width:"min(360px,55vw)",height:"min(360px,55vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(255,255,255,0.04) 0%,transparent 70%)",top:"-8%",right:"18%",animation:"orbFloat3 52s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(80px)"}}/>
     </>
@@ -593,12 +593,18 @@ function findRecipeFuzzyBulk(lineText) {
 }
 
 function oStats(o){
-  const i=o.items;
-  return{
-    total: i.length, packed: i.filter(x=>x.status==="packed").length, delivered: i.filter(x=>x.status==="delivered").length,
-    short: i.filter(x=>x.status==="short").length, oos: i.filter(x=>x.status==="oos").length,
-    prod: i.filter(x=>x.status==="production").length, prod_done: i.filter(x=>x.status==="prod_done").length, pending: i.filter(x=>x.status==="pending").length
-  };
+  const i=o.items||[];
+  const c={packed:0,delivered:0,short:0,oos:0,prod:0,prod_done:0,pending:0};
+  for(const x of i){
+    if(x.status==="packed") c.packed++;
+    else if(x.status==="delivered") c.delivered++;
+    else if(x.status==="short") c.short++;
+    else if(x.status==="oos") c.oos++;
+    else if(x.status==="production") c.prod++;
+    else if(x.status==="prod_done") c.prod_done++;
+    else if(x.status==="pending") c.pending++;
+  }
+  return { total: i.length, ...c };
 }
 
 function fmtDate(){ return new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}); }
@@ -610,18 +616,18 @@ function getLocalYMD(d = new Date()) {
 /* ═══════════════════════════════════════════════════════════════
    THEME SYSTEM — dark / light palettes + context
 ═══════════════════════════════════════════════════════════════ */
-const DC={ // midnight rose palette
-  w: "#111118", off: "#1C1C24", beige: "#1C1C24", beigeD: "#252530",
-  ch: "#EEEDF8", chM: "#C0BDDA", chL: "#7E7E9A", chXL: "#3E3E52",
-  bdr: "#252530", bdrL: "#1C1C24",
-  gold: "#06B6D4", goldBg: "rgba(6,182,212,0.12)", goldBgD: "rgba(6,182,212,0.22)",
-  bur: "#6D1040", burBg: "rgba(109,16,64,0.22)",
-  ol: "#C41969", olDk: "#901247", olBg: "rgba(196,25,105,0.15)", olBgD: "rgba(196,25,105,0.28)",
+const DC={ // premium slate palette — deep midnight, refined rose accent
+  w: "#0A0B0E", off: "#14161C", beige: "#14161C", beigeD: "#1C1F26",
+  ch: "#F4F4F5", chM: "#C4C4C8", chL: "#8B8B96", chXL: "#3A3A42",
+  bdr: "#1C1F26", bdrL: "#14161C",
+  gold: "#06B6D4", goldBg: "rgba(6,182,212,0.10)", goldBgD: "rgba(6,182,212,0.20)",
+  bur: "#9F1239", burBg: "rgba(159,18,57,0.22)",
+  ol: "#BE123C", olDk: "#831843", olBg: "rgba(190,18,60,0.15)", olBgD: "rgba(190,18,60,0.28)",
   am: "#FBBF24", amDk: "#F59E0B", amBg: "rgba(251,191,36,0.12)", amBgD: "rgba(251,191,36,0.22)",
-  gn: "#4ADE80", gnBg: "rgba(74,222,128,0.12)",
+  gn: "#10B981", gnBg: "rgba(16,185,129,0.12)",
   rd: "#F87171", rdBg: "rgba(248,113,113,0.12)",
-  cy: "#60A5FA", cyBg: "rgba(96,165,250,0.10)", cyBgD: "rgba(96,165,250,0.20)",
-  sh: "1px 2px 0 rgba(0,0,0,0.50)", shM: "2px 4px 0 rgba(0,0,0,0.65)"
+  cy: "#38BDF8", cyBg: "rgba(56,189,248,0.10)", cyBgD: "rgba(56,189,248,0.20)",
+  sh: "0 1px 3px rgba(0,0,0,0.50)", shM: "0 4px 16px rgba(0,0,0,0.65)"
 };
 // Module-level C = DC (for static defaults; components use useTheme() for reactive palette)
 const C={...DC};
@@ -630,22 +636,22 @@ function makeThemeObj(palette) {
   return {
     isDark: true,
     ...palette,
-    divider:  "rgba(255,255,255,0.08)",
-    subBg:    "rgba(255,255,255,0.04)",
-    cardBg:   "#1C1C24",
-    chipBg:   "rgba(255,255,255,0.06)",
-    footerBg: "rgba(17,17,24,0.92)",
-    headerBg: "rgba(17,17,24,0.97)",
-    panelBg:  "#0C0C12",
-    editBg:   "#141420",
-    editBdr:  "#252530",
-    closeBg:  "rgba(255,255,255,0.05)",
-    closeBdr: "rgba(255,255,255,0.09)",
-    trackBg:  "rgba(255,255,255,0.07)",
-    svgTrack: "rgba(255,255,255,0.07)",
-    noteBg:   "rgba(255,255,255,0.03)",
-    noteBdr:  "rgba(255,255,255,0.08)",
-    cyGlow:   "rgba(6,182,212,0.12)",
+    divider:  "rgba(255,255,255,0.07)",
+    subBg:    "rgba(255,255,255,0.03)",
+    cardBg:   "#14161C",
+    chipBg:   "rgba(255,255,255,0.05)",
+    footerBg: "rgba(10,11,14,0.92)",
+    headerBg: "rgba(10,11,14,0.92)",
+    panelBg:  "#07080B",
+    editBg:   "#10131A",
+    editBdr:  "#1C1F26",
+    closeBg:  "rgba(255,255,255,0.04)",
+    closeBdr: "rgba(255,255,255,0.08)",
+    trackBg:  "rgba(255,255,255,0.06)",
+    svgTrack: "rgba(255,255,255,0.06)",
+    noteBg:   "rgba(255,255,255,0.02)",
+    noteBdr:  "rgba(255,255,255,0.07)",
+    cyGlow:   "rgba(56,189,248,0.12)",
   };
 }
 
@@ -663,9 +669,9 @@ const ROLES={
 const SC = {
   pending: { label: "Pending", c: "#A0B8A2", bg: "rgba(162,184,162,0.10)", bdr: "rgba(162,184,162,0.22)", step: 1 },
   production: { label: "Cooking", c: "#FBBF24", bg: "rgba(251,191,36,0.12)", bdr: "rgba(251,191,36,0.30)", step: 2 },
-  prod_done: { label: "Ready to Pack", c: "#4ADE80", bg: "rgba(22,163,74,0.12)", bdr: "rgba(22,163,74,0.30)", step: 3 },
-  packed: { label: "Packed ✓", c: "#D46090", bg: "rgba(196,25,105,0.12)", bdr: "rgba(196,25,105,0.28)", step: 4 },
-  delivered: { label: "Delivered 🚀", c: "#A0C4FF", bg: "rgba(96,165,250,0.08)", bdr: "rgba(96,165,250,0.20)", step: 5 },
+  prod_done: { label: "Ready to Pack", c: "#10B981", bg: "rgba(22,163,74,0.12)", bdr: "rgba(22,163,74,0.30)", step: 3 },
+  packed: { label: "Packed ✓", c: "#D46090", bg: "rgba(190,18,60,0.12)", bdr: "rgba(190,18,60,0.28)", step: 4 },
+  delivered: { label: "Delivered 🚀", c: "#A0C4FF", bg: "rgba(56,189,248,0.08)", bdr: "rgba(56,189,248,0.20)", step: 5 },
   short: { label: "Short ⚠", c: "#FBBF24", bg: "rgba(251,191,36,0.12)", bdr: "rgba(251,191,36,0.30)", step: -1 },
   oos: { label: "Out of Stock", c: "#E8A0B4", bg: "rgba(193,48,90,0.12)", bdr: "rgba(193,48,90,0.28)", step: -1 },
 };
@@ -686,9 +692,9 @@ function Pill({count,label,color}){
   return <span style={{fontSize:10,color,background:color+"1A",border:"1px solid "+color+"50",borderRadius:20,padding:"2px 8px",fontWeight:600,flexShrink:0}}>{count} {label}</span>;
 }
 
-function Toast({msg,type}){
+function Toast({msg,type,onClose}){
   const isErr=type==="error";
-  const accentColor=isErr?"#DC2626":"#22C55E";
+  const accentColor=isErr?"#F87171":"#10B981";
   return(
     <motion.div
       initial={{opacity:0,y:-60,scale:0.95}}
@@ -701,24 +707,25 @@ function Toast({msg,type}){
       background:isErr?"rgba(14,4,4,0.97)":"rgba(4,12,8,0.97)",
       backgroundImage:"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E\")",
       backgroundSize:"200px 200px",
-      border:"1px solid "+(isErr?"rgba(220,38,38,0.3)":"rgba(22,163,74,0.3)"),
+      border:"1px solid "+(isErr?"rgba(248,113,113,0.3)":"rgba(16,185,129,0.3)"),
       borderLeft:"3px solid "+accentColor,
       borderRadius:14,padding:"14px 18px",
-      boxShadow:"0 16px 60px rgba(0,0,0,0.9), 0 0 0 1px "+(isErr?"rgba(220,38,38,0.06)":"rgba(22,163,74,0.06)"),
+      boxShadow:"0 16px 60px rgba(0,0,0,0.9), 0 0 0 1px "+(isErr?"rgba(248,113,113,0.06)":"rgba(16,185,129,0.06)"),
       display:"flex",alignItems:"center",gap:13,fontFamily:"'Plus Jakarta Sans',sans-serif"
     }}>
       <div style={{
         width:34,height:34,borderRadius:"50%",flexShrink:0,
-        background:isErr?"rgba(220,38,38,0.14)":"rgba(22,163,74,0.14)",
-        border:"1.5px solid "+(isErr?"rgba(220,38,38,0.45)":"rgba(22,163,74,0.45)"),
+        background:isErr?"rgba(248,113,113,0.14)":"rgba(16,185,129,0.14)",
+        border:"1.5px solid "+(isErr?"rgba(248,113,113,0.45)":"rgba(16,185,129,0.45)"),
         display:"flex",alignItems:"center",justifyContent:"center",
         fontSize:15,fontWeight:900,color:accentColor,
-        boxShadow:"0 0 12px "+(isErr?"rgba(220,38,38,0.22)":"rgba(22,163,74,0.22)")
+        boxShadow:"0 0 12px "+(isErr?"rgba(248,113,113,0.22)":"rgba(16,185,129,0.22)")
       }}>{isErr?"✕":"✓"}</div>
       <div style={{flex:1,minWidth:0}}>
-        <div style={{fontSize:10,fontWeight:800,color:isErr?"rgba(248,113,113,0.65)":"rgba(74,222,128,0.65)",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:3}}>{isErr?"Error":"Done"}</div>
+        <div style={{fontSize:10,fontWeight:800,color:isErr?"rgba(248,113,113,0.65)":"rgba(16,185,129,0.65)",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:3}}>{isErr?"Error":"Done"}</div>
         <span style={{fontSize:13,fontWeight:700,color:C.ch,lineHeight:1.35}}>{msg}</span>
       </div>
+      {onClose && <button onClick={onClose} aria-label="Dismiss" style={{background:"transparent",border:"none",color:C.chL,fontSize:14,cursor:"pointer",padding:"4px 6px",borderRadius:6,fontFamily:"inherit",flexShrink:0,opacity:0.6,transition:"opacity 0.15s"}} onMouseEnter={e=>e.currentTarget.style.opacity="1"} onMouseLeave={e=>e.currentTarget.style.opacity="0.6"}>✕</button>}
     </motion.div>
   );
 }
@@ -726,7 +733,7 @@ function Toast({msg,type}){
 function SectionLabel({text}){
   return(
     <div style={{display:"flex",alignItems:"center",gap:9,fontSize:9,fontWeight:900,color:"#3A4E6A",textTransform:"uppercase",letterSpacing:"0.16em",marginBottom:14,marginTop:4}}>
-      <div style={{width:3,height:13,borderRadius:2,background:"linear-gradient(180deg,#C41969,#901247)",flexShrink:0,boxShadow:"0 0 6px rgba(196,25,105,0.45)"}}/>
+      <div style={{width:3,height:13,borderRadius:2,background:"linear-gradient(180deg,#BE123C,#831843)",flexShrink:0,boxShadow:"0 0 6px rgba(190,18,60,0.45)"}}/>
       {text}
     </div>
   );
@@ -753,7 +760,7 @@ function AdminDonutChart({ packed, pending, issues }) {
 
   return (
     <div className="animate-fade-up glass-card" style={{borderRadius:18, padding:"22px 24px", display:"flex", alignItems:"center", gap:22, position:"relative", overflow:"hidden"}}>
-      <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(196,25,105,0.25),transparent)",pointerEvents:"none"}}/>
+      <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(190,18,60,0.25),transparent)",pointerEvents:"none"}}/>
       <div style={{position:"relative", width:100, height:100, flexShrink:0}}>
         <svg height="100" width="100" style={{transform: "rotate(-90deg)"}}>
           <circle stroke={th.svgTrack} fill="transparent" strokeWidth="13" r={radius} cx="50" cy="50" />
@@ -761,7 +768,7 @@ function AdminDonutChart({ packed, pending, issues }) {
           <circle stroke={C.ol} fill="transparent" strokeWidth="13" strokeDasharray={`${pPacked} ${circumference}`} strokeDashoffset={-pIssues} style={{transition:"all 1.2s cubic-bezier(0.16,1,0.3,1)"}} strokeLinecap="round" r={radius} cx="50" cy="50" />
         </svg>
         <div style={{position:"absolute", inset:0, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
-          <span style={{fontSize:22, fontWeight:900, color:pct>80?"#4ADE80":pct>50?C.ch:C.rd, lineHeight:1}}>{pct}%</span>
+          <span style={{fontSize:22, fontWeight:900, color:pct>80?"#10B981":pct>50?C.ch:C.rd, lineHeight:1}}>{pct}%</span>
           <span style={{fontSize:8, color:C.chL, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginTop:3}}>filled</span>
         </div>
       </div>
@@ -802,8 +809,8 @@ function StatRow({s}){
     <div style={{display:"flex", gap:12, marginBottom:20, flexWrap:"wrap"}}>
       <div style={{display:"flex", gap:8, flex:1, minWidth:200}}>
         <div style={{flex:1, textAlign:"center", background:"rgba(22, 163, 74, 0.12)", padding:"10px 8px", borderRadius:10, border:"1px solid rgba(22, 163, 74, 0.3)"}}>
-          <div style={{fontSize:22, fontWeight:900, color:"#4ADE80"}}>{s.packed + s.delivered}</div>
-          <div style={{fontSize:9, color:"#4ADE80", fontWeight:800, marginTop:3, textTransform:"uppercase"}}>Ready / Done</div>
+          <div style={{fontSize:22, fontWeight:900, color:"#10B981"}}>{s.packed + s.delivered}</div>
+          <div style={{fontSize:9, color:"#10B981", fontWeight:800, marginTop:3, textTransform:"uppercase"}}>Ready / Done</div>
         </div>
         <div style={{flex:1, textAlign:"center", background:C.amBg, padding:"10px 8px", borderRadius:10, border:"1px solid "+C.amBgD}}>
           <div style={{fontSize:22, fontWeight:900, color:C.amDk}}>{s.prod + s.prod_done}</div>
@@ -838,14 +845,14 @@ function RecipeCard({name}){
         <span className="recipe-terminal-dot" style={{background:"#E8920A"}}/>
         <span className="recipe-terminal-dot" style={{background:"#22C55E"}}/>
         <span style={{flex:1,fontSize:10,color:C.ol,fontWeight:800,textTransform:"uppercase",letterSpacing:"0.12em",textAlign:"center"}}>📖 {r.recipe_name}</span>
-        <span style={{fontSize:9,color:"#4ADE80",fontWeight:800,background:"rgba(74,222,128,0.1)",border:"1px solid rgba(74,222,128,0.3)",borderRadius:4,padding:"2px 7px"}}>100% MATCH</span>
+        <span style={{fontSize:9,color:"#10B981",fontWeight:800,background:"rgba(16,185,129,0.1)",border:"1px solid rgba(16,185,129,0.3)",borderRadius:4,padding:"2px 7px"}}>100% MATCH</span>
       </div>
 
       <div style={{padding:"14px 16px"}}>
         {r.section&&<div style={{fontSize:10,color:C.chL,fontWeight:700,marginBottom:10,background:th.subBg,borderRadius:6,padding:"4px 8px",display:"inline-block"}}>{r.section}</div>}
         <div style={{fontSize:10,fontWeight:800,color:C.chL,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:8}}>{r.qty_column_label||"INGREDIENTS"}</div>
         {r.ingredients && r.ingredients.map((ing,i)=>{
-          if(ing.type==="stage_label"||!ing.qty) return <div key={i} style={{marginTop:10,marginBottom:6,paddingBottom:4,borderBottom:"1px solid rgba(196,25,105,0.2)",color:C.ol,fontSize:11,fontWeight:900,letterSpacing:"0.04em"}}>{ing.item}</div>;
+          if(ing.type==="stage_label"||!ing.qty) return <div key={i} style={{marginTop:10,marginBottom:6,paddingBottom:4,borderBottom:"1px solid rgba(190,18,60,0.2)",color:C.ol,fontSize:11,fontWeight:900,letterSpacing:"0.04em"}}>{ing.item}</div>;
           return(
             <div key={i} style={{display:"flex",justifyContent:"space-between",gap:10,fontSize:12,paddingBottom:7,marginBottom:7,borderBottom:i===r.ingredients.length-1?"none":`1px solid ${th.divider}`}}>
               <span style={{color:C.chM,fontWeight:600}}>{ing.item}</span>
@@ -856,7 +863,7 @@ function RecipeCard({name}){
 
         {r.steps&&r.steps.length>0&&(
           <div style={{marginTop:12}}>
-            <button onClick={()=>setShowSteps(!showSteps)} style={{background:showSteps?"rgba(196,25,105,0.15)":th.subBg,border:"1px solid "+(showSteps?"rgba(196,25,105,0.3)":th.divider),padding:"8px 14px",borderRadius:8,fontSize:11,fontWeight:800,color:showSteps?C.ol:C.chL,cursor:"pointer",width:"100%",fontFamily:"inherit",transition:"all 0.2s"}}>
+            <button onClick={()=>setShowSteps(!showSteps)} style={{background:showSteps?"rgba(190,18,60,0.15)":th.subBg,border:"1px solid "+(showSteps?"rgba(190,18,60,0.3)":th.divider),padding:"8px 14px",borderRadius:8,fontSize:11,fontWeight:800,color:showSteps?C.ol:C.chL,cursor:"pointer",width:"100%",fontFamily:"inherit",transition:"all 0.2s"}}>
               {showSteps?"▲ Hide Steps":"▼ View Preparation Steps"}
             </button>
             <div className={`accordion-content ${showSteps?"open":""}`} style={{marginTop:showSteps?10:0,display:"flex",flexDirection:"column",gap:8}}>
@@ -877,8 +884,8 @@ function Btn({children,onClick,variant="ghost",disabled=false,full=false,size="m
   const [hov,setHov]=useState(false); const pad=size==="sm"?"6px 12px":"12px 24px"; const fs=size==="sm"?11:14;
   let bg, color, border, boxShadow = "none";
   if (variant === "primary") {
-    bg = hov ? "linear-gradient(135deg, #901247, #380020)" : "linear-gradient(135deg, #C41969, #901247)";
-    color = "#FFFFFF"; border = "none"; boxShadow = hov ? "0 6px 20px rgba(196,25,105,0.45)" : "0 3px 10px rgba(196,25,105,0.3)";
+    bg = hov ? "linear-gradient(135deg, #831843, #380020)" : "linear-gradient(135deg, #BE123C, #831843)";
+    color = "#FFFFFF"; border = "none"; boxShadow = hov ? "0 6px 20px rgba(190,18,60,0.45)" : "0 3px 10px rgba(190,18,60,0.3)";
   } else if (variant === "amber") {
     bg = hov ? "linear-gradient(135deg, #B86F06, #8A5204)" : "linear-gradient(135deg, #E8920A, #B86F06)";
     color = "#FFFFFF"; border = "none"; boxShadow = hov ? "0 6px 20px rgba(232,146,10,0.4)" : "0 3px 10px rgba(232,146,10,0.25)";
@@ -887,7 +894,7 @@ function Btn({children,onClick,variant="ghost",disabled=false,full=false,size="m
     color = "#FFFFFF"; border = "none"; boxShadow = hov ? "0 6px 20px rgba(22,163,74,0.4)" : "0 3px 10px rgba(22,163,74,0.25)";
   } else if (variant === "dark") {
     bg = hov ? "#2A2A36" : "#222230";
-    color = "#EEEDF8"; border = "1px solid rgba(255,255,255,0.12)"; boxShadow = hov ? "0 4px 12px rgba(0,0,0,0.4)" : "none";
+    color = "#F4F4F5"; border = "1px solid rgba(255,255,255,0.12)"; boxShadow = hov ? "0 4px 12px rgba(0,0,0,0.4)" : "none";
   } else if (variant === "danger") {
     bg = hov ? "rgba(220,38,38,0.2)" : "rgba(220,38,38,0.1)";
     color = "#DC2626"; border = "1px solid rgba(220,38,38,0.4)";
@@ -935,7 +942,7 @@ function RecipeAutocomplete({ value, onChange, onSelect, placeholder = "Search o
     <div ref={wrapRef} style={{ position: "relative" }}>
       <input value={value} onChange={e => handleInput(e.target.value)} onKeyDown={handleKey} onFocus={() => value.length >= 2 && matches.length > 0 && setOpen(true)} placeholder={placeholder} autoComplete="off" style={{ padding: "11px 14px", border: "1px solid " + C.bdr, borderRadius: 10, fontSize: 13, color: C.ch, outline: "none", background: "var(--card-bg)", width: "100%", boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s" }} />
       {open && (
-        <div className="custom-scrollbar animate-fade-in" style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#0C0C12", border: "1px solid " + C.bdr, borderRadius: 10, zIndex: 200, maxHeight: 220, overflowY: "auto", boxShadow: C.shM }}>
+        <div className="custom-scrollbar animate-fade-in" style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#07080B", border: "1px solid " + C.bdr, borderRadius: 10, zIndex: 200, maxHeight: 220, overflowY: "auto", boxShadow: C.shM }}>
           {matches.map((recipe, i) => (
             <button key={recipe.recipe_id || i} onMouseDown={e => { e.preventDefault(); handleSelect(recipe); }} style={{ width: "100%", padding: "11px 14px", border: "none", background: "transparent", color: C.ch, textAlign: "left", cursor: "pointer", borderBottom: "1px solid " + C.bdrL, fontSize: 13, fontWeight: 600, fontFamily: "inherit", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "background 0.15s" }} onMouseEnter={e => e.currentTarget.style.background = C.w} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
               <span>{recipe.recipe_name}</span><span style={{ color: C.ol, fontSize: 9, fontWeight: 900, letterSpacing: "1px", textTransform: "uppercase" }}>✓ RECIPE</span>
@@ -1064,7 +1071,7 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
   return (
     <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
       <div className="animate-fade-up modal-sheet" style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:640, maxHeight:isMobile?"94vh":"88vh", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
-        <div style={{ position:"absolute", top:0, left:"15%", right:"15%", height:1, background:"linear-gradient(90deg,transparent,rgba(196,25,105,0.28),transparent)", pointerEvents:"none" }}/>
+        <div style={{ position:"absolute", top:0, left:"15%", right:"15%", height:1, background:"linear-gradient(90deg,transparent,rgba(190,18,60,0.28),transparent)", pointerEvents:"none" }}/>
         <div style={{ padding:"20px 30px", borderBottom:`1px solid ${th.divider}`, flexShrink:0 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
@@ -1180,7 +1187,7 @@ function DailyProductionDayBlock({ dp, isLast, onShowRecipe, onUpdateItem, role 
             {isToday && <span style={{ marginLeft:8, background:C.olBg, color:C.ol, padding:"2px 8px", borderRadius:20, fontSize:9, fontWeight:900, border:"1px solid "+C.olBgD }}>TODAY</span>}
           </div>
           <div style={{ fontSize:11, color:C.chL, fontWeight:600 }}>{dp.date}</div>
-          <div style={{ fontSize:10, color:allItemsDone?"#4ADE80":C.chL, background:allItemsDone?"rgba(22,163,74,0.12)":C.off, padding:"2px 8px", borderRadius:20, fontWeight:700 }}>{allItemsDone ? "✓ All done" : dp.items.length+" items"}</div>
+          <div style={{ fontSize:10, color:allItemsDone?"#10B981":C.chL, background:allItemsDone?"rgba(22,163,74,0.12)":C.off, padding:"2px 8px", borderRadius:20, fontWeight:700 }}>{allItemsDone ? "✓ All done" : dp.items.length+" items"}</div>
         </div>
         <span style={{ color:C.chL, fontSize:12 }}>{open ? "▲" : "▼"}</span>
       </button>
@@ -1190,9 +1197,9 @@ function DailyProductionDayBlock({ dp, isLast, onShowRecipe, onUpdateItem, role 
             <DailyProductionItemRow key={item.id} item={item} dpId={dp.id} onShowRecipe={onShowRecipe} onUpdateItem={onUpdateItem} role={role} />
           ))}
           {allItemsDone && (
-            <div className="animate-fade-up" style={{ marginTop:10, padding:"10px 14px", background:"linear-gradient(135deg,rgba(9,115,83,0.22),rgba(22,163,74,0.12))", borderRadius:10, border:"1px solid rgba(74,222,128,0.3)", display:"flex", alignItems:"center", gap:10 }}>
+            <div className="animate-fade-up" style={{ marginTop:10, padding:"10px 14px", background:"linear-gradient(135deg,rgba(9,115,83,0.22),rgba(22,163,74,0.12))", borderRadius:10, border:"1px solid rgba(16,185,129,0.3)", display:"flex", alignItems:"center", gap:10 }}>
               <span style={{fontSize:18}}>🎉</span>
-              <div style={{fontSize:12,fontWeight:800,color:"#4ADE80"}}>All {dp.items.length} items done for {dp.dayOfWeek}!</div>
+              <div style={{fontSize:12,fontWeight:800,color:"#10B981"}}>All {dp.items.length} items done for {dp.dayOfWeek}!</div>
             </div>
           )}
         </div>
@@ -1232,14 +1239,14 @@ function DailyProductionItemRow({ item, dpId, onShowRecipe, onUpdateItem, role }
         
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap:"wrap" }}>
           <div className="dp-item-name" style={{ fontSize:14, fontWeight:800, color:C.ch }}>{item.product}</div>
-          {isDone && <span style={{ background: "rgba(22, 163, 74, 0.15)", color: "#4ADE80", fontSize: 9, fontWeight: 900, padding: "2px 6px", borderRadius: 4, border: "1px solid rgba(22, 163, 74, 0.3)" }}>✓ DONE</span>}
+          {isDone && <span style={{ background: "rgba(22, 163, 74, 0.15)", color: "#10B981", fontSize: 9, fontWeight: 900, padding: "2px 6px", borderRadius: 4, border: "1px solid rgba(22, 163, 74, 0.3)" }}>✓ DONE</span>}
           {isExtra && <span style={{ background: "rgba(184, 111, 6, 0.15)", color: "#E8920A", fontSize: 9, fontWeight: 900, padding: "2px 6px", borderRadius: 4, border: "1px solid rgba(184, 111, 6, 0.3)" }}>+ UNPLANNED EXTRA</span>}
         </div>
 
         <div style={{ fontSize:11, fontFamily:"'JetBrains Mono',monospace", color:C.am, fontWeight:700 }}>
           <span style={{color: isDone ? C.chL : C.am}}>Plan: {item.kgQty} kg {item.packetQty > 0 ? `| ${item.packetQty} pkts` : ''}</span>
           {isDone && (
-            <div className="animate-fade-in" style={{ color: "#4ADE80", marginTop: 2 }}>
+            <div className="animate-fade-in" style={{ color: "#10B981", marginTop: 2 }}>
               Act: {item.actualKgQty ?? item.kgQty} kg {item.actualPacketQty > 0 || item.packetQty > 0 ? `| ${item.actualPacketQty ?? item.packetQty} pkts` : ''}
             </div>
           )}
@@ -1290,7 +1297,7 @@ function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel 
   return (
     <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:9999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20}}>
       <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:480,padding:"26px 28px",display:"flex",flexDirection:"column",maxHeight:isMobile?"90vh":"auto",position:"relative",overflow:"hidden"}}>
-        <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(196,25,105,0.3),transparent)",pointerEvents:"none"}}/>
+        <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(190,18,60,0.3),transparent)",pointerEvents:"none"}}/>
         <div style={{fontSize:19,fontWeight:900,color:C.ch,letterSpacing:"-0.02em",marginBottom:6}}>Send to Production</div>
         <div style={{fontSize:13,color:C.chL,fontWeight:500,marginBottom:20}}>Choose how to send this item to the kitchen.</div>
 
@@ -1342,13 +1349,13 @@ function SplashScreen() {
       >
         <div style={{position:"relative",width:96,height:96,margin:"0 auto 28px"}}>
           <div style={{width:96,height:96,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:40,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
-          <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(196,25,105,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
-          <div style={{position:"absolute",inset:-18,borderRadius:"50%",border:"1px solid rgba(196,25,105,0.08)",animation:"spinSlow 35s linear infinite reverse",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(190,18,60,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",inset:-18,borderRadius:"50%",border:"1px solid rgba(190,18,60,0.08)",animation:"spinSlow 35s linear infinite reverse",pointerEvents:"none"}}/>
         </div>
         <div style={{fontSize:26,fontWeight:900,color:"var(--text)",letterSpacing:"-0.04em",marginBottom:6}}>The Food Company</div>
         <div style={{fontSize:11,color:"#3A5070",letterSpacing:"0.22em",textTransform:"uppercase",fontWeight:700,marginBottom:48}}>Operations Hub</div>
         <div style={{width:180,height:3,background:"rgba(255,255,255,0.05)",borderRadius:4,overflow:"hidden",position:"relative"}}>
-          <div style={{position:"absolute",top:0,left:0,width:"45%",height:"100%",background:"linear-gradient(90deg,transparent,#C41969,transparent)",animation:"loadBar 1.6s ease-in-out infinite"}}/>
+          <div style={{position:"absolute",top:0,left:0,width:"45%",height:"100%",background:"linear-gradient(90deg,transparent,#BE123C,transparent)",animation:"loadBar 1.6s ease-in-out infinite"}}/>
         </div>
       </motion.div>
     </div>
@@ -1366,8 +1373,14 @@ function LoginScreen({ onSignIn }) {
     setLoading(true); setError("");
     try { await onSignIn(); }
     catch (e) {
-      if (e?.code === "auth/unauthorized-domain") setError("This domain is not authorized in Firebase. Add it in Firebase Console → Authentication → Authorized domains.");
-      else if (e?.code === "auth/popup-blocked") setError("Popup blocked — please allow popups for this site.");
+      const code = e?.code || "";
+      if (code === "auth/unauthorized-domain") setError("This domain is not authorized in Firebase. Contact your admin.");
+      else if (code === "auth/popup-blocked") setError("Popup blocked — please allow popups for this site.");
+      else if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") setError("Sign-in cancelled. Try again when ready.");
+      else if (code === "auth/network-request-failed") setError("Network error. Check your internet and try again.");
+      else if (code === "auth/operation-not-allowed") setError("Google sign-in is not enabled. Contact your admin.");
+      else if (code === "auth/user-disabled") setError("Your account has been disabled. Contact your admin.");
+      else if (code === "auth/account-exists-with-different-credential") setError("This account uses a different sign-in method.");
       else setError("Sign-in failed. Please try again.");
     }
     setLoading(false);
@@ -1386,7 +1399,7 @@ function LoginScreen({ onSignIn }) {
         >
           <div style={{position:"relative",width:90,height:90,margin:"0 auto 28px"}}>
             <div style={{width:90,height:90,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:38,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
-            <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(196,25,105,0.2)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
+            <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(190,18,60,0.2)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
           </div>
           <div style={{fontSize:30,fontWeight:900,color:"var(--text)",letterSpacing:"-0.05em",lineHeight:1,marginBottom:10}}>The Food Company</div>
           <div style={{fontSize:11,color:"#2A4060",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.18em"}}>Operations Hub</div>
@@ -1406,11 +1419,11 @@ function LoginScreen({ onSignIn }) {
           <div style={{fontSize:11,fontWeight:700,color:"#2A4060",marginBottom:28,textAlign:"center",textTransform:"uppercase",letterSpacing:"0.18em"}}>Sign in to continue</div>
           <motion.button
             onClick={handleClick} disabled={loading} className="btn-3d"
-            style={{width:"100%",padding:"15px 20px",background:loading?"rgba(30,40,60,0.8)":"linear-gradient(135deg,#C41969 0%,#901247 100%)",border:"none",borderRadius:14,cursor:loading?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:12,boxShadow:loading?"none":"0 4px 22px rgba(196,25,105,0.48),inset 0 1px 0 rgba(255,255,255,0.10)",transition:"background 0.2s ease"}}
-            whileHover={loading?{}:{scale:1.02,boxShadow:"0 6px 30px rgba(196,25,105,0.6)"}}
+            style={{width:"100%",padding:"15px 20px",background:loading?"rgba(30,40,60,0.8)":"linear-gradient(135deg,#BE123C 0%,#831843 100%)",border:"none",borderRadius:14,cursor:loading?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:12,boxShadow:loading?"none":"0 4px 22px rgba(190,18,60,0.48),inset 0 1px 0 rgba(255,255,255,0.10)",transition:"background 0.2s ease"}}
+            whileHover={loading?{}:{scale:1.02,boxShadow:"0 6px 30px rgba(190,18,60,0.6)"}}
             whileTap={loading?{}:{scale:0.97}}
           >
-            <div style={{width:26,height:26,borderRadius:"50%",background:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:"#C41969",flexShrink:0,boxShadow:"0 1px 4px rgba(0,0,0,0.25)"}}>G</div>
+            <div style={{width:26,height:26,borderRadius:"50%",background:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:"#BE123C",flexShrink:0,boxShadow:"0 1px 4px rgba(0,0,0,0.25)"}}>G</div>
             <span style={{fontSize:15,fontWeight:800,color:"#FFFFFF",letterSpacing:"0.02em"}}>{loading?"Signing in…":"Continue with Google"}</span>
             {!loading && <span style={{marginLeft:"auto",fontSize:16,opacity:0.5,color:"#fff"}}>→</span>}
           </motion.button>
@@ -1621,7 +1634,7 @@ function PendingScreen({ request, authUser, onSignOut, installPrompt, onInstallD
         {/* User chip */}
         <div className="animate-fade-up glass-card" style={{borderRadius:16,padding:"14px 18px",marginBottom:20,display:"flex",alignItems:"center",gap:14,position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)",pointerEvents:"none"}}/>
-          {authUser.photoURL ? <img src={authUser.photoURL} alt="" style={{width:42,height:42,borderRadius:"50%",border:"2px solid rgba(196,25,105,0.4)",flexShrink:0}}/> : <div style={{width:42,height:42,borderRadius:"50%",background:"linear-gradient(135deg,#C41969,#901247)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>}
+          {authUser.photoURL ? <img src={authUser.photoURL} alt="" style={{width:42,height:42,borderRadius:"50%",border:"2px solid rgba(190,18,60,0.4)",flexShrink:0}}/> : <div style={{width:42,height:42,borderRadius:"50%",background:"linear-gradient(135deg,#BE123C,#831843)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>}
           <div style={{flex:1,minWidth:0}}>
             <div style={{fontSize:13,fontWeight:800,color:C.ch,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.displayName}</div>
             <div style={{fontSize:11,color:C.chL,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authUser.email}</div>
@@ -1702,7 +1715,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
             {pendingRequests.length === 0 ? (
               <div className="empty-state" style={{ paddingTop:60 }}>
                 <div style={{ fontSize:32, marginBottom:12 }}>✓</div>
-                <div style={{ fontSize:"var(--text-lg,20px)", fontWeight:900, color:"var(--color-success,#4ADE80)", marginBottom:6 }}>All caught up</div>
+                <div style={{ fontSize:"var(--text-lg,20px)", fontWeight:900, color:"var(--color-success,#10B981)", marginBottom:6 }}>All caught up</div>
                 <div style={{ fontSize:"var(--text-sm,13px)", color:"var(--text-sub)" }}>No pending access requests</div>
               </div>
             ) : pendingRequests.map((req, i) => (
@@ -1717,7 +1730,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
                   </div>
                 </div>
                 {confirmRejectId === req.id ? (
-                  <div style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(196,25,105,0.08)", border:"1px solid rgba(196,25,105,0.25)", borderRadius:10, padding:"10px 14px" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(190,18,60,0.08)", border:"1px solid rgba(190,18,60,0.25)", borderRadius:10, padding:"10px 14px" }}>
                     <span style={{ flex:1, fontSize:12, color:"var(--text-sub)" }}>Reject {req.name}?</span>
                     <button onClick={() => { onReject(req); setConfirmRejectId(null); }} style={{ padding:"9px 14px", background:th.rdBg, border:"1.5px solid "+th.rd, borderRadius:8, color:th.rd, fontSize:12, fontWeight:800, cursor:"pointer", fontFamily:"inherit", minHeight:40 }}>Confirm</button>
                     <button onClick={() => setConfirmRejectId(null)} style={{ padding:"9px 14px", background:"transparent", border:"1px solid var(--border-faint)", borderRadius:8, color:"var(--text-sub)", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit", minHeight:40 }}>Cancel</button>
@@ -1740,7 +1753,7 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
                       <div style={{ fontSize:13, fontWeight:700, color:"var(--text)" }}>{req.name}</div>
                       <div style={{ fontSize:11, color:"var(--text-sub)" }}>{req.email} · {(req.requestedRoles || [req.requestedRole]).map(r => ROLES[r]?.label || r).join(", ")}</div>
                     </div>
-                    <span style={{ fontSize:11, fontWeight:800, padding:"3px 8px", borderRadius:20, background:req.status==="approved"?"rgba(9,115,83,0.2)":th.rdBg, color:req.status==="approved"?"#4ADE80":th.rd, border:"1px solid "+(req.status==="approved"?"rgba(9,115,83,0.35)":th.rd+"50") }}>{req.status}</span>
+                    <span style={{ fontSize:11, fontWeight:800, padding:"3px 8px", borderRadius:20, background:req.status==="approved"?"rgba(9,115,83,0.2)":th.rdBg, color:req.status==="approved"?"#10B981":th.rd, border:"1px solid "+(req.status==="approved"?"rgba(9,115,83,0.35)":th.rd+"50") }}>{req.status}</span>
                   </div>
                 ))}
               </div>
@@ -1824,33 +1837,33 @@ const GUIDE_STEPS={
   en:[
     {icon:"🏭",col:"#06B6D4",title:"What is TFC Order Tracker?",desc:"A real-time operations hub for Ocean Flair Group. Every order — from creation to delivery — is tracked here across all kitchens.",pts:["Live order status visible to every team","Covers all kitchens and outlets","Built for the daily food production workflow"]},
     {icon:"👥",col:"#A0C4FF",title:"Choose Your Role",desc:"Select the role that matches your job when you open the app. Each role shows only what you need — nothing extra.",pts:["Admin · Packing · Production · Kitchen","Your role is set by your manager","You can only access your assigned role"]},
-    {icon:"⚙️",col:"#EEEDF8",title:"Admin",desc:"Admin is the control centre. Create customer orders, plan weekly production, and manage the whole team from here.",pts:["Create new orders with items & quantities","Set daily production plans for the week","Track all orders across every stage","Manage team roles & access"]},
+    {icon:"⚙️",col:"#F4F4F5",title:"Admin",desc:"Admin is the control centre. Create customer orders, plan weekly production, and manage the whole team from here.",pts:["Create new orders with items & quantities","Set daily production plans for the week","Track all orders across every stage","Manage team roles & access"]},
     {icon:"📦",col:"#FBBF24",title:"Packing",desc:"Packing team sees all orders ready to pack and dispatch. Update the status as each order is packed.",pts:["See pending, cooking & ready-to-pack orders","Mark orders as packed & dispatched","Flag short or out-of-stock items","Real-time updates across all devices"]},
-    {icon:"🍳",col:"#4ADE80",title:"Production",desc:"Production team sees today's cooking queue with recipes. Mark items done when cooking is complete.",pts:["Today's plan is set by Admin","Tap any item to see the full recipe","Mark items cooked → moves to ready-to-pack","Progress bar tracks daily completion"]},
+    {icon:"🍳",col:"#10B981",title:"Production",desc:"Production team sees today's cooking queue with recipes. Mark items done when cooking is complete.",pts:["Today's plan is set by Admin","Tap any item to see the full recipe","Mark items cooked → moves to ready-to-pack","Progress bar tracks daily completion"]},
     {icon:"🚗",col:"#F87171",title:"Kitchen — Vins & Manja",desc:"Kitchen staff track live delivery orders for their outlet. See customer details and update delivery status.",pts:["Shows only your kitchen's orders","Customer address & order details","Update delivery status live","Mark orders as delivered"]},
   ],
   my:[
     {icon:"🏭",col:"#06B6D4",title:"Apa itu TFC Order Tracker?",desc:"Pusat operasi masa nyata untuk Ocean Flair Group. Setiap pesanan — dari penciptaan hingga penghantaran — dijejaki di sini.",pts:["Status pesanan langsung untuk semua pasukan","Merangkumi semua dapur dan cawangan","Dibina untuk aliran kerja pengeluaran makanan harian"]},
     {icon:"👥",col:"#A0C4FF",title:"Pilih Peranan Anda",desc:"Pilih peranan yang sepadan dengan pekerjaan anda. Setiap peranan menunjukkan hanya apa yang anda perlukan — tiada lebih.",pts:["Admin · Pembungkusan · Pengeluaran · Dapur","Peranan anda ditetapkan oleh pengurus anda","Anda hanya boleh mengakses peranan yang ditetapkan"]},
-    {icon:"⚙️",col:"#EEEDF8",title:"Admin",desc:"Admin adalah pusat kawalan. Buat pesanan pelanggan baru, rancang pengeluaran mingguan, dan urus seluruh pasukan.",pts:["Buat pesanan baru dengan item & kuantiti","Tetapkan rancangan pengeluaran harian untuk seminggu","Jejak semua pesanan di setiap peringkat","Urus peranan & akses pasukan"]},
+    {icon:"⚙️",col:"#F4F4F5",title:"Admin",desc:"Admin adalah pusat kawalan. Buat pesanan pelanggan baru, rancang pengeluaran mingguan, dan urus seluruh pasukan.",pts:["Buat pesanan baru dengan item & kuantiti","Tetapkan rancangan pengeluaran harian untuk seminggu","Jejak semua pesanan di setiap peringkat","Urus peranan & akses pasukan"]},
     {icon:"📦",col:"#FBBF24",title:"Pembungkusan",desc:"Pasukan pembungkusan melihat semua pesanan sedia untuk dibungkus. Kemaskini status apabila setiap pesanan dibungkus dan dihantar.",pts:["Lihat pesanan tertunggak, dimasak & sedia","Tandakan pesanan dibungkus & dihantar","Tandakan item kurang atau kehabisan stok","Kemaskini masa nyata di semua peranti"]},
-    {icon:"🍳",col:"#4ADE80",title:"Pengeluaran",desc:"Pasukan pengeluaran melihat baris gilir masakan hari ini dengan resipi. Tandakan item selesai apabila masakan selesai.",pts:["Rancangan hari ini ditetapkan oleh Admin","Ketik item untuk melihat resipi penuh","Tandakan item dimasak → sedia dibungkus","Bar kemajuan menjejak penyelesaian harian"]},
+    {icon:"🍳",col:"#10B981",title:"Pengeluaran",desc:"Pasukan pengeluaran melihat baris gilir masakan hari ini dengan resipi. Tandakan item selesai apabila masakan selesai.",pts:["Rancangan hari ini ditetapkan oleh Admin","Ketik item untuk melihat resipi penuh","Tandakan item dimasak → sedia dibungkus","Bar kemajuan menjejak penyelesaian harian"]},
     {icon:"🚗",col:"#F87171",title:"Dapur — Vins & Manja",desc:"Kakitangan dapur menjejaki pesanan penghantaran langsung untuk cawangan mereka. Lihat butiran pelanggan dan kemaskini status.",pts:["Menunjukkan pesanan dapur anda sahaja","Alamat pelanggan & butiran pesanan","Kemaskini status penghantaran secara langsung","Tandakan pesanan sebagai telah dihantar"]},
   ],
   bn:[
     {icon:"🏭",col:"#06B6D4",title:"TFC Order Tracker কী?",desc:"Ocean Flair Group-এর রিয়েল-টাইম অপারেশন হাব। প্রতিটি অর্ডার — তৈরি থেকে ডেলিভারি পর্যন্ত — সব কিচেনে এখানে ট্র্যাক করা হয়।",pts:["সব টিমের জন্য লাইভ অর্ডার স্ট্যাটাস","সব কিচেন ও আউটলেট কভার করে","দৈনিক খাদ্য উৎপাদনের জন্য তৈরি"]},
     {icon:"👥",col:"#A0C4FF",title:"আপনার ভূমিকা বেছে নিন",desc:"অ্যাপ খোলার সময় আপনার কাজের সাথে মেলে এমন ভূমিকা বেছে নিন। প্রতিটি ভূমিকা শুধু প্রয়োজনীয় তথ্য দেখায়।",pts:["Admin · Packing · Production · Kitchen","আপনার ম্যানেজার আপনার ভূমিকা নির্ধারণ করেন","শুধু নির্ধারিত ভূমিকাই অ্যাক্সেস করা যাবে"]},
-    {icon:"⚙️",col:"#EEEDF8",title:"Admin",desc:"Admin হল কন্ট্রোল সেন্টার। নতুন অর্ডার তৈরি করুন, সাপ্তাহিক উৎপাদন পরিকল্পনা করুন এবং পুরো টিম পরিচালনা করুন।",pts:["আইটেম ও পরিমাণ সহ নতুন অর্ডার তৈরি করুন","প্রতিদিনের উৎপাদন পরিকল্পনা সেট করুন","সব পর্যায়ে সব অর্ডার ট্র্যাক করুন","টিমের ভূমিকা ও অ্যাক্সেস পরিচালনা করুন"]},
+    {icon:"⚙️",col:"#F4F4F5",title:"Admin",desc:"Admin হল কন্ট্রোল সেন্টার। নতুন অর্ডার তৈরি করুন, সাপ্তাহিক উৎপাদন পরিকল্পনা করুন এবং পুরো টিম পরিচালনা করুন।",pts:["আইটেম ও পরিমাণ সহ নতুন অর্ডার তৈরি করুন","প্রতিদিনের উৎপাদন পরিকল্পনা সেট করুন","সব পর্যায়ে সব অর্ডার ট্র্যাক করুন","টিমের ভূমিকা ও অ্যাক্সেস পরিচালনা করুন"]},
     {icon:"📦",col:"#FBBF24",title:"Packing",desc:"প্যাকিং টিম প্যাক করতে প্রস্তুত সব অর্ডার দেখে। প্রতিটি অর্ডার প্যাক ও পাঠানো হলে স্ট্যাটাস আপডেট করুন।",pts:["পেন্ডিং, রান্না ও প্রস্তুত অর্ডার দেখুন","অর্ডার প্যাকড ও ডিসপ্যাচড চিহ্নিত করুন","শর্ট বা আউট-অফ-স্টক আইটেম ফ্ল্যাগ করুন","সব ডিভাইসে রিয়েল-টাইম আপডেট"]},
-    {icon:"🍳",col:"#4ADE80",title:"Production",desc:"প্রোডাকশন টিম রেসিপি সহ আজকের কিউ দেখে। রান্না সম্পন্ন হলে আইটেম চিহ্নিত করুন।",pts:["Admin থেকে আজকের পরিকল্পনা","আইটেম ট্যাপ করে সম্পূর্ণ রেসিপি দেখুন","রান্না → প্যাকের জন্য প্রস্তুত চিহ্নিত করুন","প্রগ্রেস বার সম্পন্নতা ট্র্যাক করে"]},
+    {icon:"🍳",col:"#10B981",title:"Production",desc:"প্রোডাকশন টিম রেসিপি সহ আজকের কিউ দেখে। রান্না সম্পন্ন হলে আইটেম চিহ্নিত করুন।",pts:["Admin থেকে আজকের পরিকল্পনা","আইটেম ট্যাপ করে সম্পূর্ণ রেসিপি দেখুন","রান্না → প্যাকের জন্য প্রস্তুত চিহ্নিত করুন","প্রগ্রেস বার সম্পন্নতা ট্র্যাক করে"]},
     {icon:"🚗",col:"#F87171",title:"Kitchen — Vins ও Manja",desc:"কিচেন স্টাফ তাদের আউটলেটের লাইভ ডেলিভারি অর্ডার ট্র্যাক করে। কাস্টমারের বিবরণ দেখুন ও ডেলিভারি স্ট্যাটাস আপডেট করুন।",pts:["শুধু আপনার কিচেনের অর্ডার তালিকা","কাস্টমারের ঠিকানা ও অর্ডার বিবরণ","ডেলিভারি স্ট্যাটাস লাইভ আপডেট করুন","অর্ডার ডেলিভারড হিসেবে চিহ্নিত করুন"]},
   ],
   mm:[
     {icon:"🏭",col:"#06B6D4",title:"TFC Order Tracker ဆိုတာ ဘာလဲ?",desc:"Ocean Flair Group အတွက် အချိန်နှင့်တပြေးညီ လုပ်ငန်းဆောင်ရွက်ရာ ဗဟိုဌာနဖြစ်သည်။ အမှာစာတိုင်းကို မီးဖိုချောင်အားလုံးတွင် ဤနေရာ၌ ခြေရာခံသည်။",pts:["အဖွဲ့တိုင်းအတွက် တိုက်ရိုက် အမှာစာ အခြေအနေ","မီးဖိုချောင်နှင့် ဆိုင်ခွဲ အားလုံး ပါဝင်သည်","နေ့စဉ် အစားအစာ ထုတ်လုပ်မှုအတွက် တည်ဆောက်"]},
     {icon:"👥",col:"#A0C4FF",title:"သင့်အခန်းကဏ္ဍ ရွေးချယ်ပါ",desc:"အက်ပ်ဖွင့်သောအခါ သင့်အလုပ်နှင့် ကိုက်ညီသော အခန်းကဏ္ဍ ရွေးချယ်ပါ။ အခန်းကဏ္ဍတိုင်းသည် လိုအပ်သည့် မြင်ကွင်းသာ ပေးသည်။",pts:["Admin · Packing · Production · Kitchen","သင့်မန်နေဂျာသည် သင့်အခန်းကဏ္ဍ သတ်မှတ်ပေးသည်","ချထားသောအခန်းကဏ္ဍကိုသာ ဝင်ရောက်နိုင်သည်"]},
-    {icon:"⚙️",col:"#EEEDF8",title:"Admin",desc:"Admin သည် ထိန်းချုပ်ရေးဗဟိုဖြစ်သည်။ ဖောက်သည်အမှာစာ ဖန်တီးပါ၊ အပတ်စဉ် ထုတ်လုပ်မှုအစီအစဉ် ချမှတ်ပါ၊ အဖွဲ့တစ်ခုလုံး စီမံပါ။",pts:["ပစ္စည်းနှင့် အရေအတွက်ဖြင့် အမှာစာ အသစ်ဖန်တီး","နေ့တိုင်း ထုတ်လုပ်မှုအစီအစဉ် သတ်မှတ်","အဆင့်တိုင်းတွင် အမှာစာ အားလုံး ခြေရာခံ","အဖွဲ့ အခန်းကဏ္ဍနှင့် ဝင်ရောက်ခွင့် စီမံ"]},
+    {icon:"⚙️",col:"#F4F4F5",title:"Admin",desc:"Admin သည် ထိန်းချုပ်ရေးဗဟိုဖြစ်သည်။ ဖောက်သည်အမှာစာ ဖန်တီးပါ၊ အပတ်စဉ် ထုတ်လုပ်မှုအစီအစဉ် ချမှတ်ပါ၊ အဖွဲ့တစ်ခုလုံး စီမံပါ။",pts:["ပစ္စည်းနှင့် အရေအတွက်ဖြင့် အမှာစာ အသစ်ဖန်တီး","နေ့တိုင်း ထုတ်လုပ်မှုအစီအစဉ် သတ်မှတ်","အဆင့်တိုင်းတွင် အမှာစာ အားလုံး ခြေရာခံ","အဖွဲ့ အခန်းကဏ္ဍနှင့် ဝင်ရောက်ခွင့် စီမံ"]},
     {icon:"📦",col:"#FBBF24",title:"Packing",desc:"Packing အဖွဲ့သည် ထုပ်ပိုးရန် အသင့်ဖြစ်သော အမှာစာ မြင်သည်။ ထုပ်ပိုးပြီး ပေးပို့သောအခါ အခြေအနေ အပ်ဒိတ်ပါ။",pts:["မျှော်လင့်, ချက်ပြုတ်, အသင့်ဖြစ်သော အမှာစာ ကြည့်","ထုပ်ပိုးပြီး ပေးပို့ပြီးဟု မှတ်သားပါ","ပမာဏ မလုံသောပစ္စည်း အမှတ်ပြုပါ","ကိရိယာ အားလုံးတွင် အချိန်နှင့်တပြေးညီ"]},
-    {icon:"🍳",col:"#4ADE80",title:"Production",desc:"ထုတ်လုပ်ရေးအဖွဲ့သည် ချက်နည်းပါ ယနေ့ ချက်ပြုတ်မှုစီတန်း မြင်သည်။ ချက်ပြုတ်ပြီးသောအခါ ပစ္စည်း မှတ်သားပါ။",pts:["Admin မှ ယနေ့ ထုတ်လုပ်မှုအစီအစဉ်","ချက်နည်း ပြည့်စုံမြင်ရန် ပစ္စည်း နှိပ်ပါ","ချက်ပြုတ်ပြီး → ထုပ်ပိုးရန် အသင့်ဟု မှတ်သား","တိုးတက်မှုဘား ပြည့်စုံမှု ခြေရာခံ"]},
+    {icon:"🍳",col:"#10B981",title:"Production",desc:"ထုတ်လုပ်ရေးအဖွဲ့သည် ချက်နည်းပါ ယနေ့ ချက်ပြုတ်မှုစီတန်း မြင်သည်။ ချက်ပြုတ်ပြီးသောအခါ ပစ္စည်း မှတ်သားပါ။",pts:["Admin မှ ယနေ့ ထုတ်လုပ်မှုအစီအစဉ်","ချက်နည်း ပြည့်စုံမြင်ရန် ပစ္စည်း နှိပ်ပါ","ချက်ပြုတ်ပြီး → ထုပ်ပိုးရန် အသင့်ဟု မှတ်သား","တိုးတက်မှုဘား ပြည့်စုံမှု ခြေရာခံ"]},
     {icon:"🚗",col:"#F87171",title:"Kitchen — Vins နှင့် Manja",desc:"မီးဖိုချောင်ဝန်ထမ်းများသည် သူတို့ဆိုင်ခွဲအတွက် တိုက်ရိုက် ပေးပို့မှုအမှာစာ ခြေရာခံသည်။",pts:["သင့်မီးဖိုချောင်၏ အမှာစာစာရင်းသာ ပြသည်","ဖောက်သည်လိပ်စာနှင့် အမှာစာ အသေးစိတ်","ပေးပို့မှု အခြေအနေ တိုက်ရိုက် အပ်ဒိတ်","ပေးပို့ပြီးဟု မှတ်သားပါ"]},
   ],
 };
@@ -1872,14 +1885,14 @@ function UserGuideModal({onClose}){
         <div style={{fontSize:10,fontWeight:900,letterSpacing:"0.14em",color:"#52525B",textTransform:"uppercase",marginBottom:10}}>USER GUIDE · TFC ORDER TRACKER</div>
         <div style={{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"center"}}>
           {GUIDE_LANGS.map(l=>(
-            <button key={l.c} onClick={()=>{setLang(l.c);setStep(0);}} style={{background:lang===l.c?"#C41969":"rgba(255,255,255,0.07)",border:`1.5px solid ${lang===l.c?"#C41969":"rgba(255,255,255,0.12)"}`,borderRadius:99,padding:"5px 12px",color:lang===l.c?"#fff":"#A1A1AA",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>
+            <button key={l.c} onClick={()=>{setLang(l.c);setStep(0);}} style={{background:lang===l.c?"#BE123C":"rgba(255,255,255,0.07)",border:`1.5px solid ${lang===l.c?"#BE123C":"rgba(255,255,255,0.12)"}`,borderRadius:99,padding:"5px 12px",color:lang===l.c?"#fff":"#A1A1AA",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>
               {l.f} {l.n}
             </button>
           ))}
         </div>
       </div>
       {/* Card */}
-      <motion.div key={`${lang}-${step}`} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{duration:0.28,ease:[0.16,1,0.3,1]}} style={{width:"100%",maxWidth:400,background:"#1C1C24",border:"1px solid rgba(255,255,255,0.10)",borderRadius:"20px 15px 22px 14px / 14px 22px 14px 20px",padding:"26px 22px",boxShadow:"0 24px 64px rgba(0,0,0,0.65)"}}>
+      <motion.div key={`${lang}-${step}`} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{duration:0.28,ease:[0.16,1,0.3,1]}} style={{width:"100%",maxWidth:400,background:"#14161C",border:"1px solid rgba(255,255,255,0.10)",borderRadius:"20px 15px 22px 14px / 14px 22px 14px 20px",padding:"26px 22px",boxShadow:"0 24px 64px rgba(0,0,0,0.65)"}}>
         {/* Icon */}
         <div style={{textAlign:"center",fontSize:52,lineHeight:1,marginBottom:14}}>{cur.icon}</div>
         {/* Colour bar */}
@@ -1887,7 +1900,7 @@ function UserGuideModal({onClose}){
         {/* Step label */}
         <div style={{fontSize:10,fontWeight:900,letterSpacing:"0.12em",color:"#52525B",textTransform:"uppercase",textAlign:"center",marginBottom:6}}>STEP {step+1} OF {total}</div>
         {/* Title */}
-        <div style={{fontSize:17,fontWeight:800,color:"#EEEDF8",textAlign:"center",marginBottom:10,lineHeight:1.3}}>{cur.title}</div>
+        <div style={{fontSize:17,fontWeight:800,color:"#F4F4F5",textAlign:"center",marginBottom:10,lineHeight:1.3}}>{cur.title}</div>
         {/* Desc */}
         <div style={{fontSize:13,color:"#A1A1AA",lineHeight:1.65,textAlign:"center",marginBottom:18}}>{cur.desc}</div>
         {/* Points */}
@@ -1909,7 +1922,7 @@ function UserGuideModal({onClose}){
       {/* Nav */}
       <div style={{display:"flex",gap:10,marginTop:14}}>
         <button onClick={goPrev} disabled={step===0} style={{padding:"10px 20px",borderRadius:99,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.12)",color:step===0?"#3F3F46":"#E4E4E7",fontSize:13,fontWeight:700,cursor:step===0?"default":"pointer",fontFamily:"inherit",opacity:step===0?0.35:1,transition:"all 0.15s"}}>← Back</button>
-        <button onClick={goNext} style={{padding:"10px 26px",borderRadius:99,background:"linear-gradient(135deg,#C41969,#901247)",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit",boxShadow:"0 4px 16px rgba(196,25,105,0.45)"}}>
+        <button onClick={goNext} style={{padding:"10px 26px",borderRadius:99,background:"linear-gradient(135deg,#BE123C,#831843)",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit",boxShadow:"0 4px 16px rgba(190,18,60,0.45)"}}>
           {step===total-1?"Got it ✓":"Next →"}
         </button>
       </div>
@@ -1970,7 +1983,7 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
                   border:`1.5px solid ${isActive?"var(--accent)":"rgba(6,182,212,0.28)"}`,
                   color:isActive?"#fff":"var(--text)",
                   fontWeight:700,fontSize:13,cursor:"pointer",
-                  boxShadow:isActive?"0 0 0 3px rgba(196,25,105,0.20), 2px 3px 0 rgba(0,0,0,0.20)":"1px 2px 0 rgba(0,0,0,0.08)",
+                  boxShadow:isActive?"0 0 0 3px rgba(190,18,60,0.20), 2px 3px 0 rgba(0,0,0,0.20)":"1px 2px 0 rgba(0,0,0,0.08)",
                   fontFamily:"inherit",
                   letterSpacing:"0.02em",
                   transition:"all 0.15s ease",
@@ -1994,13 +2007,13 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
           whileTap={{scale:0.97}}
           style={{
             width:"100%",padding:"14px 0",
-            background:selected?"linear-gradient(135deg,#C41969,#901247)":"var(--border)",
+            background:selected?"linear-gradient(135deg,#BE123C,#831843)":"var(--border)",
             border:"none",
             borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px",
             color:selected?"#fff":"var(--text-sub)",
             fontSize:16,fontWeight:700,cursor:selected?"pointer":"default",
             fontFamily:"inherit",
-            boxShadow:selected?"0 4px 14px rgba(196,25,105,0.35), 2px 3px 0 rgba(0,0,0,0.18)":"none",
+            boxShadow:selected?"0 4px 14px rgba(190,18,60,0.35), 2px 3px 0 rgba(0,0,0,0.18)":"none",
             transition:"all 0.2s ease",
             opacity:selected?1:0.5,
           }}
@@ -2076,7 +2089,7 @@ function NewOrderModal({onClose,onSubmit,notify}){
       </datalist>
       <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column"}}>
         <div style={{padding:"22px 30px",borderBottom:`1px solid ${th.divider}`,flexShrink:0,position:"relative"}}>
-          <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(196,25,105,0.28),transparent)",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(190,18,60,0.28),transparent)",pointerEvents:"none"}}/>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div>
               <div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Draft Purchase Order</div>
@@ -2131,7 +2144,7 @@ function NewOrderModal({onClose,onSubmit,notify}){
         </div>
         <div style={{padding:"18px 30px",borderTop:`1px solid ${th.divider}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0,background:th.footerBg,borderRadius:isMobile?"0":"0 0 20px 20px"}}>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <div style={{background:stagedItems.length>0?"rgba(196,25,105,0.15)":th.chipBg,border:"1px solid "+(stagedItems.length>0?"rgba(196,25,105,0.35)":th.divider),color:stagedItems.length>0?C.ol:C.chL,borderRadius:20,padding:"4px 12px",fontSize:12,fontWeight:800,transition:"all 0.3s"}}>
+            <div style={{background:stagedItems.length>0?"rgba(190,18,60,0.15)":th.chipBg,border:"1px solid "+(stagedItems.length>0?"rgba(190,18,60,0.35)":th.divider),color:stagedItems.length>0?C.ol:C.chL,borderRadius:20,padding:"4px 12px",fontSize:12,fontWeight:800,transition:"all 0.3s"}}>
               {stagedItems.length} item{stagedItems.length!==1?"s":""}
             </div>
             {stagedItems.length===0&&<span style={{fontSize:11,color:C.chL,fontWeight:600}}>Add items above</span>}
@@ -2227,8 +2240,8 @@ function OrderCard({order, active, onClick, onDelete, index}){
           {order.poName||order.restaurant+" Order"}
         </div>
         <div style={{display:"flex",alignItems:"center",gap:6,flexShrink:0,marginLeft:8}}>
-          {hasIssue&&<span style={{width:7,height:7,borderRadius:"50%",background:"#C41969",animation:"pulseSoft 2s infinite",display:"inline-block"}}/>}
-          <span style={{fontSize:active?19:14,fontWeight:900,color:pct===100?"#4ADE80":rc,lineHeight:1,letterSpacing:"-0.03em",textShadow:active?`0 0 14px ${rc}80`:"none"}}>{pct}%</span>
+          {hasIssue&&<span style={{width:7,height:7,borderRadius:"50%",background:"#BE123C",animation:"pulseSoft 2s infinite",display:"inline-block"}}/>}
+          <span style={{fontSize:active?19:14,fontWeight:900,color:pct===100?"#10B981":rc,lineHeight:1,letterSpacing:"-0.03em",textShadow:active?`0 0 14px ${rc}80`:"none"}}>{pct}%</span>
         </div>
       </div>
 
@@ -2244,7 +2257,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
 
       <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:onDelete?10:0}}>
         {s.delivered>0&&<span style={{fontSize:9,color:C.chM,background:"rgba(184,196,224,0.12)",border:"1px solid rgba(184,196,224,0.2)",borderRadius:20,padding:"2px 7px",fontWeight:700}}>{s.delivered} dlvrd</span>}
-        {s.packed>0&&<span style={{fontSize:9,color:C.ol,background:C.olBg,border:"1px solid rgba(196,25,105,0.2)",borderRadius:20,padding:"2px 7px",fontWeight:700}}>{s.packed} packed</span>}
+        {s.packed>0&&<span style={{fontSize:9,color:C.ol,background:C.olBg,border:"1px solid rgba(190,18,60,0.2)",borderRadius:20,padding:"2px 7px",fontWeight:700}}>{s.packed} packed</span>}
         {(s.prod+s.prod_done)>0&&<span style={{fontSize:9,color:C.amDk,background:C.amBg,border:"1px solid rgba(232,146,10,0.2)",borderRadius:20,padding:"2px 7px",fontWeight:700}}>{s.prod+s.prod_done} prod</span>}
         {s.short>0&&<span style={{fontSize:9,color:"#E8920A",background:"rgba(232,146,10,0.1)",border:"1px solid rgba(232,146,10,0.25)",borderRadius:20,padding:"2px 7px",fontWeight:700}}>{s.short} short</span>}
         {s.oos>0&&<span style={{fontSize:9,color:"#DC2626",background:"rgba(220,38,38,0.1)",border:"1px solid rgba(220,38,38,0.25)",borderRadius:20,padding:"2px 7px",fontWeight:700}}>{s.oos} OOS</span>}
@@ -2324,7 +2337,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
   const SC2={
     pending:   {label:"Pending",       c:"#8896B3", cls:"pk-pending"},
     production:{label:"Cooking",       c:"#FBB040", cls:"pk-production"},
-    prod_done: {label:"Ready to Pack", c:"#4ADE80", cls:"pk-prod_done"},
+    prod_done: {label:"Ready to Pack", c:"#10B981", cls:"pk-prod_done"},
     packed:    {label:"Packed ✓",      c:"#F87171", cls:"pk-packed"},
     delivered: {label:"Delivered",     c:"#6A7A9A", cls:"pk-delivered"},
     short:     {label:"Short ⚠",       c:"#E8920A", cls:"pk-short"},
@@ -2391,7 +2404,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
                   {/* Bug fix: added ||"" guard on item.unit to prevent "undefined" */}
                   {item.status==='short'?`Sent ${item.packedQty||0} / Req ${item.qty} ${item.unit||""}`:`${item.qty} ${item.unit||""}`}
                 </span>
-                {itemCode&&<span style={{fontSize:10,fontWeight:900,color:"#C41969",background:"rgba(196,25,105,0.12)",border:"1px solid rgba(196,25,105,0.28)",borderRadius:5,padding:"2px 7px",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.04em",boxShadow:"0 0 6px rgba(196,25,105,0.18)"}}># {itemCode}</span>}
+                {itemCode&&<span style={{fontSize:10,fontWeight:900,color:"#BE123C",background:"rgba(190,18,60,0.12)",border:"1px solid rgba(190,18,60,0.28)",borderRadius:5,padding:"2px 7px",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.04em",boxShadow:"0 0 6px rgba(190,18,60,0.18)"}}># {itemCode}</span>}
               </div>
             </div>
             <span className={`badge-glow-${item.status}`} style={{fontSize:10,fontWeight:800,padding:"5px 11px",borderRadius:20,color:cur.c,background:cur.c+"18",border:"1px solid "+cur.c+"35",whiteSpace:"nowrap",flexShrink:0,letterSpacing:"0.04em"}}>{cur.label}</span>
@@ -2521,10 +2534,10 @@ function PackingView({order, onUpdate, orders, notify}){
         <div style={{marginTop:14}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:7}}>
             <span style={{fontSize:10,color:C.chL,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em"}}>{totalDone} of {s.total} packed</span>
-            <span style={{fontSize:16,fontWeight:900,color:allDone?"#4ADE80":C.ch,letterSpacing:"-0.02em"}}>{pct}%</span>
+            <span style={{fontSize:16,fontWeight:900,color:allDone?"#10B981":C.ch,letterSpacing:"-0.02em"}}>{pct}%</span>
           </div>
           <div className="pk-progress-track">
-            <div className="pk-progress-fill" style={{width:pct+"%",background:allDone?"linear-gradient(90deg,#16A34A,#4ADE80)":"linear-gradient(90deg,"+rc+","+rc+"BB)",boxShadow:allDone?"0 0 12px rgba(74,222,128,0.5)":"0 0 8px "+rc+"50"}}/>
+            <div className="pk-progress-fill" style={{width:pct+"%",background:allDone?"linear-gradient(90deg,#16A34A,#10B981)":"linear-gradient(90deg,"+rc+","+rc+"BB)",boxShadow:allDone?"0 0 12px rgba(16,185,129,0.5)":"0 0 8px "+rc+"50"}}/>
           </div>
         </div>
 
@@ -2532,7 +2545,7 @@ function PackingView({order, onUpdate, orders, notify}){
         {(s.short>0||s.oos>0||s.prod>0||s.prod_done>0)&&(
           <div style={{display:"flex",gap:7,marginTop:10,flexWrap:"wrap"}}>
             {s.prod>0&&<span style={{fontSize:10,color:C.amDk,background:C.amBg,border:"1px solid rgba(232,146,10,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800}}>{s.prod} cooking</span>}
-            {s.prod_done>0&&<span style={{fontSize:10,color:"#4ADE80",background:"rgba(74,222,128,0.08)",border:"1px solid rgba(74,222,128,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800}}>{s.prod_done} ready</span>}
+            {s.prod_done>0&&<span style={{fontSize:10,color:"#10B981",background:"rgba(16,185,129,0.08)",border:"1px solid rgba(16,185,129,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800}}>{s.prod_done} ready</span>}
             {s.short>0&&<span style={{fontSize:10,color:"#E8920A",background:"rgba(232,146,10,0.08)",border:"1px solid rgba(232,146,10,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800}}>{s.short} short</span>}
             {s.oos>0&&<span style={{fontSize:10,color:"#DC2626",background:"rgba(220,38,38,0.08)",border:"1px solid rgba(220,38,38,0.25)",borderRadius:20,padding:"2px 9px",fontWeight:800}}>{s.oos} OOS</span>}
           </div>
@@ -2540,10 +2553,10 @@ function PackingView({order, onUpdate, orders, notify}){
 
         {/* All-done / all-resolved celebration */}
         {allResolved&&(
-          <div className="animate-fade-up" style={{marginTop:12,padding:"12px 16px",background:hasIssues?"linear-gradient(135deg,rgba(232,146,10,0.18),rgba(232,146,10,0.08))":"linear-gradient(135deg,rgba(9,115,83,0.25),rgba(22,163,74,0.15))",borderRadius:10,border:hasIssues?"1px solid rgba(232,146,10,0.35)":"1px solid rgba(74,222,128,0.3)",display:"flex",alignItems:"center",gap:10}}>
+          <div className="animate-fade-up" style={{marginTop:12,padding:"12px 16px",background:hasIssues?"linear-gradient(135deg,rgba(232,146,10,0.18),rgba(232,146,10,0.08))":"linear-gradient(135deg,rgba(9,115,83,0.25),rgba(22,163,74,0.15))",borderRadius:10,border:hasIssues?"1px solid rgba(232,146,10,0.35)":"1px solid rgba(16,185,129,0.3)",display:"flex",alignItems:"center",gap:10}}>
             <span style={{fontSize:20}}>{hasIssues?"⚠️":"🎉"}</span>
             <div>
-              <div style={{fontSize:13,fontWeight:800,color:hasIssues?"#E8920A":"#4ADE80"}}>{hasIssues?`Dispatched with ${s.short+s.oos} issue${s.short+s.oos>1?"s":""}`:allDone?"All items packed — ready to dispatch!":"Ready to dispatch"}</div>
+              <div style={{fontSize:13,fontWeight:800,color:hasIssues?"#E8920A":"#10B981"}}>{hasIssues?`Dispatched with ${s.short+s.oos} issue${s.short+s.oos>1?"s":""}`:allDone?"All items packed — ready to dispatch!":"Ready to dispatch"}</div>
               {hasIssues&&<div style={{fontSize:11,color:C.chL,marginTop:2,fontWeight:500}}>{s.short>0?`${s.short} short`+( s.oos>0?`, ${s.oos} OOS`:""):""}{s.short===0&&s.oos>0?`${s.oos} out of stock`:""} — send WhatsApp update</div>}
             </div>
           </div>
@@ -2649,7 +2662,7 @@ function ProductionView({orders, dailyProductions = [], onBatchUpdate, onDailyPr
     <div className="animate-fade-in custom-scrollbar">
       {recipeModal && (
         <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:999, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
-          <div className="animate-fade-up custom-scrollbar" style={{ background:"#0C0C12", borderRadius:20, maxWidth:500, width:"100%", maxHeight:"88vh", overflowY:"auto", padding:24, boxShadow:C.shM }}>
+          <div className="animate-fade-up custom-scrollbar" style={{ background:"#07080B", borderRadius:20, maxWidth:500, width:"100%", maxHeight:"88vh", overflowY:"auto", padding:24, boxShadow:C.shM }}>
             <div style={{ display:"flex", justifyContent:"space-between", marginBottom:16 }}>
               <span style={{ fontSize:16, fontWeight:900, color:C.ch }}>📖 Recipe</span>
               <button onClick={() => setRecipeModal(null)} style={{ background:C.off, border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", color:C.chM, fontSize:14 }}>✕</button>
@@ -2747,11 +2760,11 @@ function OrderingView({order}){
       )}
 
       <div className="animate-fade-up glass-card" style={{borderRadius:16,padding:"22px 28px",marginBottom:22,display:"flex",alignItems:"center",gap:20,position:"relative",overflow:"hidden"}}>
-        <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${pct===100?"rgba(74,222,128,0.3)":"rgba(196,25,105,0.22)"},transparent)`,pointerEvents:"none"}}/>
-        <ProgressRing radius={ringRadius} stroke={isMobile?10:8} progress={pct} color={pct===100?"#4ADE80":C.ol} />
+        <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:`linear-gradient(90deg,transparent,${pct===100?"rgba(16,185,129,0.3)":"rgba(190,18,60,0.22)"},transparent)`,pointerEvents:"none"}}/>
+        <ProgressRing radius={ringRadius} stroke={isMobile?10:8} progress={pct} color={pct===100?"#10B981":C.ol} />
         <div>
           <div style={{fontSize:10,color:C.chL,textTransform:"uppercase",letterSpacing:"0.12em",fontWeight:800,marginBottom:4}}>Fulfillment</div>
-          <div className="mobile-stat-num" style={{fontSize:isMobile?36:32,color:pct===100?"#4ADE80":C.ch,fontWeight:900,lineHeight:1,letterSpacing:"-0.03em"}}>{pct}%</div>
+          <div className="mobile-stat-num" style={{fontSize:isMobile?36:32,color:pct===100?"#10B981":C.ch,fontWeight:900,lineHeight:1,letterSpacing:"-0.03em"}}>{pct}%</div>
           <div style={{fontSize:11,color:C.chL,marginTop:6,fontWeight:600}}>{s.packed+s.delivered} of {s.total} items</div>
         </div>
       </div>
@@ -2909,10 +2922,10 @@ function AdminOrdersTab({ orders }) {
                 <span style={{fontSize:12,color:C.chM,fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:160}}>{o.poName||o.orderDate}</span>
                 {hasIssue&&<span style={{fontSize:9,color:C.rd,background:"rgba(220,38,38,0.1)",border:"1px solid rgba(220,38,38,0.25)",borderRadius:20,padding:"2px 7px",fontWeight:900}}>⚠ Issues</span>}
               </div>
-              <span style={{fontSize:16,fontWeight:900,color:pct===100?"#4ADE80":C.ch,letterSpacing:"-0.02em"}}>{pct}%</span>
+              <span style={{fontSize:16,fontWeight:900,color:pct===100?"#10B981":C.ch,letterSpacing:"-0.02em"}}>{pct}%</span>
             </div>
             <div style={{height:5,background:th.trackBg,borderRadius:99,overflow:"hidden"}}>
-              <div style={{height:5,width:pct+"%",background:pct===100?"linear-gradient(90deg,#16A34A,#4ADE80)":"linear-gradient(90deg,"+rc+","+rc+"BB)",borderRadius:99,transition:"width 1s cubic-bezier(0.16,1,0.3,1)",boxShadow:pct===100?"0 0 8px rgba(74,222,128,0.5)":"none"}}/>
+              <div style={{height:5,width:pct+"%",background:pct===100?"linear-gradient(90deg,#16A34A,#10B981)":"linear-gradient(90deg,"+rc+","+rc+"BB)",borderRadius:99,transition:"width 1s cubic-bezier(0.16,1,0.3,1)",boxShadow:pct===100?"0 0 8px rgba(16,185,129,0.5)":"none"}}/>
             </div>
             <div style={{fontSize:10,color:C.chL,marginTop:6,fontWeight:600}}>{s.packed+s.delivered}/{s.total} items fulfilled</div>
           </div>
@@ -2976,10 +2989,10 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
           const dDone = day.dp?.items?.filter(i=>i.status==="prod_done").length ?? 0;
           const dTotal = day.dp?.items?.length ?? 0;
           const allDone = hasPlan && dTotal > 0 && dDone === dTotal;
-          let dotColor = hasPlan ? (allDone ? "#4ADE80" : isLive ? C.ol : C.am) : "transparent";
+          let dotColor = hasPlan ? (allDone ? "#10B981" : isLive ? C.ol : C.am) : "transparent";
           return (
             <button key={day.date} onClick={() => setSelectedDate(day.date)}
-              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 2px",borderRadius:10,border:isSelected?`2px solid ${C.ol}`:isToday?`1.5px solid rgba(196,25,105,0.30)`:"1.5px solid transparent",background:isSelected?C.olBg:isToday?"rgba(196,25,105,0.04)":"transparent",cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>
+              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 2px",borderRadius:10,border:isSelected?`2px solid ${C.ol}`:isToday?`1.5px solid rgba(190,18,60,0.30)`:"1.5px solid transparent",background:isSelected?C.olBg:isToday?"rgba(190,18,60,0.04)":"transparent",cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>
               <span style={{fontSize:9,fontWeight:900,color:isToday?C.ol:C.chL,textTransform:"uppercase",letterSpacing:"0.04em"}}>{day.dayOfWeek.slice(0,3)}</span>
               <span style={{fontSize:15,fontWeight:isToday?900:700,color:isSelected?C.ol:isToday?C.ch:C.chM,lineHeight:1}}>{new Date(day.date+"T00:00:00").getDate()}</span>
               <span style={{width:6,height:6,borderRadius:"50%",background:dotColor,opacity:hasPlan?1:0.3,border:hasPlan&&!allDone?"1px solid "+dotColor:"none"}}/>
@@ -2996,26 +3009,26 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
               <div style={{fontSize:18,marginBottom:6}}>📋</div>
               <div style={{fontSize:14,fontWeight:900,color:C.ch,marginBottom:4}}>{displayDay.dayOfWeek}</div>
               <div style={{fontSize:11,color:C.chL,marginBottom:18}}>{displayDay.displayDate} · No production planned</div>
-              <button onClick={()=>setEditingDay(displayDay)} style={{padding:"11px 28px",background:`linear-gradient(135deg,${C.ol},${C.olDk})`,border:"none",borderRadius:12,fontSize:13,fontWeight:900,color:"#fff",cursor:"pointer",fontFamily:"inherit",boxShadow:`0 4px 16px rgba(196,25,105,0.35)`}}>+ Create Plan</button>
+              <button onClick={()=>setEditingDay(displayDay)} style={{padding:"11px 28px",background:`linear-gradient(135deg,${C.ol},${C.olDk})`,border:"none",borderRadius:12,fontSize:13,fontWeight:900,color:"#fff",cursor:"pointer",fontFamily:"inherit",boxShadow:`0 4px 16px rgba(190,18,60,0.35)`}}>+ Create Plan</button>
             </div>
           ) : (
-            <div style={{background:"var(--card-bg)",border:`1px solid ${isDayActive?"rgba(196,25,105,0.28)":th.divider}`,borderRadius:16,overflow:"hidden",boxShadow:isDayActive?"0 0 0 1px rgba(196,25,105,0.10)":"none"}}>
+            <div style={{background:"var(--card-bg)",border:`1px solid ${isDayActive?"rgba(190,18,60,0.28)":th.divider}`,borderRadius:16,overflow:"hidden",boxShadow:isDayActive?"0 0 0 1px rgba(190,18,60,0.10)":"none"}}>
               {/* Day header */}
               <div style={{padding:"14px 16px",borderBottom:`1px solid ${th.divider}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                 <div>
                   <div style={{fontSize:13,fontWeight:900,color:isTodaySelected?C.ol:C.ch,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:4}}>{displayDay.dayOfWeek} · {displayDay.displayDate}</div>
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
-                    <span style={{fontSize:9,fontWeight:900,padding:"2px 7px",borderRadius:20,background:isDayActive?"rgba(22,163,74,0.12)":"rgba(136,150,179,0.1)",color:isDayActive?"#4ADE80":"#8896B3",border:"1px solid "+(isDayActive?"rgba(22,163,74,0.3)":"rgba(136,150,179,0.2)")}}>{isDayActive?"● LIVE":"○ DRAFT"}</span>
+                    <span style={{fontSize:9,fontWeight:900,padding:"2px 7px",borderRadius:20,background:isDayActive?"rgba(22,163,74,0.12)":"rgba(136,150,179,0.1)",color:isDayActive?"#10B981":"#8896B3",border:"1px solid "+(isDayActive?"rgba(22,163,74,0.3)":"rgba(136,150,179,0.2)")}}>{isDayActive?"● LIVE":"○ DRAFT"}</span>
                     {isTodaySelected&&<span style={{fontSize:9,background:C.olBg,color:C.ol,border:"1px solid "+C.olBgD,borderRadius:20,padding:"2px 7px",fontWeight:900}}>TODAY</span>}
                   </div>
                 </div>
                 <div style={{textAlign:"right"}}>
-                  <div style={{fontSize:24,fontWeight:900,lineHeight:1,color:doneCnt===totalCnt&&totalCnt>0?"#4ADE80":C.ch}}>{doneCnt}/{totalCnt}</div>
+                  <div style={{fontSize:24,fontWeight:900,lineHeight:1,color:doneCnt===totalCnt&&totalCnt>0?"#10B981":C.ch}}>{doneCnt}/{totalCnt}</div>
                   <div style={{fontSize:9,color:C.chL,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em"}}>Done</div>
                 </div>
               </div>
               {/* Progress bar */}
-              {totalCnt > 0 && <div style={{height:3,background:th.trackBg}}><div style={{height:"100%",width:`${(doneCnt/totalCnt)*100}%`,background:doneCnt===totalCnt?"#4ADE80":C.ol,transition:"width 0.5s ease",borderRadius:2}}/></div>}
+              {totalCnt > 0 && <div style={{height:3,background:th.trackBg}}><div style={{height:"100%",width:`${(doneCnt/totalCnt)*100}%`,background:doneCnt===totalCnt?"#10B981":C.ol,transition:"width 0.5s ease",borderRadius:2}}/></div>}
 
               {/* Items */}
               <div style={{padding:"10px 16px"}}>
@@ -3024,7 +3037,7 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
                   return (
                     <div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",borderBottom:idx<displayDay.dp.items.length-1?`1px solid ${th.divider}`:"none"}}>
                       <div style={{display:"flex",alignItems:"center",gap:8,flex:1,minWidth:0}}>
-                        <div style={{width:8,height:8,borderRadius:"50%",flexShrink:0,background:done?"#4ADE80":isDayActive?C.ol:C.am,boxShadow:done?"0 0 6px rgba(74,222,128,0.5)":isDayActive?`0 0 6px rgba(196,25,105,0.3)`:"none"}}/>
+                        <div style={{width:8,height:8,borderRadius:"50%",flexShrink:0,background:done?"#10B981":isDayActive?C.ol:C.am,boxShadow:done?"0 0 6px rgba(16,185,129,0.5)":isDayActive?`0 0 6px rgba(190,18,60,0.3)`:"none"}}/>
                         <div style={{flex:1,minWidth:0}}>
                           <div style={{fontSize:12,fontWeight:800,color:done?C.chL:C.ch,textDecoration:done?"line-through":"none",opacity:done?0.65:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{item.product}</div>
                           <div style={{display:"flex",gap:4,marginTop:2,flexWrap:"wrap"}}>
@@ -3036,7 +3049,7 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
                       </div>
                       <div style={{textAlign:"right",flexShrink:0,marginLeft:10,fontFamily:"'JetBrains Mono',monospace",fontSize:10,fontWeight:700}}>
                         {done
-                          ? <span style={{color:"#4ADE80"}}>{item.actualKgQty??item.kgQty}kg ✓</span>
+                          ? <span style={{color:"#10B981"}}>{item.actualKgQty??item.kgQty}kg ✓</span>
                           : <span style={{color:C.am}}>{item.kgQty}kg{item.packetQty>0?` · ${item.packetQty}p`:""}</span>}
                       </div>
                     </div>
@@ -3046,7 +3059,7 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
 
               {/* Actions */}
               {confirmDeleteDpId === displayDay.dp.id ? (
-                <div style={{margin:"0 16px 16px",display:"flex",alignItems:"center",gap:8,background:"rgba(196,25,105,0.07)",border:"1px solid rgba(196,25,105,0.2)",borderRadius:8,padding:"10px 12px"}}>
+                <div style={{margin:"0 16px 16px",display:"flex",alignItems:"center",gap:8,background:"rgba(190,18,60,0.07)",border:"1px solid rgba(190,18,60,0.2)",borderRadius:8,padding:"10px 12px"}}>
                   <span style={{flex:1,fontSize:11,color:"var(--text-sub)",fontWeight:700}}>Delete {displayDay.dayOfWeek}'s plan?</span>
                   <button onClick={()=>{onDeleteDP(displayDay.dp.id);setConfirmDeleteDpId(null);}} style={{padding:"7px 12px",background:"rgba(220,38,38,0.12)",border:"1px solid rgba(220,38,38,0.35)",borderRadius:7,fontSize:11,fontWeight:800,color:C.rd,cursor:"pointer",fontFamily:"inherit",minHeight:36}}>Delete</button>
                   <button onClick={()=>setConfirmDeleteDpId(null)} style={{padding:"7px 12px",background:"transparent",border:"1px solid var(--border-faint)",borderRadius:7,fontSize:11,fontWeight:700,color:"var(--text-sub)",cursor:"pointer",fontFamily:"inherit",minHeight:36}}>Cancel</button>
@@ -3068,7 +3081,7 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
             {hasDrafts ? "⚠ Unpublished drafts" : "✓ All plans live"}
           </div>
           {hasDrafts && (
-            <button onClick={() => setShowActivateConfirm(true)} style={{flex:2,padding:12,background:`linear-gradient(135deg,${C.ol},${C.olDk})`,border:"none",borderRadius:9,fontSize:12,fontWeight:900,color:"#fff",cursor:"pointer",boxShadow:"0 4px 16px rgba(196,25,105,.4)",fontFamily:"inherit"}}>⚡ Activate → Send to Kitchen</button>
+            <button onClick={() => setShowActivateConfirm(true)} style={{flex:2,padding:12,background:`linear-gradient(135deg,${C.ol},${C.olDk})`,border:"none",borderRadius:9,fontSize:12,fontWeight:900,color:"#fff",cursor:"pointer",boxShadow:"0 4px 16px rgba(190,18,60,.4)",fontFamily:"inherit"}}>⚡ Activate → Send to Kitchen</button>
           )}
         </div>
       )}
@@ -3083,7 +3096,7 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
             </div>
             <div style={{display:"flex",gap:10,marginTop:4}}>
               <button onClick={()=>setShowActivateConfirm(false)} style={{flex:1,padding:"13px",background:th.chipBg,border:"1px solid "+th.divider,borderRadius:12,fontSize:13,fontWeight:800,color:C.chL,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
-              <button onClick={()=>{onActivateWeek();setShowActivateConfirm(false);}} style={{flex:2,padding:"13px",background:"linear-gradient(135deg,#C41969,#901247)",border:"none",borderRadius:12,fontSize:13,fontWeight:900,color:"#fff",cursor:"pointer",boxShadow:"0 4px 16px rgba(196,25,105,.4)",fontFamily:"inherit"}}>⚡ Yes, Activate</button>
+              <button onClick={()=>{onActivateWeek();setShowActivateConfirm(false);}} style={{flex:2,padding:"13px",background:"linear-gradient(135deg,#BE123C,#831843)",border:"none",borderRadius:12,fontSize:13,fontWeight:900,color:"#fff",cursor:"pointer",boxShadow:"0 4px 16px rgba(190,18,60,.4)",fontFamily:"inherit"}}>⚡ Yes, Activate</button>
             </div>
           </div>
         </div>
@@ -3196,14 +3209,19 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ minHeight: "100vh", background: "#090B10", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          <div style={{ background: "#2A2828", borderRadius: 16, padding: 32, maxWidth: 400, border: "1px solid #C41969", textAlign: "center" }}>
+        <div style={{ minHeight: "100vh", background: "#0A0B0E", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          <div style={{ background: "#14161C", borderRadius: 16, padding: 32, maxWidth: 400, border: "1px solid rgba(190,18,60,0.3)", borderLeft: "3px solid #BE123C", textAlign: "center", boxShadow: "0 16px 60px rgba(0,0,0,0.7)" }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
-            <div style={{ fontSize: 20, fontWeight: 900, color: "var(--text)", marginBottom: 8 }}>Something went wrong</div>
-            <div style={{ fontSize: 13, color: "#8896B3", marginBottom: 24 }}>{this.state.error?.message || "An unexpected error occurred."}</div>
-            <button onClick={() => window.location.reload()} style={{ background: "#C41969", color: "#fff", border: "none", borderRadius: 8, padding: "12px 24px", fontWeight: 800, cursor: "pointer", fontSize: 14 }}>
-              Reload App
-            </button>
+            <div style={{ fontSize: 20, fontWeight: 900, color: "#F4F4F5", marginBottom: 8 }}>Something went wrong</div>
+            <div style={{ fontSize: 13, color: "#8B8B96", marginBottom: 24, lineHeight: 1.5 }}>{this.state.error?.message || "An unexpected error occurred."}</div>
+            <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+              <button onClick={() => this.setState({ hasError: false, error: null })} style={{ background: "transparent", color: "#C4C4C8", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "12px 20px", fontWeight: 700, cursor: "pointer", fontSize: 14, fontFamily: "inherit", minHeight: 44 }}>
+                Try Again
+              </button>
+              <button onClick={() => window.location.reload()} style={{ background: "linear-gradient(135deg,#BE123C,#831843)", color: "#fff", border: "none", borderRadius: 8, padding: "12px 24px", fontWeight: 800, cursor: "pointer", fontSize: 14, fontFamily: "inherit", minHeight: 44, boxShadow: "0 4px 16px rgba(190,18,60,0.3)" }}>
+                Reload App
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -3247,7 +3265,7 @@ function BottomNav({ activeTab, onTab, unreadCount }) {
             <div style={{ position: "relative", background: active ? "rgba(6,182,212,0.12)" : "transparent", borderRadius: 12, padding: "5px 8px", transition: "background 0.2s" }}>
               {tab.icon(active)}
               {tab.badge > 0 && (
-                <span style={{ position:"absolute", top:-4, right:-4, background:"#C41969", color:"#fff", borderRadius:"50%", width:17, height:17, fontSize:9, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", border:"1.5px solid var(--page-bg)", animation:"pulseSoft 2s infinite" }}>
+                <span style={{ position:"absolute", top:-4, right:-4, background:"#BE123C", color:"#fff", borderRadius:"50%", width:17, height:17, fontSize:9, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", border:"1.5px solid var(--page-bg)", animation:"pulseSoft 2s infinite" }}>
                   {tab.badge > 9 ? "9+" : tab.badge}
                 </span>
               )}
@@ -3269,7 +3287,7 @@ function NotificationsTab({ role, userJoinDate }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem("tfc_last_notif_seen", String(Date.now()));
+    try { localStorage.setItem("tfc_last_notif_seen", String(Date.now())); } catch(_) {}
     const cutoff = Math.max(Date.now() - WEEK_MS, userJoinDate || 0);
     const q = query(
       collection(db, "notifications"),
@@ -3335,7 +3353,7 @@ function ProfileTab({ authUser, userRecord, onSignOut, installPrompt, onInstallD
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:24, padding:"16px 18px", background:C.off, border:"1.5px solid "+C.bdrL, borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", boxShadow:C.sh }}>
         {authUser?.photoURL
           ? <img src={authUser.photoURL} alt="" style={{ width:52, height:52, borderRadius:"50%", border:"2px solid "+C.bdrL, flexShrink:0 }}/>
-          : <div style={{ width:52, height:52, borderRadius:"50%", background:"linear-gradient(135deg,#C41969,#901247)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, fontWeight:900, color:"#fff", flexShrink:0 }}>{authUser?.displayName?.[0]||"?"}</div>
+          : <div style={{ width:52, height:52, borderRadius:"50%", background:"linear-gradient(135deg,#BE123C,#831843)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, fontWeight:900, color:"#fff", flexShrink:0 }}>{authUser?.displayName?.[0]||"?"}</div>
         }
         <div style={{ flex:1, minWidth:0 }}>
           <div style={{ fontSize:16, fontWeight:800, color:C.ch, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{authUser?.displayName||"User"}</div>
@@ -3362,7 +3380,7 @@ function ProfileTab({ authUser, userRecord, onSignOut, installPrompt, onInstallD
             </div>
             <div style={{ background:"var(--sub-bg,rgba(245,222,141,0.04))", border:"1px solid var(--border-faint)", borderRadius:12, padding:"12px 10px", textAlign:"center" }}>
               <div style={{ fontSize:"var(--text-2xs,10px)", color:C.chL, textTransform:"uppercase", letterSpacing:"var(--ls-label,0.12em)", marginBottom:4 }}>Packed/wk</div>
-              <div style={{ fontSize:"var(--text-md,17px)", fontWeight:800, color:packedThisWeek>0?"var(--color-success,#4ADE80)":C.ch }}>{packedThisWeek}</div>
+              <div style={{ fontSize:"var(--text-md,17px)", fontWeight:800, color:packedThisWeek>0?"var(--color-success,#10B981)":C.ch }}>{packedThisWeek}</div>
             </div>
           </div>
         );
@@ -3554,9 +3572,12 @@ function TFCOrderSystem(){
     const cleanRoles = roles.filter(r => r && typeof r === "string");
     if (!cleanRoles.length) return;
     try {
+      const ctrl = new AbortController();
+      const timeoutId = setTimeout(() => ctrl.abort(), 15000); // 15s timeout
       const res = await fetch("/.netlify/functions/push", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: ctrl.signal,
         body: JSON.stringify({
           targetRoles: cleanRoles,
           payload: { title, body, tag },
@@ -3564,6 +3585,7 @@ function TFCOrderSystem(){
           senderEmail: authUser?.email || null,
         }),
       });
+      clearTimeout(timeoutId);
       if (!res.ok) {
         // Server error (500/502/etc) — retry once after 2s before giving up
         if (_attempt < 1) {
@@ -3786,7 +3808,7 @@ function TFCOrderSystem(){
     const cutoff = Math.max(Date.now() - WEEK_MS, userJoinDate);
     const q = query(collection(db, "notifications"), where("sentAt", ">=", cutoff), orderBy("sentAt", "desc"), limit(30));
     return onSnapshot(q, snap => {
-      const lastSeen = parseInt(localStorage.getItem("tfc_last_notif_seen") || "0");
+      let lastSeen = 0; try { lastSeen = parseInt(localStorage.getItem("tfc_last_notif_seen") || "0"); } catch(_) {}
       const relevant = snap.docs.map(d => d.data()).filter(n => n.targetRoles?.includes(role));
       setUnreadCount(relevant.filter(n => n.sentAt > lastSeen).length);
     }, (err) => { console.error("Notifications snapshot error:", err); });
@@ -3839,23 +3861,39 @@ function TFCOrderSystem(){
   async function handleGoogleSignIn() {
     try { await signInWithPopup(auth, googleProvider); }
     catch(e) {
-      if (e?.code === "auth/popup-blocked" || e?.code === "auth/cancelled-popup-request") {
+      const code = e?.code || "";
+      // Mobile/blocked popups — fall back to full-page redirect
+      if (code === "auth/popup-blocked" || code === "auth/cancelled-popup-request" || code === "auth/popup-closed-by-user") {
         try { await signInWithRedirect(auth, googleProvider); return; }
         catch(e2) { notify("Sign-in failed. Please try again.", "error"); return; }
       }
-      const msg = e?.code === "auth/unauthorized-domain"
-        ? "Domain not authorized in Firebase — add this site's URL to Firebase Console → Authentication → Authorized domains."
+      const msg = code === "auth/unauthorized-domain" ? "Domain not authorized — contact your admin."
+        : code === "auth/network-request-failed" ? "Network error. Check your internet."
+        : code === "auth/operation-not-allowed" ? "Google sign-in is not enabled."
+        : code === "auth/user-disabled" ? "Your account has been disabled."
         : "Sign-in failed. Please try again.";
       notify(msg, "error");
+      // Re-throw so child component (LoginScreen) can stop its loading state
+      throw e;
     }
   }
 
   async function handleSignOut() {
+    // Clean up FCM token registration so this device stops receiving pushes
+    try {
+      if (currentFCMToken.current) {
+        await deleteDoc(doc(db, "fcm_tokens", currentFCMToken.current));
+        currentFCMToken.current = null;
+      }
+      try { localStorage.removeItem(FCM_LS_KEY); } catch(_) {}
+      fcmRegLastKeyRef.current = null;
+    } catch(_) { /* non-fatal */ }
     await signOut(auth);
     setPhase("select"); setRole(null); setActiveId(null);
     setUserRecord(null); setAccessRequest(null);
     setShowModal(false); setEditingOrder(null); setSidebarOpen(false);
     setActiveTab("dashboard"); setScreenExiting(false);
+    setNotifStatus("idle");
   }
 
   async function submitAccessRequest(requestedRoles, enteredName, enteredOutlet) {
@@ -4195,7 +4233,7 @@ function TFCOrderSystem(){
     const topBarShd  = "0 2px 16px rgba(0,0,0,0.50)";
     const sidebarBg  = th.panelBg;
     const sidebarBdr = `1px solid ${th.divider}`;
-    const mainBg     = "#111118";
+    const mainBg     = "#0A0B0E";
     const orderCount = th.chL;
     const copyright  = th.chXL;
 
@@ -4216,7 +4254,7 @@ function TFCOrderSystem(){
         <div className="portal-orb portal-orb-4"/>
         <div className="portal-orb portal-orb-5"/>
 
-        <AnimatePresence>{toast&&<Toast msg={toast.msg} type={toast.type}/>}</AnimatePresence>
+        <AnimatePresence>{toast&&<Toast msg={toast.msg} type={toast.type} onClose={()=>setToast(null)}/>}</AnimatePresence>
         {showModal&&<NewOrderModal onClose={()=>setShowModal(false)} onSubmit={handleNewOrder} notify={notify}/>}
         {editingOrder&&<EditOrderModal order={editingOrder} onClose={()=>setEditingOrder(null)} onSave={saveOrderEdit} notify={notify}/>}
 
@@ -4225,12 +4263,12 @@ function TFCOrderSystem(){
 
         {/* ── Install Banner ── */}
         {showInstallBanner&&<div className="install-banner">
-          <div style={{width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#C41969,#901247)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0,boxShadow:"0 4px 14px rgba(196,25,105,0.45)"}}>🍽️</div>
+          <div style={{width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#BE123C,#831843)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0,boxShadow:"0 4px 14px rgba(190,18,60,0.45)"}}>🍽️</div>
           <div style={{flex:1,minWidth:0}}>
             <div style={{fontSize:13,fontWeight:800,color:"var(--text)",lineHeight:1.2}}>Add to Home Screen</div>
             <div style={{fontSize:11,color:"#8896B3",marginTop:2,fontWeight:500}}>Install TFC Order Tracker for quick access</div>
           </div>
-          <button onClick={async()=>{ if(installPrompt){await installPrompt.prompt();setInstallPrompt(null);} setShowInstallBanner(false); }} style={{background:"linear-gradient(135deg,#C41969,#901247)",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:800,padding:"8px 14px",cursor:"pointer",flexShrink:0,boxShadow:"0 2px 10px rgba(196,25,105,0.4)"}}>Install</button>
+          <button onClick={async()=>{ if(installPrompt){await installPrompt.prompt();setInstallPrompt(null);} setShowInstallBanner(false); }} style={{background:"linear-gradient(135deg,#BE123C,#831843)",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:800,padding:"8px 14px",cursor:"pointer",flexShrink:0,boxShadow:"0 2px 10px rgba(190,18,60,0.4)"}}>Install</button>
           <button onClick={()=>setShowInstallBanner(false)} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,color:"#8896B3",fontSize:12,fontWeight:700,padding:"8px 12px",cursor:"pointer",flexShrink:0}}>Later</button>
         </div>}
 
@@ -4242,8 +4280,8 @@ function TFCOrderSystem(){
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             {isMobile&&<button onClick={()=>setSidebarOpen(true)} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,minWidth:44,minHeight:44,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.ch,fontSize:17,flexShrink:0}}>☰</button>}
             <div style={{position:"relative",width:34,height:34,flexShrink:0}}>
-              <div style={{width:34,height:34,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,boxShadow:"0 0 0 1px rgba(196,25,105,0.3),0 2px 10px rgba(196,25,105,0.2)"}}>🍽️</div>
-              <div style={{position:"absolute",inset:-4,borderRadius:"50%",border:"1px solid rgba(196,25,105,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
+              <div style={{width:34,height:34,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,boxShadow:"0 0 0 1px rgba(190,18,60,0.3),0 2px 10px rgba(190,18,60,0.2)"}}>🍽️</div>
+              <div style={{position:"absolute",inset:-4,borderRadius:"50%",border:"1px solid rgba(190,18,60,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
             </div>
             <div>
               <div className="gradient-text-brand" style={{fontSize:15,fontWeight:900,letterSpacing:"-0.02em",lineHeight:1}}>Order Tracker</div>
@@ -4260,7 +4298,7 @@ function TFCOrderSystem(){
               <span style={{fontSize:11,fontWeight:800,color:roleConfig.color,background:roleConfig.color+"14",border:"1px solid "+roleConfig.color+"35",borderRadius:20,padding:isMobile?"6px 10px":"6px 14px",letterSpacing:"0.02em",whiteSpace:"nowrap",boxShadow:"0 0 14px "+roleConfig.color+"25",display:"flex",alignItems:"center",gap:6}}>
                 <span style={{fontSize:10}}>{roleConfig.icon}</span>{!isMobile&&roleConfig.label}
               </span>
-              {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#C41969",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #111118",animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
+              {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#BE123C",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #0A0B0E",animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
             </div>
             {"Notification" in window && (
               <button
@@ -4277,16 +4315,16 @@ function TFCOrderSystem(){
                   }
                 }}
                 title={notifPermission==="granted"?(notifStatus==="active"?"Notifications active ✓":notifStatus==="error"?"Notification error — click to retry":"Registering…"):notifPermission==="denied"?"Notifications blocked":"Enable notifications"}
-                style={{background:notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.08)":notifStatus==="error"?"rgba(248,113,113,0.08)":"rgba(232,146,10,0.08)"):"rgba(255,255,255,0.04)",border:`1px solid ${notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.25)":notifStatus==="error"?"rgba(248,113,113,0.25)":"rgba(232,146,10,0.25)"):notifPermission==="denied"?"rgba(248,113,113,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:8,minWidth:36,minHeight:36,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,position:"relative",flexShrink:0,transition:"all 0.2s"}}
+                style={{background:notifPermission==="granted"?(notifStatus==="active"?"rgba(16,185,129,0.08)":notifStatus==="error"?"rgba(248,113,113,0.08)":"rgba(232,146,10,0.08)"):"rgba(255,255,255,0.04)",border:`1px solid ${notifPermission==="granted"?(notifStatus==="active"?"rgba(16,185,129,0.25)":notifStatus==="error"?"rgba(248,113,113,0.25)":"rgba(232,146,10,0.25)"):notifPermission==="denied"?"rgba(248,113,113,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:8,minWidth:36,minHeight:36,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,position:"relative",flexShrink:0,transition:"all 0.2s"}}
               >
                 {notifPermission==="denied"?"🔕":"🔔"}
-                {notifPermission==="default"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #111118"}}/>}
-                {notifPermission==="granted"&&notifStatus==="active"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#4ADE80",borderRadius:"50%",border:"1.5px solid #111118"}}/>}
-                {notifPermission==="granted"&&notifStatus==="error"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#F87171",borderRadius:"50%",border:"1.5px solid #111118"}}/>}
-                {notifPermission==="granted"&&notifStatus==="idle"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #111118"}}/>}
+                {notifPermission==="default"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #0A0B0E"}}/>}
+                {notifPermission==="granted"&&notifStatus==="active"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#10B981",borderRadius:"50%",border:"1.5px solid #0A0B0E"}}/>}
+                {notifPermission==="granted"&&notifStatus==="error"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#F87171",borderRadius:"50%",border:"1.5px solid #0A0B0E"}}/>}
+                {notifPermission==="granted"&&notifStatus==="idle"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #0A0B0E"}}/>}
               </button>
             )}
-            {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:"2px solid rgba(255,255,255,0.10)",flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#C41969,#901247)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
+            {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:"2px solid rgba(255,255,255,0.10)",flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#BE123C,#831843)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
             <button onClick={()=>{ setScreenExiting(true); setTimeout(()=>{ setPhase("select");setRole(null);setActiveId(null);setScreenExiting(false); }, 320); }} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",color:C.chL,padding:"6px 12px",borderRadius:8,minHeight:36,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
           </div>
         </div>
@@ -4297,7 +4335,7 @@ function TFCOrderSystem(){
 
           {/* Sidebar */}
           <div className="custom-scrollbar" style={{width:240,borderRight:sidebarBdr,background:sidebarBg,padding:"14px 12px",overflowY:"auto",flexShrink:0,display:"flex",flexDirection:"column",gap:5,position:isMobile?"absolute":"relative",zIndex:50,height:"100%",left:0,top:0,transform:isMobile?(sidebarOpen?"translateX(0)":"translateX(-100%)"):"none",transition:"transform 0.3s cubic-bezier(0.16,1,0.3,1), background 0.4s ease",boxShadow:isMobile&&sidebarOpen?"0 0 40px rgba(0,0,0,0.7)":"none"}}>
-            {role==="admin"&&(<div style={{marginBottom:10}}><button className="btn-3d create-order-btn" onClick={()=>{setShowModal(true);if(isMobile)setSidebarOpen(false);}} style={{width:"100%",padding:"14px 0",border:"none",borderRadius:12,background:"linear-gradient(135deg,#C41969,#901247)",color:"#FFFFFF",fontSize:14,cursor:"pointer",fontWeight:900,letterSpacing:"0.03em",boxShadow:"0 4px 22px rgba(196,25,105,0.55),0 0 40px rgba(196,25,105,0.12),inset 0 1px 0 rgba(255,255,255,0.12)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>+</span> Create Order</button></div>)}
+            {role==="admin"&&(<div style={{marginBottom:10}}><button className="btn-3d create-order-btn" onClick={()=>{setShowModal(true);if(isMobile)setSidebarOpen(false);}} style={{width:"100%",padding:"14px 0",border:"none",borderRadius:12,background:"linear-gradient(135deg,#BE123C,#831843)",color:"#FFFFFF",fontSize:14,cursor:"pointer",fontWeight:900,letterSpacing:"0.03em",boxShadow:"0 4px 22px rgba(190,18,60,0.55),0 0 40px rgba(190,18,60,0.12),inset 0 1px 0 rgba(255,255,255,0.12)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>+</span> Create Order</button></div>)}
             {role==="production"&&(<div style={{padding:"12px 14px",background:"rgba(232,146,10,0.08)",borderRadius:10,border:"1px solid rgba(232,146,10,0.2)",marginBottom:10}}><div style={{fontSize:11,fontWeight:900,color:C.amDk,textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:3}}>Production Mode</div><div style={{fontSize:11,color:C.chL,lineHeight:1.4,fontWeight:500}}>All items flagged for production.</div></div>)}
             <div className="section-label-v2" style={{color:C.chL}}>Orders {viewOrders.length>0&&<span style={{fontWeight:700,marginLeft:3}}>({viewOrders.length})</span>}</div>
             {loadingInitial?(<div style={{padding:"10px 0"}}><div className="skeleton-box" style={{height:80,marginBottom:10}}></div><div className="skeleton-box" style={{height:80}}></div></div>):viewOrders.length===0?<div style={{fontSize:13,color:C.chXL,textAlign:"center",padding:"32px 0",fontWeight:600}}>No orders found</div>:viewOrders.map((o,i)=>(<OrderCard key={o.id} index={i} order={o} active={activeId===o.id} onClick={()=>{setActiveId(o.id);if(isMobile)setSidebarOpen(false);}} onDelete={role==="admin"?deleteOrder:null}/>))}

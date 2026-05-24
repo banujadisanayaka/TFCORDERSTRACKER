@@ -40,7 +40,7 @@ self.addEventListener("notificationclick", function(e) {
 });
 
 // ─── Asset caching ───────────────────────────────────────────────────────────
-const CACHE = "tfc-v5";
+const CACHE = "tfc-v6";
 const PRECACHE = ["/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", e => {
