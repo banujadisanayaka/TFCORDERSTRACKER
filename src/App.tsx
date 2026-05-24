@@ -2339,8 +2339,8 @@ function NewOrderModal({onClose,onSubmit,notify}){
             <div style={{flex:1}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>PO Reference Name</div><input value={poName} onChange={e=>setPoName(e.target.value)} placeholder="e.g. Sago event PO" style={inputStyle}/></div>
           </div>
           <div style={{display:"flex", gap:12, marginBottom:28, flexDirection: isMobile ? "column" : "row"}}>
-            <div style={{flex:1}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>PO Received Date</div><input value={poDate} onChange={e=>setPoDate(e.target.value)} style={inputStyle}/></div>
-            <div style={{flex:1}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Deliver Before (Optional)</div><input value={delDate} onChange={e=>setDelDate(e.target.value)} placeholder="e.g. 20th May" style={inputStyle}/></div>
+            <div style={{flex:1}}><label htmlFor="po-received-date" style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase",display:"block"}}>PO Received Date</label><input id="po-received-date" value={poDate} onChange={e=>setPoDate(e.target.value)} placeholder="e.g. 18 May 2026" style={inputStyle}/></div>
+            <div style={{flex:1}}><label htmlFor="po-deliver-date" style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase",display:"block"}}>Deliver Before (Optional)</label><input id="po-deliver-date" value={delDate} onChange={e=>setDelDate(e.target.value)} placeholder="e.g. 20th May" style={inputStyle}/></div>
           </div>
           <div style={{display:"flex", flexDirection: isMobile ? "column" : "row", justifyContent:"space-between", alignItems: isMobile ? "flex-start" : "center", gap: 12, marginBottom:16}}>
             <div style={{display:"flex", alignItems:"center", gap:12}}><div style={{width:28, height:28, borderRadius:"50%", background:C.ch, color:C.w, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, flexShrink:0}}>2</div><div style={{fontSize:13, fontWeight:800, color:C.ch}}>Add Items to Order</div></div>
@@ -2648,7 +2648,13 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
             <div className="animate-fade-in" style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",background:th.panelBg,padding:"12px",borderRadius:10,border:`1px solid ${th.divider}`}}>
               <input value={qty} onChange={e=>setQty(e.target.value)} placeholder={`Qty (req: ${item.qty||"?"})`} inputMode="decimal" style={{width:110,padding:"8px 10px",border:"1px solid var(--border)",borderRadius:7,fontSize:12,outline:"none",background:"var(--input-bg)",color:"var(--text)",fontFamily:"'JetBrains Mono',monospace",fontWeight:700,flexShrink:0}}/>
               <input value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Note (optional)" style={{flex:1,minWidth:100,padding:"8px 10px",border:"1px solid var(--border)",borderRadius:7,fontSize:12,outline:"none",background:"var(--input-bg)",color:"var(--text)",fontWeight:500}}/>
-              <button onClick={()=>setShowEdit(false)} style={{padding:"8px 14px",background:th.chipBg,border:`1px solid ${th.closeBdr}`,borderRadius:7,fontSize:11,fontWeight:800,color:C.chM,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit"}}>Done</button>
+              <button onClick={()=>{
+                // Save any edited qty/notes (without changing status) before closing,
+                // so "Done" doesn't silently discard the user's input.
+                const dirty = (qty !== (item.packedQty || "")) || (notes !== (item.notes || ""));
+                if (dirty) onUpdate(orderId, item.id, { packedQty: qty, notes, updatedAt: Date.now() });
+                setShowEdit(false);
+              }} style={{padding:"8px 14px",background:th.chipBg,border:`1px solid ${th.closeBdr}`,borderRadius:7,fontSize:11,fontWeight:800,color:C.chM,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit",minHeight:36}}>Save & Close</button>
             </div>
           )}
 
@@ -4022,7 +4028,15 @@ function TFCOrderSystem(){
   const [authorizedUsers, setAuthorizedUsers] = useState([]);
 
   useEffect(() => { const timer1 = setTimeout(() => setSplashState("fading"), 2000); const timer2 = setTimeout(() => setSplashState("hidden"), 2500); return () => { clearTimeout(timer1); clearTimeout(timer2); }; }, []);
-  function notify(msg,type="success"){ setToast({msg,type}); setTimeout(()=>setToast(null),4000); }
+  // Toast with cleanup-safe timer — successive notify() calls cancel the previous
+  // dismissal timer instead of racing, so the new toast gets its full 4s display
+  // and doesn't get prematurely dismissed by an in-flight timer from the old one.
+  const toastTimerRef = useRef(null);
+  function notify(msg, type="success"){
+    setToast({ msg, type });
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => { setToast(null); toastTimerRef.current = null; }, 4000);
+  }
 
   // Reset all view state when role changes
   useEffect(() => {
@@ -4031,6 +4045,9 @@ function TFCOrderSystem(){
     setEditingOrder(null);
     setSidebarOpen(false);
   }, [role]);
+
+  // Cleanup toast timer on unmount to prevent setState on unmounted component
+  useEffect(() => () => { if (toastTimerRef.current) clearTimeout(toastTimerRef.current); }, []);
 
   // Unread notification count
   useEffect(() => {
@@ -4197,46 +4214,116 @@ function TFCOrderSystem(){
 
   async function updateItem(orderId, itemId, updates){
     try {
-      const orderToUpdate = orders.find(o => o.id === orderId); if(!orderToUpdate) return;
-      const item = orderToUpdate.items.find(i => i.id === itemId);
-      const updatedItems = orderToUpdate.items.map(i => i.id === itemId ? {...i, ...updates, updatedBy: authUser?.email} : i);
-      await setDoc(doc(db, "orders", orderId), {...orderToUpdate, items: updatedItems});
-      // Push to other devices
-      if(updates.status && item && updates.status !== item.status){
-        const rr = orderToUpdate.restaurant?.toLowerCase();
-        const pn = item.product;
-        const on = orderToUpdate.poName || orderToUpdate.restaurant;
-        if(updates.status==="production")  sendPush(["production"], "🍳 New Batch", `${pn} · ${item.qty} ${item.unit||""}`, `prod-${itemId}`);
-        else if(updates.status==="prod_done") sendPush(["packing"], "✓ Ready to Pack", `${pn} · ${item.qty} ${item.unit||""} · ${orderToUpdate.restaurant}`, `ready-${itemId}`);
-        else if(updates.status==="short")  sendPush(["admin",rr], "⚠ Short Shipment", `${pn} (${on}): Sent ${updates.packedQty||"?"} / Req ${item.qty} ${item.unit||""}`, `short-${itemId}`);
-        else if(updates.status==="oos")    sendPush(["admin",rr], "✕ Out of Stock", `${pn} — ${on}`, `oos-${itemId}`);
-        else if(updates.status==="delivered") sendPush(["admin",rr], "🚀 Delivered", `${pn} · ${on}`, `del-${itemId}`);
+      // Transaction: read fresh items from Firestore, mutate just the target item, write back.
+      // Prevents the race where two devices read the same items array and both write back,
+      // clobbering each other's update.
+      let snapshotItem = null, orderForPush = null;
+      await runTransaction(db, async (tx) => {
+        const ref = doc(db, "orders", orderId);
+        const snap = await tx.get(ref);
+        if (!snap.exists()) throw new Error("Order no longer exists");
+        const order = snap.data();
+        orderForPush = order;
+        const items = order.items || [];
+        snapshotItem = items.find(i => i.id === itemId) || null;
+        const newItems = items.map(i => i.id === itemId ? { ...i, ...updates, updatedAt: Date.now(), updatedBy: authUser?.email } : i);
+        tx.update(ref, { items: newItems, updatedAt: Date.now() });
+      });
+      // Push to other devices (only if status actually changed)
+      if (updates.status && snapshotItem && updates.status !== snapshotItem.status && orderForPush) {
+        const rr = orderForPush.restaurant?.toLowerCase();
+        const pn = snapshotItem.product;
+        const on = orderForPush.poName || orderForPush.restaurant;
+        if (updates.status === "production")       sendPush(["production"], "🍳 New Batch", `${pn} · ${snapshotItem.qty} ${snapshotItem.unit||""}`, `prod-${itemId}`);
+        else if (updates.status === "prod_done")   sendPush(["packing"], "✓ Ready to Pack", `${pn} · ${snapshotItem.qty} ${snapshotItem.unit||""} · ${orderForPush.restaurant}`, `ready-${itemId}`);
+        else if (updates.status === "short")       sendPush(["admin", rr], "⚠ Short Shipment", `${pn} (${on}): Sent ${updates.packedQty||"?"} / Req ${snapshotItem.qty} ${snapshotItem.unit||""}`, `short-${itemId}`);
+        else if (updates.status === "oos")         sendPush(["admin", rr], "✕ Out of Stock", `${pn} — ${on}`, `oos-${itemId}`);
+        else if (updates.status === "delivered")   sendPush(["admin", rr], "🚀 Delivered", `${pn} · ${on}`, `del-${itemId}`);
       }
-    } catch (e) { console.error("Update item failed:", e); notify("Failed to update", "error"); }
+    } catch (e) {
+      console.error("Update item failed:", e);
+      const msg = e?.message?.includes("no longer exists") ? "Order was deleted by someone else"
+        : e?.code === "permission-denied" ? "You don't have permission to update this"
+        : e?.code === "unavailable" ? "Network issue — change will retry when online"
+        : "Failed to update. Try again.";
+      notify(msg, "error");
+    }
   }
   async function handleBatchUpdate(batch, status) {
-    try {
-      const updatesPromises = []; const affectedOrderIds = [...new Set(batch.items.map(it => it.orderId))];
-      affectedOrderIds.forEach(oId => {
-        const orderToUpdate = orders.find(o => o.id === oId); if(!orderToUpdate) return;
-        const updatedItems = orderToUpdate.items.map(i => batch.items.some(b => b.id === i.id) ? {...i, status, updatedAt: Date.now(), updatedBy: authUser?.email} : i);
-        updatesPromises.push(setDoc(doc(db, "orders", oId), {...orderToUpdate, items: updatedItems}));
-      });
-      await Promise.all(updatesPromises);
+    const affectedOrderIds = [...new Set(batch.items.map(it => it.orderId))];
+    // Use transactions so concurrent updates from other devices don't clobber.
+    // Use allSettled so one failed order doesn't roll back the others — partial
+    // progress is better than total failure for batch operations.
+    const results = await Promise.allSettled(affectedOrderIds.map(oId =>
+      runTransaction(db, async (tx) => {
+        const ref = doc(db, "orders", oId);
+        const snap = await tx.get(ref);
+        if (!snap.exists()) throw new Error("missing");
+        const order = snap.data();
+        const newItems = (order.items || []).map(i =>
+          batch.items.some(b => b.id === i.id)
+            ? { ...i, status, updatedAt: Date.now(), updatedBy: authUser?.email }
+            : i
+        );
+        tx.update(ref, { items: newItems, updatedAt: Date.now() });
+      })
+    ));
+    const failed = results.filter(r => r.status === "rejected").length;
+    if (failed === 0) {
       notify("Master Batch updated!", "success");
-      if(status==="prod_done") sendPush(["packing"], "✓ Batch Ready to Pack", `${batch.items.length} item${batch.items.length!==1?"s":""} ready`, `batch-${Date.now()}`);
-      if(status==="production") sendPush(["production"], "🍳 Batch Production", `${batch.items.length} item${batch.items.length!==1?"s":""} to produce`, `bprod-${Date.now()}`);
-    } catch (e) { console.error("Batch update failed:", e); notify("Failed to update batch", "error"); }
+    } else if (failed < results.length) {
+      notify(`Updated ${results.length - failed} of ${results.length} orders. ${failed} failed.`, "error");
+    } else {
+      notify("Failed to update batch", "error");
+      return;
+    }
+    if (status === "prod_done")  sendPush(["packing"], "✓ Batch Ready to Pack", `${batch.items.length} item${batch.items.length!==1?"s":""} ready`, `batch-${Date.now()}`);
+    if (status === "production") sendPush(["production"], "🍳 Batch Production", `${batch.items.length} item${batch.items.length!==1?"s":""} to produce`, `bprod-${Date.now()}`);
   }
   async function saveOrderEdit(orderId, newItems, metaData) {
     try {
-      const orderToUpdate = orders.find(o => o.id === orderId); if(!orderToUpdate) return;
-      await setDoc(doc(db, "orders", orderId), { ...orderToUpdate, items: newItems, ...metaData, updatedAt: Date.now() });
+      // Transaction: re-read from Firestore so we don't clobber concurrent updates
+      // to e.g. item status from packing/production roles during the admin edit.
+      let savedOrder = null;
+      await runTransaction(db, async (tx) => {
+        const ref = doc(db, "orders", orderId);
+        const snap = await tx.get(ref);
+        if (!snap.exists()) throw new Error("Order no longer exists");
+        const cur = snap.data();
+        // Merge: admin's edited items take precedence (admin is the source of truth
+        // for item list/qty), but preserve the latest status from concurrent updates.
+        const merged = newItems.map(ni => {
+          const existing = (cur.items || []).find(i => i.id === ni.id);
+          return existing ? { ...ni, status: existing.status, packedQty: existing.packedQty, updatedAt: existing.updatedAt } : ni;
+        });
+        savedOrder = { ...cur, items: merged, ...metaData, updatedAt: Date.now() };
+        tx.set(ref, savedOrder);
+      });
       setEditingOrder(null); notify("Order updated!", "success");
-      sendPush(["packing"], "✏ PO Updated", `${orderToUpdate.poName||orderToUpdate.restaurant} has been edited`, `edit-${orderId}`);
-    } catch (e) { console.error("Save order edit failed:", e); notify("Failed to update", "error"); }
+      if (savedOrder) sendPush(["packing"], "✏ PO Updated", `${savedOrder.poName||savedOrder.restaurant} has been edited`, `edit-${orderId}`);
+    } catch (e) {
+      console.error("Save order edit failed:", e);
+      const msg = e?.message?.includes("no longer exists") ? "Order was deleted by someone else"
+        : e?.code === "permission-denied" ? "You don't have permission to edit"
+        : "Failed to update";
+      notify(msg, "error");
+    }
   }
-  async function deleteOrder(orderId){ try { await deleteDoc(doc(db, "orders", orderId)); if(activeId === orderId) setActiveId(null); notify("Order removed", "success"); } catch (e) { console.error("Delete order failed:", e); notify("Failed to delete", "error"); } }
+  async function deleteOrder(orderId){
+    try {
+      await deleteDoc(doc(db, "orders", orderId));
+      // Clear ALL stale references to the deleted order, not just activeId
+      if (activeId === orderId) setActiveId(null);
+      if (editingOrder?.id === orderId) setEditingOrder(null);
+      notify("Order removed", "success");
+    } catch (e) {
+      console.error("Delete order failed:", e);
+      const msg = e?.code === "permission-denied" ? "You don't have permission to delete orders"
+        : e?.code === "unavailable" ? "Network issue — try again when online"
+        : "Failed to delete";
+      notify(msg, "error");
+    }
+  }
   async function handleNewOrder(restaurant, poName, poDate, delDate, rows){
     try {
       const ordRef = doc(collection(db, "orders"));
@@ -4245,7 +4332,13 @@ function TFCOrderSystem(){
       await setDoc(ordRef, newOrder);
       setActiveId(newOrder.id); setShowModal(false); notify(`${rows.length} items added`, "success");
       sendPush(["packing"], "📋 New PO Received", `${restaurant}: ${newOrder.poName}`, `new-${newOrder.id}`);
-    } catch (e) { console.error("Create order failed:", e); notify("Failed to save", "error"); }
+    } catch (e) {
+      console.error("Create order failed:", e);
+      const msg = e?.code === "permission-denied" ? "You don't have permission to create orders"
+        : e?.code === "unavailable" ? "Network issue — order not saved, try again when online"
+        : "Failed to save order";
+      notify(msg, "error");
+    }
   }
 
   async function createDailyProduction(dateStr, items, notes = "") {
@@ -4342,6 +4435,13 @@ function TFCOrderSystem(){
 
   function selectRole(r){
     if (selectingRoleRef.current) return;
+    // Defense-in-depth: validate the role is real AND that the user has access.
+    // Firestore rules are the source of truth, but blocking client-side gives
+    // immediate feedback and prevents broken UI states from unauthorized roles.
+    if (!r || !ROLES[r]) { notify("Invalid role selected", "error"); return; }
+    const ownerCheck = authUser?.email === OWNER_EMAIL;
+    const allowed = ownerCheck || (userRecord?.roles || []).includes(r);
+    if (!allowed) { notify("You don't have access to this role", "error"); return; }
     selectingRoleRef.current = true;
     if("Notification" in window && Notification.permission === "default"){
       Notification.requestPermission().then(p => {

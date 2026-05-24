@@ -40,7 +40,7 @@ self.addEventListener("notificationclick", function(e) {
 });
 
 // ─── Asset caching ───────────────────────────────────────────────────────────
-const CACHE = "tfc-v6";
+const CACHE = "tfc-v7";
 const PRECACHE = ["/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", e => {
@@ -78,7 +78,10 @@ self.addEventListener("fetch", e => {
     return;
   }
 
-  if (url.pathname.match(/\/static\/.+\.(js|css|woff2?)$/)) {
+  // Cache static assets (JS, CSS, fonts, AND images) so PWA works fully offline.
+  // Images were previously missed and would 404 in offline mode.
+  if (url.pathname.match(/\/static\/.+\.(js|css|woff2?|png|jpg|jpeg|svg|webp|ico)$/) ||
+      url.pathname.match(/\/(icon-\d+|favicon)\.(png|ico)$/)) {
     e.respondWith(
       caches.match(e.request).then(r => r || fetch(e.request).then(res => {
         if (res.ok) {
@@ -86,7 +89,7 @@ self.addEventListener("fetch", e => {
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return res;
-      }))
+      }).catch(() => caches.match("/icon-192.png"))) // fallback if even icon fetch fails
     );
     return;
   }
