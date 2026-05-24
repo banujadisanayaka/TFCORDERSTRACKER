@@ -7,7 +7,7 @@ import {
   getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot,
   updateDoc, writeBatch, query, where, getDocs, addDoc, orderBy, limit, runTransaction, getDoc
 } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signOut, onAuthStateChanged } from "firebase/auth";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 // ⚠️ Force-load the JSON database bypassing strict compilers
@@ -886,18 +886,18 @@ function Btn({children,onClick,variant="ghost",disabled=false,full=false,size="m
     bg = hov ? "linear-gradient(135deg, #0D7A30, #085220)" : "linear-gradient(135deg, #16A34A, #0D7A30)";
     color = "#FFFFFF"; border = "none"; boxShadow = hov ? "0 6px 20px rgba(22,163,74,0.4)" : "0 3px 10px rgba(22,163,74,0.25)";
   } else if (variant === "dark") {
-    bg = hov ? "linear-gradient(135deg, #D0D8F0, #A8B8D8)" : "linear-gradient(135deg, #EEF2FF, #C0CCE8)";
-    color = "#090B10"; border = "none"; boxShadow = hov ? "0 6px 20px rgba(238,242,255,0.2)" : "none";
+    bg = hov ? "#2A2A36" : "#222230";
+    color = "#EEEDF8"; border = "1px solid rgba(255,255,255,0.12)"; boxShadow = hov ? "0 4px 12px rgba(0,0,0,0.4)" : "none";
   } else if (variant === "danger") {
     bg = hov ? "rgba(220,38,38,0.2)" : "rgba(220,38,38,0.1)";
     color = "#DC2626"; border = "1px solid rgba(220,38,38,0.4)";
   } else {
-    bg = hov ? "#111828" : "transparent";
-    color = "#8896B3"; border = "1px solid #1E2A44";
+    bg = hov ? "#1C1C2C" : "transparent";
+    color = "#8896B3"; border = "1px solid rgba(255,255,255,0.12)";
   }
   return(
     <button onClick={onClick} disabled={disabled} type={type} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-      style={{padding:pad,border,borderRadius:8,background:bg,color,fontSize:fs,cursor:disabled?"not-allowed":"pointer",fontWeight:800,width:full?"100%":"auto",opacity:disabled?0.5:1,letterSpacing:"0.01em", transform:hov&&!disabled?"translateY(-2px)":"none", boxShadow:disabled?"none":boxShadow, transition:"all 0.2s cubic-bezier(0.16, 1, 0.3, 1)"}}>{children}</button>
+      style={{padding:pad,border,borderRadius:8,background:bg,color,fontSize:fs,cursor:disabled?"not-allowed":"pointer",fontWeight:800,width:full?"100%":"auto",opacity:disabled?0.5:1,letterSpacing:"0.01em", transform:hov&&!disabled?"translateY(-2px)":"none", boxShadow:disabled?"none":boxShadow, transition:"all 0.2s cubic-bezier(0.16, 1, 0.3, 1)", minHeight:size==="sm"?36:44, fontFamily:"inherit"}}>{children}</button>
   );
 }
 
@@ -935,7 +935,7 @@ function RecipeAutocomplete({ value, onChange, onSelect, placeholder = "Search o
     <div ref={wrapRef} style={{ position: "relative" }}>
       <input value={value} onChange={e => handleInput(e.target.value)} onKeyDown={handleKey} onFocus={() => value.length >= 2 && matches.length > 0 && setOpen(true)} placeholder={placeholder} autoComplete="off" style={{ padding: "11px 14px", border: "1px solid " + C.bdr, borderRadius: 10, fontSize: 13, color: C.ch, outline: "none", background: "var(--card-bg)", width: "100%", boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s" }} />
       {open && (
-        <div className="custom-scrollbar animate-fade-in" style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#0F1422", border: "1px solid " + C.bdr, borderRadius: 10, zIndex: 200, maxHeight: 220, overflowY: "auto", boxShadow: C.shM }}>
+        <div className="custom-scrollbar animate-fade-in" style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#0C0C12", border: "1px solid " + C.bdr, borderRadius: 10, zIndex: 200, maxHeight: 220, overflowY: "auto", boxShadow: C.shM }}>
           {matches.map((recipe, i) => (
             <button key={recipe.recipe_id || i} onMouseDown={e => { e.preventDefault(); handleSelect(recipe); }} style={{ width: "100%", padding: "11px 14px", border: "none", background: "transparent", color: C.ch, textAlign: "left", cursor: "pointer", borderBottom: "1px solid " + C.bdrL, fontSize: 13, fontWeight: 600, fontFamily: "inherit", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "background 0.15s" }} onMouseEnter={e => e.currentTarget.style.background = C.w} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
               <span>{recipe.recipe_name}</span><span style={{ color: C.ol, fontSize: 9, fontWeight: 900, letterSpacing: "1px", textTransform: "uppercase" }}>✓ RECIPE</span>
@@ -991,7 +991,7 @@ function ExtraProductionModal({ onClose, onSave, dateStr }) {
               <div style={{ fontSize:18, fontWeight:900, color:C.ch }}>+ Log Unplanned Production</div>
               <div style={{ fontSize:12, color:C.chL, marginTop:4 }}>Record items made outside of today's plan.</div>
             </div>
-            <button onClick={onClose} style={{ background:th.closeBg, border:`1px solid ${th.closeBdr}`, borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:14, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+            <button onClick={onClose} style={{ background:th.closeBg, border:`1px solid ${th.closeBdr}`, borderRadius:"50%", width:40, height:40, cursor:"pointer", fontSize:15, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>✕</button>
           </div>
         </div>
 
@@ -1003,11 +1003,11 @@ function ExtraProductionModal({ onClose, onSave, dateStr }) {
           <div style={{ display:"flex", gap:10, marginBottom:14 }}>
             <div style={{ flex:1 }}>
               <div style={{ fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase" }}>Actual Yield (kg)</div>
-              <input type="number" value={actualKg} onChange={e=>setActualKg(e.target.value)} placeholder="e.g. 10" style={inputStyle} />
+              <input type="number" inputMode="decimal" min="0" value={actualKg} onChange={e=>setActualKg(e.target.value)} placeholder="e.g. 10" style={inputStyle} />
             </div>
             <div style={{ flex:1 }}>
               <div style={{ fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase" }}>Actual Packets</div>
-              <input type="number" value={actualPkts} onChange={e=>setActualPkts(e.target.value)} placeholder="e.g. 20" style={inputStyle} />
+              <input type="number" inputMode="numeric" min="0" value={actualPkts} onChange={e=>setActualPkts(e.target.value)} placeholder="e.g. 20" style={inputStyle} />
             </div>
           </div>
           <div>
@@ -1071,7 +1071,7 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
               <div style={{ fontSize:20, fontWeight:900, color:C.ch }}>{existing ? "Edit" : "Create"} — {dayInfo.dayOfWeek} {dayInfo.displayDate}</div>
               <div style={{ fontSize:12, color:C.chL, marginTop:4 }}>Add items with quantities and instructions</div>
             </div>
-            <button onClick={onClose} style={{ background:th.closeBg, border:`1px solid ${th.closeBdr}`, borderRadius:"50%", width:36, height:36, cursor:"pointer", fontSize:15, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+            <button onClick={onClose} style={{ background:th.closeBg, border:`1px solid ${th.closeBdr}`, borderRadius:"50%", width:40, height:40, cursor:"pointer", fontSize:15, color:C.chM, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>✕</button>
           </div>
         </div>
 
@@ -1307,7 +1307,7 @@ function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel 
 
         {activeBatches.length > 0 && (
           <>
-            <div style={{textAlign:"center",margin:"14px 0",fontSize:11,fontWeight:700,color:"#1E2A44",textTransform:"uppercase",letterSpacing:"0.1em"}}>— merge with active batch —</div>
+            <div style={{textAlign:"center",margin:"14px 0",fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.25)",textTransform:"uppercase",letterSpacing:"0.1em"}}>— merge with active batch —</div>
             <div className="custom-scrollbar" style={{display:"flex",flexDirection:"column",gap:8,overflowY:"auto",maxHeight:220,marginBottom:16}}>
               {activeBatches.map(b=>(
                 <button key={b.batchId} onClick={()=>onMerge(b.batchId)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"13px 16px",border:"1px solid rgba(232,146,10,0.28)",background:"rgba(232,146,10,0.07)",borderRadius:12,cursor:"pointer",textAlign:"left",transition:"all 0.15s",fontFamily:"inherit"}}>
@@ -1866,7 +1866,7 @@ function UserGuideModal({onClose}){
   return(
     <div style={{position:"fixed",inset:0,zIndex:9998,background:"rgba(0,0,0,0.90)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 16px",overflowY:"auto"}}>
       {/* Close */}
-      <button onClick={onClose} style={{position:"fixed",top:20,right:20,width:38,height:38,borderRadius:"50%",background:"rgba(255,255,255,0.10)",border:"1.5px solid rgba(255,255,255,0.15)",color:"#E4E4E7",fontSize:17,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"inherit",zIndex:1,flexShrink:0}}>✕</button>
+      <button onClick={onClose} style={{position:"fixed",top:20,right:20,width:44,height:44,borderRadius:"50%",background:"rgba(255,255,255,0.10)",border:"1.5px solid rgba(255,255,255,0.15)",color:"#E4E4E7",fontSize:17,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"inherit",zIndex:1,flexShrink:0}}>✕</button>
       {/* Header */}
       <div style={{textAlign:"center",marginBottom:16,width:"100%",maxWidth:400}}>
         <div style={{fontSize:10,fontWeight:900,letterSpacing:"0.14em",color:"#52525B",textTransform:"uppercase",marginBottom:10}}>USER GUIDE · TFC ORDER TRACKER</div>
@@ -2041,7 +2041,7 @@ function NewOrderModal({onClose,onSubmit,notify}){
   const [prod, setProd] = useState(""); const [qty, setQty] = useState(""); const [unit, setUnit] = useState("kg"); const [err, setErr] = useState(""); const [inputMode, setInputMode] = useState("manual"); const [bulkText, setBulkText] = useState("");
   const [editId, setEditId] = useState(null); const [ep, setEp] = useState(""); const [eq, setEq] = useState(""); const [eu, setEu] = useState("");
 
-  function handleAddItem(e){ e.preventDefault(); if(!prod.trim()) { setErr("Please enter a product name."); return; } setStagedItems(prev => [{ id: "stg_"+Date.now()+Math.random(), product: prod.trim(), qty: qty, unit: unit }, ...prev]); setProd(""); setQty(""); setErr(""); }
+  function handleAddItem(e){ e.preventDefault(); if(!prod.trim()) { setErr("Please enter a product name."); return; } const parsedQty = parseFloat(qty); if(!qty.toString().trim() || isNaN(parsedQty) || parsedQty <= 0) { setErr("Please enter a valid quantity."); return; } setStagedItems(prev => [{ id: "stg_"+Date.now()+Math.random(), product: prod.trim(), qty: qty, unit: unit }, ...prev]); setProd(""); setQty(""); setErr(""); }
   function removeItem(id){ setStagedItems(prev => prev.filter(i => i.id !== id)); }
   function submitFinalOrder(){ if(stagedItems.length === 0){ setErr("Please add at least one item before submitting."); return; } onSubmit(rest, poName, poDate, delDate, stagedItems); }
   function saveInlineEdit() { if(!ep.trim()) return; setStagedItems(prev => prev.map(i => i.id === editId ? {...i, product: ep.trim(), qty: eq, unit: eu} : i)); setEditId(null); }
@@ -2082,7 +2082,7 @@ function NewOrderModal({onClose,onSubmit,notify}){
               <div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Draft Purchase Order</div>
               <div style={{fontSize:13,color:C.chL,marginTop:4,fontWeight:500}}>Configure details and build your item list below.</div>
             </div>
-            <button onClick={onClose} style={{background:th.closeBg,border:`1px solid ${th.closeBdr}`,borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:15,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
+            <button onClick={onClose} style={{background:th.closeBg,border:`1px solid ${th.closeBdr}`,borderRadius:"50%",width:40,height:40,cursor:"pointer",fontSize:15,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
           </div>
         </div>
         <div className="custom-scrollbar" style={{overflowY:"auto",flex:1,padding:"24px 30px"}}>
@@ -2100,7 +2100,7 @@ function NewOrderModal({onClose,onSubmit,notify}){
             <div style={{display:"flex", alignItems:"center", gap:12}}><div style={{width:28, height:28, borderRadius:"50%", background:C.ch, color:C.w, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, flexShrink:0}}>2</div><div style={{fontSize:13, fontWeight:800, color:C.ch}}>Add Items to Order</div></div>
             <div style={{display:"flex", background:"var(--sub-bg)", borderRadius:10, border:"1px solid "+C.bdrL, padding:4}}><button onClick={() => setInputMode("manual")} style={{padding:"8px 16px", border:"none", background: inputMode==="manual"?C.w:"transparent", borderRadius:8, fontSize:12, fontWeight:700, color:inputMode==="manual"?C.ch:C.chL, cursor:"pointer", boxShadow:inputMode==="manual"?C.sh:"none"}}>Manual Addition</button><button onClick={() => setInputMode("bulk")} style={{padding:"8px 16px", border:"none", background: inputMode==="bulk"?C.w:"transparent", borderRadius:8, fontSize:12, fontWeight:700, color:inputMode==="bulk"?C.olDk:C.chL, cursor:"pointer", boxShadow:inputMode==="bulk"?C.sh:"none"}}>Paste WhatsApp List</button></div>
           </div>
-          {inputMode === "manual" && (<form className="animate-fade-in" onSubmit={handleAddItem} style={{background:"var(--sub-bg)", padding:20, borderRadius:16, border:"1px solid "+C.bdrL, marginBottom:28}}><div style={{display:"flex", flexDirection: isMobile ? "column" : "row", gap: 12, alignItems:"flex-start"}}><div style={{flex:1, width:"100%"}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Product (Type to search)</div><input list="recipe-database" value={prod} onChange={e => {setProd(e.target.value); setErr("");}} placeholder="e.g. Madras Spiced" style={{padding:"12px 16px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",boxSizing:"border-box", boxShadow:C.sh}}/></div><div style={{display:"flex", gap:12, width: isMobile ? "100%" : "auto"}}><div style={{width: 80}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Qty</div><input value={qty} onChange={e => setQty(e.target.value)} placeholder="—" style={{padding:"12px 8px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",boxSizing:"border-box",textAlign:"center", boxShadow:C.sh}}/></div><div style={{width: 90}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Unit</div><select value={unit} onChange={e => setUnit(e.target.value)} style={{padding:"12px 10px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",cursor:"pointer", height:46, boxShadow:C.sh}}>{UNITS.map(u=><option key={u} value={u}>{u}</option>)}</select></div></div></div><button type="submit" className="hover-lift" style={{marginTop:16,width:"100%",padding:"14px",background:C.ch,color:C.w,border:"none",borderRadius:10,fontWeight:800,cursor:"pointer", fontSize:14}}>+ Add Item to List</button></form>)}
+          {inputMode === "manual" && (<form className="animate-fade-in" onSubmit={handleAddItem} style={{background:"var(--sub-bg)", padding:20, borderRadius:16, border:"1px solid "+C.bdrL, marginBottom:28}}><div style={{display:"flex", flexDirection: isMobile ? "column" : "row", gap: 12, alignItems:"flex-start"}}><div style={{flex:1, width:"100%"}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Product (Type to search)</div><input list="recipe-database" value={prod} onChange={e => {setProd(e.target.value); setErr("");}} placeholder="e.g. Madras Spiced" style={{padding:"12px 16px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",boxSizing:"border-box", boxShadow:C.sh}}/></div><div style={{display:"flex", gap:12, width: isMobile ? "100%" : "auto"}}><div style={{width: 80}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Qty</div><input inputMode="decimal" value={qty} onChange={e => setQty(e.target.value)} placeholder="—" style={{padding:"12px 8px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",boxSizing:"border-box",textAlign:"center", boxShadow:C.sh}}/></div><div style={{width: 90}}><div style={{fontSize:11, color:C.chM, fontWeight:800, marginBottom:6, textTransform:"uppercase"}}>Unit</div><select value={unit} onChange={e => setUnit(e.target.value)} style={{padding:"12px 10px",border:"2px solid "+C.w,borderRadius:10,fontSize:14,color:C.ch,outline:"none",background:C.w,width:"100%",cursor:"pointer", height:46, boxShadow:C.sh}}>{UNITS.map(u=><option key={u} value={u}>{u}</option>)}</select></div></div></div><button type="submit" className="hover-lift" style={{marginTop:16,width:"100%",padding:"14px",background:C.ch,color:C.w,border:"none",borderRadius:10,fontWeight:800,cursor:"pointer", fontSize:14}}>+ Add Item to List</button></form>)}
           {inputMode === "bulk" && (<div className="animate-fade-in" style={{background:C.olBg, padding:20, borderRadius:16, border:"1px solid "+C.olBgD, marginBottom:28}}><div style={{fontSize:13, color:C.olDk, fontWeight:700, marginBottom:12}}>Paste your structural text list cleanly. Unmatched items will be added exactly as typed.</div><textarea value={bulkText} onChange={e=>setBulkText(e.target.value)} placeholder="Whole chicken - 10kg&#10;Feta Cheese - 10pkts" style={{width:"100%", boxSizing:"border-box", height:140, padding:16, borderRadius:10, border:"2px solid "+C.olBgD, outline:"none", fontSize:14, resize:"none", marginBottom:12, fontFamily:"monospace"}}/><button onClick={handleBulkTextParse} className="hover-lift" style={{width:"100%", padding:"14px", background:C.ol, color:C.w, border:"none", borderRadius:10, fontWeight:800, cursor:"pointer", fontSize:14, boxShadow:C.sh}}>⚡ Run Instant Bulk Parse</button></div>)}
           {err&&<div className="animate-fade-in" style={{marginBottom:16,fontSize:13,color:C.rd,fontWeight:700, background:C.rdBg, padding:"10px 14px", borderRadius:8}}>{err}</div>}
           
@@ -2164,7 +2164,7 @@ function EditOrderModal({order, onClose, onSave, notify}){
               <div style={{fontSize:20,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>Edit Live Order</div>
               <div style={{fontSize:13,color:C.chL,marginTop:4,fontWeight:500}}>Modify quantities, dates, or remove items.</div>
             </div>
-            <button onClick={onClose} style={{background:th.closeBg,border:`1px solid ${th.closeBdr}`,borderRadius:"50%",width:36,height:36,cursor:"pointer",fontSize:15,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
+            <button onClick={onClose} style={{background:th.closeBg,border:`1px solid ${th.closeBdr}`,borderRadius:"50%",width:40,height:40,cursor:"pointer",fontSize:15,color:C.chM,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
           </div>
         </div>
         <div className="custom-scrollbar" style={{overflowY:"auto",flex:1,padding:"24px 30px"}}>
@@ -2400,8 +2400,8 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
           {/* ── Inline edit form ── */}
           {showEdit&&item.status!=='delivered'&&(
             <div className="animate-fade-in" style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",background:th.panelBg,padding:"12px",borderRadius:10,border:`1px solid ${th.divider}`}}>
-              <input value={qty} onChange={e=>setQty(e.target.value)} placeholder={`Qty (req: ${item.qty||"?"})`} style={{width:110,padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontFamily:"'JetBrains Mono',monospace",fontWeight:700,flexShrink:0}}/>
-              <input value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Note (optional)" style={{flex:1,minWidth:100,padding:"8px 10px",border:"1px solid #1E2A44",borderRadius:7,fontSize:12,outline:"none",fontWeight:500}}/>
+              <input value={qty} onChange={e=>setQty(e.target.value)} placeholder={`Qty (req: ${item.qty||"?"})`} inputMode="decimal" style={{width:110,padding:"8px 10px",border:"1px solid var(--border)",borderRadius:7,fontSize:12,outline:"none",background:"var(--input-bg)",color:"var(--text)",fontFamily:"'JetBrains Mono',monospace",fontWeight:700,flexShrink:0}}/>
+              <input value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Note (optional)" style={{flex:1,minWidth:100,padding:"8px 10px",border:"1px solid var(--border)",borderRadius:7,fontSize:12,outline:"none",background:"var(--input-bg)",color:"var(--text)",fontWeight:500}}/>
               <button onClick={()=>setShowEdit(false)} style={{padding:"8px 14px",background:th.chipBg,border:`1px solid ${th.closeBdr}`,borderRadius:7,fontSize:11,fontWeight:800,color:C.chM,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit"}}>Done</button>
             </div>
           )}
@@ -2649,7 +2649,7 @@ function ProductionView({orders, dailyProductions = [], onBatchUpdate, onDailyPr
     <div className="animate-fade-in custom-scrollbar">
       {recipeModal && (
         <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:999, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
-          <div className="animate-fade-up custom-scrollbar" style={{ background:"#0F1422", borderRadius:20, maxWidth:500, width:"100%", maxHeight:"88vh", overflowY:"auto", padding:24, boxShadow:C.shM }}>
+          <div className="animate-fade-up custom-scrollbar" style={{ background:"#0C0C12", borderRadius:20, maxWidth:500, width:"100%", maxHeight:"88vh", overflowY:"auto", padding:24, boxShadow:C.shM }}>
             <div style={{ display:"flex", justifyContent:"space-between", marginBottom:16 }}>
               <span style={{ fontSize:16, fontWeight:900, color:C.ch }}>📖 Recipe</span>
               <button onClick={() => setRecipeModal(null)} style={{ background:C.off, border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", color:C.chM, fontSize:14 }}>✕</button>
@@ -3427,6 +3427,7 @@ function TFCOrderSystem(){
   const [splashState, setSplashState] = useState("visible");
   const [phase,setPhase]=useState("select"); const [role,setRole]=useState(null); const [screenExiting,setScreenExiting]=useState(false);
 
+  const selectingRoleRef = useRef(false);
   const [isOnline, setIsOnline] = useState(() => navigator.onLine);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
@@ -3768,8 +3769,13 @@ function TFCOrderSystem(){
   useEffect(() => { const timer1 = setTimeout(() => setSplashState("fading"), 2000); const timer2 = setTimeout(() => setSplashState("hidden"), 2500); return () => { clearTimeout(timer1); clearTimeout(timer2); }; }, []);
   function notify(msg,type="success"){ setToast({msg,type}); setTimeout(()=>setToast(null),4000); }
 
-  // Reset tab to dashboard when role changes
-  useEffect(() => { setActiveTab("dashboard"); }, [role]);
+  // Reset all view state when role changes
+  useEffect(() => {
+    setActiveTab("dashboard");
+    setActiveId(null);
+    setEditingOrder(null);
+    setSidebarOpen(false);
+  }, [role]);
 
   // Unread notification count
   useEffect(() => {
@@ -3783,7 +3789,7 @@ function TFCOrderSystem(){
       const lastSeen = parseInt(localStorage.getItem("tfc_last_notif_seen") || "0");
       const relevant = snap.docs.map(d => d.data()).filter(n => n.targetRoles?.includes(role));
       setUnreadCount(relevant.filter(n => n.sentAt > lastSeen).length);
-    });
+    }, (err) => { console.error("Notifications snapshot error:", err); });
   }, [role, authUser, userRecord]);
 
   // Auth state listener
@@ -3823,20 +3829,22 @@ function TFCOrderSystem(){
     if (!authUser || authUser.email !== OWNER_EMAIL) return;
     const unsubReqs = onSnapshot(collection(db, "access_requests"), (snap) => {
       setAccessRequests(snap.docs.map(d => d.data()).sort((a,b) => b.createdAt - a.createdAt));
-    });
+    }, (err) => { console.error("Access requests snapshot error:", err); });
     const unsubUsers = onSnapshot(collection(db, "authorized_users"), (snap) => {
       setAuthorizedUsers(snap.docs.map(d => d.data()));
-    });
+    }, (err) => { console.error("Authorized users snapshot error:", err); });
     return () => { unsubReqs(); unsubUsers(); };
   }, [authUser]);
 
   async function handleGoogleSignIn() {
     try { await signInWithPopup(auth, googleProvider); }
     catch(e) {
+      if (e?.code === "auth/popup-blocked" || e?.code === "auth/cancelled-popup-request") {
+        try { await signInWithRedirect(auth, googleProvider); return; }
+        catch(e2) { notify("Sign-in failed. Please try again.", "error"); return; }
+      }
       const msg = e?.code === "auth/unauthorized-domain"
         ? "Domain not authorized in Firebase — add this site's URL to Firebase Console → Authentication → Authorized domains."
-        : e?.code === "auth/popup-blocked"
-        ? "Sign-in popup was blocked. Allow popups for this site and try again."
         : "Sign-in failed. Please try again.";
       notify(msg, "error");
     }
@@ -3846,11 +3854,13 @@ function TFCOrderSystem(){
     await signOut(auth);
     setPhase("select"); setRole(null); setActiveId(null);
     setUserRecord(null); setAccessRequest(null);
+    setShowModal(false); setEditingOrder(null); setSidebarOpen(false);
+    setActiveTab("dashboard"); setScreenExiting(false);
   }
 
   async function submitAccessRequest(requestedRoles, enteredName, enteredOutlet) {
     try {
-      const id = "req_" + Date.now();
+      const id = "req_" + Date.now() + "_" + Math.random().toString(36).slice(2,8);
       await setDoc(doc(db, "access_requests", id), {
         id, email: authUser.email,
         name: enteredName || authUser.displayName,
@@ -3865,12 +3875,13 @@ function TFCOrderSystem(){
   async function approveRequest(request) {
     try {
       const rolesToGrant = request.requestedRoles || [request.requestedRole];
-      await setDoc(doc(db, "authorized_users", request.email), {
+      const batch = writeBatch(db);
+      batch.set(doc(db, "authorized_users", request.email), {
         email: request.email, name: request.name, photoURL: request.photoURL,
-        outlet: request.outlet || "",
-        roles: rolesToGrant, approvedAt: Date.now()
+        outlet: request.outlet || "", roles: rolesToGrant, approvedAt: Date.now()
       });
-      await setDoc(doc(db, "access_requests", request.id), { ...request, status: "approved" });
+      batch.set(doc(db, "access_requests", request.id), { ...request, status: "approved" });
+      await batch.commit();
       notify(`${request.name} approved for ${rolesToGrant.map(r => ROLES[r]?.label || r).join(", ")}!`);
     } catch(e) { notify("Failed to approve", "error"); }
   }
@@ -3909,7 +3920,7 @@ function TFCOrderSystem(){
       const dps = snapshot.docs.map(d => d.data());
       dps.sort((a, b) => new Date(a.date) - new Date(b.date));
       setDailyProductions(dps);
-    });
+    }, (err) => { console.error("Daily productions snapshot error:", err); });
     return () => unsubscribeDP();
   }, []);
 
@@ -3957,8 +3968,10 @@ function TFCOrderSystem(){
   async function deleteOrder(orderId){ try { await deleteDoc(doc(db, "orders", orderId)); if(activeId === orderId) setActiveId(null); notify("Order removed", "success"); } catch (e) { console.error("Delete order failed:", e); notify("Failed to delete", "error"); } }
   async function handleNewOrder(restaurant, poName, poDate, delDate, rows){
     try {
-      const newOrder = { id: "ord_" + Date.now(), restaurant, poName: poName.trim() || `${restaurant} Order`, orderDate: poDate, deliveryDate: delDate.trim(), createdAt: Date.now(), items: rows.map((r,i) => ({ id: "item_" + i + "_" + Date.now(), product: r.product.trim(), qty: r.qty, unit: r.unit, status: "pending", packedQty: "", notes: "" })) };
-      await setDoc(doc(db, "orders", newOrder.id), newOrder);
+      const ordRef = doc(collection(db, "orders"));
+      const ts = Date.now();
+      const newOrder = { id: ordRef.id, restaurant, poName: poName.trim() || `${restaurant} Order`, orderDate: poDate, deliveryDate: delDate.trim(), createdAt: ts, items: rows.map((r,i) => ({ id: "item_" + i + "_" + ts + "_" + Math.random().toString(36).slice(2,8), product: r.product.trim(), qty: r.qty, unit: r.unit, status: "pending", packedQty: "", notes: "" })) };
+      await setDoc(ordRef, newOrder);
       setActiveId(newOrder.id); setShowModal(false); notify(`${rows.length} items added`, "success");
       sendPush(["packing"], "📋 New PO Received", `${restaurant}: ${newOrder.poName}`, `new-${newOrder.id}`);
     } catch (e) { console.error("Create order failed:", e); notify("Failed to save", "error"); }
@@ -4057,6 +4070,8 @@ function TFCOrderSystem(){
   }
 
   function selectRole(r){
+    if (selectingRoleRef.current) return;
+    selectingRoleRef.current = true;
     if("Notification" in window && Notification.permission === "default"){
       Notification.requestPermission().then(p => {
         setNotifPermission(p);
@@ -4066,7 +4081,7 @@ function TFCOrderSystem(){
       registerFCMToken(r);
     }
     setScreenExiting(true);
-    setTimeout(()=>{ setRole(r); setPhase("app"); setScreenExiting(false); }, 320);
+    setTimeout(()=>{ setRole(r); setPhase("app"); setScreenExiting(false); selectingRoleRef.current = false; }, 320);
   }
 
   const _themeVal = makeThemeObj(DC);
@@ -4245,7 +4260,7 @@ function TFCOrderSystem(){
               <span style={{fontSize:11,fontWeight:800,color:roleConfig.color,background:roleConfig.color+"14",border:"1px solid "+roleConfig.color+"35",borderRadius:20,padding:isMobile?"6px 10px":"6px 14px",letterSpacing:"0.02em",whiteSpace:"nowrap",boxShadow:"0 0 14px "+roleConfig.color+"25",display:"flex",alignItems:"center",gap:6}}>
                 <span style={{fontSize:10}}>{roleConfig.icon}</span>{!isMobile&&roleConfig.label}
               </span>
-              {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#C41969",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #222222",animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
+              {totalIssues>0&&<span style={{position:"absolute",top:-6,right:-6,background:"#C41969",color:"#fff",borderRadius:"50%",width:17,height:17,fontSize:9,fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #111118",animation:"pulseSoft 2s infinite"}}>{totalIssues}</span>}
             </div>
             {"Notification" in window && (
               <button
@@ -4265,10 +4280,10 @@ function TFCOrderSystem(){
                 style={{background:notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.08)":notifStatus==="error"?"rgba(248,113,113,0.08)":"rgba(232,146,10,0.08)"):"rgba(255,255,255,0.04)",border:`1px solid ${notifPermission==="granted"?(notifStatus==="active"?"rgba(74,222,128,0.25)":notifStatus==="error"?"rgba(248,113,113,0.25)":"rgba(232,146,10,0.25)"):notifPermission==="denied"?"rgba(248,113,113,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:8,minWidth:36,minHeight:36,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,position:"relative",flexShrink:0,transition:"all 0.2s"}}
               >
                 {notifPermission==="denied"?"🔕":"🔔"}
-                {notifPermission==="default"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #222222"}}/>}
-                {notifPermission==="granted"&&notifStatus==="active"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#4ADE80",borderRadius:"50%",border:"1.5px solid #222222"}}/>}
-                {notifPermission==="granted"&&notifStatus==="error"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#F87171",borderRadius:"50%",border:"1.5px solid #222222"}}/>}
-                {notifPermission==="granted"&&notifStatus==="idle"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #222222"}}/>}
+                {notifPermission==="default"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #111118"}}/>}
+                {notifPermission==="granted"&&notifStatus==="active"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#4ADE80",borderRadius:"50%",border:"1.5px solid #111118"}}/>}
+                {notifPermission==="granted"&&notifStatus==="error"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#F87171",borderRadius:"50%",border:"1.5px solid #111118"}}/>}
+                {notifPermission==="granted"&&notifStatus==="idle"&&<span style={{position:"absolute",top:3,right:3,width:6,height:6,background:"#E8920A",borderRadius:"50%",border:"1.5px solid #111118"}}/>}
               </button>
             )}
             {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:"2px solid rgba(255,255,255,0.10)",flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#C41969,#901247)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
