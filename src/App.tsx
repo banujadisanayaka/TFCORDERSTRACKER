@@ -86,6 +86,8 @@ const GLOBAL_STYLES = `
     box-shadow: var(--card-shadow);
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   .glass-card::before, .glass-card::after { display: none !important; }
 
@@ -289,7 +291,7 @@ const GLOBAL_STYLES = `
   .pk-progress-fill  { height:5px; border-radius:99px; transition:width 1s cubic-bezier(0.16,1,0.3,1); }
 
   /* ── Modal glass ── */
-  .modal-sheet { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-top:3px solid var(--accent); box-shadow:0 24px 80px rgba(0,0,0,0.5), 2px 3px 0 rgba(0,0,0,0.12); }
+  .modal-sheet { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-top:3px solid var(--accent); box-shadow:0 24px 80px rgba(0,0,0,0.5), 2px 3px 0 rgba(0,0,0,0.12); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 
   /* ── Production batch card V2 ── */
   .batch-v2 { background:linear-gradient(160deg,#0D1420,#080E1A); border:1px solid rgba(232,146,10,0.18); border-left:4px solid #E8920A; border-radius:18px; margin-bottom:16px; overflow:hidden; box-shadow:0 6px 30px rgba(0,0,0,0.55), 0 0 40px rgba(232,146,10,0.06); }
@@ -448,6 +450,11 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const OWNER_EMAIL = "banuja2005@gmail.com";
+
+// Dev-only verbose logging — silenced in production to keep console clean.
+// Errors/warnings still fire via console.warn/console.error unchanged.
+const __DEV = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+const logDev = (...args) => { if (__DEV) console.log(...args); };
 
 // FCM: get your VAPID key from Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
 const VAPID_KEY = "BIN1-ss4iczuvtzmloazWkckRh4XELDk5g8ugpYi3CVlGMYEHukVUfA0K3VlJy0UpEKV67BTiPAQZHcSF5a3GRI";
@@ -1868,61 +1875,287 @@ const GUIDE_STEPS={
   ],
 };
 
+/* ── Reusable guide visual primitives ────────────────────────────────────── */
+function GuidePhone({children,h=240}){
+  return(
+    <div style={{width:240,height:h,background:"#0A0B0E",border:"1px solid rgba(255,255,255,0.10)",borderRadius:22,padding:"14px 12px 12px",position:"relative",overflow:"hidden",boxShadow:"0 18px 50px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04)",margin:"0 auto"}}>
+      <div style={{position:"absolute",top:6,left:"50%",transform:"translateX(-50%)",width:46,height:4,borderRadius:99,background:"#1C1F26"}}/>
+      <div style={{marginTop:12,height:"calc(100% - 12px)",overflow:"hidden"}}>{children}</div>
+    </div>
+  );
+}
+function PulseTarget({children,color="#BE123C"}){
+  return(
+    <span style={{position:"relative",display:"inline-block"}}>
+      <motion.span aria-hidden style={{position:"absolute",inset:-6,borderRadius:14,border:`2px solid ${color}`,pointerEvents:"none"}}
+        animate={{scale:[1,1.18,1],opacity:[0.9,0,0.9]}}
+        transition={{duration:1.6,repeat:Infinity,ease:"easeOut"}}/>
+      {children}
+    </span>
+  );
+}
+function TapFinger({delay=0,x=0,y=0}){
+  return(
+    <motion.div aria-hidden style={{position:"absolute",left:x,top:y,fontSize:24,pointerEvents:"none",filter:"drop-shadow(0 2px 6px rgba(0,0,0,0.8))",zIndex:5}}
+      initial={{opacity:0,scale:1.4}}
+      animate={{opacity:[0,1,1,0],scale:[1.4,1,0.85,1]}}
+      transition={{duration:2,delay,repeat:Infinity,ease:"easeInOut",times:[0,0.2,0.7,1]}}>
+      👆
+    </motion.div>
+  );
+}
+
+/* ── Per-step visual mockups ─────────────────────────────────────────────── */
+function IntroVisual(){
+  return(
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:240,position:"relative"}}>
+      <svg width="240" height="200" viewBox="0 0 240 200">
+        <defs>
+          <linearGradient id="syncGrad" x1="0" x2="1">
+            <stop offset="0" stopColor="#BE123C" stopOpacity="0.0"/>
+            <stop offset="0.5" stopColor="#BE123C" stopOpacity="0.9"/>
+            <stop offset="1" stopColor="#BE123C" stopOpacity="0.0"/>
+          </linearGradient>
+        </defs>
+        {[{x:30,y:120,l:"ADMIN"},{x:120,y:30,l:"KITCHEN"},{x:210,y:120,l:"PACKING"}].map((d,i)=>(
+          <g key={i}>
+            <rect x={d.x-22} y={d.y-30} width="44" height="60" rx="6" fill="#14161C" stroke="rgba(255,255,255,0.12)" strokeWidth="1"/>
+            <rect x={d.x-16} y={d.y-22} width="32" height="38" rx="2" fill="#0A0B0E"/>
+            <circle cx={d.x} cy={d.y+22} r="1.8" fill="rgba(255,255,255,0.25)"/>
+            <text x={d.x} y={d.y+50} fill="#8B8B96" fontSize="9" fontWeight="700" textAnchor="middle" letterSpacing="1">{d.l}</text>
+          </g>
+        ))}
+        <path d="M 52 105 Q 86 50 100 38" stroke="url(#syncGrad)" strokeWidth="2" fill="none" strokeDasharray="3 3"/>
+        <path d="M 140 38 Q 155 50 188 105" stroke="url(#syncGrad)" strokeWidth="2" fill="none" strokeDasharray="3 3"/>
+        <path d="M 52 130 L 188 130" stroke="url(#syncGrad)" strokeWidth="2" fill="none" strokeDasharray="3 3"/>
+        <motion.circle r="3" fill="#BE123C"
+          animate={{cx:[52,100,140,188,140,100,52],cy:[105,38,38,105,130,130,105]}}
+          transition={{duration:6,repeat:Infinity,ease:"linear"}}/>
+      </svg>
+    </div>
+  );
+}
+
+function RoleSelectVisual(){
+  const items=[
+    {l:"⚙ Admin",c:"#F4F4F5",active:false},
+    {l:"📦 Packing",c:"#FBBF24",active:true},
+    {l:"🍳 Production",c:"#10B981",active:false},
+    {l:"🚗 Kitchen",c:"#F87171",active:false},
+  ];
+  return(
+    <GuidePhone>
+      <div style={{fontSize:9,fontWeight:900,color:"#8B8B96",letterSpacing:"0.1em",marginBottom:8}}>SELECT YOUR ROLE</div>
+      <div style={{display:"flex",flexDirection:"column",gap:6,position:"relative"}}>
+        {items.map((it,i)=>(
+          <div key={i} style={{position:"relative"}}>
+            {it.active?(
+              <PulseTarget color="#BE123C">
+                <div style={{padding:"10px 12px",borderRadius:14,background:"#BE123C",color:"#fff",fontSize:11,fontWeight:800,minWidth:200}}>{it.l}</div>
+              </PulseTarget>
+            ):(
+              <div style={{padding:"10px 12px",borderRadius:14,background:"transparent",border:"1px solid rgba(255,255,255,0.10)",color:"#C4C4C8",fontSize:11,fontWeight:700}}>{it.l}</div>
+            )}
+          </div>
+        ))}
+        <TapFinger delay={0.4} x={170} y={26}/>
+      </div>
+    </GuidePhone>
+  );
+}
+
+function AdminVisual(){
+  return(
+    <GuidePhone>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+        <div>
+          <div style={{fontSize:13,fontWeight:900,color:"#F4F4F5",letterSpacing:"-0.01em"}}>Dashboard</div>
+          <div style={{fontSize:8,color:"#8B8B96",marginTop:1}}>3 active orders</div>
+        </div>
+        <div style={{position:"relative"}}>
+          <PulseTarget color="#BE123C">
+            <div style={{padding:"7px 12px",borderRadius:8,background:"linear-gradient(135deg,#BE123C,#831843)",color:"#fff",fontSize:10,fontWeight:800,boxShadow:"0 3px 10px rgba(190,18,60,0.4)"}}>+ New Order</div>
+          </PulseTarget>
+        </div>
+      </div>
+      {[{r:"Vins",n:"Sago Event",s:"5/8 packed",c:"#FBBF24"},{r:"Manja",n:"Friday PO",s:"All packed",c:"#10B981"},{r:"Vins",n:"Wed catering",s:"In production",c:"#38BDF8"}].map((o,i)=>(
+        <div key={i} style={{padding:"8px 10px",marginBottom:5,background:"#14161C",borderLeft:`2px solid ${o.c}`,borderRadius:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div>
+            <div style={{fontSize:9,color:"#8B8B96",fontWeight:700}}>{o.r}</div>
+            <div style={{fontSize:11,fontWeight:800,color:"#F4F4F5"}}>{o.n}</div>
+          </div>
+          <div style={{fontSize:9,color:o.c,fontWeight:700}}>{o.s}</div>
+        </div>
+      ))}
+      <TapFinger delay={0.4} x={172} y={18}/>
+    </GuidePhone>
+  );
+}
+
+function PackingVisual(){
+  const states=[
+    {l:"Pending",bg:"rgba(139,139,150,0.18)",bdr:"#8B8B96",col:"#C4C4C8"},
+    {l:"Packed ✓",bg:"rgba(190,18,60,0.22)",bdr:"#BE123C",col:"#F87194"},
+    {l:"Delivered 🚀",bg:"rgba(56,189,248,0.18)",bdr:"#38BDF8",col:"#A0C4FF"},
+  ];
+  const [active,setActive]=useState(0);
+  useEffect(()=>{const t=setInterval(()=>setActive(a=>(a+1)%3),1500);return()=>clearInterval(t);},[]);
+  return(
+    <div style={{height:240,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",gap:14,padding:"0 8px"}}>
+      <div style={{fontSize:9,fontWeight:900,color:"#8B8B96",letterSpacing:"0.1em",textAlign:"center"}}>STATUS FLOW</div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,flexWrap:"wrap"}}>
+        {states.map((s,i)=>(
+          <React.Fragment key={i}>
+            <motion.div
+              animate={{scale:active===i?1.08:1,boxShadow:active===i?`0 0 0 3px ${s.bdr}33`:"none"}}
+              transition={{duration:0.3}}
+              style={{padding:"9px 14px",borderRadius:99,background:s.bg,border:`1.5px solid ${s.bdr}`,color:s.col,fontSize:11,fontWeight:800,fontFamily:"inherit"}}>
+              {s.l}
+            </motion.div>
+            {i<states.length-1&&<motion.span animate={{x:active>i?2:0,color:active>i?states[i+1].bdr:"#3A3A42"}} style={{fontSize:14,fontWeight:900}}>→</motion.span>}
+          </React.Fragment>
+        ))}
+      </div>
+      <div style={{padding:"10px 14px",background:"#14161C",borderRadius:10,border:"1px solid rgba(255,255,255,0.07)",fontSize:10,color:"#C4C4C8",lineHeight:1.5,maxWidth:240,textAlign:"center"}}>
+        Tap any item → choose status → all teams see the change instantly.
+      </div>
+    </div>
+  );
+}
+
+function ProductionVisual(){
+  const items=[{n:"Madras Spiced",d:true},{n:"Feta Salad",d:true},{n:"Whole Chicken",d:false}];
+  return(
+    <GuidePhone>
+      <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
+        <span style={{width:6,height:6,borderRadius:"50%",background:"#FBBF24"}}/>
+        <div style={{fontSize:12,fontWeight:900,color:"#F4F4F5"}}>Today's Batch</div>
+      </div>
+      <div style={{height:5,background:"rgba(255,255,255,0.06)",borderRadius:99,marginBottom:12,overflow:"hidden"}}>
+        <motion.div initial={{width:"0%"}} animate={{width:"67%"}} transition={{duration:1.8,ease:[0.16,1,0.3,1]}} style={{height:"100%",background:"linear-gradient(90deg,#10B981,#06B6D4)",borderRadius:99}}/>
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:5,position:"relative"}}>
+        {items.map((it,i)=>(
+          <div key={i} style={{padding:"8px 10px",background:it.d?"rgba(16,185,129,0.10)":"#14161C",border:`1px solid ${it.d?"rgba(16,185,129,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:8,display:"flex",alignItems:"center",gap:8}}>
+            <motion.div
+              initial={false}
+              animate={{background:it.d?"#10B981":"transparent",borderColor:it.d?"#10B981":"#3A3A42"}}
+              style={{width:16,height:16,borderRadius:5,border:"1.5px solid",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,color:"#fff",fontWeight:900,flexShrink:0}}>
+              {it.d?"✓":""}
+            </motion.div>
+            <div style={{flex:1,fontSize:10,fontWeight:700,color:it.d?"#8B8B96":"#F4F4F5",textDecoration:it.d?"line-through":"none"}}>{it.n}</div>
+            {!it.d&&(
+              <PulseTarget color="#10B981">
+                <div style={{padding:"4px 8px",borderRadius:6,background:"#10B981",color:"#fff",fontSize:8,fontWeight:900}}>Mark Done</div>
+              </PulseTarget>
+            )}
+          </div>
+        ))}
+        <TapFinger delay={0.3} x={172} y={87}/>
+      </div>
+    </GuidePhone>
+  );
+}
+
+function KitchenVisual(){
+  const orders=[{r:"Vins",n:"Aiman · 4 items",t:"6:30 PM",s:"Ready",c:"#10B981"},{r:"Vins",n:"Sara · 6 items",t:"7:00 PM",s:"Cooking",c:"#FBBF24"},{r:"Vins",n:"Rohan · 2 items",t:"7:30 PM",s:"Pending",c:"#8B8B96"}];
+  return(
+    <GuidePhone>
+      <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
+        <div style={{width:18,height:18,borderRadius:"50%",background:"#F87171",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9}}>🚗</div>
+        <div style={{fontSize:12,fontWeight:900,color:"#F4F4F5"}}>Vins · Today</div>
+      </div>
+      {orders.map((o,i)=>(
+        <div key={i} style={{padding:"9px 10px",marginBottom:5,background:"#14161C",borderLeft:`3px solid ${o.c}`,borderRadius:6}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:3}}>
+            <div style={{fontSize:11,fontWeight:800,color:"#F4F4F5"}}>{o.n}</div>
+            <div style={{fontSize:8,color:o.c,fontWeight:800,padding:"2px 7px",background:`${o.c}22`,borderRadius:99}}>{o.s}</div>
+          </div>
+          <div style={{fontSize:9,color:"#8B8B96",fontWeight:600}}>Delivery · {o.t}</div>
+        </div>
+      ))}
+    </GuidePhone>
+  );
+}
+
+function GuideVisual({type}){
+  switch(type){
+    case "intro":      return <IntroVisual/>;
+    case "roleSelect": return <RoleSelectVisual/>;
+    case "admin":      return <AdminVisual/>;
+    case "packing":    return <PackingVisual/>;
+    case "production": return <ProductionVisual/>;
+    case "kitchen":    return <KitchenVisual/>;
+    default:           return null;
+  }
+}
+const GUIDE_VISUAL_KEYS=["intro","roleSelect","admin","packing","production","kitchen"];
+
 function UserGuideModal({onClose}){
   const [lang,setLang]=useState("en");
   const [step,setStep]=useState(0);
   const steps=GUIDE_STEPS[lang];
   const cur=steps[step];
   const total=steps.length;
+  const visualType=GUIDE_VISUAL_KEYS[step];
   function goNext(){if(step<total-1)setStep(s=>s+1);else onClose();}
   function goPrev(){if(step>0)setStep(s=>s-1);}
+  // Keyboard nav
+  useEffect(()=>{
+    const onKey=(e)=>{
+      if(e.key==="Escape") onClose();
+      else if(e.key==="ArrowRight") goNext();
+      else if(e.key==="ArrowLeft") goPrev();
+    };
+    window.addEventListener("keydown",onKey);
+    return()=>window.removeEventListener("keydown",onKey);
+  });
   return(
-    <div style={{position:"fixed",inset:0,zIndex:9998,background:"rgba(0,0,0,0.90)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 16px",overflowY:"auto"}}>
-      {/* Close */}
-      <button onClick={onClose} style={{position:"fixed",top:20,right:20,width:44,height:44,borderRadius:"50%",background:"rgba(255,255,255,0.10)",border:"1.5px solid rgba(255,255,255,0.15)",color:"#E4E4E7",fontSize:17,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"inherit",zIndex:1,flexShrink:0}}>✕</button>
+    <div role="dialog" aria-modal="true" aria-label="User guide" style={{position:"fixed",inset:0,zIndex:9998,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"24px 16px",overflowY:"auto"}}>
+      <button onClick={onClose} aria-label="Close guide" style={{position:"fixed",top:18,right:18,width:44,height:44,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"1.5px solid rgba(255,255,255,0.15)",color:"#F4F4F5",fontSize:18,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"inherit",zIndex:2,flexShrink:0,backdropFilter:"blur(8px)"}}>✕</button>
+
       {/* Header */}
-      <div style={{textAlign:"center",marginBottom:16,width:"100%",maxWidth:400}}>
-        <div style={{fontSize:10,fontWeight:900,letterSpacing:"0.14em",color:"#52525B",textTransform:"uppercase",marginBottom:10}}>USER GUIDE · TFC ORDER TRACKER</div>
+      <div style={{textAlign:"center",marginTop:8,marginBottom:18,width:"100%",maxWidth:400}}>
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:"0.14em",color:"#8B8B96",textTransform:"uppercase",marginBottom:10}}>USER GUIDE · TFC ORDER TRACKER</div>
         <div style={{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"center"}}>
           {GUIDE_LANGS.map(l=>(
-            <button key={l.c} onClick={()=>{setLang(l.c);setStep(0);}} style={{background:lang===l.c?"#BE123C":"rgba(255,255,255,0.07)",border:`1.5px solid ${lang===l.c?"#BE123C":"rgba(255,255,255,0.12)"}`,borderRadius:99,padding:"5px 12px",color:lang===l.c?"#fff":"#A1A1AA",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>
+            <button key={l.c} onClick={()=>{setLang(l.c);setStep(0);}} style={{background:lang===l.c?"#BE123C":"rgba(255,255,255,0.05)",border:`1.5px solid ${lang===l.c?"#BE123C":"rgba(255,255,255,0.10)"}`,borderRadius:99,padding:"6px 12px",color:lang===l.c?"#fff":"#C4C4C8",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s",minHeight:32}}>
               {l.f} {l.n}
             </button>
           ))}
         </div>
       </div>
+
       {/* Card */}
-      <motion.div key={`${lang}-${step}`} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{duration:0.28,ease:[0.16,1,0.3,1]}} style={{width:"100%",maxWidth:400,background:"#14161C",border:"1px solid rgba(255,255,255,0.10)",borderRadius:"20px 15px 22px 14px / 14px 22px 14px 20px",padding:"26px 22px",boxShadow:"0 24px 64px rgba(0,0,0,0.65)"}}>
-        {/* Icon */}
-        <div style={{textAlign:"center",fontSize:52,lineHeight:1,marginBottom:14}}>{cur.icon}</div>
-        {/* Colour bar */}
-        <div style={{height:3,borderRadius:99,background:`linear-gradient(90deg,${cur.col} 0%,transparent 100%)`,marginBottom:16}}/>
-        {/* Step label */}
-        <div style={{fontSize:10,fontWeight:900,letterSpacing:"0.12em",color:"#52525B",textTransform:"uppercase",textAlign:"center",marginBottom:6}}>STEP {step+1} OF {total}</div>
-        {/* Title */}
-        <div style={{fontSize:17,fontWeight:800,color:"#F4F4F5",textAlign:"center",marginBottom:10,lineHeight:1.3}}>{cur.title}</div>
-        {/* Desc */}
-        <div style={{fontSize:13,color:"#A1A1AA",lineHeight:1.65,textAlign:"center",marginBottom:18}}>{cur.desc}</div>
-        {/* Points */}
-        <div style={{display:"flex",flexDirection:"column",gap:9,background:"rgba(255,255,255,0.04)",borderRadius:12,padding:"13px 15px"}}>
+      <motion.div key={`${lang}-${step}`} initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{duration:0.32,ease:[0.16,1,0.3,1]}} style={{width:"100%",maxWidth:380,background:"#14161C",border:"1px solid rgba(255,255,255,0.08)",borderRadius:20,padding:18,boxShadow:"0 24px 64px rgba(0,0,0,0.7)"}}>
+        {/* VISUAL MOCKUP */}
+        <div style={{padding:"14px 0 18px",borderBottom:"1px solid rgba(255,255,255,0.06)",marginBottom:18}}>
+          <GuideVisual type={visualType}/>
+        </div>
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:"0.12em",color:"#8B8B96",textTransform:"uppercase",textAlign:"center",marginBottom:6}}>STEP {step+1} OF {total}</div>
+        <div style={{fontSize:18,fontWeight:800,color:"#F4F4F5",textAlign:"center",marginBottom:10,lineHeight:1.3,letterSpacing:"-0.01em"}}>{cur.title}</div>
+        <div style={{fontSize:13,color:"#C4C4C8",lineHeight:1.6,textAlign:"center",marginBottom:16}}>{cur.desc}</div>
+        <div style={{display:"flex",flexDirection:"column",gap:8,background:"rgba(255,255,255,0.03)",borderRadius:12,padding:"12px 14px"}}>
           {cur.pts.map((p,i)=>(
             <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10}}>
               <span style={{color:cur.col,fontSize:11,flexShrink:0,marginTop:3}}>◆</span>
-              <span style={{fontSize:13,color:"#E4E4E7",lineHeight:1.45}}>{p}</span>
+              <span style={{fontSize:13,color:"#C4C4C8",lineHeight:1.5}}>{p}</span>
             </div>
           ))}
         </div>
       </motion.div>
+
       {/* Progress dots */}
-      <div style={{display:"flex",gap:6,marginTop:18,alignItems:"center"}}>
+      <div style={{display:"flex",gap:6,marginTop:16,alignItems:"center"}}>
         {steps.map((_,i)=>(
-          <button key={i} onClick={()=>setStep(i)} style={{width:i===step?22:8,height:8,borderRadius:99,background:i===step?cur.col:"rgba(255,255,255,0.22)",border:"none",cursor:"pointer",transition:"all 0.2s ease",padding:0}}/>
+          <button key={i} onClick={()=>setStep(i)} aria-label={`Go to step ${i+1}`} style={{width:i===step?22:8,height:8,borderRadius:99,background:i===step?cur.col:"rgba(255,255,255,0.18)",border:"none",cursor:"pointer",transition:"all 0.2s ease",padding:0}}/>
         ))}
       </div>
+
       {/* Nav */}
-      <div style={{display:"flex",gap:10,marginTop:14}}>
-        <button onClick={goPrev} disabled={step===0} style={{padding:"10px 20px",borderRadius:99,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.12)",color:step===0?"#3F3F46":"#E4E4E7",fontSize:13,fontWeight:700,cursor:step===0?"default":"pointer",fontFamily:"inherit",opacity:step===0?0.35:1,transition:"all 0.15s"}}>← Back</button>
-        <button onClick={goNext} style={{padding:"10px 26px",borderRadius:99,background:"linear-gradient(135deg,#BE123C,#831843)",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit",boxShadow:"0 4px 16px rgba(190,18,60,0.45)"}}>
+      <div style={{display:"flex",gap:10,marginTop:14,marginBottom:24}}>
+        <button onClick={goPrev} disabled={step===0} style={{padding:"10px 20px",borderRadius:99,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.10)",color:step===0?"#3A3A42":"#F4F4F5",fontSize:13,fontWeight:700,cursor:step===0?"default":"pointer",fontFamily:"inherit",opacity:step===0?0.35:1,transition:"all 0.15s",minHeight:44}}>← Back</button>
+        <button onClick={goNext} style={{padding:"10px 26px",borderRadius:99,background:"linear-gradient(135deg,#BE123C,#831843)",border:"none",color:"#fff",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"inherit",boxShadow:"0 4px 16px rgba(190,18,60,0.40)",minHeight:44}}>
           {step===total-1?"Got it ✓":"Next →"}
         </button>
       </div>
@@ -3508,7 +3741,7 @@ function TFCOrderSystem(){
         } catch(_) { needsRefresh = true; }
       }
       if (needsRefresh) {
-        console.log("[FCM] tab-focus heal: re-registering");
+        logDev("[FCM] tab-focus heal: re-registering");
         setNotifStatus("idle");
         registerFCMToken(role);
       }
@@ -3557,7 +3790,7 @@ function TFCOrderSystem(){
     const handler = (e) => {
       if (!e.data) return;
       if (e.data.type === "fcm-resubscribe" && role && Notification.permission === "granted") {
-        console.log("[FCM] SW requested re-subscribe");
+        logDev("[FCM] SW requested re-subscribe");
         setNotifStatus("idle");
         registerFCMToken(role);
       }
@@ -3600,7 +3833,7 @@ function TFCOrderSystem(){
         console.warn("[Push] no tokens found for roles:", cleanRoles, data);
         notify(`No devices registered for ${cleanRoles.join("/")} — ask them to open the app and allow notifications`, "error");
       } else if (data.sent > 0) {
-        console.log("[Push]", title, "→", cleanRoles, ":", data.sent + "/" + data.total, "delivered");
+        logDev("[Push]", title, "→", cleanRoles, ":", data.sent + "/" + data.total, "delivered");
       }
       // Persist to Firestore notification history (7-day TTL via expiresAt field)
       addDoc(collection(db, "notifications"), {
@@ -3624,7 +3857,7 @@ function TFCOrderSystem(){
     if (!("Notification" in window) || Notification.permission !== "granted") return;
     if (!VAPID_KEY || VAPID_KEY.startsWith("YOUR_")) return;
     pendingRegRoleRef.current = r; // claim this role for the race-safety check
-    console.log("[FCM] register attempt", _attempt + 1, "for role:", r);
+    logDev("[FCM] register attempt", _attempt + 1, "for role:", r);
     try {
       const msg = getMsg();
       if (!msg) throw new Error("getMessaging() returned null — browser may not support FCM");
@@ -3635,7 +3868,7 @@ function TFCOrderSystem(){
       if (!token) throw new Error("empty token returned by FCM");
       // Race-safety: if another registerFCMToken call superseded this one, abort
       if (pendingRegRoleRef.current !== r) {
-        console.log("[FCM] aborted — superseded by newer registration");
+        logDev("[FCM] aborted — superseded by newer registration");
         return;
       }
       // Update in-memory token FIRST so even if Firestore write fails,
@@ -3661,7 +3894,7 @@ function TFCOrderSystem(){
         }));
       } catch(_) {}
       setNotifStatus("active");
-      console.log("[FCM] ✓ registered for", r, "token …" + token.slice(-8));
+      logDev("[FCM] ✓ registered for", r, "token …" + token.slice(-8));
     } catch (e) {
       console.error("[FCM] attempt", _attempt + 1, "failed:", e.message);
       // Retry with exponential back-off: 3 s, then 9 s, then give up

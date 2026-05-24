@@ -90,13 +90,15 @@ test("glass-card class applies backdrop-filter", async ({ page }) => {
 test("modal-sheet class has backdrop-filter blur in CSS", async ({ page }) => {
   await load(page);
   const result = await page.evaluate(() => {
-    const stylesheet = Array.from(document.styleSheets).find(ss => {
-      try { return ss.cssRules.length > 0; } catch { return false; }
-    });
-    if (!stylesheet) return "no_sheet";
-    const rules = Array.from(stylesheet.cssRules);
-    const rule = rules.find(r => r.cssText?.includes("modal-sheet") && r.cssText?.includes("blur"));
-    return rule ? "found" : "not_found";
+    const sheets = Array.from(document.styleSheets);
+    for (const s of sheets) {
+      try {
+        for (const r of Array.from(s.cssRules)) {
+          if (r.cssText?.includes("modal-sheet") && r.cssText?.includes("blur")) return "found";
+        }
+      } catch {}
+    }
+    return "not_found";
   });
   expect(result).toBe("found");
 });
