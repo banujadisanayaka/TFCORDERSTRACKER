@@ -1866,10 +1866,110 @@ function ControlPanel({ requests, authorizedUsers, onApprove, onReject, onRemove
   );
 }
 
+/* ─── User Guide Data ─────────────────────────────────────────── */
+const GUIDE_LANGS=[{c:"en",f:"🇬🇧",n:"English"},{c:"my",f:"🇲🇾",n:"Melayu"},{c:"bn",f:"🇧🇩",n:"বাংলা"},{c:"mm",f:"🇲🇲",n:"မြန်မာ"}];
+const GUIDE_STEPS={
+  en:[
+    {icon:"🏭",col:"#C2D8C4",title:"What is TFC Order Tracker?",desc:"A real-time operations hub for Ocean Flair Group. Every order — from creation to delivery — is tracked here across all kitchens.",pts:["Live order status visible to every team","Covers all kitchens and outlets","Built for the daily food production workflow"]},
+    {icon:"👥",col:"#A0C4FF",title:"Choose Your Role",desc:"Select the role that matches your job when you open the app. Each role shows only what you need — nothing extra.",pts:["Admin · Packing · Production · Kitchen","Your role is set by your manager","You can only access your assigned role"]},
+    {icon:"⚙️",col:"#F8EDAD",title:"Admin",desc:"Admin is the control centre. Create customer orders, plan weekly production, and manage the whole team from here.",pts:["Create new orders with items & quantities","Set daily production plans for the week","Track all orders across every stage","Manage team roles & access"]},
+    {icon:"📦",col:"#FBBF24",title:"Packing",desc:"Packing team sees all orders ready to pack and dispatch. Update the status as each order is packed.",pts:["See pending, cooking & ready-to-pack orders","Mark orders as packed & dispatched","Flag short or out-of-stock items","Real-time updates across all devices"]},
+    {icon:"🍳",col:"#4ADE80",title:"Production",desc:"Production team sees today's cooking queue with recipes. Mark items done when cooking is complete.",pts:["Today's plan is set by Admin","Tap any item to see the full recipe","Mark items cooked → moves to ready-to-pack","Progress bar tracks daily completion"]},
+    {icon:"🚗",col:"#F87171",title:"Kitchen — Vins & Manja",desc:"Kitchen staff track live delivery orders for their outlet. See customer details and update delivery status.",pts:["Shows only your kitchen's orders","Customer address & order details","Update delivery status live","Mark orders as delivered"]},
+  ],
+  my:[
+    {icon:"🏭",col:"#C2D8C4",title:"Apa itu TFC Order Tracker?",desc:"Pusat operasi masa nyata untuk Ocean Flair Group. Setiap pesanan — dari penciptaan hingga penghantaran — dijejaki di sini.",pts:["Status pesanan langsung untuk semua pasukan","Merangkumi semua dapur dan cawangan","Dibina untuk aliran kerja pengeluaran makanan harian"]},
+    {icon:"👥",col:"#A0C4FF",title:"Pilih Peranan Anda",desc:"Pilih peranan yang sepadan dengan pekerjaan anda. Setiap peranan menunjukkan hanya apa yang anda perlukan — tiada lebih.",pts:["Admin · Pembungkusan · Pengeluaran · Dapur","Peranan anda ditetapkan oleh pengurus anda","Anda hanya boleh mengakses peranan yang ditetapkan"]},
+    {icon:"⚙️",col:"#F8EDAD",title:"Admin",desc:"Admin adalah pusat kawalan. Buat pesanan pelanggan baru, rancang pengeluaran mingguan, dan urus seluruh pasukan.",pts:["Buat pesanan baru dengan item & kuantiti","Tetapkan rancangan pengeluaran harian untuk seminggu","Jejak semua pesanan di setiap peringkat","Urus peranan & akses pasukan"]},
+    {icon:"📦",col:"#FBBF24",title:"Pembungkusan",desc:"Pasukan pembungkusan melihat semua pesanan sedia untuk dibungkus. Kemaskini status apabila setiap pesanan dibungkus dan dihantar.",pts:["Lihat pesanan tertunggak, dimasak & sedia","Tandakan pesanan dibungkus & dihantar","Tandakan item kurang atau kehabisan stok","Kemaskini masa nyata di semua peranti"]},
+    {icon:"🍳",col:"#4ADE80",title:"Pengeluaran",desc:"Pasukan pengeluaran melihat baris gilir masakan hari ini dengan resipi. Tandakan item selesai apabila masakan selesai.",pts:["Rancangan hari ini ditetapkan oleh Admin","Ketik item untuk melihat resipi penuh","Tandakan item dimasak → sedia dibungkus","Bar kemajuan menjejak penyelesaian harian"]},
+    {icon:"🚗",col:"#F87171",title:"Dapur — Vins & Manja",desc:"Kakitangan dapur menjejaki pesanan penghantaran langsung untuk cawangan mereka. Lihat butiran pelanggan dan kemaskini status.",pts:["Menunjukkan pesanan dapur anda sahaja","Alamat pelanggan & butiran pesanan","Kemaskini status penghantaran secara langsung","Tandakan pesanan sebagai telah dihantar"]},
+  ],
+  bn:[
+    {icon:"🏭",col:"#C2D8C4",title:"TFC Order Tracker কী?",desc:"Ocean Flair Group-এর রিয়েল-টাইম অপারেশন হাব। প্রতিটি অর্ডার — তৈরি থেকে ডেলিভারি পর্যন্ত — সব কিচেনে এখানে ট্র্যাক করা হয়।",pts:["সব টিমের জন্য লাইভ অর্ডার স্ট্যাটাস","সব কিচেন ও আউটলেট কভার করে","দৈনিক খাদ্য উৎপাদনের জন্য তৈরি"]},
+    {icon:"👥",col:"#A0C4FF",title:"আপনার ভূমিকা বেছে নিন",desc:"অ্যাপ খোলার সময় আপনার কাজের সাথে মেলে এমন ভূমিকা বেছে নিন। প্রতিটি ভূমিকা শুধু প্রয়োজনীয় তথ্য দেখায়।",pts:["Admin · Packing · Production · Kitchen","আপনার ম্যানেজার আপনার ভূমিকা নির্ধারণ করেন","শুধু নির্ধারিত ভূমিকাই অ্যাক্সেস করা যাবে"]},
+    {icon:"⚙️",col:"#F8EDAD",title:"Admin",desc:"Admin হল কন্ট্রোল সেন্টার। নতুন অর্ডার তৈরি করুন, সাপ্তাহিক উৎপাদন পরিকল্পনা করুন এবং পুরো টিম পরিচালনা করুন।",pts:["আইটেম ও পরিমাণ সহ নতুন অর্ডার তৈরি করুন","প্রতিদিনের উৎপাদন পরিকল্পনা সেট করুন","সব পর্যায়ে সব অর্ডার ট্র্যাক করুন","টিমের ভূমিকা ও অ্যাক্সেস পরিচালনা করুন"]},
+    {icon:"📦",col:"#FBBF24",title:"Packing",desc:"প্যাকিং টিম প্যাক করতে প্রস্তুত সব অর্ডার দেখে। প্রতিটি অর্ডার প্যাক ও পাঠানো হলে স্ট্যাটাস আপডেট করুন।",pts:["পেন্ডিং, রান্না ও প্রস্তুত অর্ডার দেখুন","অর্ডার প্যাকড ও ডিসপ্যাচড চিহ্নিত করুন","শর্ট বা আউট-অফ-স্টক আইটেম ফ্ল্যাগ করুন","সব ডিভাইসে রিয়েল-টাইম আপডেট"]},
+    {icon:"🍳",col:"#4ADE80",title:"Production",desc:"প্রোডাকশন টিম রেসিপি সহ আজকের কিউ দেখে। রান্না সম্পন্ন হলে আইটেম চিহ্নিত করুন।",pts:["Admin থেকে আজকের পরিকল্পনা","আইটেম ট্যাপ করে সম্পূর্ণ রেসিপি দেখুন","রান্না → প্যাকের জন্য প্রস্তুত চিহ্নিত করুন","প্রগ্রেস বার সম্পন্নতা ট্র্যাক করে"]},
+    {icon:"🚗",col:"#F87171",title:"Kitchen — Vins ও Manja",desc:"কিচেন স্টাফ তাদের আউটলেটের লাইভ ডেলিভারি অর্ডার ট্র্যাক করে। কাস্টমারের বিবরণ দেখুন ও ডেলিভারি স্ট্যাটাস আপডেট করুন।",pts:["শুধু আপনার কিচেনের অর্ডার তালিকা","কাস্টমারের ঠিকানা ও অর্ডার বিবরণ","ডেলিভারি স্ট্যাটাস লাইভ আপডেট করুন","অর্ডার ডেলিভারড হিসেবে চিহ্নিত করুন"]},
+  ],
+  mm:[
+    {icon:"🏭",col:"#C2D8C4",title:"TFC Order Tracker ဆိုတာ ဘာလဲ?",desc:"Ocean Flair Group အတွက် အချိန်နှင့်တပြေးညီ လုပ်ငန်းဆောင်ရွက်ရာ ဗဟိုဌာနဖြစ်သည်။ အမှာစာတိုင်းကို မီးဖိုချောင်အားလုံးတွင် ဤနေရာ၌ ခြေရာခံသည်။",pts:["အဖွဲ့တိုင်းအတွက် တိုက်ရိုက် အမှာစာ အခြေအနေ","မီးဖိုချောင်နှင့် ဆိုင်ခွဲ အားလုံး ပါဝင်သည်","နေ့စဉ် အစားအစာ ထုတ်လုပ်မှုအတွက် တည်ဆောက်"]},
+    {icon:"👥",col:"#A0C4FF",title:"သင့်အခန်းကဏ္ဍ ရွေးချယ်ပါ",desc:"အက်ပ်ဖွင့်သောအခါ သင့်အလုပ်နှင့် ကိုက်ညီသော အခန်းကဏ္ဍ ရွေးချယ်ပါ။ အခန်းကဏ္ဍတိုင်းသည် လိုအပ်သည့် မြင်ကွင်းသာ ပေးသည်။",pts:["Admin · Packing · Production · Kitchen","သင့်မန်နေဂျာသည် သင့်အခန်းကဏ္ဍ သတ်မှတ်ပေးသည်","ချထားသောအခန်းကဏ္ဍကိုသာ ဝင်ရောက်နိုင်သည်"]},
+    {icon:"⚙️",col:"#F8EDAD",title:"Admin",desc:"Admin သည် ထိန်းချုပ်ရေးဗဟိုဖြစ်သည်။ ဖောက်သည်အမှာစာ ဖန်တီးပါ၊ အပတ်စဉ် ထုတ်လုပ်မှုအစီအစဉ် ချမှတ်ပါ၊ အဖွဲ့တစ်ခုလုံး စီမံပါ။",pts:["ပစ္စည်းနှင့် အရေအတွက်ဖြင့် အမှာစာ အသစ်ဖန်တီး","နေ့တိုင်း ထုတ်လုပ်မှုအစီအစဉ် သတ်မှတ်","အဆင့်တိုင်းတွင် အမှာစာ အားလုံး ခြေရာခံ","အဖွဲ့ အခန်းကဏ္ဍနှင့် ဝင်ရောက်ခွင့် စီမံ"]},
+    {icon:"📦",col:"#FBBF24",title:"Packing",desc:"Packing အဖွဲ့သည် ထုပ်ပိုးရန် အသင့်ဖြစ်သော အမှာစာ မြင်သည်။ ထုပ်ပိုးပြီး ပေးပို့သောအခါ အခြေအနေ အပ်ဒိတ်ပါ။",pts:["မျှော်လင့်, ချက်ပြုတ်, အသင့်ဖြစ်သော အမှာစာ ကြည့်","ထုပ်ပိုးပြီး ပေးပို့ပြီးဟု မှတ်သားပါ","ပမာဏ မလုံသောပစ္စည်း အမှတ်ပြုပါ","ကိရိယာ အားလုံးတွင် အချိန်နှင့်တပြေးညီ"]},
+    {icon:"🍳",col:"#4ADE80",title:"Production",desc:"ထုတ်လုပ်ရေးအဖွဲ့သည် ချက်နည်းပါ ယနေ့ ချက်ပြုတ်မှုစီတန်း မြင်သည်။ ချက်ပြုတ်ပြီးသောအခါ ပစ္စည်း မှတ်သားပါ။",pts:["Admin မှ ယနေ့ ထုတ်လုပ်မှုအစီအစဉ်","ချက်နည်း ပြည့်စုံမြင်ရန် ပစ္စည်း နှိပ်ပါ","ချက်ပြုတ်ပြီး → ထုပ်ပိုးရန် အသင့်ဟု မှတ်သား","တိုးတက်မှုဘား ပြည့်စုံမှု ခြေရာခံ"]},
+    {icon:"🚗",col:"#F87171",title:"Kitchen — Vins နှင့် Manja",desc:"မီးဖိုချောင်ဝန်ထမ်းများသည် သူတို့ဆိုင်ခွဲအတွက် တိုက်ရိုက် ပေးပို့မှုအမှာစာ ခြေရာခံသည်။",pts:["သင့်မီးဖိုချောင်၏ အမှာစာစာရင်းသာ ပြသည်","ဖောက်သည်လိပ်စာနှင့် အမှာစာ အသေးစိတ်","ပေးပို့မှု အခြေအနေ တိုက်ရိုက် အပ်ဒိတ်","ပေးပို့ပြီးဟု မှတ်သားပါ"]},
+  ],
+};
+
+function UserGuideModal({onClose}){
+  const [lang,setLang]=useState("en");
+  const [step,setStep]=useState(0);
+  const steps=GUIDE_STEPS[lang];
+  const cur=steps[step];
+  const total=steps.length;
+  function goNext(){if(step<total-1)setStep(s=>s+1);else onClose();}
+  function goPrev(){if(step>0)setStep(s=>s-1);}
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:9998,background:"rgba(0,0,0,0.90)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"20px 16px",overflowY:"auto"}}>
+      {/* Close */}
+      <button onClick={onClose} style={{position:"fixed",top:20,right:20,width:38,height:38,borderRadius:"50%",background:"rgba(255,255,255,0.10)",border:"1.5px solid rgba(255,255,255,0.15)",color:"#E4E4E7",fontSize:17,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"inherit",zIndex:1,flexShrink:0}}>✕</button>
+      {/* Header */}
+      <div style={{textAlign:"center",marginBottom:16,width:"100%",maxWidth:400}}>
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:"0.14em",color:"#52525B",textTransform:"uppercase",marginBottom:10}}>USER GUIDE · TFC ORDER TRACKER</div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"center"}}>
+          {GUIDE_LANGS.map(l=>(
+            <button key={l.c} onClick={()=>{setLang(l.c);setStep(0);}} style={{background:lang===l.c?"#700143":"rgba(255,255,255,0.07)",border:`1.5px solid ${lang===l.c?"#700143":"rgba(255,255,255,0.12)"}`,borderRadius:99,padding:"5px 12px",color:lang===l.c?"#fff":"#A1A1AA",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>
+              {l.f} {l.n}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Card */}
+      <motion.div key={`${lang}-${step}`} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{duration:0.28,ease:[0.16,1,0.3,1]}} style={{width:"100%",maxWidth:400,background:"#2C2C2C",border:"1px solid rgba(255,255,255,0.10)",borderRadius:"20px 15px 22px 14px / 14px 22px 14px 20px",padding:"26px 22px",boxShadow:"0 24px 64px rgba(0,0,0,0.65)"}}>
+        {/* Icon */}
+        <div style={{textAlign:"center",fontSize:52,lineHeight:1,marginBottom:14}}>{cur.icon}</div>
+        {/* Colour bar */}
+        <div style={{height:3,borderRadius:99,background:`linear-gradient(90deg,${cur.col} 0%,transparent 100%)`,marginBottom:16}}/>
+        {/* Step label */}
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:"0.12em",color:"#52525B",textTransform:"uppercase",textAlign:"center",marginBottom:6}}>STEP {step+1} OF {total}</div>
+        {/* Title */}
+        <div style={{fontSize:17,fontWeight:800,color:"#F8EDAD",textAlign:"center",marginBottom:10,lineHeight:1.3}}>{cur.title}</div>
+        {/* Desc */}
+        <div style={{fontSize:13,color:"#A1A1AA",lineHeight:1.65,textAlign:"center",marginBottom:18}}>{cur.desc}</div>
+        {/* Points */}
+        <div style={{display:"flex",flexDirection:"column",gap:9,background:"rgba(255,255,255,0.04)",borderRadius:12,padding:"13px 15px"}}>
+          {cur.pts.map((p,i)=>(
+            <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10}}>
+              <span style={{color:cur.col,fontSize:11,flexShrink:0,marginTop:3}}>◆</span>
+              <span style={{fontSize:13,color:"#E4E4E7",lineHeight:1.45}}>{p}</span>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+      {/* Progress dots */}
+      <div style={{display:"flex",gap:6,marginTop:18,alignItems:"center"}}>
+        {steps.map((_,i)=>(
+          <button key={i} onClick={()=>setStep(i)} style={{width:i===step?22:8,height:8,borderRadius:99,background:i===step?cur.col:"rgba(255,255,255,0.22)",border:"none",cursor:"pointer",transition:"all 0.2s ease",padding:0}}/>
+        ))}
+      </div>
+      {/* Nav */}
+      <div style={{display:"flex",gap:10,marginTop:14}}>
+        <button onClick={goPrev} disabled={step===0} style={{padding:"10px 20px",borderRadius:99,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.12)",color:step===0?"#3F3F46":"#E4E4E7",fontSize:13,fontWeight:700,cursor:step===0?"default":"pointer",fontFamily:"inherit",opacity:step===0?0.35:1,transition:"all 0.15s"}}>← Back</button>
+        <button onClick={goNext} style={{padding:"10px 26px",borderRadius:99,background:"linear-gradient(135deg,#700143,#4D002E)",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit",boxShadow:"0 4px 16px rgba(112,1,67,0.45)"}}>
+          {step===total-1?"Got it ✓":"Next →"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, authUser, onSignOut, pendingCount, installPrompt, onInstallDone }) {
   const th = useTheme();
   const keys = availableRoles || Object.keys(ROLES);
   const [selected, setSelected] = useState(null);
+  const [showGuide, setShowGuide] = useState(false);
 
   return (
     <div className="animate-fade-in custom-scrollbar" style={{minHeight:"100vh",background:"var(--page-bg)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px",position:"relative"}}>
@@ -1960,11 +2060,24 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
           <InstallAppButton installPrompt={installPrompt} onInstallDone={onInstallDone}/>
         </div>
 
-        <div style={{textAlign:"center",marginTop:20,fontSize:11,color:"var(--text-sub)",fontWeight:500}}>
+        {/* User Guide — subtle link, always available, never distracts */}
+        <div style={{textAlign:"center",marginTop:14}}>
+          <button
+            onClick={()=>setShowGuide(true)}
+            style={{background:"none",border:"none",cursor:"pointer",color:"var(--text-sub)",fontSize:12,fontWeight:600,fontFamily:"inherit",padding:"6px 14px",borderRadius:99,opacity:0.55,transition:"opacity 0.15s",letterSpacing:"0.02em"}}
+            onMouseEnter={e=>e.currentTarget.style.opacity="1"}
+            onMouseLeave={e=>e.currentTarget.style.opacity="0.55"}
+          >
+            📖 User Guide
+          </button>
+        </div>
+
+        <div style={{textAlign:"center",marginTop:16,fontSize:11,color:"var(--text-sub)",fontWeight:500}}>
           Ocean Flair Group Sdn Bhd · TTDI, Kuala Lumpur
           <div style={{fontSize:10,marginTop:4,opacity:0.6}}>© 2026 Made by Banuja Disanayaka</div>
         </div>
       </div>
+      {showGuide && <UserGuideModal onClose={()=>setShowGuide(false)}/>}
     </div>
   );
 }
