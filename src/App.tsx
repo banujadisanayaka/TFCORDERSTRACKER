@@ -42,15 +42,15 @@ const GLOBAL_STYLES = `
     --sub-bg: rgba(194,216,196,0.05);
   }
   [data-theme="light"] {
-    --page-bg: #F8EDAD; --card-bg: #FFFFFF; --card-shadow: 2px 3px 0 rgba(0,0,0,0.08);
-    --modal-bg: #F8EDAD; --border: rgba(34,34,34,0.20); --text: #222222;
-    --text-sub: #6B4060; --accent: #700143; --input-bg: #FFFFFF;
+    --page-bg: #F8F9FA; --card-bg: #FFFFFF; --card-shadow: 2px 3px 0 rgba(0,0,0,0.08);
+    --modal-bg: #FFFFFF; --border: rgba(0,0,0,0.09); --text: #18181B;
+    --text-sub: #52525B; --accent: #700143; --input-bg: #FFFFFF;
     --input-focus-border: #700143; --input-focus-shadow: rgba(112,1,67,0.14);
-    --input-focus-bg: #FDF5F0; --sidebar-bg: #EFE5D8;
-    --header-bg: rgba(248,237,173,0.95); --paper-dot: rgba(112,1,67,0.04);
-    --border-faint: rgba(34,34,34,0.14);
-    --sub-bg: rgba(34,34,34,0.04);
-    --color-success: #15803D; --color-warning: #B45309; --color-danger: #A02040; --color-info: #0369A1;
+    --input-focus-bg: #FFFFFF; --sidebar-bg: #F4F4F5;
+    --header-bg: rgba(255,255,255,0.97); --paper-dot: rgba(0,0,0,0.03);
+    --border-faint: #E4E4E7;
+    --sub-bg: rgba(0,0,0,0.03);
+    --color-success: #15803D; --color-warning: #B45309; --color-danger: #DC2626; --color-info: #2563EB;
   }
 
   /* Type scale */
@@ -348,9 +348,9 @@ const GLOBAL_STYLES = `
   /* ── Gradient text light-mode overrides (dark-start so text is visible on cream) ── */
   [data-theme="light"] .gradient-text-red { background:linear-gradient(135deg,#4D002E 0%,#700143 55%,#9A0060 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
   [data-theme="light"] .gradient-text-amber { background:linear-gradient(135deg,#7A3000 0%,#B45309 55%,#D97706 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
-  [data-theme="light"] .gradient-text-brand { background:linear-gradient(135deg,#1A0A10 0%,#700143 50%,#4A0030 90%,#222222 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
-  [data-theme="light"] .gradient-text-white { background:none; -webkit-text-fill-color:#222222; }
-  [data-theme="light"] .gradient-text-cyan { background:none; -webkit-text-fill-color:#5A8A60; }
+  [data-theme="light"] .gradient-text-brand { background:linear-gradient(135deg,#18181B 0%,#700143 50%,#4A0030 90%,#18181B 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  [data-theme="light"] .gradient-text-white { background:none; -webkit-text-fill-color:#18181B; }
+  [data-theme="light"] .gradient-text-cyan { background:none; -webkit-text-fill-color:#2563EB; }
 
   /* ── Modal dimmer overlay (adaptive) ── */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:999; }
@@ -660,15 +660,15 @@ const DC={ // dark palette — charcoal/plum/sage
   cy: "#C2D8C4", cyBg: "rgba(194,216,196,0.10)", cyBgD: "rgba(194,216,196,0.20)",
   sh: "2px 3px 0 rgba(0,0,0,0.50)", shM: "3px 5px 0 rgba(0,0,0,0.65)"
 };
-const LC={ // light palette — cream/plum/sage
-  w: "#F8EDAD", off: "#EFE5D8", beige: "#EFE5D8", beigeD: "#C2D8C4",
-  ch: "#222222", chM: "#3D1A30", chL: "#6B4060", chXL: "#A08090",
-  bdr: "#222222", bdrL: "#8A7A70",
+const LC={ // light palette — neutral/plum/blue
+  w: "#F8F9FA", off: "#F4F4F5", beige: "#F4F4F5", beigeD: "#E4E4E7",
+  ch: "#18181B", chM: "#3F3F46", chL: "#52525B", chXL: "#A1A1AA",
+  bdr: "#E4E4E7", bdrL: "#D4D4D8",
   ol: "#700143", olDk: "#4D002E", olBg: "rgba(112,1,67,0.09)", olBgD: "rgba(112,1,67,0.18)",
   am: "#A0720A", amDk: "#7A5508", amBg: "rgba(160,114,10,0.10)", amBgD: "rgba(160,114,10,0.20)",
   gn: "#15803D", gnBg: "rgba(21,128,61,0.10)",
-  rd: "#A02040", rdBg: "rgba(160,32,64,0.10)",
-  cy: "#5A8A60", cyBg: "rgba(90,138,96,0.10)", cyBgD: "rgba(90,138,96,0.18)",
+  rd: "#DC2626", rdBg: "rgba(220,38,38,0.10)",
+  cy: "#2563EB", cyBg: "rgba(37,99,235,0.10)", cyBgD: "rgba(37,99,235,0.18)",
   sh: "2px 3px 0 rgba(0,0,0,0.08)", shM: "3px 5px 0 rgba(0,0,0,0.12)"
 };
 // Module-level C = DC (for static defaults; components use useTheme() for reactive palette)
@@ -678,22 +678,22 @@ function makeThemeObj(palette, isDark) {
   return {
     isDark,
     ...palette,
-    divider:  isDark ? "rgba(255,255,255,0.08)"     : "rgba(34,34,34,0.12)",
-    subBg:    isDark ? "rgba(194,216,196,0.05)"     : "rgba(239,229,216,0.60)",
+    divider:  isDark ? "rgba(255,255,255,0.08)"     : "rgba(0,0,0,0.09)",
+    subBg:    isDark ? "rgba(194,216,196,0.05)"     : "rgba(0,0,0,0.03)",
     cardBg:   isDark ? "#2A2828"                    : "#FFFFFF",
-    chipBg:   isDark ? "rgba(255,255,255,0.06)"     : "rgba(34,34,34,0.07)",
-    footerBg: isDark ? "rgba(34,34,34,0.92)"        : "rgba(239,229,216,0.90)",
-    headerBg: isDark ? "rgba(34,34,34,0.96)"        : "rgba(248,237,173,0.95)",
-    panelBg:  isDark ? "#1E1E1E"                    : "#EFE5D8",
+    chipBg:   isDark ? "rgba(255,255,255,0.06)"     : "rgba(0,0,0,0.05)",
+    footerBg: isDark ? "rgba(34,34,34,0.92)"        : "rgba(244,244,245,0.95)",
+    headerBg: isDark ? "rgba(34,34,34,0.96)"        : "rgba(255,255,255,0.97)",
+    panelBg:  isDark ? "#1E1E1E"                    : "#F4F4F5",
     editBg:   isDark ? "#1A1A1A"                    : "#FFFFFF",
-    editBdr:  isDark ? "#2E2828"                    : "#D8D0C0",
-    closeBg:  isDark ? "rgba(255,255,255,0.05)"     : "rgba(34,34,34,0.05)",
-    closeBdr: isDark ? "rgba(255,255,255,0.09)"     : "rgba(34,34,34,0.12)",
-    trackBg:  isDark ? "rgba(255,255,255,0.07)"     : "rgba(34,34,34,0.10)",
-    svgTrack: isDark ? "rgba(255,255,255,0.07)"     : "rgba(34,34,34,0.10)",
+    editBdr:  isDark ? "#2E2828"                    : "#E4E4E7",
+    closeBg:  isDark ? "rgba(255,255,255,0.05)"     : "rgba(0,0,0,0.04)",
+    closeBdr: isDark ? "rgba(255,255,255,0.09)"     : "rgba(0,0,0,0.09)",
+    trackBg:  isDark ? "rgba(255,255,255,0.07)"     : "rgba(0,0,0,0.08)",
+    svgTrack: isDark ? "rgba(255,255,255,0.07)"     : "rgba(0,0,0,0.08)",
     noteBg:   isDark ? "rgba(255,255,255,0.03)"     : "rgba(255,255,255,0.70)",
-    noteBdr:  isDark ? "rgba(255,255,255,0.08)"     : "rgba(34,34,34,0.12)",
-    cyGlow:   isDark ? "rgba(194,216,196,0.12)"     : "rgba(90,138,96,0.10)",
+    noteBdr:  isDark ? "rgba(255,255,255,0.08)"     : "rgba(0,0,0,0.09)",
+    cyGlow:   isDark ? "rgba(194,216,196,0.12)"     : "rgba(37,99,235,0.10)",
   };
 }
 
