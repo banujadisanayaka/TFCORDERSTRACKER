@@ -50,7 +50,7 @@ const GLOBAL_STYLES = `
     --header-bg: rgba(248,237,173,0.95); --paper-dot: rgba(112,1,67,0.04);
     --border-faint: rgba(34,34,34,0.14);
     --sub-bg: rgba(34,34,34,0.04);
-    --color-success: #15803D; --color-warning: #B45309; --color-danger: #700143; --color-info: #0369A1;
+    --color-success: #15803D; --color-warning: #B45309; --color-danger: #A02040; --color-info: #0369A1;
   }
 
   /* Type scale */
@@ -63,7 +63,7 @@ const GLOBAL_STYLES = `
     --radius-sm:8px; --radius-md:12px;
   }
   :root, [data-theme="dark"] {
-    --color-success: #16A34A; --color-warning: #E8920A; --color-danger: #700143; --color-info: #0EA5E9;
+    --color-success: #16A34A; --color-warning: #E8920A; --color-danger: #C1305A; --color-info: #0EA5E9;
     --accent-glow: rgba(112,1,67,0.30); --gold-glow: rgba(194,216,196,0.18);
   }
 
@@ -535,7 +535,7 @@ function PremiumBg() {
       <div style={{position:"fixed",width:"min(680px,90vw)",height:"min(680px,90vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(112,1,67,0.20) 0%,transparent 70%)",top:"-22%",left:"-12%",animation:"orbFloat1 22s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(55px)"}}/>
       <div style={{position:"fixed",width:"min(900px,110vw)",height:"min(900px,110vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(20,50,160,0.13) 0%,transparent 70%)",bottom:"-32%",right:"-22%",animation:"orbFloat2 28s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(65px)"}}/>
       <div style={{position:"fixed",width:"min(460px,70vw)",height:"min(460px,70vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(112,1,67,0.10) 0%,transparent 70%)",top:"42%",right:"8%",animation:"orbFloat3 19s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(50px)"}}/>
-      <div style={{position:"fixed",width:"min(520px,72vw)",height:"min(520px,72vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(0,212,255,0.10) 0%,transparent 70%)",top:"15%",right:"-15%",animation:"orbFloat2 36s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(60px)"}}/>
+      <div style={{position:"fixed",width:"min(520px,72vw)",height:"min(520px,72vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(14,165,233,0.10) 0%,transparent 70%)",top:"15%",right:"-15%",animation:"orbFloat2 36s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(60px)"}}/>
       <div style={{position:"fixed",width:"min(360px,55vw)",height:"min(360px,55vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(255,255,255,0.04) 0%,transparent 70%)",top:"-8%",right:"18%",animation:"orbFloat3 52s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(80px)"}}/>
     </>
   );
@@ -1310,7 +1310,7 @@ function DailyProductionItemRow({ item, dpId, onShowRecipe, onUpdateItem, role }
 
         {isCompleting && (
           <div className="animate-fade-in" style={{ display:"flex", gap:6, alignItems:"center", background: th.editBg, padding: "6px 8px", borderRadius: 8, border: `1px solid ${th.editBdr}` }}>
-            <input type="number" value={actualKg} onChange={e=>{setActualKg(e.target.value);setKgError(false);}} placeholder="Act. kg*" style={{ width: 52, padding: "6px", fontSize: 11, borderRadius: 4, background: "var(--card-bg)", border: kgError ? "1px solid var(--color-danger,#700143)" : "1px solid var(--border-faint)", color: "var(--text)", outline:"none", transition:"border-color 0.2s" }} />
+            <input type="number" value={actualKg} onChange={e=>{setActualKg(e.target.value);setKgError(false);}} placeholder="Act. kg*" style={{ width: 52, padding: "6px", fontSize: 11, borderRadius: 4, background: "var(--card-bg)", border: kgError ? "1px solid var(--color-danger,#C1305A)" : "1px solid var(--border-faint)", color: "var(--text)", outline:"none", transition:"border-color 0.2s" }} />
             <span style={{ fontSize: 10, color: C.chL }}>kg</span>
             <input type="number" value={actualPkts} onChange={e=>setActualPkts(e.target.value)} placeholder="Act. pkts" style={{ width: 50, padding: "6px", fontSize: 11, borderRadius: 4, background: "var(--card-bg)", border: "1px solid var(--border-faint)", color: "var(--text)", outline:"none" }} />
             <span style={{ fontSize: 10, color: C.chL }}>pkts</span>
@@ -1514,9 +1514,9 @@ function InstallAppButton({ installPrompt, onInstallDone }) {
     <>
       <button
         onClick={handleClick}
-        style={{display:"flex",alignItems:"center",justifyContent:"center",gap:9,width:"100%",padding:"13px 20px",background:"linear-gradient(135deg,rgba(0,212,255,0.10),rgba(0,212,255,0.05))",border:"1px solid rgba(0,212,255,0.22)",borderRadius:14,cursor:"pointer",fontFamily:"inherit",color:"#00D4FF",fontSize:13,fontWeight:800,letterSpacing:"0.01em",transition:"all 0.2s",marginTop:16}}
+        style={{display:"flex",alignItems:"center",justifyContent:"center",gap:9,width:"100%",padding:"13px 20px",background:"linear-gradient(135deg,rgba(14,165,233,0.10),rgba(14,165,233,0.05))",border:"1px solid rgba(14,165,233,0.22)",borderRadius:14,cursor:"pointer",fontFamily:"inherit",color:"#0EA5E9",fontSize:13,fontWeight:800,letterSpacing:"0.01em",transition:"all 0.2s",marginTop:16}}
         onMouseEnter={e=>{e.currentTarget.style.background="linear-gradient(135deg,rgba(0,212,255,0.16),rgba(0,212,255,0.08))";e.currentTarget.style.borderColor="rgba(0,212,255,0.4)";}}
-        onMouseLeave={e=>{e.currentTarget.style.background="linear-gradient(135deg,rgba(0,212,255,0.10),rgba(0,212,255,0.05))";e.currentTarget.style.borderColor="rgba(0,212,255,0.22)";}}
+        onMouseLeave={e=>{e.currentTarget.style.background="linear-gradient(135deg,rgba(14,165,233,0.10),rgba(14,165,233,0.05))";e.currentTarget.style.borderColor="rgba(14,165,233,0.22)";}}
       >
         <span style={{fontSize:17}}>📲</span>
         Add to Home Screen
@@ -2772,14 +2772,14 @@ function AdminOrdersTab({ orders }) {
 
         {/* Hero: Fulfilled (spans 2 rows) */}
         <div className="bento-hero glass-card animate-fade-up" style={{gridRow:"span 2",padding:"24px 22px",display:"flex",flexDirection:"column",justifyContent:"space-between",minHeight:148,borderTop:"3px solid var(--color-info,#0EA5E9)"}}>
-          <div style={{fontSize:"var(--text-xs,11px)",fontWeight:900,textTransform:"uppercase",letterSpacing:"var(--ls-label,0.12em)",color:"var(--color-info,#00D4FF)",opacity:0.9}}>Fulfilled</div>
+          <div style={{fontSize:"var(--text-xs,11px)",fontWeight:900,textTransform:"uppercase",letterSpacing:"var(--ls-label,0.12em)",color:"var(--color-info,#0EA5E9)",opacity:0.9}}>Fulfilled</div>
           <div>
             <div className="gradient-text-cyan count-pop" style={{fontSize:54,fontWeight:900,letterSpacing:"-0.05em",lineHeight:1}}>{totals.packed+totals.delivered}</div>
             <div style={{fontSize:11,color:C.chL,marginTop:6,fontWeight:600}}>of <strong style={{color:C.chM}}>{totals.total}</strong> total items</div>
           </div>
           <div>
             <div style={{height:4,background:th.trackBg,borderRadius:99,overflow:"hidden",marginBottom:5}}>
-              <div style={{height:4,width:totals.total?((totals.packed+totals.delivered)/totals.total*100)+"%":"0%",background:"linear-gradient(90deg,#0090B8,#00D4FF)",borderRadius:99,transition:"width 1.2s cubic-bezier(0.16,1,0.3,1)",boxShadow:"0 0 10px rgba(0,212,255,0.45)"}}/>
+              <div style={{height:4,width:totals.total?((totals.packed+totals.delivered)/totals.total*100)+"%":"0%",background:"linear-gradient(90deg,#0369A1,#0EA5E9)",borderRadius:99,transition:"width 1.2s cubic-bezier(0.16,1,0.3,1)",boxShadow:"0 0 10px rgba(14,165,233,0.35)"}}/>
             </div>
             <div style={{fontSize:9,color:C.chL,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.10em"}}>
               {totals.total?Math.round(((totals.packed+totals.delivered)/totals.total)*100):0}% complete
@@ -2792,7 +2792,7 @@ function AdminOrdersTab({ orders }) {
           <div className="bento-hero animate-fade-up" style={{animationDelay:"0.05s",padding:"18px 16px",borderRadius:16,
             background:"var(--card-bg)",
             border:"1px solid var(--border-faint)",
-            borderTop:`3px solid ${hasIssues?"var(--color-danger,#700143)":"var(--color-info,#0EA5E9)"}`,
+            borderTop:`3px solid ${hasIssues?"var(--color-danger,#C1305A)":"var(--color-info,#0EA5E9)"}`,
             boxShadow:"var(--card-shadow)"}}>
             <div style={{fontSize:"var(--text-xs,11px)",fontWeight:900,textTransform:"uppercase",letterSpacing:"var(--ls-label,0.12em)",color:hasIssues?C.rd:C.chL,marginBottom:8,opacity:0.85}}>Issues</div>
             <div style={{fontSize:38,fontWeight:900,color:hasIssues?C.rd:C.chL,letterSpacing:"-0.04em",lineHeight:1}}>{totals.short+totals.oos}</div>
@@ -3319,7 +3319,7 @@ function ProfileTab({ authUser, userRecord, onSignOut, installPrompt, onInstallD
 
       {/* Sign out */}
       <button onClick={onSignOut}
-        style={{ width:"100%", padding:"13px", background:"transparent", border:"1.5px solid var(--color-danger,#700143)", borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", color:"var(--color-danger,#700143)", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"inherit", marginBottom:12, minHeight:48 }}>
+        style={{ width:"100%", padding:"13px", background:"transparent", border:"1.5px solid var(--color-danger,#C1305A)", borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px", color:"var(--color-danger,#C1305A)", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"inherit", marginBottom:12, minHeight:48 }}>
         Sign Out
       </button>
 
