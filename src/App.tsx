@@ -38,7 +38,7 @@ const GLOBAL_STYLES = `
     --gold: #06B6D4; --burgundy: #047857;
     --input-focus-border: #10B981; --input-focus-shadow: rgba(16,185,129,0.18);
     --input-focus-bg: rgba(255,255,255,0.05); --sidebar-bg: transparent;
-    --header-bg: transparent; --paper-dot: rgba(16,185,129,0.05);
+    --header-bg: rgba(10, 11, 14, 0.7); --paper-dot: rgba(16,185,129,0.05);
     --border-faint: rgba(255,255,255,0.04);
     --sub-bg: rgba(255,255,255,0.02);
   }
@@ -154,7 +154,7 @@ const GLOBAL_STYLES = `
   .skeleton-box { background: linear-gradient(90deg, #111828 0%, #1B2640 50%, #111828 100%); background-size: 200% 100%; animation: shimmerLoad 2s infinite; border-radius: 12px; }
   .celebration-card { border: 2px solid #097353 !important; animation: celebrateGlow 2s infinite ease-in-out; }
   
-  .glass-header { position: sticky; top: -20px; z-index: 40; background: var(--header-bg); padding: 20px 20px 16px 20px; margin: -20px -20px 16px -20px; border-bottom: 1px solid var(--border); transition: all 0.3s ease; }
+  .glass-header { position: sticky; top: -20px; z-index: 40; background: var(--header-bg); padding: 20px 20px 16px 20px; margin: -20px -20px 16px -20px; border-bottom: 1px solid var(--border); transition: all 0.3s ease; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
   @media (min-width: 768px) { .glass-header { top: -32px; padding: 32px 40px 16px 40px; margin: -32px -40px 16px -40px; } }
 
   .accordion-content { overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; max-height: 0; opacity: 0; }
@@ -400,9 +400,11 @@ const GLOBAL_STYLES = `
   .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
     height: 64px; padding-bottom: env(safe-area-inset-bottom, 0px);
-    background: var(--header-bg); border-top: 1.5px solid var(--border);
+    background: var(--header-bg); border-top: 1px solid var(--border-faint);
     display: flex; align-items: stretch;
-    box-shadow: 0 -2px 12px rgba(0,0,0,0.12);
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.3);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
   }
   .bottom-nav-tab {
     flex: 1; display: flex; flex-direction: column;
