@@ -25,10 +25,15 @@ const GLOBAL_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=JetBrains+Mono:wght@500;600&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; touch-action: manipulation; }
-  html, body { margin: 0; padding: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
-  #root { overflow-x: hidden; overscroll-behavior-y: contain; }
+  body { margin: 0; padding: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #050505; color: #F4F4F5; }
+  #root { overflow-x: hidden; overscroll-behavior-y: contain; min-height: 100vh; position: relative; }
+
+  /* ── Bioluminescent Animated Mesh Background ── */
+  .mesh-background { position: fixed; inset: 0; z-index: -1; background-color: #050505; background-image: radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.1) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.12) 0px, transparent 50%); animation: meshPulse 15s ease-in-out infinite alternate; pointer-events: none; }
+  @keyframes meshPulse { 0% { opacity: 0.7; transform: scale(1); } 100% { opacity: 1; transform: scale(1.05); } }
+
   button, a { -webkit-tap-highlight-color: transparent; }
-  button, input, select { -webkit-appearance: none; appearance: none; }
+  button, input, select { -webkit-appearance: none; appearance: none; font-family: inherit; }
 
   /* ── CSS Custom Properties (theme vars) ── */
   :root, [data-theme="dark"] {
@@ -42,7 +47,7 @@ const GLOBAL_STYLES = `
     --gold: #06B6D4; --burgundy: #047857;
     --input-focus-border: #10B981; --input-focus-shadow: rgba(16,185,129,0.18);
     --input-focus-bg: rgba(255,255,255,0.05); --sidebar-bg: transparent;
-    --header-bg: rgba(10, 11, 14, 0.7); --paper-dot: rgba(16,185,129,0.05);
+    --header-bg: rgba(7, 8, 11, 0.85); --paper-dot: rgba(16,185,129,0.05);
     --border-faint: rgba(255,255,255,0.04);
     --sub-bg: rgba(255,255,255,0.02);
   }
@@ -507,10 +512,10 @@ function useCountUp(target) {
 function PremiumBg() {
   return (
     <>
-      <div style={{position:"fixed",inset:0,background:"#030305",zIndex:0,pointerEvents:"none"}}/>
-      <div style={{position:"fixed",width:"min(1100px,130vw)",height:"min(1100px,130vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(190,18,60,0.15) 0%,transparent 60%)",top:"-20%",left:"-20%",animation:"orbFloat1 30s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(120px)"}}/>
-      <div style={{position:"fixed",width:"min(1200px,150vw)",height:"min(1200px,150vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(232,146,10,0.12) 0%,transparent 60%)",bottom:"-30%",right:"-20%",animation:"orbFloat2 40s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(140px)"}}/>
-      <div style={{position:"fixed",width:"min(800px,100vw)",height:"min(800px,100vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(190,18,60,0.12) 0%,transparent 60%)",top:"40%",right:"5%",animation:"orbFloat3 25s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(100px)"}}/>
+      <div style={{position:"fixed",inset:0,background:"#050505",zIndex:0,pointerEvents:"none"}}/>
+      <div style={{position:"fixed",width:"min(1100px,130vw)",height:"min(1100px,130vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(139,92,246,0.12) 0%,transparent 60%)",top:"-20%",left:"-20%",animation:"orbFloat1 30s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(120px)"}}/>
+      <div style={{position:"fixed",width:"min(1200px,150vw)",height:"min(1200px,150vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(6,182,212,0.1) 0%,transparent 60%)",bottom:"-30%",right:"-20%",animation:"orbFloat2 40s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(140px)"}}/>
+      <div style={{position:"fixed",width:"min(800px,100vw)",height:"min(800px,100vw)",borderRadius:"50%",background:"radial-gradient(circle,rgba(16,185,129,0.1) 0%,transparent 60%)",top:"40%",right:"5%",animation:"orbFloat3 25s infinite ease-in-out",pointerEvents:"none",zIndex:0,filter:"blur(100px)"}}/>
     </>
   );
 }
