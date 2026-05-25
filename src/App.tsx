@@ -317,7 +317,7 @@ const GLOBAL_STYLES = `
   /* ── Gradient text light-mode overrides (dark-start so text is visible on cream) ── */
 
   /* ── Modal dimmer overlay (adaptive) ── */
-  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:999; }
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); z-index:999; }
   .modal-overlay-top { z-index:9999; }
 
   /* ── Sidebar section label v2 ── */
@@ -943,7 +943,7 @@ function RecipeAutocomplete({ value, onChange, onSelect, placeholder = "Search o
     <div ref={wrapRef} style={{ position: "relative" }}>
       <input value={value} onChange={e => handleInput(e.target.value)} onKeyDown={handleKey} onFocus={() => value.length >= 2 && matches.length > 0 && setOpen(true)} placeholder={placeholder} autoComplete="off" style={{ padding: "11px 14px", border: "1px solid " + C.bdr, borderRadius: 10, fontSize: 13, color: C.ch, outline: "none", background: "var(--card-bg)", width: "100%", boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s" }} />
       {open && (
-        <div className="custom-scrollbar animate-fade-in" style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#07080B", border: "1px solid " + C.bdr, borderRadius: 10, zIndex: 200, maxHeight: 220, overflowY: "auto", boxShadow: C.shM }}>
+        <div className="custom-scrollbar animate-fade-in" style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "rgba(7,8,11,0.85)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", border: "1px solid " + C.bdr, borderRadius: 10, zIndex: 200, maxHeight: 220, overflowY: "auto", boxShadow: C.shM }}>
           {matches.map((recipe, i) => (
             <button key={recipe.recipe_id || i} onMouseDown={e => { e.preventDefault(); handleSelect(recipe); }} style={{ width: "100%", padding: "11px 14px", border: "none", background: "transparent", color: C.ch, textAlign: "left", cursor: "pointer", borderBottom: "1px solid " + C.bdrL, fontSize: 13, fontWeight: 600, fontFamily: "inherit", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "background 0.15s" }} onMouseEnter={e => e.currentTarget.style.background = C.w} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
               <span>{recipe.recipe_name}</span><span style={{ color: C.ol, fontSize: 9, fontWeight: 900, letterSpacing: "1px", textTransform: "uppercase" }}>✓ RECIPE</span>
@@ -2595,7 +2595,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
       {showMergeModal&&createPortal(<MergeModal pendingItem={item} activeBatches={getActiveBatches()} onMerge={bId=>{commit('production',{batchId:bId});setShowMergeModal(false);}} onNewBatch={()=>{commit('production',{batchId:"b_"+Date.now()+Math.random()});setShowMergeModal(false);}} onCancel={()=>setShowMergeModal(false)}/>, document.body)}
 
       {showShortModal&&createPortal(
-        <div className="animate-fade-in" onClick={()=>setShowShortModal(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:0}}>
+        <div className="animate-fade-in modal-overlay" onClick={()=>setShowShortModal(false)} style={{display:"flex",alignItems:"flex-end",justifyContent:"center",padding:0}}>
           <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,padding:"28px 28px 32px",display:"flex",flexDirection:"column",gap:16,position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.45),transparent)",pointerEvents:"none"}}/>
             <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto -4px"}}/>
@@ -3337,7 +3337,7 @@ function DailyProductionsTab({ weekDays, selectedWeek, weekDPs, hasDrafts, onShi
       )}
 
       {showActivateConfirm && (
-        <div className="animate-fade-in" onClick={()=>setShowActivateConfirm(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+        <div className="animate-fade-in modal-overlay" onClick={()=>setShowActivateConfirm(false)} style={{display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
           <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,padding:"28px 28px 36px",display:"flex",flexDirection:"column",gap:14}}>
             <div style={{width:36,height:4,background:"rgba(255,255,255,0.12)",borderRadius:4,margin:"0 auto -2px"}}/>
             <div style={{fontSize:19,fontWeight:900,color:C.ch,letterSpacing:"-0.02em"}}>⚡ Activate Week — Send to Kitchen?</div>
@@ -4675,7 +4675,7 @@ function TFCOrderSystem(){
         </div>
 
         <div style={{display:"flex",flex:1,overflow:"hidden",position:"relative",zIndex:2}}>
-          {isMobile&&sidebarOpen&&<div onClick={()=>setSidebarOpen(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.55)",zIndex:40,animation:"fadeIn 0.3s ease-out forwards"}}/>}
+          {isMobile&&sidebarOpen&&<div onClick={()=>setSidebarOpen(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",zIndex:40,animation:"fadeIn 0.3s ease-out forwards"}}/>}
 
           {/* Sidebar */}
           <div className="custom-scrollbar" style={{width:240,borderRight:sidebarBdr,background:sidebarBg,padding:"14px 12px",overflowY:"auto",flexShrink:0,display:"flex",flexDirection:"column",gap:5,position:isMobile?"absolute":"relative",zIndex:50,height:"100%",left:0,top:0,transform:isMobile?(sidebarOpen?"translateX(0)":"translateX(-100%)"):"none",transition:"transform 0.3s cubic-bezier(0.16,1,0.3,1), background 0.4s ease",boxShadow:isMobile&&sidebarOpen?"0 0 40px rgba(0,0,0,0.7)":"none"}}>
