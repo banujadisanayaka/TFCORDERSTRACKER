@@ -1338,24 +1338,32 @@ function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel 
 
 function SplashScreen() {
   return (
-    <div className="animate-fade-in grain" style={{position:"fixed",inset:0,zIndex:99999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",transition:"opacity 0.5s ease",overflow:"hidden"}}>
+    <div className="animate-fade-in grain" style={{position:"fixed",inset:0,zIndex:99999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",transition:"opacity 0.5s ease",overflow:"hidden",background:"var(--page-bg)"}}>
       <PremiumBg/>
       <motion.div
-        initial={{opacity:0,y:24}}
-        animate={{opacity:1,y:0}}
-        transition={{duration:0.8,ease:[0.16,1,0.3,1],delay:0.1}}
+        initial={{opacity:0,scale:0.8,rotateY:45}}
+        animate={{opacity:1,scale:1,rotateY:0}}
+        transition={{duration:1,type:"spring",bounce:0.4,delay:0.1}}
         style={{display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:2}}
       >
-        <div style={{position:"relative",width:96,height:96,margin:"0 auto 28px"}}>
-          <div style={{width:96,height:96,borderRadius:"50%",background:"linear-gradient(145deg,#200A0A,#2E1010)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:40,animation:"logoGlow 3s infinite ease-in-out"}}>🍽️</div>
-          <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(190,18,60,0.18)",animation:"spinSlow 22s linear infinite",pointerEvents:"none"}}/>
-          <div style={{position:"absolute",inset:-18,borderRadius:"50%",border:"1px solid rgba(190,18,60,0.08)",animation:"spinSlow 35s linear infinite reverse",pointerEvents:"none"}}/>
-        </div>
-        <div style={{fontSize:26,fontWeight:900,color:"var(--text)",letterSpacing:"-0.04em",marginBottom:6}}>The Food Company</div>
-        <div style={{fontSize:11,color:"#3A5070",letterSpacing:"0.22em",textTransform:"uppercase",fontWeight:700,marginBottom:48}}>Operations Hub</div>
-        <div style={{width:180,height:3,background:"rgba(255,255,255,0.05)",borderRadius:4,overflow:"hidden",position:"relative"}}>
-          <div style={{position:"absolute",top:0,left:0,width:"45%",height:"100%",background:"linear-gradient(90deg,transparent,#BE123C,transparent)",animation:"loadBar 1.6s ease-in-out infinite"}}/>
-        </div>
+        <motion.div 
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          style={{position:"relative",width:110,height:110,margin:"0 auto 32px",display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"24px",background:"linear-gradient(135deg,rgba(16,185,129,0.2),rgba(6,182,212,0.1))",border:"1px solid rgba(255,255,255,0.1)",boxShadow:"0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.2)",backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)"}}
+        >
+          <div style={{fontSize:50,filter:"drop-shadow(0 4px 12px rgba(16,185,129,0.4))"}}>🍽️</div>
+        </motion.div>
+        
+        <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{delay:0.3,duration:0.6}} style={{fontSize:28,fontWeight:900,color:"var(--text)",letterSpacing:"-0.03em",marginBottom:6}}>The Food Company</motion.div>
+        <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.5,duration:0.6}} style={{fontSize:12,color:"var(--text-sub)",letterSpacing:"0.2em",textTransform:"uppercase",fontWeight:800,marginBottom:48}}>Operations Hub</motion.div>
+        
+        <motion.div initial={{opacity:0,scaleX:0}} animate={{opacity:1,scaleX:1}} transition={{delay:0.7,duration:0.8,ease:"easeOut"}} style={{width:160,height:4,background:"rgba(255,255,255,0.06)",borderRadius:10,overflow:"hidden",position:"relative"}}>
+          <motion.div 
+            animate={{ x: ["-100%", "250%"] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            style={{position:"absolute",top:0,left:0,width:"40%",height:"100%",background:"linear-gradient(90deg,transparent,var(--accent),transparent)",borderRadius:10}}
+          />
+        </motion.div>
       </motion.div>
     </div>
   );
@@ -2192,7 +2200,8 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
         </motion.div>
 
         {/* Role pills */}
-        <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginBottom:24}}>
+        {/* Role Grid */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(160px, 1fr))",gap:16,marginBottom:32}}>
           {keys.map((k, i) => {
             const r = ROLES[k]; if (!r) return null;
             const isActive = selected === k;
@@ -2200,26 +2209,32 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
               <motion.button
                 key={k}
                 onClick={() => setSelected(k)}
-                initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{duration:0.4,delay:i*0.07,ease:[0.16,1,0.3,1]}}
-                whileTap={{scale:0.97}}
+                initial={{opacity:0,y:20,scale:0.9}} animate={{opacity:1,y:0,scale:1}} transition={{duration:0.5,delay:i*0.08,type:"spring",bounce:0.3}}
+                whileHover={{scale:1.03, y:-2}}
+                whileTap={{scale:0.96}}
                 style={{
-                  borderRadius:"100px 95px 100px 95px / 100px 100px 95px 100px",
-                  background:isActive?"var(--accent)":"transparent",
-                  border:`1.5px solid ${isActive?"var(--accent)":"rgba(6,182,212,0.28)"}`,
+                  borderRadius:20,
+                  background:isActive?"linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.05))":"var(--card-bg)",
+                  border:`1px solid ${isActive?"rgba(16,185,129,0.4)":"rgba(255,255,255,0.08)"}`,
                   color:isActive?"#fff":"var(--text)",
-                  fontWeight:700,fontSize:13,cursor:"pointer",
-                  boxShadow:isActive?"0 0 0 3px rgba(190,18,60,0.20), 2px 3px 0 rgba(0,0,0,0.20)":"1px 2px 0 rgba(0,0,0,0.08)",
+                  fontWeight:700,cursor:"pointer",
+                  boxShadow:isActive?"0 8px 32px rgba(16,185,129,0.2), inset 0 1px 0 rgba(255,255,255,0.1)":"0 4px 16px rgba(0,0,0,0.3)",
                   fontFamily:"inherit",
-                  letterSpacing:"0.02em",
-                  transition:"all 0.15s ease",
-                  minHeight:52,
-                  padding:"12px 18px",
+                  transition:"all 0.2s ease",
+                  padding:"20px 16px",
                   textAlign:"left",
-                  width:"100%",
+                  display:"flex",
+                  flexDirection:"column",
+                  gap:10,
+                  backdropFilter:"blur(24px)",
+                  WebkitBackdropFilter:"blur(24px)"
                 }}
               >
-                <div style={{fontSize:13,fontWeight:800,lineHeight:1.2}}>{r.icon} {r.label}</div>
-                {r.desc && <div style={{fontSize:10,color:isActive?"rgba(255,255,255,0.75)":"var(--text-sub)",fontWeight:500,marginTop:3,lineHeight:1.3,letterSpacing:"0.01em"}}>{r.desc}</div>}
+                <div style={{fontSize:32,filter:isActive?"drop-shadow(0 2px 8px rgba(16,185,129,0.5))":"none"}}>{r.icon}</div>
+                <div>
+                  <div style={{fontSize:14,fontWeight:800,lineHeight:1.2,letterSpacing:"0.01em"}}>{r.label}</div>
+                  {r.desc && <div style={{fontSize:11,color:isActive?"rgba(255,255,255,0.7)":"var(--text-sub)",fontWeight:500,marginTop:4,lineHeight:1.4}}>{r.desc}</div>}
+                </div>
               </motion.button>
             );
           })}
@@ -2229,21 +2244,23 @@ function RoleSelectScreen({ availableRoles, onSelect, isOwner, onControlPanel, a
         <motion.button
           disabled={!selected}
           onClick={() => selected && onSelect(selected)}
-          whileTap={{scale:0.97}}
+          initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:0.4}}
+          whileHover={{scale:selected?1.02:1}}
+          whileTap={{scale:selected?0.97:1}}
           style={{
-            width:"100%",padding:"14px 0",
-            background:selected?"linear-gradient(135deg,#BE123C,#831843)":"var(--border)",
-            border:"none",
-            borderRadius:"255px 15px 225px 15px / 15px 225px 15px 255px",
+            width:"100%",padding:"16px 0",
+            background:selected?"linear-gradient(135deg,var(--accent),#047857)":"rgba(255,255,255,0.05)",
+            border:selected?"1px solid rgba(255,255,255,0.2)":"1px solid rgba(255,255,255,0.05)",
+            borderRadius:100,
             color:selected?"#fff":"var(--text-sub)",
-            fontSize:16,fontWeight:700,cursor:selected?"pointer":"default",
+            fontSize:16,fontWeight:800,cursor:selected?"pointer":"default",
             fontFamily:"inherit",
-            boxShadow:selected?"0 4px 14px rgba(190,18,60,0.35), 2px 3px 0 rgba(0,0,0,0.18)":"none",
-            transition:"all 0.2s ease",
-            opacity:selected?1:0.5,
+            boxShadow:selected?"0 8px 24px rgba(16,185,129,0.3)":"none",
+            transition:"all 0.3s ease",
+            opacity:selected?1:0.5
           }}
         >
-          Enter →
+          {selected ? "Enter System →" : "Select a role"}
         </motion.button>
 
         <div style={{marginTop:16}}>
