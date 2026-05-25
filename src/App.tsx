@@ -1084,9 +1084,9 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
 
   const inputStyle = { padding:"10px 14px", border:"1px solid "+C.bdr, borderRadius:10, fontSize:16, color:C.ch, outline:"none", background:"var(--card-bg)", width:"100%", boxSizing:"border-box" };
 
-  return (
-    <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
-      <div className="animate-fade-up modal-sheet" style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:640, maxHeight:isMobile?"94vh":"88vh", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
+  return createPortal(
+    <div className="animate-fade-in modal-overlay" style={{ display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
+      <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:640, maxHeight:isMobile?"94vh":"88vh", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", top:0, left:"15%", right:"15%", height:1, background:"linear-gradient(90deg,transparent,rgba(190,18,60,0.28),transparent)", pointerEvents:"none" }}/>
         <div style={{ padding:"20px 30px", borderBottom:`1px solid ${th.divider}`, flexShrink:0 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -1150,7 +1150,7 @@ function DailyProductionModal({ dayInfo, onSave, onClose }) {
           <Btn onClick={handleSubmit} variant="primary">{existing ? "Update Plan" : "Save Day Plan"}</Btn>
         </div>
       </div>
-    </div>
+    </div>, document.body
   );
 }
 
@@ -1310,9 +1310,9 @@ function DailyProductionItemRow({ item, dpId, onShowRecipe, onUpdateItem, role }
 function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel }) {
   const th=useTheme();
   const isMobile = useIsMobile();
-  return (
-    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:9999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20}}>
-      <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:480,padding:"26px 28px",display:"flex",flexDirection:"column",maxHeight:isMobile?"90vh":"auto",position:"relative",overflow:"hidden"}}>
+  return createPortal(
+    <div className="animate-fade-in modal-overlay" style={{display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20}}>
+      <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:480,padding:"26px 28px",display:"flex",flexDirection:"column",maxHeight:isMobile?"90vh":"auto",position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(190,18,60,0.3),transparent)",pointerEvents:"none"}}/>
         <div style={{fontSize:19,fontWeight:900,color:C.ch,letterSpacing:"-0.02em",marginBottom:6}}>Send to Production</div>
         <div style={{fontSize:13,color:C.chL,fontWeight:500,marginBottom:20}}>Choose how to send this item to the kitchen.</div>
@@ -1349,7 +1349,7 @@ function MergeModal({ pendingItem, activeBatches, onMerge, onNewBatch, onCancel 
           <Btn full onClick={onCancel}>Cancel</Btn>
         </div>
       </div>
-    </div>
+    </div>, document.body
   );
 }
 
@@ -2127,8 +2127,8 @@ function UserGuideModal({onClose}){
     window.addEventListener("keydown",onKey);
     return()=>window.removeEventListener("keydown",onKey);
   });
-  return(
-    <div role="dialog" aria-modal="true" aria-label="User guide" style={{position:"fixed",inset:0,zIndex:9998,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"24px 16px",overflowY:"auto"}}>
+  return createPortal(
+    <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="User guide" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"24px 16px",overflowY:"auto"}}>
       <button onClick={onClose} aria-label="Close guide" style={{position:"fixed",top:18,right:18,width:44,height:44,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"1.5px solid rgba(255,255,255,0.15)",color:"#F4F4F5",fontSize:18,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"inherit",zIndex:2,flexShrink:0,backdropFilter:"blur(8px)"}}>✕</button>
 
       {/* Header */}
@@ -2176,7 +2176,7 @@ function UserGuideModal({onClose}){
           {step===total-1?"Got it ✓":"Next →"}
         </button>
       </div>
-    </div>
+    </div>, document.body
   );
 }
 
@@ -2340,13 +2340,13 @@ function NewOrderModal({onClose,onSubmit,notify}){
 
   const inputStyle = {padding:"10px 14px",border:"1px solid var(--border-faint)",borderRadius:10,fontSize:16,color:"var(--text)",outline:"none",background:"var(--card-bg)",width:"100%",boxSizing:"border-box",transition: "border-color 0.2s, box-shadow 0.2s"};
 
-  return(
-    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
+  return createPortal(
+    <div className="animate-fade-in modal-overlay" onClick={onClose} style={{display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
       <datalist id="recipe-database">
         {RECIPE_DB.map(r => <option key={r.recipe_id} value={r.recipe_name} label={r.item_code ? `${r.recipe_name} · ${r.item_code}` : r.recipe_name} />)}
         {ITEMS_DB.filter(i => {const u=i.name.trim().toUpperCase(); return !RECIPE_DB.some(r=>r.recipe_name&&r.recipe_name.toUpperCase().trim()===u);}).map(i => <option key={i.item_code+"_"+i.name} value={i.name} label={`${i.name} · ${i.item_code}`} />)}
       </datalist>
-      <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column"}}>
+      <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column"}}>
         <div style={{padding:"22px 30px",borderBottom:`1px solid ${th.divider}`,flexShrink:0,position:"relative"}}>
           <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(190,18,60,0.28),transparent)",pointerEvents:"none"}}/>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
@@ -2411,7 +2411,7 @@ function NewOrderModal({onClose,onSubmit,notify}){
           <div style={{display:"flex",gap:10}}><Btn onClick={onClose}>Cancel</Btn><Btn onClick={submitFinalOrder} variant="primary">Submit Order</Btn></div>
         </div>
       </div>
-    </div>
+    </div>, document.body
   );
 }
 
@@ -2422,13 +2422,13 @@ function EditOrderModal({order, onClose, onSave, notify}){
 
   const inputStyle = {padding:"10px 14px",border:"1px solid var(--border-faint)",borderRadius:10,fontSize:16,color:"var(--text)",outline:"none",background:"var(--card-bg)",width:"100%",boxSizing:"border-box",transition: "border-color 0.2s, box-shadow 0.2s"};
 
-  return(
-    <div className="animate-fade-in" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.72)",zIndex:999,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
+  return createPortal(
+    <div className="animate-fade-in modal-overlay" onClick={onClose} style={{display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?0:20,fontFamily:"'Plus Jakarta Sans', 'Segoe UI',system-ui,sans-serif"}}>
       <datalist id="recipe-database">
         {RECIPE_DB.map(r => <option key={r.recipe_id} value={r.recipe_name} label={r.item_code ? `${r.recipe_name} · ${r.item_code}` : r.recipe_name} />)}
         {ITEMS_DB.filter(i => {const u=i.name.trim().toUpperCase(); return !RECIPE_DB.some(r=>r.recipe_name&&r.recipe_name.toUpperCase().trim()===u);}).map(i => <option key={i.item_code+"_"+i.name} value={i.name} label={`${i.name} · ${i.item_code}`} />)}
       </datalist>
-      <div className="animate-fade-up modal-sheet" style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column"}}>
+      <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{borderRadius:isMobile?"24px 24px 0 0":20,width:"100%",maxWidth:720,maxHeight:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column"}}>
         <div style={{padding:"22px 30px 20px",borderBottom:`1px solid ${th.divider}`,flexShrink:0,position:"relative"}}>
           <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.28),transparent)",pointerEvents:"none"}}/>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
@@ -2461,7 +2461,7 @@ function EditOrderModal({order, onClose, onSave, notify}){
         </div>
         <div style={{padding:"18px 30px",borderTop:`1px solid ${th.divider}`,display:"flex",justifyContent:"flex-end",alignItems:"center",gap:10,flexShrink:0,background:th.footerBg,borderRadius:isMobile?"0":"0 0 20px 20px"}}><Btn onClick={onClose}>Cancel</Btn><Btn onClick={submit} variant="primary">✓ Update Live Order</Btn></div>
       </div>
-    </div>
+    </div>, document.body
   );
 }
 
@@ -2480,6 +2480,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
 
   return(
     <motion.div
+      layout
       onClick={onClick}
       className={`hover-lift ${isComplete&&!active?'celebration-card':''} ${active?(order.restaurant==="Vins"?"order-card-active-vins":"order-card-active-manja"):""}`}
       style={{
@@ -2651,7 +2652,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
         </div>
       , document.body)}
 
-      <div className={`animate-fade-up pk-card ${cur.cls}`}>
+      <motion.div layout className={`animate-fade-up pk-card ${cur.cls}`}>
         <div style={{padding:"16px 18px"}}>
 
           {/* ── Header: name + status ── */}
@@ -2732,7 +2733,7 @@ function PackingRow({item, orderId, orders, onUpdate, notify}){
           )}
 
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
@@ -2840,7 +2841,7 @@ function OrderBatchCard({ batch, idx, onBatchUpdate }) {
   const isMerged = batch.items.length > 1;
 
   return(
-    <div className="animate-fade-up batch-v2" style={{animationDelay:`${idx*0.06}s`}}>
+    <motion.div layout className="animate-fade-up batch-v2" style={{animationDelay:`${idx*0.06}s`}}>
       <div style={{padding:"22px 24px"}}>
         {/* Header: product name + large qty */}
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16}}>
@@ -2889,7 +2890,7 @@ function OrderBatchCard({ batch, idx, onBatchUpdate }) {
           <button onClick={()=>onBatchUpdate(batch,"pending")} style={{width:"100%",padding:"10px",background:"transparent",border:`1px solid ${th.divider}`,borderRadius:10,fontSize:12,fontWeight:700,color:C.chL,cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"}}>↩ Undo Batch</button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
