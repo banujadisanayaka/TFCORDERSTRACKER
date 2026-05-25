@@ -1000,8 +1000,8 @@ function ExtraProductionModal({ onClose, onSave, dateStr }) {
   const inputStyle = { padding:"10px 14px", border:"1px solid "+C.amDk+"50", borderRadius:10, fontSize:16, color:C.ch, outline:"none", background:"var(--card-bg)", width:"100%", boxSizing:"border-box", transition:"border-color 0.2s" };
 
   return (
-    <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:999, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
-      <div className="animate-fade-up modal-sheet" style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:500, maxHeight:isMobile?"94vh":"auto", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
+    <div className="animate-fade-in modal-overlay" onClick={onClose} style={{ display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center", padding:isMobile?0:20 }}>
+      <div className="animate-fade-up modal-sheet" onClick={e=>e.stopPropagation()} style={{ borderRadius:isMobile?"24px 24px 0 0":20, width:"100%", maxWidth:500, maxHeight:isMobile?"94vh":"auto", display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", top:0, left:"15%", right:"15%", height:1, background:"linear-gradient(90deg,transparent,rgba(232,146,10,0.35),transparent)", pointerEvents:"none" }}/>
         <div style={{ padding:"20px 24px", borderBottom:`1px solid ${th.divider}` }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -2920,24 +2920,24 @@ function ProductionView({orders, dailyProductions = [], onBatchUpdate, onDailyPr
 
   return(
     <div className="animate-fade-in custom-scrollbar">
-      {recipeModal && (
-        <div className="animate-fade-in" style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:999, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
-          <div className="animate-fade-up custom-scrollbar" style={{ background:"#07080B", borderRadius:20, maxWidth:500, width:"100%", maxHeight:"88vh", overflowY:"auto", padding:24, boxShadow:C.shM }}>
+      {recipeModal && createPortal(
+        <div className="animate-fade-in modal-overlay" onClick={() => setRecipeModal(null)} style={{ display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
+          <div className="animate-fade-up custom-scrollbar modal-sheet" onClick={e=>e.stopPropagation()} style={{ borderRadius:20, maxWidth:500, width:"100%", maxHeight:"88vh", overflowY:"auto", padding:24 }}>
             <div style={{ display:"flex", justifyContent:"space-between", marginBottom:16 }}>
               <span style={{ fontSize:16, fontWeight:900, color:C.ch }}>📖 Recipe</span>
               <button onClick={() => setRecipeModal(null)} style={{ background:C.off, border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", color:C.chM, fontSize:14 }}>✕</button>
             </div>
             <RecipeCard name={recipeModal} />
           </div>
-        </div>
+        </div>, document.body
       )}
 
-      {showExtraModal && (
+      {showExtraModal && createPortal(
         <ExtraProductionModal 
           dateStr={today} 
           onSave={onAddExtra} 
           onClose={() => setShowExtraModal(false)} 
-        />
+        />, document.body
       )}
 
       <div className="glass-header">
