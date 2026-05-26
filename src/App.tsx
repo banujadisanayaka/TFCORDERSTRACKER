@@ -1,5 +1,6 @@
 // @ts-nocheck
-import React, { useState, useEffect, useRef } from "react";
+import React, {  useState, useEffect, useRef , startTransition, memo, useMemo, useCallback, Suspense } from "react";
+import { Virtuoso } from "react-virtuoso";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import "animate.css";
@@ -2468,6 +2469,7 @@ function EditOrderModal({order, onClose, onSave, notify}){
 /* ═══════════════════════════════════════════════════════════════
    ORDER CARD & VIEWS 
 ═══════════════════════════════════════════════════════════════ */
+const MemoOrderCard = memo(OrderCard);
 function OrderCard({order, active, onClick, onDelete, index}){
   const th=useTheme();
   const s=oStats(order);
@@ -2540,6 +2542,7 @@ function OrderCard({order, active, onClick, onDelete, index}){
   );
 }
 
+const MemoPackingRow = memo(PackingRow);
 function PackingRow({item, orderId, orders, onUpdate, notify}){
   const th=useTheme();
   const [showEdit, setShowEdit] = useState(false);
@@ -2829,7 +2832,7 @@ function PackingView({order, onUpdate, orders, notify}){
         )}
       </div>
 
-      {order.items.map((item)=><PackingRow key={item.id} item={item} orderId={order.id} orders={orders} onUpdate={onUpdate} notify={notify}/>)}
+      {order.items.map((item)=><MemoPackingRow key={item.id} item={item} orderId={order.id} orders={orders} onUpdate={onUpdate} notify={notify}/>)}
     </div>
   );
 }
@@ -4067,7 +4070,7 @@ function TFCOrderSystem(){
 
   // Reset all view state when role changes
   useEffect(() => {
-    setActiveTab("dashboard");
+    startTransition(() => { setActiveTab("dashboard"); });
     setActiveId(null);
     setEditingOrder(null);
     setSidebarOpen(false);
@@ -4166,10 +4169,10 @@ function TFCOrderSystem(){
       fcmRegLastKeyRef.current = null;
     } catch(_) { /* non-fatal */ }
     await signOut(auth);
-    setPhase("select"); setRole(null); setActiveId(null);
+    startTransition(() => { setPhase("select"); }); startTransition(() => { setRole(null); }); setActiveId(null);
     setUserRecord(null); setAccessRequest(null);
     setShowModal(false); setEditingOrder(null); setSidebarOpen(false);
-    setActiveTab("dashboard"); setScreenExiting(false);
+    startTransition(() => { setActiveTab("dashboard"); }); setScreenExiting(false);
     setNotifStatus("idle");
   }
 
@@ -4479,7 +4482,7 @@ function TFCOrderSystem(){
       registerFCMToken(r);
     }
     setScreenExiting(true);
-    setTimeout(()=>{ setRole(r); setPhase("app"); setScreenExiting(false); selectingRoleRef.current = false; }, 320);
+    setTimeout(()=>{ startTransition(() => { setRole(r); }); startTransition(() => { setPhase("app"); }); setScreenExiting(false); selectingRoleRef.current = false; }, 320);
   }
 
   const _themeVal = makeThemeObj(DC);
@@ -4685,7 +4688,7 @@ function TFCOrderSystem(){
               </button>
             )}
             {!isMobile&&authUser&&(authUser.photoURL?<img src={authUser.photoURL} alt="" style={{width:30,height:30,borderRadius:"50%",border:"2px solid rgba(255,255,255,0.10)",flexShrink:0}}/>:<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#BE123C,#831843)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>{authUser.displayName?.[0]||"?"}</div>)}
-            <button onClick={()=>{ setScreenExiting(true); setTimeout(()=>{ setPhase("select");setRole(null);setActiveId(null);setScreenExiting(false); }, 320); }} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",color:C.chL,padding:"6px 12px",borderRadius:8,minHeight:36,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
+            <button onClick={()=>{ setScreenExiting(true); setTimeout(()=>{ startTransition(() => { setPhase("select"); });startTransition(() => { setRole(null); });setActiveId(null);setScreenExiting(false); }, 320); }} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",color:C.chL,padding:"6px 12px",borderRadius:8,minHeight:36,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{isMobile?"←":"Roles"}</button>
           </div>
         </div>
         </div>
@@ -4698,7 +4701,27 @@ function TFCOrderSystem(){
             {role==="admin"&&(<div style={{marginBottom:10}}><button className="btn-3d create-order-btn" onClick={()=>{setShowModal(true);if(isMobile)setSidebarOpen(false);}} style={{width:"100%",padding:"14px 0",border:"none",borderRadius:12,background:"linear-gradient(135deg,#BE123C,#831843)",color:"#FFFFFF",fontSize:14,cursor:"pointer",fontWeight:900,letterSpacing:"0.03em",boxShadow:"0 4px 22px rgba(190,18,60,0.55),0 0 40px rgba(190,18,60,0.12),inset 0 1px 0 rgba(255,255,255,0.12)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>+</span> Create Order</button></div>)}
             {role==="production"&&(<div style={{padding:"12px 14px",background:"rgba(232,146,10,0.08)",borderRadius:10,border:"1px solid rgba(232,146,10,0.2)",marginBottom:10}}><div style={{fontSize:11,fontWeight:900,color:C.amDk,textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:3}}>Production Mode</div><div style={{fontSize:11,color:C.chL,lineHeight:1.4,fontWeight:500}}>All items flagged for production.</div></div>)}
             <div className="section-label-v2" style={{color:C.chL}}>Orders {viewOrders.length>0&&<span style={{fontWeight:700,marginLeft:3}}>({viewOrders.length})</span>}</div>
-            {loadingInitial?(<div style={{padding:"10px 0"}}><div className="skeleton-box" style={{height:80,marginBottom:10}}></div><div className="skeleton-box" style={{height:80}}></div></div>):viewOrders.length===0?<div style={{fontSize:13,color:C.chXL,textAlign:"center",padding:"32px 0",fontWeight:600}}>No orders found</div>:viewOrders.map((o,i)=>(<OrderCard key={o.id} index={i} order={o} active={activeId===o.id} onClick={()=>{setActiveId(o.id);if(isMobile)setSidebarOpen(false);}} onDelete={role==="admin"?deleteOrder:null}/>))}
+            {loadingInitial?(<div style={{padding:"10px 0"}}><div className="skeleton-box" style={{height:80,marginBottom:10}}></div><div className="skeleton-box" style={{height:80}}></div></div>):viewOrders.length===0?<div style={{fontSize:13,color:C.chXL,textAlign:"center",padding:"32px 0",fontWeight:600}}>No orders found</div>:
+  <div style={{ flex: 1, height: "calc(100vh - 120px)" }}>
+    <Virtuoso
+      style={{ height: "100%", width: "100%" }}
+      totalCount={viewOrders.length}
+      itemContent={(index) => {
+        const o = viewOrders[index];
+        return (
+          <MemoOrderCard 
+            key={o.id} 
+            index={index} 
+            order={o} 
+            active={activeId===o.id} 
+            onClick={()=>{setActiveId(o.id);if(isMobile)setSidebarOpen(false);}} 
+            onDelete={role==="admin"?deleteOrder:null}
+          />
+        );
+      }}
+    />
+  </div>
+}
             <div style={{marginTop:"auto",paddingTop:20,textAlign:"center",fontSize:9,color:copyright,fontWeight:500}}>© 2026 Made by Banuja Disanayaka</div>
           </div>
 
@@ -4714,13 +4737,13 @@ function TFCOrderSystem(){
           {activeTab !== "dashboard" && (
             <div className="custom-scrollbar has-bottom-nav" style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column"}}>
               {activeTab === "notifications" && <NotificationsTab role={role} userJoinDate={userJoinDate}/>}
-              {activeTab === "roles" && <RolesTab availableRoles={availableRoles} currentRole={role} onSelect={r=>{ selectRole(r); setActiveTab("dashboard"); }}/>}
+              {activeTab === "roles" && <RolesTab availableRoles={availableRoles} currentRole={role} onSelect={r=>{ selectRole(r); startTransition(() => { setActiveTab("dashboard"); }); }}/>}
               {activeTab === "profile" && <ProfileTab authUser={authUser} userRecord={userRecord} onSignOut={handleSignOut} orders={orders} {...installProps2}/>}
             </div>
           )}
         </div>
         {/* Bottom Navigation */}
-        <BottomNav activeTab={activeTab} onTab={t=>{ setActiveTab(t); if(t==="dashboard")setSidebarOpen(false); }} unreadCount={unreadCount}/>
+        <BottomNav activeTab={activeTab} onTab={t=>{ startTransition(() => { setActiveTab(t); }); if(t==="dashboard")setSidebarOpen(false); }} unreadCount={unreadCount}/>
       </div>
     );
   }
